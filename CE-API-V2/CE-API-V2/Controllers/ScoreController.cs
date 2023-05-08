@@ -4,7 +4,6 @@ namespace CE_API_V2.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize]
 public class ScoreController : ControllerBase
 {
     [HttpPost]
