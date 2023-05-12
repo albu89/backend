@@ -17,18 +17,17 @@ pipelines:
               caches:
                 - dotnetcore
               script:
-                - export SOLUTION_PATH=CE-API-V2/CE-API-V2.sln
+                - export SOLUTION_PATH=./CE-API-V2.sln
                 - REPORTS_PATH=./test-reports/build_${BITBUCKET_BUILD_NUMBER}
                 - dotnet restore ${SOLUTION_PATH}
                 - dotnet build --no-restore --configuration Release ${SOLUTION_PATH}
-                - dotnet test --no-build --configuration Release --test-adapter-path:. --logger:"junit;LogFilePath=$REPORTS_PATH/junit.xml" ${SOLUTION_PATH}
+                - dotnet test --no-build --configuration Release ${SOLUTION_PATH}
           - step:
               name: Lint the code
               caches:
                 - dotnetcore
               script:
-                - export SOLUTION_PATH=CE-API-V2
-                - export SOLUTION_NAME=CE-API-V2/CE-API-V2
+                - export SOLUTION_NAME=CE-API-V2
                 - export REPORTS_PATH=linter-reports
                 - dotnet new tool-manifest
                 - dotnet tool install JetBrains.ReSharper.GlobalTools
