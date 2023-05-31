@@ -23,6 +23,7 @@
 
 *.suo
 *.user
+*.patch
 .vs/
 [Bb]in/
 [Oo]bj/
