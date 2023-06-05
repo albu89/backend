@@ -4,6 +4,6 @@ namespace CE_API_V2.Utility
 {
     public interface IBiomarkersTemplateService
     {
-        public Task<BiomarkersTemplateDTO> GetTemplate();
+        public Task<IEnumerable<BiomarkerSchemaDto>> GetTemplate();
     }
 }

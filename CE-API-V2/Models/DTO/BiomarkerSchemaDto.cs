@@ -1,6 +1,6 @@
 ﻿namespace CE_API_V2.Models.DTO
 {
-    public class BiomarkerDTO
+    public class BiomarkerSchemaDto
     {
 
         public string Id { get; set; }
@@ -9,7 +9,7 @@
 
         public string Category { get; set; }
 
-        public BiomarkerUnitDTO[] Units { get; set; }
+        public BiomarkerSchemaUnitDto[] Units { get; set; }
 
         public string InfoText { get; set; }
 

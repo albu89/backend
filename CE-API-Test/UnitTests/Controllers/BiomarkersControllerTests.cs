@@ -26,8 +26,8 @@ public class BiomarkersControllerTests
         result.Subject.Should().BeOfType<OkObjectResult>();
         var template = ((OkObjectResult) result.Subject).Value;
         template.Should().NotBeNull();
-        template.Should().BeOfType<BiomarkersTemplateDTO>();
-        var biomarkersTemplate = (BiomarkersTemplateDTO) template;
-        biomarkersTemplate.BiomarkerList.Count().Should().Be(34);
+        template.Should().BeOfType<List<BiomarkerSchemaDto>>();
+        var biomarkersTemplate = (IEnumerable<BiomarkerSchemaDto>) template;
+        biomarkersTemplate.Count().Should().Be(35);
     }
 }

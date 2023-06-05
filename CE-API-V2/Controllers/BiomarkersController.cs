@@ -16,12 +16,12 @@ namespace CE_API_V2.Controllers
         }
 
         [HttpGet("schema")]
-        [Produces("application/json", Type = typeof(BiomarkersTemplateDTO))]
+        [Produces("application/json", Type = typeof(IEnumerable<BiomarkerSchemaDto>))]
         public async Task<IActionResult> GetInputFormTemplate()
         {
-            BiomarkersTemplateDTO template = await _biomarkersTemplateService.GetTemplate();
+            var template = await _biomarkersTemplateService.GetTemplate();
 
-            return template.BiomarkerList.Any() ? Ok(template) : NotFound();
+            return template.Any() ? Ok(template) : NotFound();
         }
     }
 

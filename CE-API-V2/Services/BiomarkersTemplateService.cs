@@ -6,7 +6,7 @@ namespace CE_API_V2.Services
 {
     public class BiomarkersTemplateService : IBiomarkersTemplateService
     {
-        public async Task<BiomarkersTemplateDTO> GetTemplate()
+        public async Task<IEnumerable<BiomarkerSchemaDto>> GetTemplate()
         {
             using StreamReader reader = new StreamReader("BiomarkersSchema.json");
             var json = await reader.ReadToEndAsync();
@@ -16,10 +16,7 @@ namespace CE_API_V2.Services
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
 
-            var biomarkers = JsonSerializer.Deserialize<List<BiomarkerDTO>>(json, options);
-            var template = new BiomarkersTemplateDTO() { BiomarkerList = biomarkers };
-
-            return template;
+            return JsonSerializer.Deserialize<List<BiomarkerSchemaDto>>(json, options);
         }
     }
 }

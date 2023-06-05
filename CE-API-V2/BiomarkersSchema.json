@@ -6,7 +6,7 @@
     "units": [
       {
         "name": "",
-        "unitType": "Other",
+        "unitType": "SI",
         "type": "string",
         "enum": [ "primary care", "secondary care" ],
         "clinicalSetting": "None"
@@ -14,7 +14,7 @@
     ],
     "infoText": "The accuracy of a disease prediction model depends on the prevalence of the disease in the population being tested. Therefore, the cut-off points on the receiver operating characteristic (ROC) curve, which indicate the balance between sensitivity and specificity of the model, need to be adjusted based on the prevalence of the clinical setting where the model is being used. This is typically referred to as calibration. This calibration process ensures that the model\u0027s predictions are accurate and reliable in the specific population being tested. By adjusting the cut-off point, the model can maintain an appropriate balance between sensitivity and specificity, which is crucial for accurate disease prediction and diagnosis. For example, in a hospital population with a high prevalence of CAD, a lower cut-off point on the ROC curve is appropriate in order to maximize sensitivity and minimize false negatives. Conversely, in a primary care population with a low prevalence of CAD, a higher cut-off point is needed to maximize specificity and minimize false positives There are two different calibrations of the Cardio Explorer model available, which were developed using different patient cohorts with varying prevalence of coronary artery disease (CAD). To ensure accurate risk stratification using the Cardio Explorer, the choice of the appropriate calibration should be tailored to the clinical setting, such as risk stratification or screening in primary care versus evaluation by a cardiologist in a hospital setting (secondary care).",
     "orderNumber": 1,
-    "preferredUnit": "Other"
+    "preferredUnit": "SI"
   },
   {
     "id": "patient_id",
@@ -23,14 +23,14 @@
     "units": [
       {
         "name": "",
-        "unitType": "Other",
+        "unitType": "SI",
         "type": "string",
-        "clinicalSetting": "PrimaryCare"
+        "clinicalSetting": "None"
       }
     ],
     "infoText": "",
     "orderNumber": 2,
-    "preferredUnit": "Other"
+    "preferredUnit": "SI"
   },
   {
     "id": "prior_CAD",
@@ -39,7 +39,7 @@
     "units": [
       {
         "name": "",
-        "unitType": "Other",
+        "unitType": "SI",
         "type": "Boolean",
         "values": [ "no", "yes" ],
         "clinicalSetting": "PrimaryCare"
@@ -47,7 +47,7 @@
     ],
     "infoText": "Prior CAD refers to a history of coronary artery disease (CAD) in a patient. Prior CAD increases the likelihood of patients with cardiovascular disease.",
     "orderNumber": 3,
-    "preferredUnit": "Other"
+    "preferredUnit": "SI"
   },
   {
     "id": "age",
@@ -64,7 +64,7 @@
         "clinicalSetting": "None"
       }
     ],
-    "infoText": "",
+    "infoText": "Age of patient in years.",
     "orderNumber": 4,
     "preferredUnit": "SI"
   },
@@ -75,7 +75,7 @@
     "units": [
       {
         "name": "",
-        "unitType": "Other",
+        "unitType": "SI",
         "type": "string",
         "enum": [ "Male", "Female" ],
         "clinicalSetting": "None"
@@ -83,7 +83,7 @@
     ],
     "infoText": "Biological sex (female and male)",
     "orderNumber": 5,
-    "preferredUnit": "Other"
+    "preferredUnit": "SI"
   },
   {
     "id": "height",
@@ -91,16 +91,35 @@
     "category": "Anamnesis",
     "units": [
       {
-        "name": "",
-        "unitType": "Other",
-        "type": "string",
-        "enum": [ "no", "unspecific", "possible", "typical" ],
+        "name": "cm",
+        "unitType": "SI",
+        "type": "integer",
+        "min": 145,
+        "max": 300,
         "clinicalSetting": "None"
       }
     ],
     "infoText": "",
     "orderNumber": 6,
-    "preferredUnit": "Other"
+    "preferredUnit": "SI"
+  },
+  {
+    "id": "weight",
+    "fieldname": "Weight",
+    "category": "Anamnesis",
+    "units": [
+      {
+        "name": "kg",
+        "unitType": "SI",
+        "type": "integer",
+        "min": 30,
+        "max": 300,
+        "clinicalSetting": "None"
+      }
+    ],
+    "infoText": "",
+    "orderNumber": 6,
+    "preferredUnit": "SI"
   },
   {
     "id": "chest_pain",
@@ -109,7 +128,7 @@
     "units": [
       {
         "name": "",
-        "unitType": "Other",
+        "unitType": "SI",
         "type": "string",
         "enum": [ "no", "unspecific", "possible", "typical" ],
         "clinicalSetting": "None"
@@ -117,7 +136,7 @@
     ],
     "infoText": "Criteria for the assessment of chest pain\r\n        Triggering of pain: provocable by physical strain or emotional stress - when the triggering factors are stopped, the pain subsides (sistation of the symptoms at rest) - duration of pain is 2 to 20 min (when taking nitroglycerin, the pain subsides quickly)\r\n\r\n        Pain unitType: visceral, manifested as pressure, tightness, burning (not stabbing)\r\n\r\n        Pain location: retrosternal (possibly radiating to arms, upper abdomen, neck)\r\n\r\n        Categorization Cardio Explorer\r\n        Typical angina: 3 criteria apply\r\n\r\n        Possible angina (atypical angina): 2 criteria apply\r\n\r\n        Unspecific chest pain: 0 or 1 criteria apply\r\n\r\n        No chest pain",
     "orderNumber": 7,
-    "preferredUnit": "Other"
+    "preferredUnit": "SI"
   },
   {
     "id": "nicotine",
@@ -126,7 +145,7 @@
     "units": [
       {
         "name": "",
-        "unitType": "Other",
+        "unitType": "SI",
         "type": "string",
         "enum": [ "non-smoker", "ex-smoker", "smoker" ],
         "clinicalSetting": "None"
@@ -134,7 +153,7 @@
     ],
     "infoText": "non-smoker: Person who has never smoked actively on a regular basis and persons who have not smoked regularly for more than 6 months.\r\n\r\nex-smoker: person who has smoked regularly for a minimum period of 6 months, but no longer smokes at the time of recording.\r\n\r\nsmoker: person who currently smokes regularly.",
     "orderNumber": 8,
-    "preferredUnit": "Other"
+    "preferredUnit": "SI"
   },
   {
     "id": "diabetes",
@@ -143,7 +162,7 @@
     "units": [
       {
         "name": "",
-        "unitType": "Other",
+        "unitType": "SI",
         "type": "string",
         "enum": [ "no", "NidDM", "idDM" ],
         "clinicalSetting": "None"
@@ -151,7 +170,7 @@
     ],
     "infoText": "idDM: abbreviation for insulin dependent diabetes mellitus\r\n\r\nNidDM: abbreviation for non insulin dependent diabetes mellitus",
     "orderNumber": 9,
-    "preferredUnit": "Other"
+    "preferredUnit": "SI"
   },
   {
     "id": "statin",
@@ -160,7 +179,7 @@
     "units": [
       {
         "name": "",
-        "unitType": "Other",
+        "unitType": "SI",
         "type": "Boolean",
         "values": [ "no", "yes" ],
         "clinicalSetting": "None"
@@ -168,7 +187,7 @@
     ],
     "infoText": "\t\r\nStatins are drugs used as cholesterol-lowering or lipid-lowering agents.\r\n\r\nExamples: Atorvastatin, fluvastatin, pitavastatin, pravastatin, rosuvastatin, simvastatin",
     "orderNumber": 10,
-    "preferredUnit": "Other"
+    "preferredUnit": "SI"
   },
   {
     "id": "tc_agg_inhibitor",
@@ -177,7 +196,7 @@
     "units": [
       {
         "name": "",
-        "unitType": "Other",
+        "unitType": "SI",
         "type": "Boolean",
         "values": [ "no", "yes" ],
         "clinicalSetting": "None"
@@ -185,7 +204,7 @@
     ],
     "infoText": "Platelet inhibitors also platelet function inhibitors or platelet aggregation inhibitors.\r\n\r\nExamples: ASA or with the active ingredient clopidogrel, prasugrel, ticagrelor",
     "orderNumber": 11,
-    "preferredUnit": "Other"
+    "preferredUnit": "SI"
   },
   {
     "id": "ace_inhibitor",
@@ -194,7 +213,7 @@
     "units": [
       {
         "name": "",
-        "unitType": "Other",
+        "unitType": "SI",
         "type": "Boolean",
         "values": [ "no", "yes" ],
         "clinicalSetting": "None"
@@ -202,7 +221,7 @@
     ],
     "infoText": "RAS inhibitors / ACE inhibitors\r\n\r\nExamples: benazapril, captopril, cilazapril, enalapril, fosinopril, imidapril, lisinopril, moexipril, \r\n\r\nEquivalent treatment (angiotensin II inhibitors): azilsartan, losartan, valsartan, irbesartan, candesartan, eprosartan, olmesartan, telmisartan",
     "orderNumber": 12,
-    "preferredUnit": "Other"
+    "preferredUnit": "SI"
   },
   {
     "id": "calcium_ant",
@@ -211,7 +230,7 @@
     "units": [
       {
         "name": "",
-        "unitType": "Other",
+        "unitType": "SI",
         "type": "Boolean",
         "values": [ "no", "yes" ],
         "clinicalSetting": "None"
@@ -219,7 +238,7 @@
     ],
     "infoText": "Calcium antagonists \r\n\r\nExamples: dihydropyridines, benzothiazepines, phenylalkylamines",
     "orderNumber": 13,
-    "preferredUnit": "Other"
+    "preferredUnit": "SI"
   },
   {
     "id": "betablocker",
@@ -228,7 +247,7 @@
     "units": [
       {
         "name": "",
-        "unitType": "Other",
+        "unitType": "SI",
         "type": "Boolean",
         "values": [ "no", "yes" ],
         "clinicalSetting": "None"
@@ -236,7 +255,7 @@
     ],
     "infoText": "Beta-blocker\r\n\r\nExamples: atenolol, bisoprolol, celiprolol, esmolol, metoprolol, nebivolol",
     "orderNumber": 14,
-    "preferredUnit": "Other"
+    "preferredUnit": "SI"
   },
   {
     "id": "diuretic",
@@ -245,7 +264,7 @@
     "units": [
       {
         "name": "",
-        "unitType": "Other",
+        "unitType": "SI",
         "type": "Boolean",
         "values": [ "no", "yes" ],
         "clinicalSetting": "None"
@@ -253,7 +272,7 @@
     ],
     "infoText": "Diuretics  \r\n\r\nExamples: amiloride, triamterene, furosemide, piretanide, torasemide, acetazolamide, bemetizide, bendroflumethiazide, clopamide, chlortalidone, hydrochlorothiazide, indapamide, canrenone, eplerenone.",
     "orderNumber": 15,
-    "preferredUnit": "Other"
+    "preferredUnit": "SI"
   },
   {
     "id": "nitrate",
@@ -262,7 +281,7 @@
     "units": [
       {
         "name": "",
-        "unitType": "Other",
+        "unitType": "SI",
         "type": "Boolean",
         "values": [ "no", "yes" ],
         "clinicalSetting": "None"

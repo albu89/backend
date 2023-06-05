@@ -2,7 +2,7 @@
 
 namespace CE_API_V2.Models.DTO
 {
-    public class BiomarkerUnitDTO
+    public class BiomarkerSchemaUnitDto
     {
         public int Id { get; set; }
 

@@ -1,5 +1,8 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using CE_API_V2.Services;
 using CE_API_V2.Utility;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,10 +32,23 @@ builder.Services.AddCors(options =>
         });
 });
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+
+    .AddJsonOptions(options =>
+    {
+
+        // Use PascalCase property names during serialization
+
+        options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+
+    });
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen();
+builder.Services.AddHttpClient<IAiRequestService, AiRequestService>(client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7265");
+});
 
 var app = builder.Build();
 
