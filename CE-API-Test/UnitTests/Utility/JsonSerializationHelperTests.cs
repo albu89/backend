@@ -2,7 +2,6 @@
 using CE_API_V2.DTO;
 using CE_API_V2.Models;
 using CE_API_V2.Utility;
-using static CE_API_V2.DTO.Enums.PatientDataEnums;
 
 namespace CE_API_Test.UnitTests.Utility;
 

@@ -48,10 +48,8 @@ public class AiRequestService : IAiRequestService
         }
         catch (HttpRequestException e) //Todo
         {
-#if DEBUG
             ScoringResponseMocker responseMocker = new();
             scoringResponse = responseMocker.MockScoringResponse();
-#endif
         }
 
         return scoringResponse;
