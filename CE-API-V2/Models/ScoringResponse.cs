@@ -6,32 +6,15 @@
     /// </summary>
     public class ScoringResponse
     {
-        public int Id { get; set; } 
-
-        #region not used?
-        public float Score { get; set; }
-        public int Class { get; set; }
-        public int is_CAD_plus { get; set; }
-        public int is_H_plus { get; set; }
-        public int error_code { get; set; }
-        public string message { get; set; }
-        #endregion
+        public Guid Id { get; set; }
 
         public int? classifier_class { get; set; }
         public double? classifier_score { get; set; }
         public int? classifier_sign { get; set; }
-
-        public int timestamp { get; set; }
-
-        public string classifier_type { get; set; }
-
-        public string username { get; set; }
-
-        public bool? hidden { get; set; }
-
-        public string orgclient { get; set; }
+        public DateTimeOffset CreatedOn { get; }
         
         [JsonIgnore]
         public ScoringRequest Request { get; set; }
+        public Guid RequestId { get; set; }
     }
 }

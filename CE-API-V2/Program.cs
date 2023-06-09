@@ -1,7 +1,6 @@
 using System.Text.Json;
 using AutoMapper;
 using CE_API_V2.Data;
-using CE_API_V2.Models;
 using CE_API_V2.Models.Mapping;
 using CE_API_V2.Services;
 using CE_API_V2.Services.Interfaces;
@@ -20,34 +19,38 @@ var config = new ConfigurationBuilder()
     .Build();
 var allowSpecificOrigins = "AllowSpecific";
 
+#region SQL
+
+var connString = builder.Configuration.GetConnectionString("DefaultConnectionString");
+builder.Services.AddDbContext<CEContext>(options => options.UseSqlServer(connString));
+
+#endregion
+
 #region Mapper
+
 var mapperConfig = new MapperConfiguration(mc =>
-    {
-        mc.AddProfile(new MappingProfile());
-    });
+{
+    mc.AddProfile(new MappingProfile());
+});
 
 IMapper mapper = mapperConfig.CreateMapper();
 builder.Services.AddSingleton(mapper);
-#endregion
 
-#region SQL
-
-var connString = builder.Configuration.GetConnectionString("SqlConnectionString");
-builder.Services.AddDbContext<CEContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SqlConnectionString")));
 #endregion
 
 #region UOW
+
 builder.Services.AddScoped<IBiomarkersTemplateService, BiomarkersTemplateService>();
 builder.Services.AddScoped<IScoringUOW, ScoringUOW>();
+
 #endregion
 
 var allowedHosts = config.GetSection("AllowedHosts").GetChildren().Select(x => x.Value).ToArray();
 
 builder.Services.AddControllers()
-
     .AddJsonOptions(options =>
     {
-
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         // Use PascalCase property names during serialization
 
         options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
@@ -72,10 +75,10 @@ app.UseSwaggerUI(c =>
 
 app.UseCors(options =>
 {
-            options.WithOrigins(allowedHosts);
-            options.AllowAnyHeader();
-            options.AllowAnyMethod();
-            options.AllowCredentials();
+    options.WithOrigins(allowedHosts);
+    options.AllowAnyHeader();
+    options.AllowAnyMethod();
+    options.AllowCredentials();
 });
 
 app.UseAuthentication();

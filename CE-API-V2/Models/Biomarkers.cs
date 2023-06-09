@@ -1,8 +1,15 @@
-﻿using CE_API_V2.Models.Enum;
+﻿using System.ComponentModel.DataAnnotations;
+using CE_API_V2.Models.Enum;
 namespace CE_API_V2.Models;
 
 public class Biomarkers
 {
+    [Key]
+    public Guid Id { get; set; }
+
+    public ScoringRequest Request { get; set; }
+    public Guid RequestId { get; set; }
+    
     public PatientDataEnums.ClinicalSetting ClinicalSetting { get; set; } // Enum
     
     public bool PriorCAD { get; set; }
@@ -38,5 +45,9 @@ public class Biomarkers
     public float Albumin { get; set; }
     public float Leukocytes { get; set; }
     public float Mchc { get; set; }
-    
+    public DateTimeOffset CreatedOn
+    {
+        get;
+    }
+
 }

@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
-namespace CE_API_V2.Models.DTO
+﻿namespace CE_API_V2.Models.DTO
 {
     public class AiDto
     {
@@ -40,6 +38,7 @@ namespace CE_API_V2.Models.DTO
         public float Alk_Phase { get; set; } 
         public float Troponin { get; set; } 
         public float ALAT { get; set; } 
+       
         #endregion
 
         #region Diabetes
@@ -70,22 +69,41 @@ namespace CE_API_V2.Models.DTO
 
         #region Zusätzliche Properties? 
         //TODO
-        [JsonPropertyName("custom_token")]
-        public string CustomToken { get; set; }
-        [System.Text.Json.Serialization.JsonIgnore]
-        public int ScroingRecordID { get; set; }
-        [NotMapped]
-        public bool? incomplete { get; set; }
-        [NotMapped]
-        public string chosenOrgClient { get; set; }
-        public string promocode { get; set; }
-        [NotMapped]
-        public string classifier_type { get; set; } 
-        public string units { get; set; }
-        [NotMapped]
-        public bool? overwrite { get; set; }
-        [NotMapped]
-        public string PopulationRiskLevel { get; set; } // same field as "classifier_type", but only for API v3 REST API requests
+        // [JsonPropertyName("custom_token")]
+        // public string CustomToken { get; set; }
+        // [System.Text.Json.Serialization.JsonIgnore]
+        // public int ScroingRecordID { get; set; }
+        // [NotMapped]
+        // public bool? incomplete { get; set; }
+        // [NotMapped]
+        // public string chosenOrgClient { get; set; }
+        // public string promocode { get; set; }
+        // [NotMapped]
+        // public string classifier_type { get; set; } 
+        // public string units { get; set; }
+        // [NotMapped]
+        // public bool? overwrite { get; set; }
+        // [NotMapped]
+        // public string PopulationRiskLevel { get; set; } // same field as "classifier_type", but only for API v3 REST API requests
+        #endregion
+        
+        #region Fillerproperties
+        public float ASAT { get; set; } 
+        public float Art__Hypertonie { get; set; }
+        public float CK { get; set; }
+        public float Chlorid { get; set; }
+        public float Dyspnoe { get; set; }
+        public float Gamma_GT { get; set; }
+        public float Hypercholesterin_mie { get; set; }
+        public float INR { get; set; }
+        public float Interne_Nummer { get; set; }
+        public float Kalium { get; set; }
+        public float Kreatinin { get; set; }
+        public float MCV__fl_ { get; set; }
+        public float Natrium { get; set; }
+        public float OAK { get; set; }
+        public float Phosphat { get; set; }
+        public float Repolarisationsst_runge { get; set; }
         #endregion
     }
 }

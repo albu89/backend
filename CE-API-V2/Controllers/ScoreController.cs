@@ -33,8 +33,9 @@ public class ScoreController : ControllerBase
         {
             return BadRequest();
         }
-        var userClaims = User?.Claims;
-        var requestedScore = await _scoringUow.ProcessScoringRequest(value, userClaims?.Any() == true ? User.FindFirstValue(ClaimTypes.NameIdentifier) : "anonymous");
+        var userId = User?.Claims?.Any() == true ? User.FindFirstValue(ClaimTypes.NameIdentifier) : "anonymous";
+        userId ??= "anonymous";
+        var requestedScore = await _scoringUow.ProcessScoringRequest(value, userId);
 
         return requestedScore is null ? BadRequest() : Ok(requestedScore);
     }

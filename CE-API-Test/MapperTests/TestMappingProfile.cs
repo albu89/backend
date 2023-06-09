@@ -2,8 +2,6 @@
 using CE_API_Test.TestUtilities;
 using CE_API_V2.Models;
 using CE_API_V2.Models.Mapping;
-using Microsoft.EntityFrameworkCore;
-using NSubstitute.ClearExtensions;
 namespace CE_API_Test.MapperTests;
 
 public class TestMappingProfile

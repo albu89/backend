@@ -6,5 +6,7 @@ public interface IGenericRepository<T>
 
     T Insert(T data);
     T GetById(string id);
-    IEnumerable<T> Find(Expression<Func<T, bool>> func);
+    IEnumerable<T> Get( Expression<Func<T, bool>> filter = null,
+        Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
+        string includeProperties = "");
 }

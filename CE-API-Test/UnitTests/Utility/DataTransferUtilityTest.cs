@@ -63,7 +63,6 @@ internal class DataTransferUtilityTest
     {
         //Arrange
         var responseAsJson = MockDataProvider.GetMockedSerializedResponse();
-        var expectedTimeStamp = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
 
         //Act
         var result = DataTransferUtility.FormatResponse(responseAsJson);
@@ -71,7 +70,6 @@ internal class DataTransferUtilityTest
         //Assert
         result.Should().NotBeNull();
         result.Should().BeOfType(typeof(ScoringResponse));
-        result.timestamp.Should().BeGreaterOrEqualTo(expectedTimeStamp);
     }
 
     private void AssertCorrectMapping(AiDto result, ScoringRequest scoringRequest)

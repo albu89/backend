@@ -35,3 +35,7 @@ Desktop.ini
 .DS_Store
 CE-API-V2/CE-API-V2/obj/rider.project.restore.info
 **/.idea
+
+**/AzureSql/data/
+**/AzureSql/log/
+**/AzureSql/mssql/

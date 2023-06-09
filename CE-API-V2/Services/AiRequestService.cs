@@ -57,7 +57,7 @@ public class AiRequestService : IAiRequestService
                 scoringResponse = responseMocker.MockScoringResponse();
             }
         }
-
+        scoringResponse.Id = Guid.NewGuid();
         return scoringResponse;
     }
 }

@@ -4,7 +4,6 @@ using CE_API_V2.Data.Repositories;
 using CE_API_V2.Data.Repositories.Interfaces;
 using CE_API_V2.Models;
 using CE_API_V2.Models.DTO;
-using CE_API_V2.Services;
 using CE_API_V2.Services.Interfaces;
 using CE_API_V2.UnitOfWorks.Interfaces;
 
@@ -98,7 +97,7 @@ namespace CE_API_V2.UnitOfWorks
             
             try
             {
-                var scoringRequests = ScoringRequestRepository.Find(x => x.Equals(UserId)).ToList();
+                var scoringRequests = ScoringRequestRepository.Get(x => x.UserId == UserId, null, "Response");
                 scoringHistory = _mapper.Map<List<ScoringHistoryDto>>(scoringRequests);
             }
             catch (Exception e)
@@ -116,7 +115,7 @@ namespace CE_API_V2.UnitOfWorks
     
             try
             {
-                var scoringRequests = ScoringRequestRepository.Find(x => x.UserId.Equals(UserId) &&
+                var scoringRequests = ScoringRequestRepository.Get(x => x.UserId.Equals(UserId) &&
                                                                              x.PatientId.Equals(PatientId)).ToList();
                 scoringHistory = _mapper.Map<List<ScoringHistoryDto>>(scoringRequests);
             }
@@ -132,7 +131,7 @@ namespace CE_API_V2.UnitOfWorks
             ScoringResponse? scoringResponse;
             try
             {
-                scoringResponse = ScoringResponseRepository.Find(x => x.Request.UserId.Equals(UserId) &&
+                scoringResponse = ScoringResponseRepository.Get(x => x.Request.UserId.Equals(UserId) &&
                     x.Id.Equals(ScoringRequestId)).FirstOrDefault() ?? null;
             }
             catch (Exception e)
@@ -146,14 +145,17 @@ namespace CE_API_V2.UnitOfWorks
         public async Task<ScoringResponse> ProcessScoringRequest(ScoringRequestDto scoringRequestDto, string userId)
         {
             var requestModel = _mapper.Map<ScoringRequest>(scoringRequestDto);
+            requestModel.UserId = userId;
             if (StoreScoringRequest(requestModel, userId) is null)
             {
                 // TODO: Better error handling
                 return null;
             }
-    
+            
             var scoringResponse = await RequestScore(requestModel) ?? throw new Exception();
-    
+
+            scoringResponse.Request = requestModel;
+            scoringResponse.RequestId = requestModel.Id;
             if(StoreScoringResponse(scoringResponse) is null)
             {
                 // TODO: Handling for failed store

@@ -3,13 +3,12 @@ using System.Globalization;
 using System.Text.Json.Serialization;
 using CE_API_V2.Models;
 using CE_API_V2.Models.DTO;
-using CE_API_V2.Services;
 
 namespace CE_API_V2.Utility
 {
     public static class DataTransferUtility
     {
-        public static string CreateQueryString(AiDto patientDataDto, string[] featuresToDrop = null, string separator = ",")
+        public static string CreateQueryString(AiDto patientDataDto, string[]? featuresToDrop = null, string separator = ",")
         {
             // Get all properties on the object
             var properties = patientDataDto.GetType().GetProperties()
@@ -25,12 +24,12 @@ namespace CE_API_V2.Utility
             {
                 properties["q_Zacken_0_nein_1_ja"] = 0;
             }
-
-            //Todo - aus altem code
-            if (properties["units"] != null)
-            {
-                properties.Remove("units");
-            }
+            //
+            // //Todo - aus altem code
+            // if (properties["units"] != null)
+            // {
+            //     properties.Remove("units");
+            // }
 
             // Get names for all IEnumerable properties (excl. string)
             var propertyNames = properties
@@ -70,11 +69,6 @@ namespace CE_API_V2.Utility
         public static ScoringResponse? FormatResponse(string jsonResponse)
         {
             var scoringResponse = ToScoringResponse(jsonResponse);
-
-            if (scoringResponse is not null)
-            {
-                scoringResponse.timestamp = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
-            }
 
             return scoringResponse;
         }

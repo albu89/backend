@@ -1,21 +1,5 @@
 [
-  {
-    "id": "clinical_setting",
-    "fieldname": "Clinical setting",
-    "category": "Lipids",
-    "units": [
-      {
-        "name": "",
-        "unitType": "SI",
-        "type": "string",
-        "enum": [ "primary care", "secondary care" ],
-        "clinicalSetting": "None"
-      }
-    ],
-    "infoText": "The accuracy of a disease prediction model depends on the prevalence of the disease in the population being tested. Therefore, the cut-off points on the receiver operating characteristic (ROC) curve, which indicate the balance between sensitivity and specificity of the model, need to be adjusted based on the prevalence of the clinical setting where the model is being used. This is typically referred to as calibration. This calibration process ensures that the model\u0027s predictions are accurate and reliable in the specific population being tested. By adjusting the cut-off point, the model can maintain an appropriate balance between sensitivity and specificity, which is crucial for accurate disease prediction and diagnosis. For example, in a hospital population with a high prevalence of CAD, a lower cut-off point on the ROC curve is appropriate in order to maximize sensitivity and minimize false negatives. Conversely, in a primary care population with a low prevalence of CAD, a higher cut-off point is needed to maximize specificity and minimize false positives There are two different calibrations of the Cardio Explorer model available, which were developed using different patient cohorts with varying prevalence of coronary artery disease (CAD). To ensure accurate risk stratification using the Cardio Explorer, the choice of the appropriate calibration should be tailored to the clinical setting, such as risk stratification or screening in primary care versus evaluation by a cardiologist in a hospital setting (secondary care).",
-    "orderNumber": 1,
-    "preferredUnit": "SI"
-  },
+  
   {
     "id": "patient_id",
     "fieldname": "Patient Identification",
