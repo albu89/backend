@@ -1,8 +1,9 @@
-﻿using CE_API_Test.TestUtility;
+﻿using CE_API_Test.TestUtilities;
 using CE_API_V2.Controllers;
-using CE_API_V2.DTO;
 using CE_API_V2.Models;
-using CE_API_V2.Services;
+using CE_API_V2.Models.DTO;
+using CE_API_V2.Services.Interfaces;
+using CE_API_V2.UnitOfWorks.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
@@ -13,24 +14,29 @@ namespace CE_API_Test.UnitTests.Controllers
     {
         private HttpClient _httpClient;
         private IAiRequestService _requestService;
+        private IScoringUOW _scoringUow;
 
         [SetUp]
         public void SetUp()
         {
            var requestServiceMock = new Mock<IAiRequestService>();
-           var mockedResposeTask = Task.FromResult(MockDataProvider.GetMockedScoringResponse());
+           var mockedResponseTask = Task.FromResult(MockDataProvider.GetMockedScoringResponse());
 
-           requestServiceMock.Setup(x => x.RequestScore(It.IsAny<ScoringRequestDto>()))
-               .Returns(mockedResposeTask);
+           requestServiceMock.Setup(x => x.RequestScore(It.IsAny<ScoringRequest>()))
+               .Returns(mockedResponseTask);
 
            _requestService = requestServiceMock.Object;
+
+           var scoringUowMock = new Mock<IScoringUOW>();
+           scoringUowMock.Setup(x => x.ProcessScoringRequest(It.IsAny<ScoringRequestDto>(), It.IsAny<string>())).Returns(mockedResponseTask);
+           _scoringUow = scoringUowMock.Object;
         }
 
         [Test]
         public async Task PostPatientData_GivenMockedDto_ReturnOkResult()
         {
             //Arrange
-            var sut = new ScoreController(_requestService);
+            var sut = new ScoreController(_requestService, _scoringUow);
             var mockedBiomarkers = MockDataProvider.GetMockedScoringRequestDto();
 
             //Act

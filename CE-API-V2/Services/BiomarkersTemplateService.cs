@@ -1,6 +1,6 @@
 ﻿using CE_API_V2.Models.DTO;
-using CE_API_V2.Utility;
 using System.Text.Json;
+using CE_API_V2.Services.Interfaces;
 
 namespace CE_API_V2.Services
 {

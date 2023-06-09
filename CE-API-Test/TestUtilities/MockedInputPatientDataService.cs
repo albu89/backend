@@ -1,6 +1,5 @@
-﻿using CE_API_V2.DTO;
-
-namespace CE_API_V2.Utility;
+﻿using CE_API_V2.Models.DTO;
+namespace CE_API_Test.TestUtilities;
 
 public class MockedInputPatientDataService
 {

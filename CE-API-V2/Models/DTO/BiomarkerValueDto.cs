@@ -1,4 +1,4 @@
-﻿namespace CE_API_V2.DTO;
+﻿namespace CE_API_V2.Models.DTO;
 
 public class BiomarkerValueDto<T>
 {

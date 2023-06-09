@@ -1,54 +1,55 @@
-﻿using CE_API_V2.DTO;
-
-namespace CE_API_V2.Utility
+﻿using CE_API_V2.Models;
+using CE_API_V2.Models.DTO;
+using CE_API_V2.Utility;
+namespace CE_API_V2.Services
 {
     public static class DtoConverter
     {
-        public static AiDto ConvertToAiDto(ScoringRequestDto patientDetailWebDto)
+        public static AiDto ConvertToAiDto(Biomarkers biomarkers)
         {
             var patientToAiDto = new AiDto();    
             patientToAiDto.Id = new Guid(); //Todo
             patientToAiDto.Datum = DateTime.Now;
-            patientToAiDto.Age = (float)patientDetailWebDto.Age.Value;
-            patientToAiDto.Sex_0_female_1male = TypeToFloatConverter.MapEnumValueToFloat(patientDetailWebDto.Sex.Value);
-            patientToAiDto.Gr_sse = (float)patientDetailWebDto.Height.Value;
-            patientToAiDto.Gewicht = (float)patientDetailWebDto.Weight.Value;
-            patientToAiDto.Thoraxschmerzen__0_keine_1_extr = TypeToFloatConverter.MapEnumValueToFloat(patientDetailWebDto.ChestPain.Value);
-            patientToAiDto.Nicotin_0_nein_1_St__N__2_ja = TypeToFloatConverter.MapEnumValueToFloat(patientDetailWebDto.NicotineConsumption.Value);
+            patientToAiDto.Age = biomarkers.Age;
+            patientToAiDto.Sex_0_female_1male = TypeToFloatConverter.MapEnumValueToFloat(biomarkers.Sex);
+            patientToAiDto.Gr_sse = biomarkers.Height;
+            patientToAiDto.Gewicht = biomarkers.Weight;
+            patientToAiDto.Thoraxschmerzen__0_keine_1_extr = TypeToFloatConverter.MapEnumValueToFloat(biomarkers.ChestPain);
+            patientToAiDto.Nicotin_0_nein_1_St__N__2_ja = TypeToFloatConverter.MapEnumValueToFloat(biomarkers.Nicotine);
 
-            patientToAiDto.Diabetes_0_no_1_NIDDM_2_IDDM = TypeToFloatConverter.MapEnumValueToFloat(patientDetailWebDto.Diabetes.Value);
-            patientToAiDto.Statin_od_Chol_senker = TypeToFloatConverter.MapBoolToFloat(patientDetailWebDto.CholesterolLowering_Statin.Value);
-            patientToAiDto.Tc_Aggregation = TypeToFloatConverter.MapBoolToFloat(patientDetailWebDto.TCAggregationInhibitor.Value);
-            patientToAiDto.ACE_od_ATII = TypeToFloatConverter.MapBoolToFloat(patientDetailWebDto.ACEInhibitor.Value);
-            patientToAiDto.CA_Antagonist = TypeToFloatConverter.MapBoolToFloat(patientDetailWebDto.CaAntagonist.Value);
-            patientToAiDto.Betablocker = TypeToFloatConverter.MapBoolToFloat(patientDetailWebDto.Betablocker.Value);
-            patientToAiDto.Diureticum = TypeToFloatConverter.MapBoolToFloat(patientDetailWebDto.Diuretic.Value);
-            patientToAiDto.Nitrat_od_Dancor = TypeToFloatConverter.MapBoolToFloat(patientDetailWebDto.OrganicNitrate.Value);
+            patientToAiDto.Diabetes_0_no_1_NIDDM_2_IDDM = TypeToFloatConverter.MapEnumValueToFloat(biomarkers.Diabetes);
+            patientToAiDto.Statin_od_Chol_senker = TypeToFloatConverter.MapBoolToFloat(biomarkers.Statin);
+            patientToAiDto.Tc_Aggregation = TypeToFloatConverter.MapBoolToFloat(biomarkers.TcAggInhibitor);
+            patientToAiDto.ACE_od_ATII = TypeToFloatConverter.MapBoolToFloat(biomarkers.AceInhibitor);
+            patientToAiDto.CA_Antagonist = TypeToFloatConverter.MapBoolToFloat(biomarkers.CaAntagonist);
+            patientToAiDto.Betablocker = TypeToFloatConverter.MapBoolToFloat(biomarkers.Betablocker);
+            patientToAiDto.Diureticum = TypeToFloatConverter.MapBoolToFloat(biomarkers.Diuretic);
+            patientToAiDto.Nitrat_od_Dancor = TypeToFloatConverter.MapBoolToFloat(biomarkers.OganicNitrate);
 
-            patientToAiDto.BD_syst = (float)patientDetailWebDto.SystolicBloodPressure.Value;
-            patientToAiDto.BD_diast = (float)patientDetailWebDto.DiastolicBloodPressure.Value;
-            patientToAiDto.q_Zacken_0_nein_1_ja = TypeToFloatConverter.MapEnumValueToFloat(patientDetailWebDto.RestingECG.Value);
+            patientToAiDto.BD_syst = biomarkers.SystolicBloodPressure;
+            patientToAiDto.BD_diast = biomarkers.DiastolicBloodPressure;
+            patientToAiDto.q_Zacken_0_nein_1_ja = TypeToFloatConverter.MapEnumValueToFloat(biomarkers.RestingECG);
 
-            patientToAiDto.Pankreas_Amylase = (float)patientDetailWebDto.PancreaticAmylase.Value;
-            patientToAiDto.Alk_Phase = (float)patientDetailWebDto.AlkalinePhosphatase.Value;
-            patientToAiDto.Troponin = (float)patientDetailWebDto.HsTroponinT.Value;
-            patientToAiDto.ALAT = (float)patientDetailWebDto.Alat.Value;
+            patientToAiDto.Pankreas_Amylase = biomarkers.PancreaticAmylase;
+            patientToAiDto.Alk_Phase = biomarkers.AlkalinePhosphate;
+            patientToAiDto.Troponin = biomarkers.HsTroponinT;
+            patientToAiDto.ALAT = biomarkers.Alat;
 
-            patientToAiDto.Glucose = (float)patientDetailWebDto.GlocuseFasting.Value;
+            patientToAiDto.Glucose = biomarkers.Glucose;
 
-            patientToAiDto.Bilirubin = (float)patientDetailWebDto.Bilirubin.Value;
-            patientToAiDto.Harnstoff = (float)patientDetailWebDto.Urea.Value;
-            patientToAiDto.Harnsaure = (float)patientDetailWebDto.UricAcid.Value;
+            patientToAiDto.Bilirubin = biomarkers.Bilirubin;
+            patientToAiDto.Harnstoff = biomarkers.Urea;
+            patientToAiDto.Harnsaure = biomarkers.UricAcid;
 
-            patientToAiDto.Cholesterin_gesamt = (float)patientDetailWebDto.Cholesterol.Value;
-            patientToAiDto.HDL = (float)patientDetailWebDto.Hdl.Value;
-            patientToAiDto.LDL = (float)patientDetailWebDto.Ldl.Value;
+            patientToAiDto.Cholesterin_gesamt = biomarkers.Cholesterol;
+            patientToAiDto.HDL = biomarkers.Hdl;
+            patientToAiDto.LDL = biomarkers.Ldl;
 
-            patientToAiDto.Total_Proteine = (float)patientDetailWebDto.Protein.Value;
-            patientToAiDto.Albumin = (float)patientDetailWebDto.Albumin.Value;
+            patientToAiDto.Total_Proteine = biomarkers.Protein;
+            patientToAiDto.Albumin = biomarkers.Albumin;
 
-            patientToAiDto.Leuko = (float)patientDetailWebDto.Leukocytes.Value;
-            patientToAiDto.MCHC__g_l_oder___ = (float)patientDetailWebDto.Mchc.Value;
+            patientToAiDto.Leuko = biomarkers.Leukocytes;
+            patientToAiDto.MCHC__g_l_oder___ = biomarkers.Mchc;
 
             //Todo - currently unused?
             //_patientToAiDto.CustomToken = string.Empty;

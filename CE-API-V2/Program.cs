@@ -1,7 +1,12 @@
 using System.Text.Json;
+using AutoMapper;
 using CE_API_V2.Data;
+using CE_API_V2.Models;
+using CE_API_V2.Models.Mapping;
 using CE_API_V2.Services;
-using CE_API_V2.Utility;
+using CE_API_V2.Services.Interfaces;
+using CE_API_V2.UnitOfWorks;
+using CE_API_V2.UnitOfWorks.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +20,16 @@ var config = new ConfigurationBuilder()
     .Build();
 var allowSpecificOrigins = "AllowSpecific";
 
+#region Mapper
+var mapperConfig = new MapperConfiguration(mc =>
+    {
+        mc.AddProfile(new MappingProfile());
+    });
+
+IMapper mapper = mapperConfig.CreateMapper();
+builder.Services.AddSingleton(mapper);
+#endregion
+
 #region SQL
 
 var connString = builder.Configuration.GetConnectionString("SqlConnectionString");
@@ -23,6 +38,7 @@ builder.Services.AddDbContext<CEContext>(options => options.UseSqlServer(builder
 
 #region UOW
 builder.Services.AddScoped<IBiomarkersTemplateService, BiomarkersTemplateService>();
+builder.Services.AddScoped<IScoringUOW, ScoringUOW>();
 #endregion
 
 var allowedHosts = config.GetSection("AllowedHosts").GetChildren().Select(x => x.Value).ToArray();

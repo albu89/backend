@@ -1,20 +1,21 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using CE_API_V2.DTO;
-using CE_API_V2.Utility;
 using System.Text.Json.Serialization;
-using CE_API_Test.TestUtility;
+using CE_API_Test.TestUtilities;
+using CE_API_V2.Models;
+using CE_API_V2.Models.DTO;
+using CE_API_V2.Services;
 
 namespace CE_API_Test.UnitTests.Services
 {
     [TestFixture]
     internal class PatientWebDtoToPatientAiDtoConverterTests
     {
-        private ScoringRequestDto _scoringRequestDto;
+        private ScoringRequest _scoringRequest;
 
         [SetUp]
         public void Setup()
         {
-            _scoringRequestDto = MockDataProvider.GetMockedScoringRequestDto();
+            _scoringRequest = MockDataProvider.GetMockedScoringRequest();
         }
 
         [Test]
@@ -23,7 +24,7 @@ namespace CE_API_Test.UnitTests.Services
             //Arrange
 
             //Act
-            var convertedObject = DtoConverter.ConvertToAiDto(_scoringRequestDto);
+            var convertedObject = DtoConverter.ConvertToAiDto(_scoringRequest.Biomarkers);
 
             //Assert
             convertedObject.Should().NotBeNull();

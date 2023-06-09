@@ -1,6 +1,7 @@
-﻿using CE_API_V2.DTO;
-using CE_API_V2.Models;
-using CE_API_V2.Service.Mock;
+﻿using CE_API_V2.Models;
+using CE_API_V2.Models.DTO;
+using CE_API_V2.Services.Interfaces;
+using CE_API_V2.Services.Mocks;
 using CE_API_V2.Utility;
 
 namespace CE_API_V2.Services;
@@ -9,19 +10,21 @@ public class AiRequestService : IAiRequestService
 {
     private readonly HttpClient _httpClient;
     private readonly IConfiguration _config;
+    private readonly IWebHostEnvironment _env;
 
-    public AiRequestService(HttpClient httpClient, IConfiguration config)
+    public AiRequestService(HttpClient httpClient, IConfiguration config, IWebHostEnvironment env)
     {
         _httpClient = httpClient;
         _config = config;
+        _env = env;
     }
 
-    public async Task<ScoringResponse>? RequestScore(ScoringRequestDto scoringRequestDto)
+    public async Task<ScoringResponse>? RequestScore(ScoringRequest scoringRequest)
     {
-        if (scoringRequestDto is null)
+        if (scoringRequest is null)
             return null;
 
-        var patientDataToAiDto = DataTransferUtility.ConvertBiomarkersToAiDto(scoringRequestDto);
+        var patientDataToAiDto = DtoConverter.ConvertToAiDto(scoringRequest.Biomarkers);
         var response = await GetScoreAsync(patientDataToAiDto);
 
         return response;
@@ -48,8 +51,11 @@ public class AiRequestService : IAiRequestService
         }
         catch (HttpRequestException e) //Todo
         {
-            ScoringResponseMocker responseMocker = new();
-            scoringResponse = responseMocker.MockScoringResponse();
+            if (_env.IsStaging() || _env.IsDevelopment())
+            {
+                ScoringResponseMocker responseMocker = new();
+                scoringResponse = responseMocker.MockScoringResponse();
+            }
         }
 
         return scoringResponse;

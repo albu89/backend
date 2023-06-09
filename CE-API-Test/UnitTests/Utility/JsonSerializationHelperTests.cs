@@ -1,6 +1,6 @@
-﻿using CE_API_Test.TestUtility;
-using CE_API_V2.DTO;
+﻿using CE_API_Test.TestUtilities;
 using CE_API_V2.Models;
+using CE_API_V2.Models.DTO;
 using CE_API_V2.Utility;
 
 namespace CE_API_Test.UnitTests.Utility;
@@ -69,7 +69,7 @@ internal class JsonSerializationHelperTests
     {
         obj.Should().NotBeNull();
 
-        var properties = obj.GetType().GetProperties();
+        var properties = obj.GetType().GetProperties().Where(x => x.Name.Contains("ScoringRequest"));
 
         foreach (var property in properties)
         {

@@ -1,5 +1,5 @@
 ﻿using CE_API_V2.Models.DTO;
-using CE_API_V2.Utility;
+using CE_API_V2.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CE_API_V2.Controllers

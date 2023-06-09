@@ -1,10 +1,9 @@
 ﻿using System.Text.Json;
-using CE_API_V2.DTO;
 using CE_API_V2.Models;
-using CE_API_V2.Utility;
-using static CE_API_V2.DTO.Enums.PatientDataEnums;
+using CE_API_V2.Models.DTO;
+using static CE_API_V2.Models.Enum.PatientDataEnums;
 
-namespace CE_API_Test.TestUtility
+namespace CE_API_Test.TestUtilities
 {
     internal static class MockDataProvider
     {
@@ -18,9 +17,16 @@ namespace CE_API_Test.TestUtility
 
         internal static string GetMockedSerializedScoringRequestDto()
         {
-            var scoringRequestDtoMock = new ScoringRequestDto()
+            var scoringRequestDtoMock = GetMockedScoringRequestDto();
+
+            return JsonSerializer.Serialize(scoringRequestDtoMock);
+        }
+
+        internal static ScoringRequestDto CreateScoringRequestDto()
+        {
+            return new ScoringRequestDto()
             {
-                Age = new BiomarkerValueDto<float>() { Value = 2.0f },
+                Age = new BiomarkerValueDto<int>() { Value = 20 },
                 ACEInhibitor = new BiomarkerValueDto<bool>() { Value = true },
                 Alat = new BiomarkerValueDto<float>() { Value = 2.0f },
                 Albumin = new BiomarkerValueDto<float>() { Value = 2.0f },
@@ -30,36 +36,81 @@ namespace CE_API_Test.TestUtility
                 CaAntagonist = new BiomarkerValueDto<bool>() { Value = true },
                 Cholesterol = new BiomarkerValueDto<float>() { Value = 2.0f },
                 CholesterolLowering_Statin = new BiomarkerValueDto<bool>() { Value = true },
-                Diabetes = new BiomarkerValueDto<DiabetesStatusEnum>() { Value = DiabetesStatusEnum.IDDM },
+                Diabetes = new BiomarkerValueDto<DiabetesStatus>() { Value = DiabetesStatus.Iddm },
                 DiastolicBloodPressure = new BiomarkerValueDto<float>() { Value = 2.0f },
                 Diuretic = new BiomarkerValueDto<bool>() { Value = true },
                 GlocuseFasting = new BiomarkerValueDto<float>() { Value = 2.0f },
                 Hdl = new BiomarkerValueDto<float>() { Value = 2.0f },
-                Height = new BiomarkerValueDto<float>() { Value = 2.0f },
+                Height = new BiomarkerValueDto<int>() { Value = 180 },
                 HsTroponinT = new BiomarkerValueDto<float>() { Value = 2.0f },
                 Ldl = new BiomarkerValueDto<float>() { Value = 2.0f },
                 Leukocytes = new BiomarkerValueDto<float>() { Value = 2.0f },
                 Mchc = new BiomarkerValueDto<float>() { Value = 2.0f },
-                NicotineConsumption = new BiomarkerValueDto<NicotineConsumptionEnum>() { Value = NicotineConsumptionEnum.St_a_Nc },
+                NicotineConsumption = new BiomarkerValueDto<NicotineConsumption>() { Value = NicotineConsumption.StANc },
                 OrganicNitrate = new BiomarkerValueDto<bool>() { Value = true },
                 PancreaticAmylase = new BiomarkerValueDto<float>() { Value = 2.0f },
                 PatientId = new BiomarkerValueDto<string>() { Value = "Mock" },
                 Protein = new BiomarkerValueDto<float>() { Value = 2.0f },
-                RestingECG = new BiomarkerValueDto<RestingECGEnum>() { Value = RestingECGEnum.screening },
-                Sex = new BiomarkerValueDto<SexEnum>() { Value = SexEnum.female },
+                RestingECG = new BiomarkerValueDto<RestingEcg>() { Value = RestingEcg.Screening },
+                Sex = new BiomarkerValueDto<Sex>() { Value = Sex.Female },
                 SystolicBloodPressure = new BiomarkerValueDto<float>() { Value = 2.0f },
                 TCAggregationInhibitor = new BiomarkerValueDto<bool>() { Value = true },
-                ChestPain = new BiomarkerValueDto<ThoraicPainEnum>() { Value = ThoraicPainEnum.possible },
+                ChestPain = new BiomarkerValueDto<ChestPain>() { Value = ChestPain.Possible },
                 Urea = new BiomarkerValueDto<float>() { Value = 2.0f },
                 UricAcid = new BiomarkerValueDto<float>() { Value = 2.0f },
-                Weight = new BiomarkerValueDto<float>() { Value = 2.0f },
-                clinical_setting = new BiomarkerValueDto<string>() { Value = "Mock" },
+                Weight = new BiomarkerValueDto<int>() { Value = 100 },
+                clinical_setting = new BiomarkerValueDto<ClinicalSetting>() { Value  = ClinicalSetting.PrimaryCare },
                 prior_CAD = new BiomarkerValueDto<bool>() { Value = true },
             };
-
-            return JsonSerializer.Serialize(scoringRequestDtoMock);
         }
-        
+
+        internal static ScoringRequest GetMockedScoringRequest()
+        {
+            return new ScoringRequest
+            {
+                Id = Guid.NewGuid(),
+                PatientId = "1234",
+                UserId = "1234",
+                Biomarkers = new Biomarkers
+                {
+                    Age = 25,
+                    Alat = 213,
+                    Albumin = 123,
+                    Bilirubin = 123,
+                    Cholesterol = 123,
+                    Diabetes = DiabetesStatus.Iddm,
+                    RestingECG = RestingEcg.Screening,
+                    Diuretic = false,
+                    Hdl = 123,
+                    Height = 176,
+                    Ldl = 123,
+                    Leukocytes = 123,
+                    Mchc = 123,
+                    Sex = Sex.Male,
+                    Weight = 90,
+                    Protein = 123,
+                    Urea = 123,
+                    CaAntagonist = false,
+                    ChestPain = ChestPain.Possible,
+                    Glucose = 123,
+                    PancreaticAmylase = 123,
+                    UricAcid = 123,
+                    DiastolicBloodPressure = 123,
+                    HsTroponinT = 123,
+                    SystolicBloodPressure = 123,
+                    Nicotine = NicotineConsumption.StANc,
+                    Statin = false,
+                    AceInhibitor = false,
+                    AlkalinePhosphate = 123,
+                    Betablocker = false,
+                    ClinicalSetting = ClinicalSetting.PrimaryCare,
+                    OganicNitrate = false,
+                    TcAggInhibitor = false,
+                    PriorCAD = false
+                }
+            };
+        }
+
         internal static string GetMockedSerializedResponse()
         {
             var mockedResponse = GetMockedScoringResponse();

@@ -1,5 +1,4 @@
-﻿using CE_API_V2.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace CE_API_V2.Data
 {

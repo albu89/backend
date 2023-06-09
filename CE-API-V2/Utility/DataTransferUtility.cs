@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Globalization;
 using System.Text.Json.Serialization;
-using CE_API_V2.DTO;
 using CE_API_V2.Models;
+using CE_API_V2.Models.DTO;
+using CE_API_V2.Services;
 
 namespace CE_API_V2.Utility
 {
@@ -76,11 +77,6 @@ namespace CE_API_V2.Utility
             }
 
             return scoringResponse;
-        }
-        
-        public static AiDto ConvertBiomarkersToAiDto(ScoringRequestDto scoringRequestDto)
-        {
-            return DtoConverter.ConvertToAiDto(scoringRequestDto);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿    namespace CE_API_V2.Models
+﻿    using System.Text.Json.Serialization;
+    namespace CE_API_V2.Models
 {
     /// <summary>
     /// Class holding the response data which is calculated/transferred by the AI
@@ -29,5 +30,8 @@
         public bool? hidden { get; set; }
 
         public string orgclient { get; set; }
+        
+        [JsonIgnore]
+        public ScoringRequest Request { get; set; }
     }
 }
