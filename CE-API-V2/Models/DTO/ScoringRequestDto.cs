@@ -7,6 +7,15 @@ namespace CE_API_V2.Models.DTO
 {
     public class ScoringRequestDto
     {
+        #region BaseInfo
+
+        public string Firstname { get; set; }
+        public string Lastname { get; set; }
+        public DateTimeOffset DateOfBirth { get; set; }
+        
+        
+        #endregion
+        
         #region Additional Properties
         [JsonPropertyName("clinical_setting")]
         [JsonConverter(typeof(BiomarkerValueJsonConverter<ClinicalSetting>))]

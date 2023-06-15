@@ -7,14 +7,18 @@ namespace CE_API_V2.Models.Mapping
     {
             public MappingProfile()
             {
-                // TODO: Do Mapping
-                CreateMap<ScoringRequest, ScoringHistoryDto>();
-                // TODO:  Do Mapping
+                CreateMap<ScoringRequest, ScoringHistoryDto>()
+                    .ForMember(dest => dest.Score, opt => opt.MapFrom(src => src.Response.classifier_score))
+                    .ForMember(dest => dest.RequestId, opt => opt.MapFrom(src => src.Id))
+                    .ForMember(dest => dest.RequestTimeStamp, opt => opt.MapFrom(src => src.CreatedOn))
+                    ;
+                
                 CreateMap<ScoringRequestDto, ScoringRequest>()
                     .ForMember(dest => dest.Id, opt => opt.MapFrom(_ => Guid.NewGuid()))
                     .ForMember(dest => dest.PatientId, opt => opt.MapFrom(src => src.PatientId.Value))
                     .ForMember(dest => dest.Biomarkers, opt => opt.MapFrom(src => src))
                     ;
+                
                 CreateMap<ScoringRequestDto, Biomarkers>()
                     .ForMember(dest => dest.Glucose, opt => opt.MapFrom(src => src.GlocuseFasting))
                     .ForMember(dest => dest.Nicotine, opt => opt.MapFrom(src => src.NicotineConsumption))
@@ -24,6 +28,7 @@ namespace CE_API_V2.Models.Mapping
                     .ForMember(dest => dest.PriorCAD, opt => opt.MapFrom(src => src.prior_CAD))
                     .ForMember(dest => dest.Statin, opt => opt.MapFrom(src => src.CholesterolLowering_Statin))
                     ;
+                
                 CreateMap(typeof(BiomarkerValueDto<string>), typeof(string)).ConvertUsing(typeof(ValueToUnderlyingTypeConverter<string>));
                 CreateMap(typeof(BiomarkerValueDto<int>), typeof(int)).ConvertUsing(typeof(ValueToUnderlyingTypeConverter<int>));
                 CreateMap(typeof(BiomarkerValueDto<float>), typeof(float)).ConvertUsing(typeof(ValueToUnderlyingTypeConverter<float>));

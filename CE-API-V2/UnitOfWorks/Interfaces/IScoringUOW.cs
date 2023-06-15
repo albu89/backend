@@ -9,17 +9,17 @@ public interface IScoringUOW
     
     IGenericRepository<ScoringResponse> ScoringResponseRepository { get; }
     
-    ScoringRequest StoreScoringRequest(ScoringRequest storingRequest, string UserId);
+    ScoringRequest StoreScoringRequest(ScoringRequest scoringRequest, string UserId);
     
-    ScoringRequest RetrieveScoringRequest(string ScoringRequestId, string userId);
+    ScoringRequest RetrieveScoringRequest(Guid ScoringRequestId, string userId);
     
     ScoringResponse StoreScoringResponse(ScoringResponse scoringResponse);
     
-    IEnumerable<ScoringHistoryDto> RetrieveScoringHistoryForUser(string UserId);
+    IEnumerable<ScoringHistoryDto>? RetrieveScoringHistoryForUser(string UserId);
     
     IEnumerable<ScoringHistoryDto> RetrieveScoringHistoryForPatient(string PatientId, string UserId);
     
-    ScoringResponse RetrieveScoringResponse(string ScoringRequestId, string UserId);
+    ScoringResponse RetrieveScoringResponse(Guid ScoringRequestId, string UserId);
     
     Task<ScoringResponse> ProcessScoringRequest(ScoringRequestDto scoringRequestDto, string userId);
 

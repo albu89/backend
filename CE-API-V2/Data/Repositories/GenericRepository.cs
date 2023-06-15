@@ -23,6 +23,12 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
         return dbSet.Find(id);
     }
+    
+    public T GetByGuid(Guid id)
+    {
+        return dbSet.Find(id);
+    }
+    
     public IEnumerable<T> Find(Expression<Func<T, bool>> func)
     {
         return dbSet.Where(func);

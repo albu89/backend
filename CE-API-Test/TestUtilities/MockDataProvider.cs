@@ -64,6 +64,14 @@ namespace CE_API_Test.TestUtilities
             };
         }
 
+        internal static ScoringResponse GetMockedScoringResponseForRequest(ScoringRequest request)
+        {
+            var response = GetMockedScoringResponse();
+            response.Request = request;
+            response.RequestId = request.Id;
+            return response;
+        }
+
         internal static ScoringRequest GetMockedScoringRequest()
         {
             return new ScoringRequest
@@ -71,43 +79,47 @@ namespace CE_API_Test.TestUtilities
                 Id = Guid.NewGuid(),
                 PatientId = "1234",
                 UserId = "1234",
-                Biomarkers = new Biomarkers
-                {
-                    Age = 25,
-                    Alat = 213,
-                    Albumin = 123,
-                    Bilirubin = 123,
-                    Cholesterol = 123,
-                    Diabetes = DiabetesStatus.Iddm,
-                    RestingECG = RestingEcg.Screening,
-                    Diuretic = false,
-                    Hdl = 123,
-                    Height = 176,
-                    Ldl = 123,
-                    Leukocytes = 123,
-                    Mchc = 123,
-                    Sex = Sex.Male,
-                    Weight = 90,
-                    Protein = 123,
-                    Urea = 123,
-                    CaAntagonist = false,
-                    ChestPain = ChestPain.Possible,
-                    Glucose = 123,
-                    PancreaticAmylase = 123,
-                    UricAcid = 123,
-                    DiastolicBloodPressure = 123,
-                    HsTroponinT = 123,
-                    SystolicBloodPressure = 123,
-                    Nicotine = NicotineConsumption.StANc,
-                    Statin = false,
-                    AceInhibitor = false,
-                    AlkalinePhosphate = 123,
-                    Betablocker = false,
-                    ClinicalSetting = ClinicalSetting.PrimaryCare,
-                    OganicNitrate = false,
-                    TcAggInhibitor = false,
-                    PriorCAD = false
-                }
+                Biomarkers = GetFakeBiomarkers()
+            };
+        }
+        private static Biomarkers GetFakeBiomarkers()
+        {
+            return new Biomarkers
+            {
+                Age = 25,
+                Alat = 213,
+                Albumin = 123,
+                Bilirubin = 123,
+                Cholesterol = 123,
+                Diabetes = DiabetesStatus.Iddm,
+                RestingECG = RestingEcg.Screening,
+                Diuretic = false,
+                Hdl = 123,
+                Height = 176,
+                Ldl = 123,
+                Leukocytes = 123,
+                Mchc = 123,
+                Sex = Sex.Male,
+                Weight = 90,
+                Protein = 123,
+                Urea = 123,
+                CaAntagonist = false,
+                ChestPain = ChestPain.Possible,
+                Glucose = 123,
+                PancreaticAmylase = 123,
+                UricAcid = 123,
+                DiastolicBloodPressure = 123,
+                HsTroponinT = 123,
+                SystolicBloodPressure = 123,
+                Nicotine = NicotineConsumption.StANc,
+                Statin = false,
+                AceInhibitor = false,
+                AlkalinePhosphate = 123,
+                Betablocker = false,
+                ClinicalSetting = ClinicalSetting.PrimaryCare,
+                OganicNitrate = false,
+                TcAggInhibitor = false,
+                PriorCAD = false
             };
         }
 
@@ -164,6 +176,22 @@ namespace CE_API_Test.TestUtilities
             }
 
             return mockedAiDto;
+        }
+
+        public static List<Biomarkers> GetFakeBiomarkersList()
+        {
+            var biomarkersList = new List<Biomarkers>
+            {
+                GetFakeBiomarkers(),
+                GetFakeBiomarkers(),
+                GetFakeBiomarkers(),
+                GetFakeBiomarkers()
+            };
+            foreach (var biomarkers in biomarkersList)
+            {
+                biomarkers.Id = Guid.NewGuid();
+            }
+            return biomarkersList;
         }
     }
 }

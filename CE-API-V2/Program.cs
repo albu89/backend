@@ -45,6 +45,7 @@ builder.Services.AddSingleton(mapper);
 #region UOW
 
 builder.Services.AddScoped<IBiomarkersTemplateService, BiomarkersTemplateService>();
+builder.Services.AddScoped<IPatientIdHashingUOW, PatientIdHashingUOW>();
 builder.Services.AddScoped<IScoringUOW, ScoringUOW>();
 
 #endregion

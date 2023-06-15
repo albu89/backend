@@ -50,11 +50,12 @@ namespace CE_API_V2.UnitOfWorks
             }
         }
     
-        public ScoringRequest StoreScoringRequest(ScoringRequest storingRequest, string UserId)
+        public ScoringRequest StoreScoringRequest(ScoringRequest scoringRequest, string UserId)
         {
             try
             {
-                ScoringRequestRepository.Insert(storingRequest);
+                scoringRequest.UserId = UserId;
+                ScoringRequestRepository.Insert(scoringRequest);
                 _context.SaveChanges();
             }
             catch (Exception e)
@@ -62,18 +63,18 @@ namespace CE_API_V2.UnitOfWorks
                 throw new NotImplementedException();
             }
     
-            return storingRequest;
+            return scoringRequest;
         }
     
-        public ScoringRequest RetrieveScoringRequest(string ScoringRequestId, string userId)
+        public ScoringRequest RetrieveScoringRequest(Guid ScoringRequestId, string userId)
         {
-            var scoringRequest = ScoringRequestRepository.GetById(ScoringRequestId);
+            var scoringRequest = ScoringRequestRepository.GetByGuid(ScoringRequestId);
     
             if (scoringRequest is null || !scoringRequest.UserId.Equals(userId))
             {
                 throw new Exception();
             }
-            return new ScoringRequest();
+            return scoringRequest;
         }
     
         public ScoringResponse StoreScoringResponse(ScoringResponse scoringResponse)
@@ -88,12 +89,12 @@ namespace CE_API_V2.UnitOfWorks
                 throw new NotImplementedException();
             }
     
-            return new ScoringResponse();
+            return scoringResponse;
         }
     
-        public IEnumerable<ScoringHistoryDto> RetrieveScoringHistoryForUser(string UserId)
+        public IEnumerable<ScoringHistoryDto>? RetrieveScoringHistoryForUser(string UserId)
         {
-            var scoringHistory = new List<ScoringHistoryDto>();
+            IEnumerable<ScoringHistoryDto> scoringHistory = null;
             
             try
             {
@@ -126,13 +127,14 @@ namespace CE_API_V2.UnitOfWorks
             return scoringHistory;
         }
     
-        public ScoringResponse? RetrieveScoringResponse(string ScoringRequestId, string UserId)
+        public ScoringResponse? RetrieveScoringResponse(Guid ScoringRequestId, string UserId)
         {
             ScoringResponse? scoringResponse;
             try
             {
+                var allresps = ScoringResponseRepository.Get();
                 scoringResponse = ScoringResponseRepository.Get(x => x.Request.UserId.Equals(UserId) &&
-                    x.Id.Equals(ScoringRequestId)).FirstOrDefault() ?? null;
+                    x.RequestId.Equals(ScoringRequestId), null, "Request").FirstOrDefault() ?? null;
             }
             catch (Exception e)
             {

@@ -22,42 +22,16 @@ namespace CE_API_Test.UnitTests.Services
         [SetUp]
         public void SetUp()
         {
-            var inMemSettings = new Dictionary<string, string>
-            {
-                {"AiSubpath", "/api/AiMock?"}
-            };
-
-            var config = new ConfigurationBuilder().AddInMemoryCollection(inMemSettings!).Build();
-            _scoringRequestDto = MockDataProvider.GetMockedScoringRequestDto();
-            _scoringRequest = MockDataProvider.GetMockedScoringRequest();
-
-            var httpMessageHandlerMock = new Mock<HttpMessageHandler>();
-            var content = MockDataProvider.GetMockedSerializedResponse();
-            var response = new HttpResponseMessage
-            {
-                StatusCode = HttpStatusCode.OK,
-                Content = new StringContent(content),
-            };
-
-            httpMessageHandlerMock
-                .Protected()
-                .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
-                .ReturnsAsync(response);
-
-            var httpClient = new HttpClient(httpMessageHandlerMock.Object);
-            httpClient.BaseAddress = new Uri("https://testproject");
-
-            var mockEnv = new Mock<IWebHostEnvironment>();
-                mockEnv.Setup(m => m.EnvironmentName)
-                .Returns("Hosting:Staging");
-            _sut = new AiRequestService(httpClient, config, mockEnv.Object);
+            _sut = MockServiceProvider.GenerateAiRequestService();
         }
+       
 
         [Test]
         public async Task PostPatientData_GivenMockedDto_ReturnOkResult()
         {
             //Arrange
-
+            _scoringRequest = MockDataProvider.GetMockedScoringRequest();
+            
             //Act
             var result = await _sut.RequestScore(_scoringRequest);
 

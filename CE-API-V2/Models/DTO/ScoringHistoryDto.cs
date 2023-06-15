@@ -2,5 +2,7 @@
 
 public class ScoringHistoryDto
 {
-    
+    public Guid RequestId { get; set; }
+    public DateTimeOffset RequestTimeStamp { get; set; }
+    public float Score { get; set; }
 }
