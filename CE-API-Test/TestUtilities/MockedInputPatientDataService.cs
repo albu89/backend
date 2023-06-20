@@ -9,7 +9,7 @@ public class MockedInputPatientDataService
     {
         var patientData = CreateMockedPatientData(patientId);
 
-        return patientData.First(p => p.PatientId.Value.Equals("Mock"));
+        return patientData.First();
     }
 
     private List<ScoringRequestDto> CreateMockedPatientData(string patientId)

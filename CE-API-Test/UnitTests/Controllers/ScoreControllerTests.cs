@@ -3,6 +3,7 @@ using CE_API_V2.Controllers;
 using CE_API_V2.Models;
 using CE_API_V2.Models.DTO;
 using CE_API_V2.Services.Interfaces;
+using CE_API_V2.UnitOfWorks;
 using CE_API_V2.UnitOfWorks.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -14,25 +15,34 @@ namespace CE_API_Test.UnitTests.Controllers
     {
         private HttpClient _httpClient;
         private IScoringUOW _scoringUow;
+        private IValueConversionUOW _valueConversionUow;
         private IPatientIdHashingUOW _hashingUow;
 
         [SetUp]
         public void SetUp()
         {
-           var mockedResponseTask = Task.FromResult(MockDataProvider.GetMockedScoringResponse());
-           var mockHashingUow = new Mock<IPatientIdHashingUOW>();
-           mockHashingUow.Setup(h => h.GeneratePatientId(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTimeOffset>())).Returns("PatientIdHashForTesting");
-           var scoringUowMock = new Mock<IScoringUOW>();
-           scoringUowMock.Setup(x => x.ProcessScoringRequest(It.IsAny<ScoringRequestDto>(), It.IsAny<string>())).Returns(mockedResponseTask);
-           _scoringUow = scoringUowMock.Object;
-           _hashingUow = mockHashingUow.Object;
+            var requestServiceMock = new Mock<IAiRequestService>();
+            var mockedScoringRequest = MockDataProvider.GetMockedScoringRequest();
+            var valueConversionUow = new Mock<IValueConversionUOW>();
+            var hashingUowMock = new Mock<IPatientIdHashingUOW>();
+            hashingUowMock.Setup(h => h.GeneratePatientId(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTimeOffset>())).Returns("PatientIdHashForTesting");
+            var mockedResponseTask = Task.FromResult(MockDataProvider.GetMockedScoringResponse());
+
+            SetupMockedScoringUOW(mockedResponseTask);
+            requestServiceMock.Setup(x => x.RequestScore(It.IsAny<ScoringRequest>())).Returns(mockedResponseTask);
+            valueConversionUow
+                .Setup(x => x.ConvertToScoringRequest(It.IsAny<ScoringRequestDto>(), It.IsAny<string>(),
+                    It.IsAny<string>())).Returns(mockedScoringRequest);
+
+            _valueConversionUow = valueConversionUow.Object;
+            _hashingUow = hashingUowMock.Object;
         }
 
         [Test]
         public async Task PostPatientData_GivenMockedDto_ReturnOkResult()
         {
             //Arrange
-            var sut = new ScoreController(_scoringUow, _hashingUow);
+            var sut = new ScoreController(_scoringUow, _hashingUow, _valueConversionUow);
             var mockedBiomarkers = MockDataProvider.GetMockedScoringRequestDto();
 
             //Act
@@ -82,6 +92,138 @@ namespace CE_API_Test.UnitTests.Controllers
             //var okResult = result as BadRequestObjectResult;
             //okResult?.StatusCode.Should().Be(500);
             Assert.True(true);
+        }
+
+        [Test]
+        public async Task GetScoringRequests_GivenCorrespondingRequestGuid_ReturnOkResult()
+        {
+            //Arrange
+            string name = "name";
+            string lastname = "lastname";
+            DateTime dateOfBirth = new DateTime(2000, 1, 1);
+            Guid requestId = Guid.NewGuid();
+
+            var scoringUowMock = new Mock<IScoringUOW>();
+            var scoringHistoryMock = MockDataProvider.GetMockedScoringRequestHistory().ToList();
+            var mockedHistory = new ScoringHistoryDto()
+            {
+                RequestId = requestId,
+                RequestTimeStamp = DateTimeOffset.Now,
+                Score = 1.0f
+            };
+
+            if (mockedHistory != null)
+            {
+                scoringHistoryMock.Add(mockedHistory);
+            }
+
+            scoringUowMock.Setup(x => x.RetrieveScoringHistoryForPatient(It.IsAny<string>(), It.IsAny<string>()))
+                .Returns(scoringHistoryMock);
+
+            _scoringUow = scoringUowMock.Object;
+
+            var sut = new ScoreController(_scoringUow, _hashingUow, _valueConversionUow);
+            ////Act
+            var result = sut.GetScoringRequest(name, lastname, dateOfBirth, requestId);
+
+            ////Assert
+            result.Should().NotBeNull();
+            result.Should().BeOfType(typeof(OkObjectResult));
+
+            var okResult = result as OkObjectResult;
+            okResult?.StatusCode.Should().Be(200);
+            okResult?.Value.Should().BeOfType(typeof(ScoringHistoryDto));
+            okResult?.Value?.Should().BeEquivalentTo(mockedHistory);
+        }
+
+        [Test]
+        public async Task GetScoringRequest_GivenIncorrectRequestGuid_ReturnBadRequestResult()
+        {
+            //Arrange
+            string name = "name";
+            string lastname = "lastname";
+            DateTime dateOfBirth = new DateTime(2000, 1, 1);
+            Guid testGuid = Guid.NewGuid();
+
+            var scoringUowMock = new Mock<IScoringUOW>();
+            var scoringHistoryMock = MockDataProvider.GetMockedScoringRequestHistory().ToList();
+            var mockedHistory = new ScoringHistoryDto()
+            {
+                RequestId = Guid.NewGuid(),
+                RequestTimeStamp = DateTimeOffset.Now,
+                Score = 1.0f
+            };
+
+            if (mockedHistory != null)
+            {
+                scoringHistoryMock.Add(mockedHistory);
+            }
+
+            scoringUowMock.Setup(x => x.RetrieveScoringHistoryForPatient(It.IsAny<string>(), It.IsAny<string>()))
+                .Returns(scoringHistoryMock);
+            _scoringUow = scoringUowMock.Object;
+
+            var sut = new ScoreController(_scoringUow, _hashingUow, _valueConversionUow);
+            ////Act
+            var result = sut.GetScoringRequest(name, lastname, dateOfBirth, testGuid);
+
+            ////Assert
+            result.Should().NotBeNull();
+            result.Should().BeOfType(typeof(BadRequestResult));
+
+            var badRequestResult = result as BadRequestResult;
+            badRequestResult?.StatusCode.Should().Be(400);
+        }
+
+        [Test]
+        public async Task GetScoringRequestsParameterless_WithoutParameters_ReturnOkRequestResult()
+        {
+            //Arrange
+            var sut = new ScoreController(_scoringUow, _hashingUow, _valueConversionUow);
+
+            ////Act
+            var result = sut.GetScoringRequests();
+
+            ////Assert
+            result.Should().NotBeNull();
+            result.Should().BeOfType(typeof(OkObjectResult));
+
+            var okObjectResult = result as OkObjectResult;
+            okObjectResult?.StatusCode.Should().Be(200);
+        }
+
+        [Test]
+        public async Task GetScoringRequests_WithParameters_ReturnOkRequestResult()
+        {
+            //Arrange
+            string name = "name";
+            string lastname = "lastname";
+            DateTime dateOfBirth = new DateTime(2000, 1, 1);
+
+            var sut = new ScoreController(_scoringUow, _hashingUow, _valueConversionUow);
+
+            ////Act
+            var result = sut.GetScoringRequests(name, lastname, dateOfBirth);
+
+            ////Assert
+            result.Should().NotBeNull();
+            result.Should().BeOfType(typeof(OkObjectResult));
+
+            var okObjectResult = result as OkObjectResult;
+            okObjectResult?.StatusCode.Should().Be(200);
+        }
+
+        private void SetupMockedScoringUOW(Task<ScoringResponse> mockedResponseTask)
+        {
+            var scoringUowMock = new Mock<IScoringUOW>();
+            var scoringHistoryMock = MockDataProvider.GetMockedScoringRequestHistory().ToList();
+
+            scoringUowMock.Setup(x => x.RetrieveScoringHistoryForPatient(It.IsAny<string>(), It.IsAny<string>()))
+                    .Returns(scoringHistoryMock);
+            scoringUowMock
+                .Setup(x => x.ProcessScoringRequest(It.IsAny<ScoringRequest>(), It.IsAny<string>(), It.IsAny<string>()))
+                .Returns(mockedResponseTask);
+            _scoringUow = scoringUowMock.Object;
         }
     }
 }

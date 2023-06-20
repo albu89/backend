@@ -132,7 +132,6 @@ namespace CE_API_V2.UnitOfWorks
             ScoringResponse? scoringResponse;
             try
             {
-                var allresps = ScoringResponseRepository.Get();
                 scoringResponse = ScoringResponseRepository.Get(x => x.Request.UserId.Equals(UserId) &&
                     x.RequestId.Equals(ScoringRequestId), null, "Request").FirstOrDefault() ?? null;
             }
@@ -144,20 +143,19 @@ namespace CE_API_V2.UnitOfWorks
             return scoringResponse;
         }
     
-        public async Task<ScoringResponse> ProcessScoringRequest(ScoringRequestDto scoringRequestDto, string userId)
+        public async Task<ScoringResponse> ProcessScoringRequest(ScoringRequest scoringRequest, string userId, string patientId)
         {
-            var requestModel = _mapper.Map<ScoringRequest>(scoringRequestDto);
-            requestModel.UserId = userId;
-            if (StoreScoringRequest(requestModel, userId) is null)
+            if (StoreScoringRequest(scoringRequest, userId) is null)
             {
                 // TODO: Better error handling
                 return null;
             }
             
-            var scoringResponse = await RequestScore(requestModel) ?? throw new Exception();
+            var scoringResponse = await RequestScore(scoringRequest) ?? throw new Exception();
 
-            scoringResponse.Request = requestModel;
-            scoringResponse.RequestId = requestModel.Id;
+            scoringResponse.Request = scoringRequest;
+            scoringResponse.RequestId = scoringRequest.Id;
+
             if(StoreScoringResponse(scoringResponse) is null)
             {
                 // TODO: Handling for failed store

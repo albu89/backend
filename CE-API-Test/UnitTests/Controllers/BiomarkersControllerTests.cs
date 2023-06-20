@@ -28,6 +28,6 @@ public class BiomarkersControllerTests
         template.Should().NotBeNull();
         template.Should().BeOfType<List<BiomarkerSchemaDto>>();
         var biomarkersTemplate = (IEnumerable<BiomarkerSchemaDto>) template;
-        biomarkersTemplate.Count().Should().Be(34);
+        biomarkersTemplate.Count().Should().Be(33);
     }
 }

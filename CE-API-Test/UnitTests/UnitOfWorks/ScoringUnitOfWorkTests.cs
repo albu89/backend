@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Azure;
+using Azure.Core;
 using CE_API_Test.TestUtilities;
 using CE_API_V2.Data;
 using CE_API_V2.Models;
@@ -18,6 +20,7 @@ public class ScoringUnitOfWorkTests
     private IMapper _mapper;
     private IAiRequestService _requestService;
     private string _userId = "TestUserId";
+    private string _patientId = "TestPatientId";
 
     [OneTimeSetUp]
     public void OneTimeSetup()
@@ -25,15 +28,14 @@ public class ScoringUnitOfWorkTests
         var options = new DbContextOptionsBuilder<CEContext>()
             .UseInMemoryDatabase(databaseName: "CEDatabase")
             .Options;
-        
-        
+
         var mapperConfig = new MapperConfiguration(mc =>
         {
             mc.AddProfile(new MappingProfile());
         });
 
         _mapper = mapperConfig.CreateMapper();
-        
+
         _requestService = MockServiceProvider.GenerateAiRequestService();
         _ceContext = new CEContext(options);
         _scoringUow = new ScoringUOW(_ceContext, _requestService, _mapper);
@@ -67,8 +69,119 @@ public class ScoringUnitOfWorkTests
         resFromDb.RequestId.Should().Be(request.Id);
         resFromDb.Request.Should().Be(request);
     }
+    
+    [Test]
+    public void RetrieveScoringRequest_ExpectedCorrectRetrievedRequest()
+    {
+        //Arrange
+        var request = MockDataProvider.GetMockedScoringRequest(_userId);
+        _scoringUow.StoreScoringRequest(request, _userId);
+        var request2 = MockDataProvider.GetMockedScoringRequest("differentUserId");
+        _scoringUow.StoreScoringRequest(request2, "differentUserId");
 
-    [OneTimeTearDown]
+        //Act
+        var resFromDb = _scoringUow.RetrieveScoringRequest(request.Id, _userId);
+        var resourcesFromDb = _scoringUow.ScoringRequestRepository.Get();
+
+        //Assert
+        resourcesFromDb.Count().Should().BeGreaterOrEqualTo(2);
+        resFromDb.Should().NotBeNull();
+        resFromDb.PatientId.Should().Be(request.PatientId);
+        resFromDb.UserId.Should().Be(request.UserId);
+        resFromDb.Biomarkers.Should().Be(request.Biomarkers);
+        resFromDb.Id.Should().Be(request.Id);
+        resFromDb.Response.Should().Be(request.Response);
+    }
+
+    [Test]
+    public void RetrieveScoringHistoryForUser_ExpectedCorrectRetrievedRequest()
+    {
+        //Arrange
+        var testedUserId = "testuserid";
+
+        var request = MockDataProvider.GetMockedScoringRequest(testedUserId);
+        _scoringUow.StoreScoringRequest(request, testedUserId);
+        var request2 = MockDataProvider.GetMockedScoringRequest(testedUserId);
+        _scoringUow.StoreScoringRequest(request2, testedUserId);
+        var request3 = MockDataProvider.GetMockedScoringRequest("differentUserId");
+        _scoringUow.StoreScoringRequest(request3, "differentUserId");
+        var request4 = MockDataProvider.GetMockedScoringRequest("differentUserId2");
+        _scoringUow.StoreScoringRequest(request4, "differentUserId2");
+
+        //Act
+        var resourcesFromDbByGuid = _scoringUow.RetrieveScoringHistoryForUser(testedUserId);
+        var resourcesFromDb = _scoringUow.ScoringRequestRepository.Get();
+
+        //Assert
+        resourcesFromDb.Should().NotBeNull();
+        resourcesFromDb.Count().Should().BeGreaterOrEqualTo(4);
+
+        resourcesFromDbByGuid.Should().NotBeNull();
+        resourcesFromDbByGuid.Count().Should().Be(2);
+
+        var firstResFromDbByGuid = resourcesFromDb.FirstOrDefault(x => x.Id.Equals(request.Id));
+
+        firstResFromDbByGuid.Should().NotBeNull();
+        firstResFromDbByGuid.PatientId.Should().Be(request.PatientId);
+        firstResFromDbByGuid.UserId.Should().Be(request.UserId);
+        firstResFromDbByGuid.Biomarkers.Should().Be(request.Biomarkers);
+        firstResFromDbByGuid.Id.Should().Be(request.Id);
+        firstResFromDbByGuid.Response.Should().Be(request.Response);
+    }
+
+    [Test]
+    public void RetrieveScoringHistoryForPatient_ExpectedCorrectRetrievedRequest()
+    {
+        //Arrange
+        var testPatientId = "testpatientid";
+
+        var request = MockDataProvider.GetMockedScoringRequest(_userId, testPatientId);
+        _scoringUow.StoreScoringRequest(request, _userId);
+        var request2 = MockDataProvider.GetMockedScoringRequest(_userId, "differentPatientId");
+        _scoringUow.StoreScoringRequest(request2, "differentPatientId");
+        var request3 = MockDataProvider.GetMockedScoringRequest("differentUserId", testPatientId);
+        _scoringUow.StoreScoringRequest(request3, "differentUserId");
+        var request4 = MockDataProvider.GetMockedScoringRequest(_userId, testPatientId);
+        _scoringUow.StoreScoringRequest(request4, _userId);
+
+        //Act
+        var resourcesFromDbByGuid = _scoringUow.RetrieveScoringHistoryForPatient(testPatientId, _userId);
+        var resourcesFromDb = _scoringUow.ScoringRequestRepository.Get();
+
+        //Assert
+        resourcesFromDb.Should().NotBeNull();
+        resourcesFromDb.Count().Should().BeGreaterOrEqualTo(4);
+
+        resourcesFromDbByGuid.Should().NotBeNull();
+        resourcesFromDbByGuid.Count().Should().Be(2);
+
+        var firstResFromDbByGuid = resourcesFromDb.FirstOrDefault(x => x.Id.Equals(request.Id));
+
+        firstResFromDbByGuid.Should().NotBeNull();
+        firstResFromDbByGuid.PatientId.Should().Be(request.PatientId);
+        firstResFromDbByGuid.UserId.Should().Be(request.UserId);
+        firstResFromDbByGuid.Biomarkers.Should().Be(request.Biomarkers);
+        firstResFromDbByGuid.Id.Should().Be(request.Id);
+        firstResFromDbByGuid.Response.Should().Be(request.Response);
+    }
+
+    [Test]
+    public async Task ProcessScoringRequest_ExpectedCorrectRetrievedRequest()
+    {
+        //Arrange
+        var request = MockDataProvider.GetMockedScoringRequest(_userId, _patientId);
+
+        //Act
+        var result = await _scoringUow.ProcessScoringRequest(request, _patientId, _userId);
+
+        //Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType<ScoringResponse>();
+        result.classifier_score.Should().NotBeNull();
+        result.classifier_sign.Should().NotBeNull();
+    }
+
+    [TearDown]
     public void OneTimeTearDown()
     {
         _ceContext.Database.EnsureDeleted();

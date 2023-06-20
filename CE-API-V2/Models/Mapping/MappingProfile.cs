@@ -15,7 +15,6 @@ namespace CE_API_V2.Models.Mapping
                 
                 CreateMap<ScoringRequestDto, ScoringRequest>()
                     .ForMember(dest => dest.Id, opt => opt.MapFrom(_ => Guid.NewGuid()))
-                    .ForMember(dest => dest.PatientId, opt => opt.MapFrom(src => src.PatientId.Value))
                     .ForMember(dest => dest.Biomarkers, opt => opt.MapFrom(src => src))
                     ;
                 

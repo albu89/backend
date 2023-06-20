@@ -1,21 +1,4 @@
 [
-  
-  {
-    "id": "patient_id",
-    "fieldname": "Patient Identification",
-    "category": "",
-    "units": [
-      {
-        "name": "",
-        "unitType": "SI",
-        "type": "string",
-        "clinicalSetting": "None"
-      }
-    ],
-    "infoText": "",
-    "orderNumber": 2,
-    "preferredUnit": "SI"
-  },
   {
     "id": "prior_CAD",
     "fieldname": "Prior CAD",
@@ -467,7 +450,7 @@
         "name": "mg/dl",
         "ConversionFactor": 0.05551,
         "unitType": "Conventional",
-        "type": "integer",
+        "type": "float",
         "minimum": 0.0138775,
         "maximum": 2.49795,
         "clinicalSetting": "None"
@@ -501,7 +484,7 @@
         "clinicalSetting": "None"
       }
     ],
-    "infoText": "\t\r\nBilirubin is a red-ovalues compound that occurs in the normal catabolic pathway that breaks down heme in vertebrates. This catabolism is a necessary process in the body\u0027s clearance of waste products that arise from the destruction of aged or abnormal red blood cells. Serum total bilirubin have a role for prediction of severe coronary artery disease in patients with chronic stable angina.",
+    "infoText": "\t\r\nBilirubin is a red-orange compound that occurs in the normal catabolic pathway that breaks down heme in vertebrates. This catabolism is a necessary process in the body\u0027s clearance of waste products that arise from the destruction of aged or abnormal red blood cells. Serum total bilirubin have a role for prediction of severe coronary artery disease in patients with chronic stable angina.",
     "orderNumber": 25,
     "preferredUnit": "SI"
   },

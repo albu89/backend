@@ -104,7 +104,6 @@ internal class JsonSerializationHelperTests
         AssertNotNull(scoringRequestDto.NicotineConsumption);
         AssertNotNull(scoringRequestDto.OrganicNitrate);
         AssertNotNull(scoringRequestDto.PancreaticAmylase);
-        AssertNotNull(scoringRequestDto.PatientId);
         AssertNotNull(scoringRequestDto.Protein);
         AssertNotNull(scoringRequestDto.RestingECG);
         AssertNotNull(scoringRequestDto.Sex);

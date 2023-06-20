@@ -22,7 +22,7 @@ public class BiomarkersTemplateServiceTests
         result.Subject.Should().BeOfType<List<BiomarkerSchemaDto>>();
         result.Subject.Should().NotBeNull();
         result.Subject.Should().NotBeNull();
-        result.Subject.Count().Should().Be(34);
+        result.Subject.Count().Should().Be(33);
         result.Subject.Any(x => string.IsNullOrEmpty(x.Id)).Should().BeFalse();
         result.Subject.Any(x => string.IsNullOrEmpty(x.Fieldname)).Should().BeFalse();
         result.Subject.Any(x => x.Units is null).Should().BeFalse();

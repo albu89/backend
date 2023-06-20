@@ -49,7 +49,6 @@ namespace CE_API_Test.TestUtilities
                 NicotineConsumption = new BiomarkerValueDto<NicotineConsumption>() { Value = NicotineConsumption.StANc },
                 OrganicNitrate = new BiomarkerValueDto<bool>() { Value = true },
                 PancreaticAmylase = new BiomarkerValueDto<float>() { Value = 2.0f },
-                PatientId = new BiomarkerValueDto<string>() { Value = "Mock" },
                 Protein = new BiomarkerValueDto<float>() { Value = 2.0f },
                 RestingECG = new BiomarkerValueDto<RestingEcg>() { Value = RestingEcg.Screening },
                 Sex = new BiomarkerValueDto<Sex>() { Value = Sex.Female },
@@ -72,13 +71,13 @@ namespace CE_API_Test.TestUtilities
             return response;
         }
 
-        internal static ScoringRequest GetMockedScoringRequest()
+        internal static ScoringRequest GetMockedScoringRequest(string userId = "", string patientId = "")
         {
             return new ScoringRequest
             {
                 Id = Guid.NewGuid(),
-                PatientId = "1234",
-                UserId = "1234",
+                PatientId = patientId.Equals(string.Empty) ? "PatientId" : patientId,
+                UserId = userId.Equals(string.Empty) ? "UserId" : userId,
                 Biomarkers = GetFakeBiomarkers()
             };
         }
@@ -193,5 +192,24 @@ namespace CE_API_Test.TestUtilities
             }
             return biomarkersList;
         }
+
+        public static IEnumerable<ScoringHistoryDto> GetMockedScoringRequestHistory()
+        {
+            var scoringHistoryList = new List<ScoringHistoryDto>();
+
+            for (int i = 0; i < 3; i++)
+            {
+                scoringHistoryList.Add(CreateMockedHistoryDto());
+            }
+
+            return scoringHistoryList;
+        }
+
+        private static ScoringHistoryDto CreateMockedHistoryDto() => new()
+        {
+            RequestId = Guid.NewGuid(),
+            RequestTimeStamp = DateTimeOffset.Now,
+            Score = 1.0f
+        };
     }
 }

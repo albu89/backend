@@ -21,6 +21,6 @@ public interface IScoringUOW
     
     ScoringResponse RetrieveScoringResponse(Guid ScoringRequestId, string UserId);
     
-    Task<ScoringResponse> ProcessScoringRequest(ScoringRequestDto scoringRequestDto, string userId);
+    Task<ScoringResponse> ProcessScoringRequest(ScoringRequest scoringRequest, string userId, string patientId);
 
 }

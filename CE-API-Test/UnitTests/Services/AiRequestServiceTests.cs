@@ -1,13 +1,6 @@
 ﻿using CE_API_V2.Models;
-using CE_API_V2.Services;
-using Moq;
-using System.Net;
 using CE_API_Test.TestUtilities;
-using CE_API_V2.Models.DTO;
 using CE_API_V2.Services.Interfaces;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Moq.Protected;
 
 namespace CE_API_Test.UnitTests.Services
 {
@@ -16,13 +9,13 @@ namespace CE_API_Test.UnitTests.Services
 
     {
         private IAiRequestService _sut;
-        private ScoringRequestDto _scoringRequestDto;
         private ScoringRequest _scoringRequest;
 
         [SetUp]
         public void SetUp()
         {
             _sut = MockServiceProvider.GenerateAiRequestService();
+            _scoringRequest = MockDataProvider.GetMockedScoringRequest();
         }
        
 

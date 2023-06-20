@@ -26,9 +26,7 @@ namespace CE_API_V2.Models.DTO
         #endregion
 
         #region Anamnesis
-        [JsonPropertyName("patient_id")]
         //Anamnesis
-        public BiomarkerValueDto<string> PatientId { get; set; }
         [JsonPropertyName("age")]
         public BiomarkerValueDto<int> Age { get; set; }
         [JsonPropertyName("sex")]
