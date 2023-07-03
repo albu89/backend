@@ -4,6 +4,7 @@ using CE_API_V2.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CE_API_V2.Migrations
 {
     [DbContext(typeof(CEContext))]
-    partial class CEContextModelSnapshot : ModelSnapshot
+    [Migration("20230626130715_AddedUserModel")]
+    partial class AddedUserModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -206,6 +209,10 @@ namespace CE_API_V2.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("ActiveDirectoryID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Address")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -226,9 +233,7 @@ namespace CE_API_V2.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTimeOffset>("CreatedOn")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetimeoffset")
-                        .HasDefaultValueSql("getdate()");
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Department")
                         .IsRequired()
@@ -246,6 +251,10 @@ namespace CE_API_V2.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Organisation")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("PreferredLab")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -253,9 +262,6 @@ namespace CE_API_V2.Migrations
                     b.Property<string>("ProfessionalSpecialisation")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Role")
-                        .HasColumnType("int");
 
                     b.Property<string>("Salutation")
                         .IsRequired()
@@ -274,6 +280,10 @@ namespace CE_API_V2.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UnitLabValues")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserRole")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

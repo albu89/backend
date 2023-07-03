@@ -22,7 +22,7 @@ namespace CE_API_Test.UnitTests.UnitsOfWork
 
 
         [Test]
-        public void ConvertToScoringRequest_GivenCorrectParameters_ExpectedObjectWithCorrectUserIdandPatientId()
+        public void ConvertToScoringRequest_GivenCorrectParameters_ExpectedObjectWithCorrectUserIdAndPatientId()
         {
             //Arrange
             var patientIdHashingUow = new PatientIdHashingUOW();   

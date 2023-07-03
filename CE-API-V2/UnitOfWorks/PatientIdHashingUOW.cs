@@ -1,5 +1,5 @@
 ﻿using CE_API_V2.UnitOfWorks.Interfaces;
-using Microsoft.AspNetCore.Mvc.ApplicationParts;
+
 namespace CE_API_V2.UnitOfWorks;
 
 public class PatientIdHashingUOW : IPatientIdHashingUOW

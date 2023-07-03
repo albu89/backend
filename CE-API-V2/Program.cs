@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
 using Microsoft.OpenApi.Models;
 using System.Text.Json;
+using CE_API_V2.Services.Mocks;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,6 +49,9 @@ builder.Services.AddScoped<IBiomarkersTemplateService, BiomarkersTemplateService
 builder.Services.AddScoped<IPatientIdHashingUOW, PatientIdHashingUOW>();
 builder.Services.AddScoped<IScoringUOW, ScoringUOW>();
 builder.Services.AddScoped<IValueConversionUOW, ValueConversionUOW>();
+builder.Services.AddScoped<IUserUOW, UserUOW>();
+builder.Services.AddScoped<IInputValidationService, MockedInputValidationService>();
+builder.Services.AddScoped<IUserInformationExtractor, UserInformationExtractor>();
 
 #endregion
 

@@ -1,7 +1,6 @@
 using System.Security.Claims;
 using CE_API_V2.Models.DTO;
 using CE_API_V2.Services.Interfaces;
-using CE_API_V2.Services.Mocks;
 using CE_API_V2.UnitOfWorks;
 using CE_API_V2.UnitOfWorks.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -19,12 +18,13 @@ public class ScoreController : ControllerBase
 
     public ScoreController(IScoringUOW scoringUow,
                            IPatientIdHashingUOW patientIdUow,
-                           IValueConversionUOW valueConversionUow)
+                           IValueConversionUOW valueConversionUow,
+                           IInputValidationService inputValidationService)
     {
-        _inputValidationService = new MockedInputValidationService();
         _scoringUow = scoringUow;
         _patientIdUow = patientIdUow;
         _valueConversionUow = valueConversionUow;
+        _inputValidationService = inputValidationService;
     }
 
     [HttpPost]
@@ -36,8 +36,9 @@ public class ScoreController : ControllerBase
         _ = value.Firstname;
         _ = value.Lastname;
         _ = value.DateOfBirth;
+
         //POST
-        if (!_inputValidationService.BiomarkersAreValid(value))
+        if (!_inputValidationService.ScoringRequestIsValid(value))
         {
             return BadRequest();
         }

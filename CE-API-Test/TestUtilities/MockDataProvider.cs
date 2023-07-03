@@ -1,6 +1,8 @@
 ﻿using System.Text.Json;
 using CE_API_V2.Models;
 using CE_API_V2.Models.DTO;
+using CE_API_V2.Models.Enum;
+using CE_API_V2.Models.Records;
 using static CE_API_V2.Models.Enum.PatientDataEnums;
 
 namespace CE_API_Test.TestUtilities
@@ -210,6 +212,80 @@ namespace CE_API_Test.TestUtilities
             RequestId = Guid.NewGuid(),
             RequestTimeStamp = DateTimeOffset.Now,
             Score = 1.0f
+        };
+
+        public static UserDto GetMockedUserDto()
+        {
+            return new UserDto()
+            {
+                Address = "Mock",
+                City = "Mock",
+                ClinicalSetting = ClinicalSetting.SecondaryCare,
+                Country = "Mock",
+                CountryCode = "Mock",
+                Department = "Mock",
+                EMailAdress = "Mock",
+                FirstName = "Mock",
+                Language = "Mock",
+                PreferredLab = "Mock",
+                ProfessionalSpecialisation = "Mock",
+                Salutation = "Mock",
+                Surname = "Mock",
+                TelephoneNumber = "Mock",
+                UnitLabValues = "Mock",
+                Role = UserRole.MedicalDoctor
+            };
+        }
+        
+        public static User GetMockedUser()
+        {
+            return new User()
+            {
+                Address = "Mock",
+                City = "Mock",
+                ClinicalSetting = ClinicalSetting.SecondaryCare,
+                Country = "Mock",
+                CountryCode = "Mock",
+                Department = "Mock",
+                EMailAdress = "Mock",
+                FirstName = "Mock",
+                Language = "Mock",
+                PreferredLab = "Mock",
+                ProfessionalSpecialisation = "Mock",
+                Salutation = "Mock",
+                Surname = "Mock",
+                TelephoneNumber = "Mock",
+                UnitLabValues = "Mock",
+                Role = UserRole.MedicalDoctor
+            };
+        }
+        
+        public static CreateUserDto GetMockedCreateUserDto()
+        {
+            return new CreateUserDto()
+            {
+                Address = "Mock",
+                City = "Mock",
+                ClinicalSetting = ClinicalSetting.SecondaryCare,
+                Country = "Mock",
+                CountryCode = "Mock",
+                Department = "Mock",
+                EMailAdress = "Mock",
+                FirstName = "Mock",
+                Language = "Mock",
+                PreferredLab = "Mock",
+                ProfessionalSpecialisation = "Mock",
+                Salutation = "Mock",
+                Surname = "Mock",
+                TelephoneNumber = "Mock",
+                UnitLabValues = "Mock",
+            };
+        }
+
+        public static UserIdsRecord GetUserIdInformationRecord() => new()
+        {
+            TenantId = "mock",
+            UserId = "mock",
         };
     }
 }

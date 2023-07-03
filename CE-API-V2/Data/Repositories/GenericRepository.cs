@@ -19,6 +19,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
         _context.SaveChanges();
         return data;
     }
+
     public T GetById(string id)
     {
         return dbSet.Find(id);

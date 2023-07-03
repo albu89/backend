@@ -33,7 +33,7 @@ namespace CE_API_V2.UnitOfWorks
             get
             {
                 if (_scoringRequestRepository == null)
-                    this._scoringRequestRepository = new GenericRepository<ScoringRequest>(_context);
+                    _scoringRequestRepository = new GenericRepository<ScoringRequest>(_context);
     
                 return _scoringRequestRepository;
             }
@@ -44,7 +44,7 @@ namespace CE_API_V2.UnitOfWorks
             get
             {
                 if (_scoringResponseRepository == null)
-                    this._scoringResponseRepository = new GenericRepository<ScoringResponse>(_context);
+                    _scoringResponseRepository = new GenericRepository<ScoringResponse>(_context);
     
                 return _scoringResponseRepository;
             }
@@ -94,7 +94,7 @@ namespace CE_API_V2.UnitOfWorks
     
         public IEnumerable<ScoringHistoryDto>? RetrieveScoringHistoryForUser(string UserId)
         {
-            IEnumerable<ScoringHistoryDto> scoringHistory = null;
+            IEnumerable<ScoringHistoryDto> scoringHistory;
             
             try
             {
@@ -127,13 +127,13 @@ namespace CE_API_V2.UnitOfWorks
             return scoringHistory;
         }
     
-        public ScoringResponse? RetrieveScoringResponse(Guid ScoringRequestId, string UserId)
+        public ScoringResponse? RetrieveScoringResponse(Guid scoringRequestId, string userId)
         {
             ScoringResponse? scoringResponse;
             try
             {
-                scoringResponse = ScoringResponseRepository.Get(x => x.Request.UserId.Equals(UserId) &&
-                    x.RequestId.Equals(ScoringRequestId), null, "Request").FirstOrDefault() ?? null;
+                scoringResponse = ScoringResponseRepository.Get(x => x.Request.UserId.Equals(userId) &&
+                    x.RequestId.Equals(scoringRequestId), null, "Request").FirstOrDefault() ?? null;
             }
             catch (Exception e)
             {

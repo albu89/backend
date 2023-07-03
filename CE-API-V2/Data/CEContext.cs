@@ -9,6 +9,7 @@ namespace CE_API_V2.Data
         public DbSet<ScoringRequest> ScoringRequests { get; set; }
         public DbSet<ScoringResponse> ScoringResponses { get; set; }
         public DbSet<Biomarkers> Biomarkers { get; set; }
+        public DbSet<User> Users { get; set; }
 
         public CEContext() { }
 
@@ -42,6 +43,9 @@ namespace CE_API_V2.Data
                 .Property(r => r.CreatedOn)
                 .HasDefaultValueSql("getdate()");
 
+            modelBuilder.Entity<User>()
+                .Property(u => u.CreatedOn)
+                .HasDefaultValueSql("getdate()");
         }
     }
 }

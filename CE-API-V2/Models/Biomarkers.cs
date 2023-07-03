@@ -45,9 +45,6 @@ public class Biomarkers
     public float Albumin { get; set; }
     public float Leukocytes { get; set; }
     public float Mchc { get; set; }
-    public DateTimeOffset CreatedOn
-    {
-        get;
-    }
+    public DateTimeOffset CreatedOn { get; }
 
 }

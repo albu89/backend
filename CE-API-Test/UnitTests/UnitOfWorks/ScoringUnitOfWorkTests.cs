@@ -1,16 +1,13 @@
 ﻿using AutoMapper;
-using Azure;
-using Azure.Core;
 using CE_API_Test.TestUtilities;
 using CE_API_V2.Data;
 using CE_API_V2.Models;
 using CE_API_V2.Models.Mapping;
-using CE_API_V2.Services;
 using CE_API_V2.Services.Interfaces;
 using CE_API_V2.UnitOfWorks;
 using CE_API_V2.UnitOfWorks.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Moq;
+
 namespace CE_API_Test.UnitTests.UnitOfWorks;
 
 public class ScoringUnitOfWorkTests
