@@ -1,9 +1,7 @@
 ﻿
 using CE_API_V2.Models.DTO;
 using CE_API_V2.Models;
-using CE_API_V2.UnitOfWorks;
 using AutoMapper;
-using CE_API_Test.TestUtilities;
 using CE_API_V2.Data;
 using CE_API_V2.Services.Interfaces;
 using Moq;

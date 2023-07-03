@@ -1,4 +1,5 @@
 ﻿using CE_API_V2.Models;
+
 namespace CE_API_V2.Services.Mocks
 {
     public class ScoringResponseMocker

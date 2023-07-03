@@ -20,7 +20,7 @@ namespace CE_API_V2.Models.Mapping
                 ;
 
             CreateMap<ScoringRequestDto, Biomarkers>()
-                .ForMember(dest => dest.Glucose, opt => opt.MapFrom(src => src.GlocuseFasting))
+                .ForMember(dest => dest.Glucose, opt => opt.MapFrom(src => src.GlucoseFasting))
                 .ForMember(dest => dest.Nicotine, opt => opt.MapFrom(src => src.NicotineConsumption))
                 .ForMember(dest => dest.AceInhibitor, opt => opt.MapFrom(src => src.ACEInhibitor))
                 .ForMember(dest => dest.AlkalinePhosphate, opt => opt.MapFrom(src => src.AlkalinePhosphatase))

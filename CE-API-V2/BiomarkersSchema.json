@@ -61,8 +61,8 @@
         "name": "cm",
         "unitType": "SI",
         "type": "integer",
-        "min": 145,
-        "max": 300,
+        "minimum": 145,
+        "maximum": 300,
         "clinicalSetting": "None"
       }
     ],
@@ -79,8 +79,8 @@
         "name": "kg",
         "unitType": "SI",
         "type": "integer",
-        "min": 30,
-        "max": 300,
+        "minimum": 30,
+        "maximum": 300,
         "clinicalSetting": "None"
       }
     ],
@@ -394,7 +394,7 @@
         "name": "pg/ml",
         "ConversionFactor": 1,
         "unitType": "Conventional",
-        "type": "integer",
+        "type": "float",
         "minimum": 0.01,
         "maximum": 100.0,
         "clinicalSetting": "None"
@@ -527,7 +527,7 @@
         "unitType": "SI",
         "type": "float",
         "minimum": 10.0,
-        "maximum": 2200,
+        "maximum": 2200.0,
         "clinicalSetting": "None"
       },
       {

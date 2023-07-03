@@ -1,11 +1,12 @@
-﻿using System.Data.SqlTypes;
 using CE_API_V2.Models.DTO;
 using CE_API_V2.Services.Interfaces;
+using FluentValidation.Results;
+
 namespace CE_API_V2.Services.Mocks;
 
 public class MockedInputValidationService : IInputValidationService
 {
-    public bool BiomarkersAreValid(object value) => true;
-    public bool ScoringRequestIsValid(ScoringRequestDto value) => true;
+    public ValidationResult ScoringRequestIsValid(ScoringRequestDto value) => new ();
     public bool ValidateUser(CreateUserDto user) => true;
+    public bool BiomarkersAreValid(ScoringRequestDto value) => true;
 }

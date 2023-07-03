@@ -1,12 +1,14 @@
-using AutoMapper;
 using CE_API_V2.Hasher;
-using CE_API_V2.Models;
 using CE_API_V2.Models.DTO;
+using CE_API_V2.Services;
 using CE_API_V2.Services.Interfaces;
 using CE_API_V2.UnitOfWorks;
 using CE_API_V2.UnitOfWorks.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using CE_API_V2.Controllers.Filters;
+using CE_API_V2.Validators;
+using FluentValidation;
 
 namespace CE_API_V2.Controllers;
 
@@ -24,14 +26,15 @@ public class ScoreController : ControllerBase
                            IValueConversionUOW valueConversionUow,
                            IInputValidationService inputValidationService)
     {
+        _inputValidationService = new InputValidationService(new ScoringRequestValidator());
         _hashingUow = patientIdUow;
         _scoringUow = scoringUow;
         _valueConversionUow = valueConversionUow;
-        _inputValidationService = inputValidationService;
     }
 
     [HttpPost]
     [Produces("application/json", Type = typeof(ScoringRequestDto))]
+    [TypeFilter(typeof(ValidationExceptionFilter))]
     public async Task<IActionResult> PostPatientData([FromBody] ScoringRequestDto value)
     {
         var patientId = _hashingUow.HashPatientId(value.FirstName, value.LastName, value.DateOfBirth);
@@ -40,9 +43,10 @@ public class ScoreController : ControllerBase
         value.DateOfBirth = new DateTime();
 
         //POST
-        if (!_inputValidationService.ScoringRequestIsValid(value))
+        var validationResult = _inputValidationService.ScoringRequestIsValid(value);
+        if (!validationResult.IsValid)
         {
-            return BadRequest();
+            throw new ValidationException("Validation failed", validationResult.Errors);
         }
 
         var userId = GetUserId();

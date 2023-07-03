@@ -2,6 +2,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using CE_API_V2.Models.DTO;
+
 namespace CE_API_V2.Utility;
 
 public class BiomarkerValueJsonConverter<T> : JsonConverter<BiomarkerValueDto<T>> where T : struct, IConvertible 

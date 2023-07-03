@@ -27,8 +27,8 @@ public class Biomarkers
     public bool Betablocker { get; set; }
     public bool Diuretic { get; set; }
     public bool OganicNitrate { get; set; }
-    public float SystolicBloodPressure { get; set; }
-    public float DiastolicBloodPressure { get; set; }
+    public int SystolicBloodPressure { get; set; }
+    public int DiastolicBloodPressure { get; set; }
     public PatientDataEnums.RestingEcg RestingECG { get; set; } // Enum
     public float PancreaticAmylase { get; set; }
     public float AlkalinePhosphate { get; set; }

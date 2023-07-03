@@ -6,6 +6,7 @@ using CE_API_V2.Models.DTO;
 using CE_API_V2.Services.Interfaces;
 using CE_API_V2.UnitOfWorks;
 using CE_API_V2.UnitOfWorks.Interfaces;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
@@ -30,7 +31,7 @@ namespace CE_API_Test.UnitTests.Controllers
 
             var mockedResponseTask = Task.FromResult(MockDataProvider.GetMockedScoringResponse());
             inputValidationServiceMock.Setup(x => x.ValidateUser(It.IsAny<CreateUserDto>())).Returns(true);
-            inputValidationServiceMock.Setup(x => x.ScoringRequestIsValid(It.IsAny<ScoringRequestDto>())).Returns(true);
+            inputValidationServiceMock.Setup(x => x.ScoringRequestIsValid(It.IsAny<ScoringRequestDto>())).Returns(new ValidationResult());
 
             SetupMockedScoringUOW(mockedResponseTask);
             requestServiceMock.Setup(x => x.RequestScore(It.IsAny<ScoringRequest>())).Returns(mockedResponseTask);
@@ -50,7 +51,7 @@ namespace CE_API_Test.UnitTests.Controllers
         {
             //Arrange
             var sut = new ScoreController(_scoringUow, _patientHashingUow, _valueConversionUow, _inputValidationService);
-            var mockedBiomarkers = MockDataProvider.GetMockedScoringRequestDto();
+            var mockedBiomarkers = MockDataProvider.CreateValidScoringRequestDto();
 
             //Act
             var result = await sut.PostPatientData(mockedBiomarkers);

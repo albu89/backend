@@ -36,13 +36,13 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
     }
     
     public virtual IEnumerable<T> Get(
-        Expression<Func<T, bool>> filter = null,
-        Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
+        Expression<Func<T, bool>> filter = default,
+        Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = default,
         string includeProperties = "")
     {
         IQueryable<T> query = dbSet;
 
-        if (filter != null)
+        if (filter != default)
         {
             query = query.Where(filter);
         }
@@ -53,7 +53,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
             query = query.Include(includeProperty);
         }
 
-        if (orderBy != null)
+        if (orderBy != default)
         {
             return orderBy(query).ToList();
         }

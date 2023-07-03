@@ -5,7 +5,6 @@ using Moq;
 using System.Security.Claims;
 using AutoMapper;
 using CE_API_V2.Controllers;
-using CE_API_V2.Models;
 using CE_API_V2.Models.DTO;
 using CE_API_V2.Models.Mapping;
 using CE_API_V2.Models.Records;

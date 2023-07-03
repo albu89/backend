@@ -94,7 +94,7 @@ internal class JsonSerializationHelperTests
         AssertNotNull(scoringRequestDto.Diabetes);
         AssertNotNull(scoringRequestDto.DiastolicBloodPressure);
         AssertNotNull(scoringRequestDto.Diuretic);
-        AssertNotNull(scoringRequestDto.GlocuseFasting);
+        AssertNotNull(scoringRequestDto.GlucoseFasting);
         AssertNotNull(scoringRequestDto.Hdl);
         AssertNotNull(scoringRequestDto.Height);
         AssertNotNull(scoringRequestDto.HsTroponinT);

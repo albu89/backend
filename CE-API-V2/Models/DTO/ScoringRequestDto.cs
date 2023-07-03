@@ -68,9 +68,9 @@ namespace CE_API_V2.Models.DTO
 
         #region ClinicalFindigs
         [JsonPropertyName("systolic_bp")]
-        public BiomarkerValueDto<float> SystolicBloodPressure { get; set; } // systolic_bp
+        public BiomarkerValueDto<int> SystolicBloodPressure { get; set; } // systolic_bp
         [JsonPropertyName("diastolic_bp")]
-        public BiomarkerValueDto<float> DiastolicBloodPressure { get; set; } // diastolic_bp
+        public BiomarkerValueDto<int> DiastolicBloodPressure { get; set; } // diastolic_bp
 
         [JsonConverter(typeof(BiomarkerValueJsonConverter<RestingEcg>))]
         [JsonPropertyName("q_wave")]
@@ -90,7 +90,7 @@ namespace CE_API_V2.Models.DTO
 
         #region Diabetes / Blood Sugar
         [JsonPropertyName("glucose")]
-        public BiomarkerValueDto<float> GlocuseFasting { get; set; } // glucose
+        public BiomarkerValueDto<float> GlucoseFasting { get; set; } // glucose
         #endregion
 
         #region Metabolite

@@ -3,6 +3,8 @@ using Azure.Identity;
 using CE_API_V2.Data;
 using CE_API_V2.Hasher;
 using CE_API_V2.Models.Mapping;
+using System.Text.Json;
+using CE_API_V2.Models.DTO;
 using CE_API_V2.Services;
 using CE_API_V2.Services.Interfaces;
 using CE_API_V2.UnitOfWorks;
@@ -11,8 +13,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
 using Microsoft.OpenApi.Models;
-using System.Text.Json;
 using CE_API_V2.Services.Mocks;
+using CE_API_V2.Validators;
+using FluentValidation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -60,6 +63,7 @@ builder.Services.AddSingleton(mapper);
 #region UOW
 
 builder.Services.AddScoped<IBiomarkersTemplateService, BiomarkersTemplateService>();
+builder.Services.AddScoped<IValidator<ScoringRequestDto>,ScoringRequestValidator>();
 builder.Services.AddScoped<IPatientIdHashingUOW, PatientIdHashingUOW>();
 builder.Services.AddScoped<IScoringUOW, ScoringUOW>();
 builder.Services.AddScoped<IPatientIdHashingUOW, PatientIdHashingUOW>();
@@ -68,6 +72,11 @@ builder.Services.AddScoped<IUserUOW, UserUOW>();
 builder.Services.AddScoped<IInputValidationService, MockedInputValidationService>();
 builder.Services.AddScoped<IUserInformationExtractor, UserInformationExtractor>();
 
+#endregion
+
+#region Validation
+
+builder.Services.AddSingleton(new ScoringRequestValidator());
 #endregion
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

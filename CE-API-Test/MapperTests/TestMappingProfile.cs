@@ -32,7 +32,7 @@ public class TestMappingProfile
         request.Biomarkers.Cholesterol.Should().Be(dto.Cholesterol.Value);
         request.Biomarkers.Diabetes.Should().Be(dto.Diabetes.Value);
         request.Biomarkers.Diuretic.Should().Be(dto.Diuretic.Value);
-        request.Biomarkers.Glucose.Should().Be(dto.GlocuseFasting.Value);
+        request.Biomarkers.Glucose.Should().Be(dto.GlucoseFasting.Value);
         request.Biomarkers.Hdl.Should().Be(dto.Hdl.Value);
         request.Biomarkers.Height.Should().Be(dto.Height.Value);
         request.Biomarkers.HsTroponinT.Should().Be(dto.HsTroponinT.Value);

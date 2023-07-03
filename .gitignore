@@ -21,6 +21,14 @@
 **/.idea/**/contentModel.xml
 **/.idea/**/modules.xml
 
+# Sonarlint
+**/.idea/sonarlint
+
+# Vim files
+*.swp
+*.un~
+*.*~
+
 *.suo
 *.user
 *.patch
