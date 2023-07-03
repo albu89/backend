@@ -1,9 +1,12 @@
-using System.Security.Claims;
+using AutoMapper;
+using CE_API_V2.Hasher;
+using CE_API_V2.Models;
 using CE_API_V2.Models.DTO;
 using CE_API_V2.Services.Interfaces;
 using CE_API_V2.UnitOfWorks;
 using CE_API_V2.UnitOfWorks.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace CE_API_V2.Controllers;
 
@@ -12,8 +15,8 @@ namespace CE_API_V2.Controllers;
 public class ScoreController : ControllerBase
 {
     private readonly IInputValidationService _inputValidationService;
+    private readonly IPatientIdHashingUOW _hashingUow;
     private readonly IScoringUOW _scoringUow;
-    private readonly IPatientIdHashingUOW _patientIdUow;
     private readonly IValueConversionUOW _valueConversionUow;
 
     public ScoreController(IScoringUOW scoringUow,
@@ -21,8 +24,8 @@ public class ScoreController : ControllerBase
                            IValueConversionUOW valueConversionUow,
                            IInputValidationService inputValidationService)
     {
+        _hashingUow = patientIdUow;
         _scoringUow = scoringUow;
-        _patientIdUow = patientIdUow;
         _valueConversionUow = valueConversionUow;
         _inputValidationService = inputValidationService;
     }
@@ -31,11 +34,10 @@ public class ScoreController : ControllerBase
     [Produces("application/json", Type = typeof(ScoringRequestDto))]
     public async Task<IActionResult> PostPatientData([FromBody] ScoringRequestDto value)
     {
-        var patientId = _patientIdUow.GeneratePatientId(value.Firstname, value.Lastname, value.DateOfBirth);
-
-        _ = value.Firstname;
-        _ = value.Lastname;
-        _ = value.DateOfBirth;
+        var patientId = _hashingUow.HashPatientId(value.FirstName, value.LastName, value.DateOfBirth);
+        value.FirstName = null;
+        value.LastName = null;
+        value.DateOfBirth = new DateTime();
 
         //POST
         if (!_inputValidationService.ScoringRequestIsValid(value))
@@ -83,8 +85,12 @@ public class ScoreController : ControllerBase
 
     private IEnumerable<ScoringHistoryDto> GetScoringRequestList(string name, string lastname, DateTimeOffset dateOfBirth)
     {
+        var patientId = _hashingUow.HashPatientId(name, lastname, dateOfBirth);
+        // Immediately dereference the values once used
+        name = null;
+        lastname = null;
+        dateOfBirth = new DateTimeOffset();
         var userId = GetUserId();
-        var patientId = _patientIdUow.GeneratePatientId(name, lastname, dateOfBirth);
 
         return _scoringUow.RetrieveScoringHistoryForPatient(patientId, userId);
     }

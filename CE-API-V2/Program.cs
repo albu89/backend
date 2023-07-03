@@ -1,5 +1,7 @@
 using AutoMapper;
+using Azure.Identity;
 using CE_API_V2.Data;
+using CE_API_V2.Hasher;
 using CE_API_V2.Models.Mapping;
 using CE_API_V2.Services;
 using CE_API_V2.Services.Interfaces;
@@ -14,6 +16,8 @@ using CE_API_V2.Services.Mocks;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+
 // Add services to the container.
 var config = new ConfigurationBuilder()
     .SetBasePath(Directory.GetCurrentDirectory())
@@ -23,6 +27,16 @@ var config = new ConfigurationBuilder()
     .Build();
 var allowSpecificOrigins = "AllowSpecific";
 var azureAdSection = config.GetSection("Azure:AD");
+
+if(builder.Environment.IsProduction())
+{
+    var keyVaultEndpoint = config["Azure:KeyVaultEndpoint"];
+
+    if (!string.IsNullOrEmpty(keyVaultEndpoint))
+    {
+        builder.Configuration.AddAzureKeyVault(new Uri(keyVaultEndpoint), new DefaultAzureCredential()).Build();
+    }
+}
 
 #region SQL
 
@@ -48,6 +62,7 @@ builder.Services.AddSingleton(mapper);
 builder.Services.AddScoped<IBiomarkersTemplateService, BiomarkersTemplateService>();
 builder.Services.AddScoped<IPatientIdHashingUOW, PatientIdHashingUOW>();
 builder.Services.AddScoped<IScoringUOW, ScoringUOW>();
+builder.Services.AddScoped<IPatientIdHashingUOW, PatientIdHashingUOW>();
 builder.Services.AddScoped<IValueConversionUOW, ValueConversionUOW>();
 builder.Services.AddScoped<IUserUOW, UserUOW>();
 builder.Services.AddScoped<IInputValidationService, MockedInputValidationService>();

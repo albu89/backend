@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using CE_API_V2.Hasher;
 using CE_API_V2.Models;
 using CE_API_V2.Models.DTO;
 using CE_API_V2.UnitOfWorks;
+using Microsoft.Extensions.Configuration;
 using Moq;
 
 namespace CE_API_Test.UnitTests.UnitsOfWork
@@ -10,13 +12,23 @@ namespace CE_API_Test.UnitTests.UnitsOfWork
     public class ValueConversionUOWTests
     {
         private IMapper _mapper;
+        private IConfiguration _config;
 
         [SetUp]
         public void SetUp()
         {
+            var testConfig = new Dictionary<string, string>()
+            {
+                { "Salt", "ABCDEF" }
+            };
+
+            _config = new ConfigurationBuilder()
+                .AddInMemoryCollection(testConfig)
+                .Build();
+            
             var mapperMock = new Mock<IMapper>();
             mapperMock.Setup(x => x.Map<ScoringRequest>(It.IsAny<ScoringRequestDto>())).Returns(new ScoringRequest());
-
+            
             _mapper = mapperMock.Object;
         }
 
@@ -25,10 +37,10 @@ namespace CE_API_Test.UnitTests.UnitsOfWork
         public void ConvertToScoringRequest_GivenCorrectParameters_ExpectedObjectWithCorrectUserIdAndPatientId()
         {
             //Arrange
-            var patientIdHashingUow = new PatientIdHashingUOW();   
+            var patientIdHashingUow = new PatientIdHashingUOW(_config);   
             var scoringRequestDto = new ScoringRequestDto();
             var userId = "anonymous";
-            var patientId = patientIdHashingUow.GeneratePatientId("mock", "mock", DateTime.Now);
+            var patientId = patientIdHashingUow.HashPatientId("mock", "mock", DateTime.Now);
             
 
             var sut = new ValueConversionUOW(_mapper);

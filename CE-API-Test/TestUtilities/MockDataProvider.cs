@@ -28,6 +28,9 @@ namespace CE_API_Test.TestUtilities
         {
             return new ScoringRequestDto()
             {
+                FirstName = "FirstName",
+                LastName = "LastName",
+                DateOfBirth = DateTime.UtcNow,
                 Age = new BiomarkerValueDto<int>() { Value = 20 },
                 ACEInhibitor = new BiomarkerValueDto<bool>() { Value = true },
                 Alat = new BiomarkerValueDto<float>() { Value = 2.0f },

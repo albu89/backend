@@ -117,7 +117,7 @@ namespace CE_API_V2.UnitOfWorks
             try
             {
                 var scoringRequests = ScoringRequestRepository.Get(x => x.UserId.Equals(UserId) &&
-                                                                             x.PatientId.Equals(PatientId)).ToList();
+                                                                             x.PatientId.Equals(PatientId), null, "Response").ToList();
                 scoringHistory = _mapper.Map<List<ScoringHistoryDto>>(scoringRequests);
             }
             catch (Exception e)
