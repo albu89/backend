@@ -13,6 +13,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
 using Microsoft.OpenApi.Models;
+using System.Text.Json;
+using CE_API_V2.Services.Mocks;
 using CE_API_V2.Services.Mocks;
 using CE_API_V2.Validators;
 using FluentValidation;
@@ -71,6 +73,10 @@ builder.Services.AddScoped<IValueConversionUOW, ValueConversionUOW>();
 builder.Services.AddScoped<IUserUOW, UserUOW>();
 builder.Services.AddScoped<IInputValidationService, MockedInputValidationService>();
 builder.Services.AddScoped<IUserInformationExtractor, UserInformationExtractor>();
+builder.Services.AddScoped<ICommunicationService, CommunicationService>();
+builder.Services.AddScoped<IEmailTemplateProvider, EmailTemplateProvider>();
+builder.Services.AddScoped<IEmailBuilder, EmailBuilder>();
+builder.Services.AddScoped<IEmailClientService, EmailClientService>();
 
 #endregion
 

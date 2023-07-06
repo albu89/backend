@@ -41,13 +41,5 @@ namespace CE_API_Test.UnitTests.UnitsOfWork
             //    //Assert
             //    Assert.True(true);
         }
-
-        //ScoringRequest StoreScoringRequest(ScoringRequest storingRequest, string UserId);
-        //ScoringRequest RetrieveScoringRequest(string ScoringRequestId, string userId);
-        //ScoringResponse StoreScoringResponse(ScoringResponse scoringResponse);
-        //IEnumerable<ScoringHistoryDto>? RetrieveScoringHistoryForUser(string UserId);
-        //IEnumerable<ScoringHistoryDto> RetrieveScoringHistoryForPatient(string PatientId, string UserId);
-        //ScoringResponse RetrieveScoringResponse(string ScoringRequestId, string UserId);
-        //Task<ScoringResponse> ProcessScoringRequest(ScoringRequest scoringRequestDto, string userId, string patientId);
     }
 }

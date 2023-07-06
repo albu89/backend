@@ -6,4 +6,5 @@ public interface IInputValidationService
 {
     public ValidationResult ScoringRequestIsValid(ScoringRequestDto value);
     public bool ValidateUser(CreateUserDto user);
+    public bool ValidateAccessRequest(AccessRequestDto user);
 }

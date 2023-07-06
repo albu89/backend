@@ -331,8 +331,21 @@ namespace CE_API_Test.TestUtilities
 
         public static UserIdsRecord GetUserIdInformationRecord() => new()
         {
-            TenantId = "mock",
-            UserId = "mock",
+            TenantId = "MockedTenantId",
+            UserId = "MockedUserId",
         };
+        
+        public static AccessRequestDto GetMockedAccessRequestDto()
+        {
+            return new AccessRequestDto()
+            {
+                EmailAddress = "MockedAddress",
+                FirstName = "MockedFirstName",
+                Surname = "MockedSurname",
+                PhoneNumber = "MockedNumber"
+            };
+        }
+
+        public static string GetHtmlBodyMock() => "New user tried to register their account: email: {{{EmailAddress}}} ({{{FirstName}}} {{{LastName}}}, {{{PhoneNumber}}})<br/><br/> With kind regards<br/> Exploris Health";
     }
 }

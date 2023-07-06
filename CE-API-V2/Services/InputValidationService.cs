@@ -21,5 +21,10 @@ namespace CE_API_V2.Services
         {
             return true;
         }
+
+        public bool ValidateAccessRequest(AccessRequestDto user)
+        {
+            return true;
+        }
     }
 }

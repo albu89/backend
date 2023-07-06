@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using CE_API_V2.Models.DTO;
 using CE_API_V2.UnitOfWorks.Interfaces;
+using Azure.Communication.Email;
 
 namespace CE_API_V2.Controllers
 {
@@ -45,8 +46,22 @@ namespace CE_API_V2.Controllers
             }
 
             var storedUser = await _userUow.StoreUser(userDto, idInformation); //Todo: Statusmeldung?
-            
+
             return Ok(_mapper.Map<UserDto>(storedUser));
+        }
+
+        [HttpPost("request")]
+        [Authorize]
+        public async Task<IActionResult> RequestAccess([FromBody] AccessRequestDto accessDto)
+        {
+            if (!_inputValidationService.ValidateAccessRequest(accessDto))
+            {
+                return BadRequest();
+            };
+
+            EmailSendStatus requestStatus = await _userUow.ProcessAccessRequest(accessDto);
+
+            return requestStatus.Equals(EmailSendStatus.Succeeded) ? Ok() : BadRequest();
         }
     }
 }

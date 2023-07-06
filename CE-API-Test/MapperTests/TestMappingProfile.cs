@@ -82,7 +82,6 @@ public class TestMappingProfile
         user.CountryCode.Should().Be("Mock");
         user.Country.Should().Be("Mock");
         user.TelephoneNumber.Should().Be("Mock");
-        user.EMailAdress.Should().Be("Mock");
         user.Language.Should().Be("Mock");
         user.UnitLabValues.Should().Be("Mock");
         user.ClinicalSetting.Should().Be(ClinicalSetting.SecondaryCare);

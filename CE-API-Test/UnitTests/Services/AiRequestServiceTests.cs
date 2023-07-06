@@ -6,7 +6,6 @@ namespace CE_API_Test.UnitTests.Services
 {
     [TestFixture]
     public class AiRequestServiceTests
-
     {
         private IAiRequestService _sut;
         private ScoringRequest _scoringRequest;
@@ -17,10 +16,9 @@ namespace CE_API_Test.UnitTests.Services
             _sut = MockServiceProvider.GenerateAiRequestService();
             _scoringRequest = MockDataProvider.GetMockedScoringRequest();
         }
-       
-
+    
         [Test]
-        public async Task PostPatientData_GivenMockedDto_ReturnOkResult()
+        public async Task RequestScore_GivenMockedScoringRequest_ReturnsScoringResponse()
         {
             //Arrange
             _scoringRequest = MockDataProvider.GetMockedScoringRequest();

@@ -9,4 +9,5 @@ public class MockedInputValidationService : IInputValidationService
     public ValidationResult ScoringRequestIsValid(ScoringRequestDto value) => new ();
     public bool ValidateUser(CreateUserDto user) => true;
     public bool BiomarkersAreValid(ScoringRequestDto value) => true;
+    public bool ValidateAccessRequest(AccessRequestDto user) => true;
 }

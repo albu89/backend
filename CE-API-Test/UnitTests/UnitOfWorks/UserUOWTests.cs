@@ -11,6 +11,7 @@ using CE_API_V2.Data;
 using CE_API_V2.Models.Mapping;
 using Microsoft.EntityFrameworkCore;
 using CE_API_V2.Models.Records;
+using Azure.Communication.Email;
 
 namespace CE_API_Test.UnitTests.UnitOfWorks
 {
@@ -22,6 +23,7 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
         private IUserInformationExtractor _userInformationExtractor;
         private IMapper _mapper;
         private CEContext _ceContext;
+        private ICommunicationService _communicationService;
 
         [SetUp]
         public void SetUp()
@@ -33,10 +35,16 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
             inputValidationServiceMock.Setup(x => x.ValidateUser(It.IsAny<CreateUserDto>())).Returns(true);
             userUOWMock.Setup(x => x.StoreUser(It.IsAny<CreateUserDto>(), It.IsAny<UserIdsRecord>())).Returns(Task.FromResult(new User()));
             userInfoExtractorMock.Setup(x => x.GetUserIdInformation(It.IsAny<ClaimsPrincipal>())).Returns(new UserIdsRecord());
+            var communicationService = new Mock<ICommunicationService>();
+            userInfoExtractorMock.Setup(x 
+                => x.GetUserIdInformation(It.IsAny<ClaimsPrincipal>())).Returns(new UserIdsRecord());
+            communicationService.Setup(x 
+                => x.SendAccessRequest(It.IsAny<AccessRequestDto>())).Returns(Task.FromResult(EmailSendStatus.Succeeded));
 
             _inputValidationService = inputValidationServiceMock.Object;
             _userUOW = userUOWMock.Object;
             _userInformationExtractor = userInfoExtractorMock.Object;
+            _communicationService = communicationService.Object;
 
             var options = new DbContextOptionsBuilder<CEContext>()
                 .UseInMemoryDatabase(databaseName: "CEDatabase")
@@ -56,16 +64,32 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
         public async Task CreatedUser_GivenMockedUserDto_ReturnOkResult()
         {
             //Arrange
-            var sut = new UserUOW(_ceContext, _mapper);
+            var sut = new UserUOW(_ceContext, _mapper, _communicationService);
             var userDto = MockDataProvider.GetMockedCreateUserDto();
             var userIdInfoRecord = MockDataProvider.GetUserIdInformationRecord();
 
             //Act
-            var result = sut.StoreUser(userDto, userIdInfoRecord);
+            var result = await sut.StoreUser(userDto, userIdInfoRecord);
 
             //Assert
             result.Should().NotBeNull();
+            result.TenantID.Should().Be("MockedTenantId");
+            result.UserId.Should().Be("MockedUserId");
         }
 
+        [Test]
+        public async Task ProcessCreationRequest_GivenMockedAccessDto_ReturnOkResult()
+        {
+            //Arrange
+            var sut = new UserUOW(_ceContext, _mapper, _communicationService);
+            var accessDto = MockDataProvider.GetMockedAccessRequestDto();
+
+            //Act
+            var result = await sut.ProcessAccessRequest(accessDto);
+
+            //Assert
+            result.Should().NotBeNull();
+            result.Should().Be(EmailSendStatus.Succeeded);
+        }
     }
 }
