@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using CE_API_V2.Models.DTO;
 using CE_API_V2.UnitOfWorks.Interfaces;
 using Azure.Communication.Email;
+using CE_API_V2.Utility;
 
 namespace CE_API_V2.Controllers
 {
@@ -16,16 +17,19 @@ namespace CE_API_V2.Controllers
         private readonly IUserUOW _userUow;
         private readonly IUserInformationExtractor _userInformationExtractor;
         private readonly IMapper _mapper;
+        private readonly UserHelper _userHelper;
         
         public UserController(IInputValidationService inputValidationService, 
                               IUserUOW userUow,
                               IUserInformationExtractor userInformationExtractor,
-                              IMapper mapper)
+                              IMapper mapper,
+                              UserHelper userHelper)
         {
             _inputValidationService = inputValidationService;
             _userUow = userUow;
             _userInformationExtractor = userInformationExtractor;
             _mapper = mapper;
+            _userHelper = userHelper;
         }
 
         [HttpPost("me")] 
@@ -35,19 +39,21 @@ namespace CE_API_V2.Controllers
             if (!_inputValidationService.ValidateUser(userDto))
             {
                 return BadRequest();
-            };
+            }
 
             var idInformation = _userInformationExtractor.GetUserIdInformation(User);
 
             if (idInformation.UserId.Equals("") ||
-                idInformation.UserId.Equals("anonymous")) //Todo: Further validation required?
+                idInformation.UserId.Equals("anonymous"))
             { 
                 return BadRequest();
             }
 
-            var storedUser = await _userUow.StoreUser(userDto, idInformation); //Todo: Statusmeldung?
+            var user = _userHelper.MapToUserModel(userDto, idInformation);
 
-            return Ok(_mapper.Map<UserDto>(storedUser));
+            var storedUser = await _userUow.StoreUser(user);
+
+            return storedUser is not null ? Ok(_mapper.Map<UserDto>(storedUser)) : BadRequest();
         }
 
         [HttpPost("request")]
@@ -63,5 +69,21 @@ namespace CE_API_V2.Controllers
 
             return requestStatus.Equals(EmailSendStatus.Succeeded) ? Ok() : BadRequest();
         }
+
+
+        [HttpGet("me")]
+        [Authorize]
+        public async Task<IActionResult> GetCurrentUser()
+        {
+            var idInformation = _userInformationExtractor.GetUserIdInformation(User);
+            var userId = idInformation.UserId;
+
+            var currentUser = _userUow.GetUser(userId);
+            
+            var userDto = _mapper.Map<UserDto>(currentUser);
+
+            return currentUser is not null ? Ok(userDto) : BadRequest();
+        }
+        
     }
 }

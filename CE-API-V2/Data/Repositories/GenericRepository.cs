@@ -16,7 +16,6 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
     public T Insert(T data)
     {
         _context.Set<T>().Add(data);
-        _context.SaveChanges();
         return data;
     }
 

@@ -13,9 +13,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
 using Microsoft.OpenApi.Models;
-using System.Text.Json;
 using CE_API_V2.Services.Mocks;
-using CE_API_V2.Services.Mocks;
+using CE_API_V2.Utility;
 using CE_API_V2.Validators;
 using FluentValidation;
 
@@ -60,6 +59,8 @@ var mapperConfig = new MapperConfiguration(mc =>
 IMapper mapper = mapperConfig.CreateMapper();
 builder.Services.AddSingleton(mapper);
 
+builder.Services.AddSingleton<UserHelper>();
+
 #endregion
 
 #region UOW
@@ -84,6 +85,8 @@ builder.Services.AddScoped<IEmailClientService, EmailClientService>();
 
 builder.Services.AddSingleton(new ScoringRequestValidator());
 #endregion
+
+builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddMicrosoftIdentityWebApi(azureAdSection);

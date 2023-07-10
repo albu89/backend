@@ -10,5 +10,6 @@ public interface IUserUOW
 {
     public IGenericRepository<User> UserRepository { get; }
     public Task<EmailSendStatus> ProcessAccessRequest(AccessRequestDto userDto);
-    public Task<User> StoreUser(CreateUserDto user, UserIdsRecord userIds);
+    public Task<User> StoreUser(User user);
+    public User GetUser(string userId);
 }

@@ -21,7 +21,6 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
         private IInputValidationService _inputValidationService;
         private IUserUOW _userUOW;
         private IUserInformationExtractor _userInformationExtractor;
-        private IMapper _mapper;
         private CEContext _ceContext;
         private ICommunicationService _communicationService;
 
@@ -33,7 +32,7 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
             var userInfoExtractorMock = new Mock<IUserInformationExtractor>();
 
             inputValidationServiceMock.Setup(x => x.ValidateUser(It.IsAny<CreateUserDto>())).Returns(true);
-            userUOWMock.Setup(x => x.StoreUser(It.IsAny<CreateUserDto>(), It.IsAny<UserIdsRecord>())).Returns(Task.FromResult(new User()));
+            userUOWMock.Setup(x => x.StoreUser(It.IsAny<User>())).Returns(Task.FromResult(new User()));
             userInfoExtractorMock.Setup(x => x.GetUserIdInformation(It.IsAny<ClaimsPrincipal>())).Returns(new UserIdsRecord());
             var communicationService = new Mock<ICommunicationService>();
             userInfoExtractorMock.Setup(x 
@@ -54,8 +53,6 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
             {
                 mc.AddProfile(new MappingProfile());
             });
-
-            _mapper = mapperConfig.CreateMapper();
             _ceContext = new CEContext(options);
         }
 
@@ -64,24 +61,27 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
         public async Task CreatedUser_GivenMockedUserDto_ReturnOkResult()
         {
             //Arrange
-            var sut = new UserUOW(_ceContext, _mapper, _communicationService);
-            var userDto = MockDataProvider.GetMockedCreateUserDto();
+            var sut = new UserUOW(_ceContext, _communicationService);
+            var user = MockDataProvider.GetMockedUser();
             var userIdInfoRecord = MockDataProvider.GetUserIdInformationRecord();
 
+            user.UserId = userIdInfoRecord.UserId;
+            user.TenantID = userIdInfoRecord.TenantId;
+            
             //Act
-            var result = await sut.StoreUser(userDto, userIdInfoRecord);
+            var result = await sut.StoreUser(user);
 
             //Assert
             result.Should().NotBeNull();
-            result.TenantID.Should().Be("MockedTenantId");
-            result.UserId.Should().Be("MockedUserId");
+            result.TenantID.Should().Be(userIdInfoRecord.TenantId);
+            result.UserId.Should().Be(userIdInfoRecord.UserId);
         }
 
         [Test]
         public async Task ProcessCreationRequest_GivenMockedAccessDto_ReturnOkResult()
         {
             //Arrange
-            var sut = new UserUOW(_ceContext, _mapper, _communicationService);
+            var sut = new UserUOW(_ceContext, _communicationService);
             var accessDto = MockDataProvider.GetMockedAccessRequestDto();
 
             //Act
@@ -90,6 +90,29 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
             //Assert
             result.Should().NotBeNull();
             result.Should().Be(EmailSendStatus.Succeeded);
+        }
+
+        [Test]
+        public void GetUser_GivenId_ExpectedReturnedUser()
+        {
+            //Arrange
+            var mockedUser = MockDataProvider.GetMockedUser();
+            var mockIds = MockDataProvider.GetUserIdInformationRecord();
+            var userId = mockIds.UserId + 5674;
+            mockedUser.UserId = userId;
+            mockedUser.TenantID = mockIds.TenantId;
+                
+            _ceContext.Users.Add(mockedUser);
+            _ceContext.SaveChanges();
+
+            var sut = new UserUOW(_ceContext, _communicationService);
+            
+            //Act
+            var returnedUser = sut.GetUser(userId);
+
+            //Assert
+            returnedUser.Should().NotBeNull();
+            returnedUser.Should().BeEquivalentTo(mockedUser);
         }
     }
 }

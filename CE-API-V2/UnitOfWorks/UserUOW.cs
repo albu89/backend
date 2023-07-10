@@ -16,22 +16,19 @@ namespace CE_API_V2.UnitOfWorks
     {
         private readonly CEContext _context;
         private readonly IGenericRepository<User> _userRepository;
-        private readonly IMapper _mapper;
-        private ICommunicationService _comunicationService;
+        private readonly ICommunicationService _communicationService;
 
-        public UserUOW(CEContext context, IMapper mapper, ICommunicationService comunicationService)
+        public UserUOW(CEContext context, ICommunicationService communicationService)
         {
             _context = context;
             _userRepository = new GenericRepository<User>(_context);
-            _mapper = mapper;
-            _comunicationService = comunicationService;
+            _communicationService = communicationService;
         }
 
         public IGenericRepository<User> UserRepository => _userRepository;
 
-        public async Task<User> StoreUser(CreateUserDto userDto, UserIdsRecord userInformation)
+        public async Task<User> StoreUser(User user)
         {
-            var user = MapToUserModel(userDto, userInformation);
             var storedUser = _userRepository.GetById(user.UserId);
             if (storedUser != null)
             {
@@ -48,22 +45,19 @@ namespace CE_API_V2.UnitOfWorks
                 throw new NotImplementedException();
             }
 
-            storedUser = UserRepository.GetById(userInformation.UserId);
+            storedUser = UserRepository.GetById(user.UserId);
 
             return storedUser;
         }
-        
-        public async Task<EmailSendStatus> ProcessAccessRequest(AccessRequestDto accessDto)
-            => await _comunicationService.SendAccessRequest(accessDto);
 
-        private User MapToUserModel(CreateUserDto userDto, UserIdsRecord userInformation)
+        public User GetUser(string userId)
         {
-            var user = _mapper.Map<CreateUserDto, User>(userDto); 
-            user.Role = UserRole.MedicalDoctor; 
-            user.UserId = userInformation.UserId;
-            user.TenantID = userInformation.TenantId;
+            var user = UserRepository.GetById(userId);
 
             return user;
         }
+
+        public async Task<EmailSendStatus> ProcessAccessRequest(AccessRequestDto accessDto)
+            => await _communicationService.SendAccessRequest(accessDto);
     }
 }

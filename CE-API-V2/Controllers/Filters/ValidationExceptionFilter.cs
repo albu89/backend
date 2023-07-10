@@ -1,6 +1,5 @@
 ﻿using CE_API_V2.Models.DTO;
 using CE_API_V2.Services.Interfaces;
-using CE_API_V2.Utility;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;

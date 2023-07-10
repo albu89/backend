@@ -1,8 +1,10 @@
-﻿using CE_API_Test.TestUtilities;
+﻿using AutoMapper;
+using CE_API_Test.TestUtilities;
 using CE_API_V2.Controllers;
 using CE_API_V2.Hasher;
 using CE_API_V2.Models;
 using CE_API_V2.Models.DTO;
+using CE_API_V2.Models.Mapping;
 using CE_API_V2.Services.Interfaces;
 using CE_API_V2.UnitOfWorks;
 using CE_API_V2.UnitOfWorks.Interfaces;
@@ -20,10 +22,18 @@ namespace CE_API_Test.UnitTests.Controllers
         private IValueConversionUOW _valueConversionUow;
         private IPatientIdHashingUOW _patientHashingUow;
         private IInputValidationService _inputValidationService;
+        private IMapper _mapper;
 
         [SetUp]
         public void SetUp()
         {
+            var mapperConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new MappingProfile());
+            });
+
+            _mapper = mapperConfig.CreateMapper();
+            
             var requestServiceMock = new Mock<IAiRequestService>();
             var mockedScoringRequest = MockDataProvider.GetMockedScoringRequest();
             var valueConversionUow = new Mock<IValueConversionUOW>();
@@ -50,7 +60,7 @@ namespace CE_API_Test.UnitTests.Controllers
         public async Task PostPatientData_GivenMockedDto_ReturnOkResult()
         {
             //Arrange
-            var sut = new ScoreController(_scoringUow, _patientHashingUow, _valueConversionUow, _inputValidationService);
+            var sut = new ScoreController(_scoringUow, _patientHashingUow, _valueConversionUow, _inputValidationService, _mapper);
             var mockedBiomarkers = MockDataProvider.CreateValidScoringRequestDto();
 
             //Act
@@ -62,7 +72,7 @@ namespace CE_API_Test.UnitTests.Controllers
 
             var okResult = result as OkObjectResult;
             okResult?.StatusCode.Should().Be(200);
-            okResult?.Value.Should().BeOfType(typeof(ScoringResponse));
+            okResult?.Value.Should().BeOfType(typeof(ScoringResponseDto));
         }
 
         [Test]
@@ -130,7 +140,7 @@ namespace CE_API_Test.UnitTests.Controllers
 
             _scoringUow = scoringUowMock.Object;
 
-            var sut = new ScoreController(_scoringUow, _patientHashingUow, _valueConversionUow, _inputValidationService);
+            var sut = new ScoreController(_scoringUow, _patientHashingUow, _valueConversionUow, _inputValidationService, _mapper);
             ////Act
             var result = sut.GetScoringRequest(name, lastname, dateOfBirth, requestId);
 
@@ -171,7 +181,7 @@ namespace CE_API_Test.UnitTests.Controllers
                 .Returns(scoringHistoryMock);
             _scoringUow = scoringUowMock.Object;
 
-            var sut = new ScoreController(_scoringUow, _patientHashingUow, _valueConversionUow, _inputValidationService);
+            var sut = new ScoreController(_scoringUow, _patientHashingUow, _valueConversionUow, _inputValidationService, _mapper);
             ////Act
             var result = sut.GetScoringRequest(name, lastname, dateOfBirth, testGuid);
 
@@ -187,7 +197,7 @@ namespace CE_API_Test.UnitTests.Controllers
         public async Task GetScoringRequestsParameterless_WithoutParameters_ReturnOkRequestResult()
         {
             //Arrange
-            var sut = new ScoreController(_scoringUow, _patientHashingUow, _valueConversionUow, _inputValidationService);
+            var sut = new ScoreController(_scoringUow, _patientHashingUow, _valueConversionUow, _inputValidationService, _mapper);
 
             ////Act
             var result = sut.GetScoringRequests();
@@ -208,7 +218,7 @@ namespace CE_API_Test.UnitTests.Controllers
             string lastname = "lastname";
             DateTime dateOfBirth = new DateTime(2000, 1, 1);
 
-            var sut = new ScoreController(_scoringUow, _patientHashingUow, _valueConversionUow, _inputValidationService);
+            var sut = new ScoreController(_scoringUow, _patientHashingUow, _valueConversionUow, _inputValidationService, _mapper);
 
             ////Act
             var result = sut.GetScoringRequests(name, lastname, dateOfBirth);

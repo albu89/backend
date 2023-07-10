@@ -6,9 +6,11 @@ using CE_API_V2.UnitOfWorks;
 using CE_API_V2.UnitOfWorks.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using AutoMapper;
 using CE_API_V2.Controllers.Filters;
 using CE_API_V2.Validators;
 using FluentValidation;
+using FluentValidation.Results;
 
 namespace CE_API_V2.Controllers;
 
@@ -20,20 +22,28 @@ public class ScoreController : ControllerBase
     private readonly IPatientIdHashingUOW _hashingUow;
     private readonly IScoringUOW _scoringUow;
     private readonly IValueConversionUOW _valueConversionUow;
+    private readonly IMapper _mapper;
 
     public ScoreController(IScoringUOW scoringUow,
                            IPatientIdHashingUOW patientIdUow,
                            IValueConversionUOW valueConversionUow,
-                           IInputValidationService inputValidationService)
+                           IInputValidationService inputValidationService,
+                           IMapper mapper)
     {
         _inputValidationService = new InputValidationService(new ScoringRequestValidator());
         _hashingUow = patientIdUow;
         _scoringUow = scoringUow;
         _valueConversionUow = valueConversionUow;
+        _mapper = mapper;
     }
 
+    /// <summary>
+    ///  Requests a CAD-Score for a specific set of Biomarkers and Patient information.
+    /// </summary>
     [HttpPost]
-    [Produces("application/json", Type = typeof(ScoringRequestDto))]
+    [Produces("application/json", Type = typeof(ScoringResponseDto))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type=typeof(IEnumerable<ValidationFailure>))]
     [TypeFilter(typeof(ValidationExceptionFilter))]
     public async Task<IActionResult> PostPatientData([FromBody] ScoringRequestDto value)
     {
@@ -54,8 +64,9 @@ public class ScoreController : ControllerBase
         var scoringRequest = _valueConversionUow.ConvertToScoringRequest(value, userId, patientId);
                             
         var requestedScore = await _scoringUow.ProcessScoringRequest(scoringRequest, userId, patientId);
-
-        return requestedScore is null ? BadRequest() : Ok(requestedScore);
+        var scoringResponseDto = _mapper.Map<ScoringResponseDto>(requestedScore);
+        
+        return requestedScore is null ? BadRequest() : Ok(scoringResponseDto);
     }
 
     [HttpGet]
