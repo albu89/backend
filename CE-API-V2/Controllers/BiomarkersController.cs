@@ -1,4 +1,5 @@
-﻿using CE_API_V2.Models.DTO;
+﻿using CE_API_V2.Constants;
+using CE_API_V2.Models.DTO;
 using CE_API_V2.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,9 +20,13 @@ namespace CE_API_V2.Controllers
 
         [HttpGet("schema")]
         [Produces("application/json", Type = typeof(IEnumerable<BiomarkerSchemaDto>))]
-        public async Task<IActionResult> GetInputFormTemplate()
+        public async Task<IActionResult> GetInputFormTemplate(string? locale = null)
         {
-            var template = await _biomarkersTemplateService.GetTemplate();
+            if (string.IsNullOrEmpty(locale))
+            {
+                locale = LocalizationConstants.DefaultLocale;
+            }
+            var template = await _biomarkersTemplateService.GetTemplate(locale);
 
             return template.Any() ? Ok(template) : NotFound();
         }

@@ -7,7 +7,7 @@ public interface IGenericRepository<T>
     T Insert(T data);
     T GetById(string id);
     T GetByGuid(Guid id);
-    IEnumerable<T> Get( Expression<Func<T, bool>> filter = null,
-        Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
+    IEnumerable<T> Get( Expression<Func<T, bool>> filter = default,
+        Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = default,
         string includeProperties = "");
 }

@@ -1,5 +1,7 @@
-﻿using CE_API_V2.Controllers;
+﻿using AutoMapper;
+using CE_API_V2.Controllers;
 using CE_API_V2.Models.DTO;
+using CE_API_V2.Models.Mapping;
 using CE_API_V2.Services;
 using CE_API_V2.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -14,14 +16,16 @@ public class BiomarkersControllerTests
     [OneTimeSetUp]
     public void Setup()
     {
-        _templateService = new BiomarkersTemplateService();
+        var mapperConfig = new MapperConfiguration(mc => { mc.AddProfile(new MappingProfile()); });
+        var mapper = mapperConfig.CreateMapper();
+        _templateService = new BiomarkersTemplateService(mapper);
         _biomarkersController = new BiomarkersController(_templateService);
     }
 
     [Test]
     public async Task TestSchemaEndpoint()
     {
-        var getTemplateTask = () => _biomarkersController.GetInputFormTemplate();
+        var getTemplateTask = () => _biomarkersController.GetInputFormTemplate("en-GB");
         var result = await getTemplateTask.Should().NotThrowAsync();
         result.Subject.Should().BeOfType<OkObjectResult>();
         var template = ((OkObjectResult) result.Subject).Value;

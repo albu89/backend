@@ -2,6 +2,8 @@
 using CE_API_V2.Services;
 using FluentValidation;
 using CE_API_V2.Utility;
+using AutoMapper;
+using CE_API_V2.Models.Mapping;
 
 namespace CE_API_V2.Validators
 {
@@ -9,7 +11,9 @@ namespace CE_API_V2.Validators
     {
         public ScoringRequestValidator()
         {
-            var biomarkesTemplate = new BiomarkersTemplateService();
+            var mapperConfig = new MapperConfiguration(mc => { mc.AddProfile(new MappingProfile()); });
+            var mapper = mapperConfig.CreateMapper();
+            var biomarkesTemplate = new BiomarkersTemplateService(mapper);
 
             var template = biomarkesTemplate.GetTemplate().GetAwaiter().GetResult();
 

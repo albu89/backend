@@ -1,57 +1,21 @@
 [
   {
-    "id": "clinical_setting",
-    "fieldname": "Clinical setting",
-    "category": "Lipids",
-    "units": [
-      {
-        "name": "",
-        "unitType": "Other",
-        "type": "string",
-        "enum": [ "primary care", "secondary care" ],
-        "clinicalSetting": "None"
-      }
-    ],
-    "infoText": "The accuracy of a disease prediction model depends on the prevalence of the disease in the population being tested. Therefore, the cut-off points on the receiver operating characteristic (ROC) curve, which indicate the balance between sensitivity and specificity of the model, need to be adjusted based on the prevalence of the clinical setting where the model is being used. This is typically referred to as calibration. This calibration process ensures that the model\u0027s predictions are accurate and reliable in the specific population being tested. By adjusting the cut-off point, the model can maintain an appropriate balance between sensitivity and specificity, which is crucial for accurate disease prediction and diagnosis. For example, in a hospital population with a high prevalence of CAD, a lower cut-off point on the ROC curve is appropriate in order to maximize sensitivity and minimize false negatives. Conversely, in a primary care population with a low prevalence of CAD, a higher cut-off point is needed to maximize specificity and minimize false positives There are two different calibrations of the Cardio Explorer model available, which were developed using different patient cohorts with varying prevalence of coronary artery disease (CAD). To ensure accurate risk stratification using the Cardio Explorer, the choice of the appropriate calibration should be tailored to the clinical setting, such as risk stratification or screening in primary care versus evaluation by a cardiologist in a hospital setting (secondary care).",
-    "orderNumber": 1,
-    "preferredUnit": "Other"
-  },
-  {
-    "id": "patient_id",
-    "fieldname": "Patient Identification",
-    "category": "",
-    "units": [
-      {
-        "name": "",
-        "unitType": "Other",
-        "type": "string",
-        "clinicalSetting": "PrimaryCare"
-      }
-    ],
-    "infoText": "",
-    "orderNumber": 2,
-    "preferredUnit": "Other"
-  },
-  {
     "id": "prior_CAD",
-    "fieldname": "Prior CAD",
     "category": "Anamnesis",
     "units": [
       {
         "name": "",
-        "unitType": "Other",
+        "unitType": "SI",
         "type": "Boolean",
         "values": [ "no", "yes" ],
         "clinicalSetting": "PrimaryCare"
       }
     ],
-    "infoText": "Prior CAD refers to a history of coronary artery disease (CAD) in a patient. Prior CAD increases the likelihood of patients with cardiovascular disease.",
     "orderNumber": 3,
-    "preferredUnit": "Other"
+    "preferredUnit": "SI"
   },
   {
     "id": "age",
-    "fieldname": "Age",
     "category": "Anamnesis",
     "units": [
       {
@@ -64,217 +28,208 @@
         "clinicalSetting": "None"
       }
     ],
-    "infoText": "",
     "orderNumber": 4,
     "preferredUnit": "SI"
   },
   {
     "id": "sex",
-    "fieldname": "Biological Sex",
     "category": "Anamnesis",
     "units": [
       {
         "name": "",
-        "unitType": "Other",
+        "unitType": "SI",
         "type": "string",
         "enum": [ "Male", "Female" ],
         "clinicalSetting": "None"
       }
     ],
-    "infoText": "Biological sex (female and male)",
     "orderNumber": 5,
-    "preferredUnit": "Other"
+    "preferredUnit": "SI"
   },
   {
     "id": "height",
-    "fieldname": "Height",
     "category": "Anamnesis",
     "units": [
       {
-        "name": "",
-        "unitType": "Other",
-        "type": "string",
-        "enum": [ "no", "unspecific", "possible", "typical" ],
+        "name": "cm",
+        "unitType": "SI",
+        "type": "integer",
+        "minimum": 145,
+        "maximum": 300,
         "clinicalSetting": "None"
       }
     ],
-    "infoText": "",
     "orderNumber": 6,
-    "preferredUnit": "Other"
+    "preferredUnit": "SI"
+  },
+  {
+    "id": "weight",
+    "category": "Anamnesis",
+    "units": [
+      {
+        "name": "kg",
+        "unitType": "SI",
+        "type": "integer",
+        "minimum": 30,
+        "maximum": 300,
+        "clinicalSetting": "None"
+      }
+    ],
+    "orderNumber": 6,
+    "preferredUnit": "SI"
   },
   {
     "id": "chest_pain",
-    "fieldname": "Chest pain",
     "category": "Anamnesis",
     "units": [
       {
         "name": "",
-        "unitType": "Other",
+        "unitType": "SI",
         "type": "string",
         "enum": [ "no", "unspecific", "possible", "typical" ],
         "clinicalSetting": "None"
       }
     ],
-    "infoText": "Criteria for the assessment of chest pain\r\n        Triggering of pain: provocable by physical strain or emotional stress - when the triggering factors are stopped, the pain subsides (sistation of the symptoms at rest) - duration of pain is 2 to 20 min (when taking nitroglycerin, the pain subsides quickly)\r\n\r\n        Pain unitType: visceral, manifested as pressure, tightness, burning (not stabbing)\r\n\r\n        Pain location: retrosternal (possibly radiating to arms, upper abdomen, neck)\r\n\r\n        Categorization Cardio Explorer\r\n        Typical angina: 3 criteria apply\r\n\r\n        Possible angina (atypical angina): 2 criteria apply\r\n\r\n        Unspecific chest pain: 0 or 1 criteria apply\r\n\r\n        No chest pain",
     "orderNumber": 7,
-    "preferredUnit": "Other"
+    "preferredUnit": "SI"
   },
   {
     "id": "nicotine",
-    "fieldname": "Nicotine consumption",
     "category": "Anamnesis",
     "units": [
       {
         "name": "",
-        "unitType": "Other",
+        "unitType": "SI",
         "type": "string",
         "enum": [ "non-smoker", "ex-smoker", "smoker" ],
         "clinicalSetting": "None"
       }
     ],
-    "infoText": "non-smoker: Person who has never smoked actively on a regular basis and persons who have not smoked regularly for more than 6 months.\r\n\r\nex-smoker: person who has smoked regularly for a minimum period of 6 months, but no longer smokes at the time of recording.\r\n\r\nsmoker: person who currently smokes regularly.",
     "orderNumber": 8,
-    "preferredUnit": "Other"
+    "preferredUnit": "SI"
   },
   {
     "id": "diabetes",
-    "fieldname": "Diabetes",
     "category": "Medication",
     "units": [
       {
         "name": "",
-        "unitType": "Other",
+        "unitType": "SI",
         "type": "string",
         "enum": [ "no", "NidDM", "idDM" ],
         "clinicalSetting": "None"
       }
     ],
-    "infoText": "idDM: abbreviation for insulin dependent diabetes mellitus\r\n\r\nNidDM: abbreviation for non insulin dependent diabetes mellitus",
     "orderNumber": 9,
-    "preferredUnit": "Other"
+    "preferredUnit": "SI"
   },
   {
     "id": "statin",
-    "fieldname": "Statins (cholesterol-lowering drugs)",
     "category": "Medication",
     "units": [
       {
         "name": "",
-        "unitType": "Other",
+        "unitType": "SI",
         "type": "Boolean",
         "values": [ "no", "yes" ],
         "clinicalSetting": "None"
       }
     ],
-    "infoText": "\t\r\nStatins are drugs used as cholesterol-lowering or lipid-lowering agents.\r\n\r\nExamples: Atorvastatin, fluvastatin, pitavastatin, pravastatin, rosuvastatin, simvastatin",
     "orderNumber": 10,
-    "preferredUnit": "Other"
+    "preferredUnit": "SI"
   },
   {
     "id": "tc_agg_inhibitor",
-    "fieldname": "Tc aggregation inhibitor",
     "category": "Medication",
     "units": [
       {
         "name": "",
-        "unitType": "Other",
+        "unitType": "SI",
         "type": "Boolean",
         "values": [ "no", "yes" ],
         "clinicalSetting": "None"
       }
     ],
-    "infoText": "Platelet inhibitors also platelet function inhibitors or platelet aggregation inhibitors.\r\n\r\nExamples: ASA or with the active ingredient clopidogrel, prasugrel, ticagrelor",
     "orderNumber": 11,
-    "preferredUnit": "Other"
+    "preferredUnit": "SI"
   },
   {
     "id": "ace_inhibitor",
-    "fieldname": "ACE Inhibitor",
     "category": "Medication",
     "units": [
       {
         "name": "",
-        "unitType": "Other",
+        "unitType": "SI",
         "type": "Boolean",
         "values": [ "no", "yes" ],
         "clinicalSetting": "None"
       }
     ],
-    "infoText": "RAS inhibitors / ACE inhibitors\r\n\r\nExamples: benazapril, captopril, cilazapril, enalapril, fosinopril, imidapril, lisinopril, moexipril, \r\n\r\nEquivalent treatment (angiotensin II inhibitors): azilsartan, losartan, valsartan, irbesartan, candesartan, eprosartan, olmesartan, telmisartan",
     "orderNumber": 12,
-    "preferredUnit": "Other"
+    "preferredUnit": "SI"
   },
   {
     "id": "calcium_ant",
-    "fieldname": "Calcium Antagonist",
     "category": "Medication",
     "units": [
       {
         "name": "",
-        "unitType": "Other",
+        "unitType": "SI",
         "type": "Boolean",
         "values": [ "no", "yes" ],
         "clinicalSetting": "None"
       }
     ],
-    "infoText": "Calcium antagonists \r\n\r\nExamples: dihydropyridines, benzothiazepines, phenylalkylamines",
     "orderNumber": 13,
-    "preferredUnit": "Other"
+    "preferredUnit": "SI"
   },
   {
     "id": "betablocker",
-    "fieldname": "Betablocker",
     "category": "Medication",
     "units": [
       {
         "name": "",
-        "unitType": "Other",
+        "unitType": "SI",
         "type": "Boolean",
         "values": [ "no", "yes" ],
         "clinicalSetting": "None"
       }
     ],
-    "infoText": "Beta-blocker\r\n\r\nExamples: atenolol, bisoprolol, celiprolol, esmolol, metoprolol, nebivolol",
     "orderNumber": 14,
-    "preferredUnit": "Other"
+    "preferredUnit": "SI"
   },
   {
     "id": "diuretic",
-    "fieldname": "Diuretics",
     "category": "Medication",
     "units": [
       {
         "name": "",
-        "unitType": "Other",
+        "unitType": "SI",
         "type": "Boolean",
         "values": [ "no", "yes" ],
         "clinicalSetting": "None"
       }
     ],
-    "infoText": "Diuretics  \r\n\r\nExamples: amiloride, triamterene, furosemide, piretanide, torasemide, acetazolamide, bemetizide, bendroflumethiazide, clopamide, chlortalidone, hydrochlorothiazide, indapamide, canrenone, eplerenone.",
     "orderNumber": 15,
-    "preferredUnit": "Other"
+    "preferredUnit": "SI"
   },
   {
     "id": "nitrate",
-    "fieldname": "Organic Nitrate",
     "category": "Medication",
     "units": [
       {
         "name": "",
-        "unitType": "Other",
+        "unitType": "SI",
         "type": "Boolean",
         "values": [ "no", "yes" ],
         "clinicalSetting": "None"
       }
     ],
-    "infoText": "Organic nitrates\r\n\r\nExamples: Nitroglycerin (\u003d glycerol trinitrate, GTN), isosorbide dinitrate",
     "orderNumber": 16,
     "preferredUnit": "SI"
   },
   {
     "id": "systolic_bp",
-    "fieldname": "Systolic blood pressure",
     "category": "Clinical findings",
     "units": [
       {
@@ -287,13 +242,11 @@
         "clinicalSetting": "None"
       }
     ],
-    "infoText": "",
     "orderNumber": 17,
     "preferredUnit": "SI"
   },
   {
     "id": "diastolic_bp",
-    "fieldname": "Diastolic blood pressure",
     "category": "Clinical findings",
     "units": [
       {
@@ -306,13 +259,11 @@
         "clinicalSetting": "None"
       }
     ],
-    "infoText": "",
     "orderNumber": 18,
     "preferredUnit": "SI"
   },
   {
     "id": "q_wave",
-    "fieldname": "Q waves in resting ECG",
     "category": "Clinical findings",
     "units": [
       {
@@ -330,13 +281,11 @@
         "clinicalSetting": "PrimaryCare"
       }
     ],
-    "infoText": "normal: Q waves of the electorcardiogram are normal.\r\n\r\npathological: Q waves of the electrocardiogram are pathological - indicating a prior myocardial infarction.\r\n\r\nno ECG available: as the pathological Q-wave is severely underrepresented in a population with low prevalence, the resting ECG is not necessary for risk calculation.",
     "orderNumber": 19,
     "preferredUnit": "Other"
   },
   {
     "id": "amylase_p",
-    "fieldname": "Pancreatic amylase",
     "category": "Enzymes",
     "units": [
       {
@@ -358,13 +307,11 @@
         "clinicalSetting": "None"
       }
     ],
-    "infoText": "Amylase is an enzyme, or special protein, that helps in the digestion of carbohydrates. Tests for amylase in blood are mainly used to diagnose problems with pancreas, including pancreatitis. It is also used to monitor chronic (long-term) pancreatitis.\r\n\r\nAcute pancreatitis can be associated with electrical changes mimicking acute coronary syndrome with normal coronary arteries.",
     "orderNumber": 20,
     "preferredUnit": "SI"
   },
   {
     "id": "alkaline",
-    "fieldname": "Alkaline phosphatase",
     "category": "Enzymes",
     "units": [
       {
@@ -386,13 +333,11 @@
         "clinicalSetting": "None"
       }
     ],
-    "infoText": "Alkaline phosphatases are a group of isoenzymes, located on the outer layer of the cell membrane; they catalyze the hydrolysis of organic phosphate esters present in the extracellular space.  High levels of ALP may indicate liver disease or certain bone disorders, but an ALP test alone cannot diagnose a condition.\r\n\r\nHigh serum alkaline phosphatase (ALP) levels are associated with vascular calcification, atherosclerotic disease, and an increased risk of cardiovascular events.",
     "orderNumber": 21,
     "preferredUnit": "SI"
   },
   {
     "id": "hs_troponin_t",
-    "fieldname": "hs Troponin T",
     "category": "Enzymes",
     "units": [
       {
@@ -408,19 +353,17 @@
         "name": "pg/ml",
         "ConversionFactor": 1,
         "unitType": "Conventional",
-        "type": "integer",
+        "type": "float",
         "minimum": 0.01,
         "maximum": 100.0,
         "clinicalSetting": "None"
       }
     ],
-    "infoText": "Troponin T, High Sensitivity (hs-TnT) is an independent prognostic marker that aids in the diagnosis of acute myocardial infarction (\u003e14 ng/L).",
     "orderNumber": 22,
     "preferredUnit": "SI"
   },
   {
     "id": "alat",
-    "fieldname": "ALAT",
     "category": "Enzymes",
     "units": [
       {
@@ -442,13 +385,11 @@
         "clinicalSetting": "None"
       }
     ],
-    "infoText": "Alanine aminotransferase (ALAT) is a transaminase enzyme. It is also called alanine transaminase (ALT). ALAT plays a crucial role in amino acid metabolism and gluconeogenesis. Serum ALAT activity is a reliable marker of liver disease and general health.",
     "orderNumber": 23,
     "preferredUnit": "SI"
   },
   {
     "id": "glucose",
-    "fieldname": "Glucose",
     "category": "Blood Sugar",
     "units": [
       {
@@ -464,19 +405,17 @@
         "name": "mg/dl",
         "ConversionFactor": 0.05551,
         "unitType": "Conventional",
-        "type": "integer",
+        "type": "float",
         "minimum": 0.0138775,
         "maximum": 2.49795,
         "clinicalSetting": "None"
       }
     ],
-    "infoText": "Glucose is a simple sugar with the molecular formula C6H12O6. In energy metabolism, glucose is the most important source of energy in all organisms. Blood sugar is a simple, common, safe blood test that can diagnose prediabetes, diabetes and gestational diabetes.",
     "orderNumber": 24,
     "preferredUnit": "SI"
   },
   {
     "id": "bilirubin",
-    "fieldname": "Bilirubin (total)",
     "category": "Metabolite",
     "units": [
       {
@@ -498,13 +437,11 @@
         "clinicalSetting": "None"
       }
     ],
-    "infoText": "\t\r\nBilirubin is a red-ovalues compound that occurs in the normal catabolic pathway that breaks down heme in vertebrates. This catabolism is a necessary process in the body\u0027s clearance of waste products that arise from the destruction of aged or abnormal red blood cells. Serum total bilirubin have a role for prediction of severe coronary artery disease in patients with chronic stable angina.",
     "orderNumber": 25,
     "preferredUnit": "SI"
   },
   {
     "id": "urea",
-    "fieldname": "Urea",
     "category": "Metabolite",
     "units": [
       {
@@ -526,13 +463,11 @@
         "clinicalSetting": "None"
       }
     ],
-    "infoText": "Urea, also known as carbamide, is an organic compound with chemical formula CO(NH₂)₂. High Blood Urea Nitrogen and high Serum Creatinine levels are risk factors for coronary artery disease.",
     "orderNumber": 26,
     "preferredUnit": "SI"
   },
   {
     "id": "uric_acid",
-    "fieldname": "Uric acid",
     "category": "Metabolite",
     "units": [
       {
@@ -541,7 +476,7 @@
         "unitType": "SI",
         "type": "float",
         "minimum": 10.0,
-        "maximum": 2200,
+        "maximum": 2200.0,
         "clinicalSetting": "None"
       },
       {
@@ -554,13 +489,11 @@
         "clinicalSetting": "None"
       }
     ],
-    "infoText": "Uric acid is a heterocyclic compound of carbon, nitrogen, oxygen, and hydrogen with the formula C₅H₄N₄O₃. It forms ions and salts known as urates and acid urates, such as ammonium acid urate. Uric acid is a product of the metabolic breakdown of purine nucleotides, and it is a normal component of urine.",
     "orderNumber": 27,
     "preferredUnit": "SI"
   },
   {
     "id": "cholesterol",
-    "fieldname": "Cholesterol (total)",
     "category": "Lipids",
     "units": [
       {
@@ -582,13 +515,11 @@
         "clinicalSetting": "None"
       }
     ],
-    "infoText": "Cholesterol is any of a class of certain organic molecules called lipids. It is a sterol (or modified steroid), a unitType of lipid. Cholesterol also serves as a precursor for the biosynthesis of steroid hormones, bile acid, and vitamin D. Raised total cholesterol is a strong risk factor for coronary heart disease, with evidence of a small, but significantly stronger, effect in men compared to women.",
     "orderNumber": 28,
     "preferredUnit": "SI"
   },
   {
     "id": "hdl",
-    "fieldname": "HDL cholesterol",
     "category": "Lipids",
     "units": [
       {
@@ -610,13 +541,11 @@
         "clinicalSetting": "None"
       }
     ],
-    "infoText": "HDL (high-density lipoprotein) cholesterol, sometimes called “good” cholesterol, absorbs cholesterol in the blood and carries it back to the liver. Increased LDL and decreased HDL cholesterol levels are associated with an increase in CAD.",
     "orderNumber": 29,
     "preferredUnit": "SI"
   },
   {
     "id": "ldl",
-    "fieldname": "LDL cholesterol",
     "category": "Lipids",
     "units": [
       {
@@ -638,13 +567,11 @@
         "clinicalSetting": "None"
       }
     ],
-    "infoText": "\t\r\nLow-density lipoprotein is one of the five major groups of lipoprotein that transport all fat molecules around the body in extracellular water. Increased LDL and decreased HDL cholesterol levels are associated with an increase in CAD.",
     "orderNumber": 30,
     "preferredUnit": "SI"
   },
   {
     "id": "protein",
-    "fieldname": "Protein (total)",
     "category": "Protein",
     "units": [
       {
@@ -666,13 +593,11 @@
         "clinicalSetting": "None"
       }
     ],
-    "infoText": "The total protein test measures the total amount of two classes of proteins found in the fluid portion of your blood. These are albumin and globulin. Albumin helps prevent fluid from leaking out of blood vessels. It also carries chemicals in your blood.",
     "orderNumber": 31,
     "preferredUnit": "SI"
   },
   {
     "id": "albumin",
-    "fieldname": "Albumin",
     "category": "Protein",
     "units": [
       {
@@ -694,13 +619,11 @@
         "clinicalSetting": "None"
       }
     ],
-    "infoText": "Albumin is a protein made by the liver. A serum albumin test measures the amount of this protein in the clear liquid portion of the blood.",
     "orderNumber": 32,
     "preferredUnit": "SI"
   },
   {
     "id": "leukocyte",
-    "fieldname": "Leukocyte",
     "category": "Hematology",
     "units": [
       {
@@ -722,13 +645,11 @@
         "clinicalSetting": "None"
       }
     ],
-    "infoText": "White blood cells, also called leukocytes or leucocytes, are the cells of the immune system that are involved in protecting the body against both infectious disease and foreign invaders. Numerous epidemiologic and clinical studies have shown leukocytosis to be an independent predictor of future cardiovascular events.",
     "orderNumber": 33,
     "preferredUnit": "SI"
   },
   {
     "id": "mchc",
-    "fieldname": "MCHC",
     "category": "Protein",
     "units": [
       {
@@ -750,7 +671,6 @@
         "clinicalSetting": "None"
       }
     ],
-    "infoText": "MCHC stands for mean corpuscular hemoglobin concentration. The mean corpuscular hemoglobin concentration is a measure of the concentration of hemoglobin in a given volume of packed red blood cell. It is calculated by dividing the hemoglobin by the haematocrit. Total white blood cells counts were related with the severity of coronary artery disease, and higher white blood cells counts increased the risk of cardiovascular diseases.",
     "orderNumber": 34,
     "preferredUnit": "SI"
   }
