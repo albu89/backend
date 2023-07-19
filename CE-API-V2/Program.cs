@@ -17,6 +17,11 @@ using CE_API_V2.Services.Mocks;
 using CE_API_V2.Utility;
 using CE_API_V2.Validators;
 using FluentValidation;
+using CE_API_V2.Localization.JsonStringFactroy;
+using CE_API_V2.Localization;
+using Microsoft.Extensions.Localization;
+using Microsoft.AspNetCore.Localization;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -72,7 +77,7 @@ builder.Services.AddScoped<IScoringUOW, ScoringUOW>();
 builder.Services.AddScoped<IPatientIdHashingUOW, PatientIdHashingUOW>();
 builder.Services.AddScoped<IValueConversionUOW, ValueConversionUOW>();
 builder.Services.AddScoped<IUserUOW, UserUOW>();
-builder.Services.AddScoped<IInputValidationService, MockedInputValidationService>();
+builder.Services.AddScoped<IInputValidationService, InputValidationService>();
 builder.Services.AddScoped<IUserInformationExtractor, UserInformationExtractor>();
 builder.Services.AddScoped<ICommunicationService, CommunicationService>();
 builder.Services.AddScoped<IEmailTemplateProvider, EmailTemplateProvider>();
@@ -81,8 +86,12 @@ builder.Services.AddScoped<IEmailClientService, EmailClientService>();
 
 #endregion
 
-#region Validation
+#region Localization
+builder.Services.AddLocalization();
+builder.Services.AddSingleton<IStringLocalizerFactory, JsonStringLocalizerFactory>();
+#endregion
 
+#region Validation
 builder.Services.AddSingleton(new ScoringRequestValidator());
 #endregion
 
@@ -165,9 +174,6 @@ app.UseCors(options =>
     options.AllowAnyMethod();
     options.AllowCredentials();
 });
-
-app.UseAuthentication();
-app.UseAuthorization();
 
 app.UseHttpsRedirection();
 

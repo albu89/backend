@@ -1,4 +1,6 @@
-﻿using CE_API_Test.TestUtilities;
+﻿using System.Globalization;
+using CE_API_Test.TestUtilities;
+using CE_API_V2.Models.DTO;
 using CE_API_V2.Validators;
 using FluentValidation.TestHelper;
 namespace CE_API_Test.UnitTests.Validators;
@@ -16,6 +18,15 @@ public class ValidatorTest
     [Test]
     public void Tests()
     {
+        var invalidRequest = new ScoringRequestDto()
+        {
+            Age = new BiomarkerValueDto<int>() { UnitType = "SI", Value = 0 },
+            AlkalinePhosphatase = new BiomarkerValueDto<float>() { UnitType = "SI", Value = 0 },
+        };
+
+        var valRes = _validator.TestValidate(invalidRequest);
+        valRes.ShouldHaveValidationErrorFor(x => x.Age.Value);
+        
         var validRequest = MockDataProvider.CreateValidScoringRequestDto();
         var validationResult = _validator.TestValidate(validRequest);
         validationResult.ShouldNotHaveAnyValidationErrors();
@@ -103,5 +114,15 @@ public class ValidatorTest
         validRequest.Mchc.UnitType = "Conventional";
         validationResult = _validator.TestValidate(validRequest);
         validationResult.ShouldNotHaveValidationErrorFor(x => x.Mchc.Value);
+
+        validRequest.Mchc.UnitType = "ABC";
+        validationResult = _validator.TestValidate(validRequest);
+        validationResult.ShouldHaveValidationErrorFor(x => x.Mchc.UnitType).WithErrorMessage("'{mchc}': the given unit type does not exist.");
+
+        CultureInfo.CurrentUICulture = new CultureInfo("de-DE");
+        validRequest.Mchc.UnitType = "ABC";
+        validationResult = _validator.TestValidate(validRequest);
+        validationResult.ShouldHaveValidationErrorFor(x => x.Mchc.UnitType).WithErrorMessage("'{mchc}': die angegebene Einheit existiert nicht.");
+        
     }
 }

@@ -28,4 +28,11 @@ public static class ValidationHelpers
     {
         return GetCorrespondingUnit(template, unitType, propertyName)?.Minimum ?? 0;
     }
+
+    public static IEnumerable<BiomarkerSchemaUnitDto> GetAllUnitsForProperty(string propertyName, IEnumerable<BiomarkerSchemaDto> template)
+    {
+        var units = template.FirstOrDefault(x => x.Id == GetJsonPropertyKeyName(propertyName, typeof(ScoringRequestDto)))?
+            .Units;
+        return units;
+    }
 }

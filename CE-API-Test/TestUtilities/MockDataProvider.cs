@@ -260,6 +260,49 @@ namespace CE_API_Test.TestUtilities
                 prior_CAD = new BiomarkerValueDto<bool>() { Value = true, UnitType = "SI" },
             };
         }
+        internal static ScoringRequestDto CreateNotValidScoringRequestDto()
+        {
+            return new ScoringRequestDto()
+            {
+                FirstName = "Mock",
+                LastName = "Mock",
+                DateOfBirth = new DateTime(1990, 01, 01),
+                Age = new BiomarkerValueDto<int>() { Value = 1, UnitType = "SI" },
+                ACEInhibitor = new BiomarkerValueDto<bool>() { Value = true, UnitType = "SI" },
+                Alat = new BiomarkerValueDto<float>() { Value = 5, UnitType = "notValid" },
+                Albumin = new BiomarkerValueDto<float>() { Value = 20.0f, UnitType = "SI" },
+                AlkalinePhosphatase = new BiomarkerValueDto<float>() { Value = 100, UnitType = "SI" },
+                Betablocker = new BiomarkerValueDto<bool>() { Value = true, UnitType = "SI" },
+                Bilirubin = new BiomarkerValueDto<float>() { Value = 2.0f, UnitType = "SI" },
+                CaAntagonist = new BiomarkerValueDto<bool>() { Value = true, UnitType = "SI" },
+                ChestPain = new BiomarkerValueDto<ChestPain>() { Value = ChestPain.Possible, UnitType = "SI" },
+                Cholesterol = new BiomarkerValueDto<float>() { Value = 2.0f, UnitType = "SI" },
+                CholesterolLowering_Statin = new BiomarkerValueDto<bool>() { Value = true, UnitType = "SI" },
+                Diabetes = new BiomarkerValueDto<DiabetesStatus>() { Value = DiabetesStatus.Niddm, UnitType = "SI" },
+                DiastolicBloodPressure = new BiomarkerValueDto<int>() { Value = 30, UnitType = "SI" },
+                Diuretic = new BiomarkerValueDto<bool>() { Value = true, UnitType = "SI" },
+                GlucoseFasting = new BiomarkerValueDto<float>() { Value = 2.0f, UnitType = "SI" },
+                Hdl = new BiomarkerValueDto<float>() { Value = 2.0f, UnitType = "SI" },
+                Height = new BiomarkerValueDto<int>() { Value = 400, UnitType = "SI" },
+                HsTroponinT = new BiomarkerValueDto<float>() { Value = 2.0f, UnitType = "SI" },
+                Ldl = new BiomarkerValueDto<float>() { Value = 2.0f, UnitType = "SI" },
+                Leukocytes = new BiomarkerValueDto<float>() { Value = 2.0f, UnitType = "SI" },
+                Mchc = new BiomarkerValueDto<float>() { Value = 2.0f, UnitType = "SI" },
+                NicotineConsumption = new BiomarkerValueDto<NicotineConsumption>() { Value = NicotineConsumption.StANc, UnitType = "SI" },
+                OrganicNitrate = new BiomarkerValueDto<bool>() { Value = true, UnitType = "SI" },
+                PancreaticAmylase = new BiomarkerValueDto<float>() { Value = 2, UnitType = "SI" },
+                Protein = new BiomarkerValueDto<float>() { Value = 5.0f, UnitType = "SI" },
+                RestingECG = new BiomarkerValueDto<RestingEcg>() { Value = RestingEcg.Yes, UnitType = "SI" },
+                Sex = new BiomarkerValueDto<Sex>() { Value = Sex.Female, UnitType = "SI" },
+                SystolicBloodPressure = new BiomarkerValueDto<int>() { Value = 50, UnitType = "notValid" },
+                TCAggregationInhibitor = new BiomarkerValueDto<bool>() { Value = true, UnitType = "SI" },
+                Urea = new BiomarkerValueDto<float>() { Value = 2.0f, UnitType = "SI" },
+                UricAcid = new BiomarkerValueDto<float>() { Value = 10.0f, UnitType = "SI" },
+                Weight = new BiomarkerValueDto<int>() { Value = 13, UnitType = "SI" },
+                clinical_setting = new BiomarkerValueDto<ClinicalSetting>() { Value = ClinicalSetting.PrimaryCare, UnitType = "SI" },
+                prior_CAD = new BiomarkerValueDto<bool>() { Value = true, UnitType = "SI" },
+            };
+        }
 
         public static UserDto GetMockedUserDto()
         {

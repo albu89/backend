@@ -1,3 +1,4 @@
+using System.Globalization;
 using CE_API_V2.Hasher;
 using CE_API_V2.Models.DTO;
 using CE_API_V2.Services;
@@ -30,11 +31,11 @@ public class ScoreController : ControllerBase
                            IInputValidationService inputValidationService,
                            IMapper mapper)
     {
-        _inputValidationService = new InputValidationService(new ScoringRequestValidator());
         _hashingUow = patientIdUow;
         _scoringUow = scoringUow;
         _valueConversionUow = valueConversionUow;
         _mapper = mapper;
+        _inputValidationService = inputValidationService;
     }
 
     /// <summary>
@@ -45,23 +46,39 @@ public class ScoreController : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type=typeof(IEnumerable<ValidationFailure>))]
     [TypeFilter(typeof(ValidationExceptionFilter))]
-    public async Task<IActionResult> PostPatientData([FromBody] ScoringRequestDto value)
+    public async Task<IActionResult> PostPatientData([FromBody] ScoringRequestDto value, string? locale)
     {
+        if (value == null)
+        {
+            return BadRequest();
+        }
         var patientId = _hashingUow.HashPatientId(value.FirstName, value.LastName, value.DateOfBirth);
         value.FirstName = null;
         value.LastName = null;
         value.DateOfBirth = new DateTime();
 
         //POST
+        var userCulture = new CultureInfo("en-GB");
+        try
+        {
+            userCulture = new CultureInfo(locale);
+        }
+        catch (Exception e)
+        {
+            // Log exception
+            Console.Error.WriteLine(e);
+        }
+        
+        CultureInfo.CurrentUICulture = userCulture;
         var validationResult = _inputValidationService.ScoringRequestIsValid(value);
         if (!validationResult.IsValid)
         {
-            throw new ValidationException("Validation failed", validationResult.Errors);
+            throw new ValidationException("Scoringrequest was not valid.", validationResult.Errors);
         }
 
         var userId = GetUserId();
-        
         var scoringRequest = _valueConversionUow.ConvertToScoringRequest(value, userId, patientId);
+        
                             
         var requestedScore = await _scoringUow.ProcessScoringRequest(scoringRequest, userId, patientId);
         var scoringResponseDto = _mapper.Map<ScoringResponseDto>(requestedScore);

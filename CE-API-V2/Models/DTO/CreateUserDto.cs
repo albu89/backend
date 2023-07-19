@@ -1,4 +1,5 @@
-﻿using CE_API_V2.Models.Enum;
+﻿using System.Text.Json.Serialization;
+using CE_API_V2.Models.Enum;
 
 namespace CE_API_V2.Models.DTO;
 
@@ -23,5 +24,6 @@ public class CreateUserDto
     //Settings
     public string Language { get; set; }
     public string UnitLabValues { get; set; }
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public PatientDataEnums.ClinicalSetting ClinicalSetting { get; set; }
 }

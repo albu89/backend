@@ -2,15 +2,23 @@
 using CE_API_Test.TestUtilities;
 using CE_API_V2.Controllers;
 using CE_API_V2.Hasher;
+using CE_API_V2.Localization.JsonStringFactroy;
 using CE_API_V2.Models;
 using CE_API_V2.Models.DTO;
 using CE_API_V2.Models.Mapping;
+using CE_API_V2.Services;
 using CE_API_V2.Services.Interfaces;
 using CE_API_V2.UnitOfWorks;
 using CE_API_V2.UnitOfWorks.Interfaces;
+using CE_API_V2.Validators;
+using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 using Moq;
+using Newtonsoft.Json.Linq;
+using NUnit.Framework;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Model;
 
 namespace CE_API_Test.UnitTests.Controllers
 {
@@ -33,7 +41,7 @@ namespace CE_API_Test.UnitTests.Controllers
             });
 
             _mapper = mapperConfig.CreateMapper();
-            
+
             var requestServiceMock = new Mock<IAiRequestService>();
             var mockedScoringRequest = MockDataProvider.GetMockedScoringRequest();
             var valueConversionUow = new Mock<IValueConversionUOW>();
@@ -53,7 +61,7 @@ namespace CE_API_Test.UnitTests.Controllers
             var hashingUowMock = new Mock<IPatientIdHashingUOW>();
             hashingUowMock.Setup(x => x.HashPatientId(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTimeOffset>())).Returns(It.IsAny<string>);
             _patientHashingUow = hashingUowMock.Object;
-            _inputValidationService = inputValidationServiceMock.Object;
+            _inputValidationService = new InputValidationService(new CE_API_V2.Validators.ScoringRequestValidator());
         }
 
         [Test]
@@ -64,7 +72,7 @@ namespace CE_API_Test.UnitTests.Controllers
             var mockedBiomarkers = MockDataProvider.CreateValidScoringRequestDto();
 
             //Act
-            var result = await sut.PostPatientData(mockedBiomarkers);
+            var result = await sut.PostPatientData(mockedBiomarkers, "en-GB");
 
             //Assert
             result.Should().NotBeNull();
@@ -75,41 +83,36 @@ namespace CE_API_Test.UnitTests.Controllers
             okResult?.Value.Should().BeOfType(typeof(ScoringResponseDto));
         }
 
+
         [Test]
         public async Task PostPatientData_GivenNull_ReturnBadRequestResult()
         {
-            //Todo - functionality to check validity not yet implemented
             //Arrange
-            //var sut = new ScoreController(_httpClient);
+            var sut = new ScoreController(_scoringUow, _patientHashingUow, _valueConversionUow, _inputValidationService, _mapper);
 
-            ////Act
-            //var result = await sut.PostPatientData(null);
+            //Act
+            var result = await sut.PostPatientData(null, null);
 
-            ////Assert
-            //Assert.IsNotNull(result);
-            //Assert.True(result is BadRequestObjectResult);
+            //Assert
+            result.Should().NotBeNull();
+            result.Should().BeOfType(typeof(BadRequestResult));
 
-            //var okResult = result as BadRequestObjectResult;
-            //okResult?.StatusCode.Should().Be(500);
-            Assert.True(true);
+            var badRequest = result as BadRequestResult;
+            badRequest?.StatusCode.Should().Be(400);
         }
 
         [Test]
         public async Task PostPatientData_GivenDtoWithInvalidValues_ReturnBadRequestResult()
         {
-            //Todo - functionality to check for validity not yet implemented
-            //var sut = new ScoreController(_httpClient);
+            //Arrange
+            var sut = new ScoreController(_scoringUow, _patientHashingUow, _valueConversionUow, _inputValidationService, _mapper);
+            var mockedBiomarkersNV = MockDataProvider.CreateNotValidScoringRequestDto();
 
-            ////Act
-            //var result = await sut.PostPatientData(null);
+            //Act
+            var postTask = async () => await sut.PostPatientData(mockedBiomarkersNV, "de-DE");
 
-            ////Assert
-            //Assert.IsNotNull(result);
-            //Assert.True(result is BadRequestObjectResult);
-
-            //var okResult = result as BadRequestObjectResult;
-            //okResult?.StatusCode.Should().Be(500);
-            Assert.True(true);
+            //Assert
+            await postTask.Should().ThrowAsync<ValidationException>();
         }
 
         [Test]
