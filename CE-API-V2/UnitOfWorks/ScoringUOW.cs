@@ -6,12 +6,15 @@ using CE_API_V2.Models;
 using CE_API_V2.Models.DTO;
 using CE_API_V2.Services.Interfaces;
 using CE_API_V2.UnitOfWorks.Interfaces;
+using CE_API_V2.Utility;
 
 namespace CE_API_V2.UnitOfWorks
 {
     public class ScoringUOW : IScoringUOW
     {
         private readonly IAiRequestService _aiRequestService;
+        private readonly IScoreSummaryUtility _scoreSummaryUtility;
+        private readonly IValueConversionUOW _valueConversionUow;
         private readonly IMapper _mapper;
     
         private CEContext _context;
@@ -21,11 +24,15 @@ namespace CE_API_V2.UnitOfWorks
     
         public ScoringUOW(CEContext context,
             IAiRequestService requestService,
-            IMapper mapper)
+            IMapper mapper,
+            IValueConversionUOW valueConversionUow,
+            IScoreSummaryUtility scoreSummaryUtility)
         {
             _context = context;
             _aiRequestService = requestService;
             _mapper = mapper;
+            _scoreSummaryUtility = scoreSummaryUtility;
+            _valueConversionUow = valueConversionUow;
         }        
     
         public IGenericRepository<ScoringRequest> ScoringRequestRepository
@@ -60,6 +67,7 @@ namespace CE_API_V2.UnitOfWorks
             }
             catch (Exception e)
             {
+                System.Console.WriteLine(e);
                 throw new NotImplementedException();
             }
     
@@ -133,7 +141,7 @@ namespace CE_API_V2.UnitOfWorks
             try
             {
                 scoringResponse = ScoringResponseRepository.Get(x => x.Request.UserId.Equals(userId) &&
-                    x.RequestId.Equals(scoringRequestId), null, "Request").FirstOrDefault() ?? null;
+                    x.RequestId.Equals(scoringRequestId), null, "Request,Request.Biomarkers").FirstOrDefault() ?? null;
             }
             catch (Exception e)
             {
@@ -143,14 +151,18 @@ namespace CE_API_V2.UnitOfWorks
             return scoringResponse;
         }
     
-        public async Task<ScoringResponse> ProcessScoringRequest(ScoringRequest scoringRequest, string userId, string patientId)
+        public async Task<ScoringResponse> ProcessScoringRequest(ScoringRequestDto value, string userId, string patientId)
         {
+            var scoringRequest = _valueConversionUow.ConvertToScoringRequest(value, userId, patientId);
+
             if (StoreScoringRequest(scoringRequest, userId) is null)
             {
                 // TODO: Better error handling
                 return null;
             }
             
+            _valueConversionUow.ConvertToSiValues(scoringRequest);
+
             var scoringResponse = await RequestScore(scoringRequest) ?? throw new Exception();
 
             scoringResponse.Request = scoringRequest;
@@ -163,7 +175,14 @@ namespace CE_API_V2.UnitOfWorks
             
             return scoringResponse;
         }
-    
+        
+        public ScoringResponseSummary GetScoreSummary(ScoringResponse recentScore)
+        {
+            var scoreSummary = _mapper.Map<ScoringResponse, ScoringResponseSummary>(recentScore);
+
+            return _scoreSummaryUtility.SetAdditionalScoringParams(scoreSummary);
+        }
+
         private async Task<ScoringResponse?> RequestScore(ScoringRequest scoringRequest)
         {
             ScoringResponse requestedScore = null;

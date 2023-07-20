@@ -1,8 +1,9 @@
-﻿using System.Text.Json;
-using CE_API_V2.Models;
+﻿using CE_API_V2.Models;
 using CE_API_V2.Models.DTO;
 using CE_API_V2.Models.Enum;
 using CE_API_V2.Models.Records;
+using System.Collections.Immutable;
+using System.Text.Json;
 using static CE_API_V2.Models.Enum.PatientDataEnums;
 
 namespace CE_API_Test.TestUtilities
@@ -91,34 +92,54 @@ namespace CE_API_Test.TestUtilities
             return new Biomarkers
             {
                 Age = 25,
+                AgeUnit = "SI",
                 Alat = 213,
+                AlatUnit = "SI",
                 Albumin = 123,
+                AlbuminUnit = "SI",
                 Bilirubin = 123,
+                BilirubinUnit = "SI",
                 Cholesterol = 123,
+                CholesterolUnit = "SI",
                 Diabetes = DiabetesStatus.Iddm,
                 RestingECG = RestingEcg.Screening,
                 Diuretic = false,
                 Hdl = 123,
+                HdlUnit = "SI",
                 Height = 176,
+                HeightUnit = "SI",
                 Ldl = 123,
+                LdlUnit = "SI",
                 Leukocytes = 123,
+                LeukocytesUnit = "SI",
                 Mchc = 123,
+                MchcUnit = "SI",
                 Sex = Sex.Male,
                 Weight = 90,
+                WeightUnit = "SI",
                 Protein = 123,
+                ProteinUnit = "SI",
                 Urea = 123,
+                UreaUnit = "SI",
                 CaAntagonist = false,
                 ChestPain = ChestPain.Possible,
                 Glucose = 123,
+                GlucoseUnit = "SI",
                 PancreaticAmylase = 123,
+                PancreaticAmylaseUnit = "SI",
                 UricAcid = 123,
+                UricAcidUnit = "SI",
                 DiastolicBloodPressure = 123,
+                DiastolicBloodPressureUnit = "SI",
                 HsTroponinT = 123,
+                HsTroponinTUnit = "SI",
                 SystolicBloodPressure = 123,
+                SystolicBloodPressureUnit = "SI",
                 Nicotine = NicotineConsumption.StANc,
                 Statin = false,
                 AceInhibitor = false,
                 AlkalinePhosphate = 123,
+                AlkalinePhosphataseUnit = "SI",
                 Betablocker = false,
                 ClinicalSetting = ClinicalSetting.PrimaryCare,
                 OganicNitrate = false,
@@ -224,7 +245,7 @@ namespace CE_API_Test.TestUtilities
                 FirstName = "Mock",
                 LastName = "Mock",
                 DateOfBirth = new DateTime(1990, 01, 01),
-                Age = new BiomarkerValueDto<int>() { Value = 20, UnitType="SI" },
+                Age = new BiomarkerValueDto<int>() { Value = 20, UnitType = "SI" },
                 ACEInhibitor = new BiomarkerValueDto<bool>() { Value = true, UnitType = "SI" },
                 Alat = new BiomarkerValueDto<float>() { Value = 5, UnitType = "SI" },
                 Albumin = new BiomarkerValueDto<float>() { Value = 20.0f, UnitType = "SI" },
@@ -245,7 +266,7 @@ namespace CE_API_Test.TestUtilities
                 Ldl = new BiomarkerValueDto<float>() { Value = 2.0f, UnitType = "SI" },
                 Leukocytes = new BiomarkerValueDto<float>() { Value = 2.0f, UnitType = "SI" },
                 Mchc = new BiomarkerValueDto<float>() { Value = 2.0f, UnitType = "SI" },
-                NicotineConsumption = new BiomarkerValueDto<NicotineConsumption>() { Value = NicotineConsumption.StANc , UnitType = "SI" },
+                NicotineConsumption = new BiomarkerValueDto<NicotineConsumption>() { Value = NicotineConsumption.StANc, UnitType = "SI" },
                 OrganicNitrate = new BiomarkerValueDto<bool>() { Value = true, UnitType = "SI" },
                 PancreaticAmylase = new BiomarkerValueDto<float>() { Value = 2, UnitType = "SI" },
                 Protein = new BiomarkerValueDto<float>() { Value = 5.0f, UnitType = "SI" },
@@ -326,7 +347,7 @@ namespace CE_API_Test.TestUtilities
                 Role = UserRole.MedicalDoctor
             };
         }
-        
+
         public static User GetMockedUser()
         {
             return new User()
@@ -349,7 +370,7 @@ namespace CE_API_Test.TestUtilities
                 Role = UserRole.MedicalDoctor
             };
         }
-        
+
         public static CreateUserDto GetMockedCreateUserDto()
         {
             return new CreateUserDto()
@@ -377,7 +398,7 @@ namespace CE_API_Test.TestUtilities
             TenantId = "MockedTenantId",
             UserId = "MockedUserId",
         };
-        
+
         public static AccessRequestDto GetMockedAccessRequestDto()
         {
             return new AccessRequestDto()
@@ -390,5 +411,52 @@ namespace CE_API_Test.TestUtilities
         }
 
         public static string GetHtmlBodyMock() => "New user tried to register their account: email: {{{EmailAddress}}} ({{{FirstName}}} {{{LastName}}}, {{{PhoneNumber}}})<br/><br/> With kind regards<br/> Exploris Health";
+
+        public static ScoreSummary GetScoreSummaryMock()
+        {
+            var emptyArray = new string[] { };
+
+            return new()
+            {
+                ScoreHeader = "ScoreHeader",
+                Score = "ScoreValue",
+                RiskHeader = "",
+                Risk = "",
+                RecommendationHeader = "",
+                Recommendation = "",
+                RecommendationExtended = "",
+                RecommendationProbabilityHeader = "",
+                WarningHeader = "",
+                Warnings = Array.Empty<string>(),
+                InfoText = "",
+                Abbreviations = ImmutableDictionary<string,string>.Empty,
+                CadDefinitionHeader = "",
+                CadDefinition = "",
+                FootnoteHeader = "",
+                Footnote = "",
+                IntendedUseHeader = "",
+                IntendedUse = "",
+                RecommendationTableHeader = "",
+                RecommendationScoreRangeHeader = "",
+                RecommendationCategories = new List<RecommendationCategory> { new() },
+                Biomarkers = new List<BiomarkerSchemaDto> { new() },
+            };
+        }
+
+        public static ScoringResponseSummary GetScoringResponseSummaryMock()
+        {
+            return new()
+            {
+                classifier_class = 1,
+                classifier_sign = 1,
+                classifier_score = 0.01,
+                RequestId = Guid.NewGuid(),
+                RiskValue = "RiskValue",
+                Warnings = Array.Empty<string>(),
+                RecommendationSummary = "RecommendationSummary",
+                RecommendationLongText = "RecommendationLongText",
+                Biomarkers = GetFakeBiomarkers()
+            };
+        }
     }
 }

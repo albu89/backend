@@ -2,11 +2,14 @@
 using CE_API_Test.TestUtilities;
 using CE_API_V2.Data;
 using CE_API_V2.Models;
+using CE_API_V2.Models.DTO;
 using CE_API_V2.Models.Mapping;
 using CE_API_V2.Services.Interfaces;
 using CE_API_V2.UnitOfWorks;
 using CE_API_V2.UnitOfWorks.Interfaces;
+using CE_API_V2.Utility;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 
 namespace CE_API_Test.UnitTests.UnitOfWorks;
 
@@ -16,6 +19,7 @@ public class ScoringUnitOfWorkTests
     private CEContext _ceContext;
     private IMapper _mapper;
     private IAiRequestService _requestService;
+    private IScoreSummaryUtility _scoreSummaryUtility;
     private string _userId = "TestUserId";
     private string _patientId = "TestPatientId";
 
@@ -33,9 +37,15 @@ public class ScoringUnitOfWorkTests
 
         _mapper = mapperConfig.CreateMapper();
 
+        _scoreSummaryUtility = new ScoreSummaryUtility(_mapper);
+        var mockedScoringRequest = MockDataProvider.GetMockedScoringRequest();
         _requestService = MockServiceProvider.GenerateAiRequestService();
         _ceContext = new CEContext(options);
-        _scoringUow = new ScoringUOW(_ceContext, _requestService, _mapper);
+        var valueConversionUow = new Mock<IValueConversionUOW>();
+        valueConversionUow
+                .Setup(x => x.ConvertToScoringRequest(It.IsAny<ScoringRequestDto>(), It.IsAny<string>(),
+                    It.IsAny<string>())).Returns(mockedScoringRequest);
+        _scoringUow = new ScoringUOW(_ceContext, _requestService, _mapper, valueConversionUow.Object, _scoreSummaryUtility);
     }
 
     [Test]
@@ -166,7 +176,7 @@ public class ScoringUnitOfWorkTests
     public async Task ProcessScoringRequest_ExpectedCorrectRetrievedRequest()
     {
         //Arrange
-        var request = MockDataProvider.GetMockedScoringRequest(_userId, _patientId);
+        var request = MockDataProvider.GetMockedScoringRequestDto();
 
         //Act
         var result = await _scoringUow.ProcessScoringRequest(request, _patientId, _userId);

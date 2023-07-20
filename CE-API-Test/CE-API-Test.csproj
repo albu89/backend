@@ -13,7 +13,11 @@
   <ItemGroup>
     <None Remove="BiomarkersSchema.info.en-GB.json" />
     <None Remove="BiomarkersSchema.json" />
+    <None Remove="Templates\Recommendation.de-DE.json" />
+    <None Remove="Templates\Recommendation.en-GB.json" />
     <None Remove="Templates\RequestAccessEmailBody.html" />
+    <None Remove="Templates\ScoringSchema.de-DE.json" />
+    <None Remove="Templates\ScoringSchema.en-GB.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -23,8 +27,28 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
     <Content Include="BiomarkersSchema.json" />
+    <Content Include="Templates\Recommendation.de-DE.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Templates\Recommendation.en-GB.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
     <Content Include="Templates\RequestAccessEmailBody.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\ScoringSchema.de-DE.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Templates\ScoringSchema.en-GB.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
     <Content Update="BiomarkersSchema.info.de-DE.json">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>

@@ -15,7 +15,6 @@ namespace CE_API_V2.UnitOfWorks
 
         public ScoringRequest ConvertToScoringRequest(ScoringRequestDto scoringRequestDto, string userId, string patientId)
         {
-            ConvertValues(scoringRequestDto);
             var requestModel = _mapper.Map<ScoringRequest>(scoringRequestDto);
             requestModel.UserId = userId;
             requestModel.PatientId = patientId;
@@ -23,9 +22,8 @@ namespace CE_API_V2.UnitOfWorks
             return requestModel;
         }
 
-        private void ConvertValues(ScoringRequestDto scoringRequestDto)
+        public void ConvertToSiValues(ScoringRequest scoringRequest)
         {
-            
         }
     }
 }

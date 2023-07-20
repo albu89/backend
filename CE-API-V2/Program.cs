@@ -83,6 +83,8 @@ builder.Services.AddScoped<ICommunicationService, CommunicationService>();
 builder.Services.AddScoped<IEmailTemplateProvider, EmailTemplateProvider>();
 builder.Services.AddScoped<IEmailBuilder, EmailBuilder>();
 builder.Services.AddScoped<IEmailClientService, EmailClientService>();
+builder.Services.AddScoped<IScoringTemplateService, ScoringTemplateService>();
+builder.Services.AddScoped<IScoreSummaryUtility, ScoreSummaryUtility>();
 
 #endregion
 

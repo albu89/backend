@@ -18,6 +18,7 @@ public class ValidatorTest
     [Test]
     public void Tests()
     {
+        CultureInfo.CurrentUICulture = new CultureInfo("en-GB");
         var invalidRequest = new ScoringRequestDto()
         {
             Age = new BiomarkerValueDto<int>() { UnitType = "SI", Value = 0 },

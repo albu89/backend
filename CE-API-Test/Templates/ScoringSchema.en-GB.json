@@ -1,0 +1,26 @@
+{
+  "ScoreHeader": "Score",
+  "Score": "",
+  "RiskHeader": "Risk of obstructive CAD",
+  "Risk": "",
+  "RecommendationHeader": "Recommendation",
+  "Recommendation": "",
+  "RecommendationExtended": "",
+  "RecommendationTableHeader": "Recommendation (ESC 2019 guidelines)",
+  "RecommendationScoreRangeHeader": "Score Range",
+  "RecommendationProbabilityHeader": "Probability of obstructive CAD",
+  "WarningHeader": "Warnings",
+  "Warnings": [],
+  "InfoText": "Choice of the text based on clinical likelihood, patient characteristics and preference, availability, as well as local expertise.",
+  "Abbreviations": {
+    "CTA": "computed tomography angiography",
+    "FFR": "fractional flow reserve",
+    "iwFR": "instantaneous wave-free ratio"
+  },
+  "CadDefinitionHeader": "CAD Definition",
+  "CadDefinition": "In accordance to current medical guidelines, obstructive coronary artery disease (CAD) is defined as a stenosis or blockage of 50% or more in the diameter of major coronary artery or a branch with a diameter of 2mm or more.",
+  "FootnoteHeader": "Footnote",
+  "Footnote": "It's important to note that the management of patients with suspected CAD should be individualized based in the patient's specific risk factors and overall health status. Patients should work closely with their healthcare provider to develop a personalized management plan that meets their needs and goals.",
+  "IntendedUseHeader": "Intended use",
+  "IntendedUse": "The Cardio Explorer is intended for all patients who are suspected of having coronary artery disease (CAD) in the medical consultation."
+}

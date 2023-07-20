@@ -29,6 +29,27 @@ namespace CE_API_V2.Models.Mapping
                 .ForMember(dest => dest.TcAggInhibitor, opt => opt.MapFrom(src => src.TCAggregationInhibitor))
                 .ForMember(dest => dest.PriorCAD, opt => opt.MapFrom(src => src.prior_CAD))
                 .ForMember(dest => dest.Statin, opt => opt.MapFrom(src => src.CholesterolLowering_Statin))
+
+                .ForMember(dest => dest.AgeUnit, opt => opt.MapFrom(src => src.Age.UnitType))
+                .ForMember(dest => dest.HdlUnit, opt => opt.MapFrom(src => src.Hdl.UnitType))
+                .ForMember(dest => dest.LdlUnit, opt => opt.MapFrom(src => src.Ldl.UnitType))
+                .ForMember(dest => dest.AlatUnit, opt => opt.MapFrom(src => src.Alat.UnitType))
+                .ForMember(dest => dest.AlbuminUnit, opt => opt.MapFrom(src => src.Albumin.UnitType))
+                .ForMember(dest => dest.UreaUnit, opt => opt.MapFrom(src => src.Urea.UnitType))
+                .ForMember(dest => dest.MchcUnit, opt => opt.MapFrom(src => src.Mchc.UnitType))
+                .ForMember(dest => dest.AlkalinePhosphataseUnit, opt => opt.MapFrom(src => src.AlkalinePhosphatase.UnitType))
+                .ForMember(dest => dest.BilirubinUnit, opt => opt.MapFrom(src => src.Bilirubin.UnitType))
+                .ForMember(dest => dest.CholesterolUnit, opt => opt.MapFrom(src => src.Cholesterol.UnitType))
+                .ForMember(dest => dest.PancreaticAmylaseUnit, opt => opt.MapFrom(src => src.PancreaticAmylase.UnitType))
+                .ForMember(dest => dest.HeightUnit, opt => opt.MapFrom(src => src.Height.UnitType))
+                .ForMember(dest => dest.WeightUnit, opt => opt.MapFrom(src => src.Weight.UnitType))
+                .ForMember(dest => dest.GlucoseUnit, opt => opt.MapFrom(src => src.GlucoseFasting.UnitType))
+                .ForMember(dest => dest.LeukocytesUnit, opt => opt.MapFrom(src => src.Leukocytes.UnitType))
+                .ForMember(dest => dest.UricAcidUnit, opt => opt.MapFrom(src => src.UricAcid.UnitType))
+                .ForMember(dest => dest.DiastolicBloodPressureUnit, opt => opt.MapFrom(src => src.DiastolicBloodPressure.UnitType))
+                .ForMember(dest => dest.SystolicBloodPressureUnit, opt => opt.MapFrom(src => src.SystolicBloodPressure.UnitType))
+                .ForMember(dest => dest.HsTroponinTUnit, opt => opt.MapFrom(src => src.HsTroponinT.UnitType))
+                .ForMember(dest => dest.ProteinUnit, opt => opt.MapFrom(src => src.Protein.UnitType))
                 ;
 
             CreateMap<CreateUserDto, User>()
@@ -72,6 +93,40 @@ namespace CE_API_V2.Models.Mapping
             CreateMap<BiomarkersLocalized, BiomarkerSchemaDto>()
                 .ForMember(dest => dest.InfoText, opt => opt.MapFrom(src => src.InfoText))
                 .ForMember(dest => dest.Fieldname, opt => opt.MapFrom(src => src.Fieldname));
+
+            CreateMap<ScoringResponse, ScoringResponseSummary>()
+                .ForMember(dest => dest.Biomarkers, opt => opt.MapFrom(src => src.Request.Biomarkers))
+                .ForMember(dest => dest.RiskValue, opt => opt.Ignore())
+                .ForMember(dest => dest.Warnings, opt => opt.Ignore())
+                .ForMember(dest => dest.RecommendationSummary, opt => opt.Ignore())
+                .ForMember(dest => dest.RecommendationLongText, opt => opt.Ignore());
+            
+            CreateMap<ScoringSchema, ScoreSummary>()
+                .ForMember(dest => dest.Biomarkers, opt => opt.Ignore())
+                .ForMember(dest => dest.RecommendationCategories, opt => opt.Ignore());
+
+            CreateMap<BiomarkersLocalized, ScoreSummary>()
+                .ForMember(dest => dest.Biomarkers, opt => opt.MapFrom(src => src))
+                .ForAllMembers(opts => opts.Ignore());
+            
+            CreateMap<IEnumerable<BiomarkerSchemaDto>, ScoreSummary>()
+                .ForMember(dest => dest.Biomarkers, opt => opt.MapFrom(src => src))
+                .ForAllMembers(opts => opts.Ignore());
+
+            CreateMap<IEnumerable<RecommendationCategory>, ScoreSummary>()
+                .ForMember(dest => dest.RecommendationCategories, opt => opt.MapFrom(src => src.ToArray()))
+                .ForAllMembers(opts => opts.Ignore());
+
+            CreateMap<RecommendationCategory, ScoringResponseSummary>()
+                .ForMember(dest => dest.RecommendationSummary, opt => opt.MapFrom(src => src.ShortText))
+                .ForMember(dest => dest.RecommendationLongText, opt => opt.MapFrom(src => src.LongText))
+                .ForMember(dest => dest.RiskValue, opt => opt.MapFrom(src => src.RiskValue))
+                .ForMember(dest => dest.RiskClass, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.RequestId, opt => opt.Ignore())
+                .ForMember(dest => dest.Warnings, opt => opt.Ignore())
+                .ForMember(dest => dest.classifier_score, opt => opt.Ignore())
+                .ForMember(dest => dest.classifier_sign, opt => opt.Ignore())
+                .ForMember(dest => dest.Biomarkers, opt => opt.Ignore());
         }
     }
     public class ValueToUnderlyingTypeConverter<T> : ITypeConverter<BiomarkerValueDto<T>, T>
