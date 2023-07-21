@@ -61,4 +61,11 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
             return query.ToList();
         }
     }
+
+    public virtual T Update(T entityToUpdate)
+    {
+        var attached = dbSet.Attach(entityToUpdate);
+        _context.Entry(entityToUpdate).State = EntityState.Modified;
+        return attached.Entity;
+    }
 }

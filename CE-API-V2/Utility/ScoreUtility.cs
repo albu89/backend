@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Globalization;
+using AutoMapper;
 using CE_API_V2.Constants;
 using CE_API_V2.Models.DTO;
 using CE_API_V2.Services.Interfaces;
@@ -77,7 +78,11 @@ namespace CE_API_V2.Utility
 
             foreach (var category in recommendationCategories)
             {
-                if (score >= float.Parse(category.LowerLimit) && score < float.Parse(category.UpperLimit))
+                var parsedUpperLimit = double.Parse(category.UpperLimit, CultureInfo.InvariantCulture);
+                var parsedLowerLimit = double.Parse(category.LowerLimit, CultureInfo.InvariantCulture);
+                var insideUpperLimit = score < parsedUpperLimit;
+                var insideLowerLimit = score >= parsedLowerLimit;
+                if (insideUpperLimit && insideLowerLimit)
                 {
                     matchingObject = category;
                     break;

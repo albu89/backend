@@ -16,17 +16,17 @@
   },
   {
     "id": "height",
-    "fieldname": "Height",
+    "fieldname": "Größe",
     "infoText": "DEDEDEDEDE"
   },
   {
     "id": "weight",
-    "fieldname": "Weight",
+    "fieldname": "Gewicht",
     "infoText": "DEDEDEDEDE"
   },
   {
     "id": "chest_pain",
-    "fieldname": "Chest pain",
+    "fieldname": "Brustschmerzen",
     "infoText": "DEDEDEDEDE"
   },
   {
@@ -81,7 +81,7 @@
   },
   {
     "id": "diastolic_bp",
-    "fieldname": "Diastolic blood pressure",
+    "fieldname": "Diastolischer Blutdruck",
     "infoText": ""
   },
   {

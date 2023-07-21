@@ -51,7 +51,7 @@ namespace CE_API_V2.Models.Mapping
                 .ForMember(dest => dest.HsTroponinTUnit, opt => opt.MapFrom(src => src.HsTroponinT.UnitType))
                 .ForMember(dest => dest.ProteinUnit, opt => opt.MapFrom(src => src.Protein.UnitType))
                 ;
-
+            
             CreateMap<CreateUserDto, User>()
                 .ForMember(dest => dest.UserId, opt => opt.MapFrom(_ => string.Empty))
                 .ForMember(dest => dest.TenantID, opt => opt.MapFrom(_ => string.Empty));

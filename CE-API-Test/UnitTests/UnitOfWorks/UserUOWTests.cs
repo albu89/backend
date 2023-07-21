@@ -1,67 +1,132 @@
-﻿using CE_API_V2.Models;
+using CE_API_V2.Data;
+using CE_API_V2.Models;
+using CE_API_V2.UnitOfWorks;
+using Microsoft.EntityFrameworkCore;
+using NUnit.Framework.Internal;
 using CE_API_V2.Services.Interfaces;
 using CE_API_V2.UnitOfWorks.Interfaces;
 using Moq;
 using System.Security.Claims;
 using CE_API_V2.Models.DTO;
 using CE_API_Test.TestUtilities;
-using CE_API_V2.UnitOfWorks;
 using AutoMapper;
-using CE_API_V2.Data;
 using CE_API_V2.Models.Mapping;
-using Microsoft.EntityFrameworkCore;
 using CE_API_V2.Models.Records;
 using Azure.Communication.Email;
+using Microsoft.Extensions.Logging;
+using Castle.Core.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace CE_API_Test.UnitTests.UnitOfWorks
 {
     [TestFixture]
-    public class UserUOWTests
+    internal class UserUOWTests
     {
-        private IInputValidationService _inputValidationService;
+        private DbContextOptions<CEContext> _dbContextOptions;
+        private CEContext _context;
+        private DbSet<BiomarkerOrderModel> _dbSet;
         private IUserUOW _userUOW;
-        private IUserInformationExtractor _userInformationExtractor;
-        private CEContext _ceContext;
         private ICommunicationService _communicationService;
+
+        private static readonly BiomarkerOrderModel insertBiomarkerOrder = new() { BiomarkerId = "age", UserId = "TestUser", OrderNumber = 1, PreferredUnit = "SI" };
+        private static readonly BiomarkerOrderModel updateBiomarkerOrder = new() { BiomarkerId = "age", UserId = "TestUser", OrderNumber = 2, PreferredUnit = "SI" };
+
+        #region Setup
 
         [SetUp]
         public void SetUp()
         {
+            _dbContextOptions = new DbContextOptionsBuilder<CEContext>().UseInMemoryDatabase(databaseName: "CEUnitTestDb").Options;
+
+            _context = new CEContext(_dbContextOptions);
+            _dbSet = _context.Set<BiomarkerOrderModel>();
+
             var inputValidationServiceMock = new Mock<IInputValidationService>();
-            var userUOWMock = new Mock<IUserUOW>();
+            
             var userInfoExtractorMock = new Mock<IUserInformationExtractor>();
 
             inputValidationServiceMock.Setup(x => x.ValidateUser(It.IsAny<CreateUserDto>())).Returns(true);
-            userUOWMock.Setup(x => x.StoreUser(It.IsAny<User>())).Returns(Task.FromResult(new User()));
             userInfoExtractorMock.Setup(x => x.GetUserIdInformation(It.IsAny<ClaimsPrincipal>())).Returns(new UserIdsRecord());
             var communicationService = new Mock<ICommunicationService>();
             userInfoExtractorMock.Setup(x 
                 => x.GetUserIdInformation(It.IsAny<ClaimsPrincipal>())).Returns(new UserIdsRecord());
             communicationService.Setup(x 
                 => x.SendAccessRequest(It.IsAny<AccessRequestDto>())).Returns(Task.FromResult(EmailSendStatus.Succeeded));
-
-            _inputValidationService = inputValidationServiceMock.Object;
-            _userUOW = userUOWMock.Object;
-            _userInformationExtractor = userInfoExtractorMock.Object;
+                
             _communicationService = communicationService.Object;
 
-            var options = new DbContextOptionsBuilder<CEContext>()
-                .UseInMemoryDatabase(databaseName: "CEDatabase")
-                .Options;
-
+            _userUOW = new UserUOW(_context, _communicationService);
             var mapperConfig = new MapperConfiguration(mc =>
             {
                 mc.AddProfile(new MappingProfile());
             });
-            _ceContext = new CEContext(options);
         }
+
+        #endregion
+
+        #region StoreBiomarkerOrder
+
+        [Test]
+        public async Task StoreBiomarkerOrder_Receives_Db_Call()
+        {
+            await _userUOW.StoreOrEditBiomarkerOrder(new BiomarkerOrderModel[] {insertBiomarkerOrder}, "TestUser");
+
+            var addedEntity = _dbSet.Find(insertBiomarkerOrder.UserId, insertBiomarkerOrder.BiomarkerId);
+            Assert.That(addedEntity, Is.Not.Null);
+            Assert.Multiple(() =>
+            {
+                Assert.That(addedEntity.BiomarkerId, Is.EqualTo(insertBiomarkerOrder.BiomarkerId));
+                Assert.That(addedEntity.UserId, Is.EqualTo(insertBiomarkerOrder.UserId));
+                Assert.That(addedEntity.OrderNumber, Is.EqualTo(insertBiomarkerOrder.OrderNumber));
+                Assert.That(addedEntity.PreferredUnit, Is.EqualTo(insertBiomarkerOrder.PreferredUnit));
+            });
+        }
+
+
+        #endregion
+
+
+        #region EditBiomarkerOrder
+
+        [Test]
+        public async Task EditBiomarkerOrder_Receives_Db_Call()
+        {
+            _dbSet.Add(insertBiomarkerOrder);
+            _context.SaveChanges();
+
+            await _userUOW.StoreOrEditBiomarkerOrder(new [] {updateBiomarkerOrder}, "TestUser");
+
+            var updatedEntity = _dbSet.Find(updateBiomarkerOrder.UserId, updateBiomarkerOrder.BiomarkerId);
+            Assert.That(updatedEntity, Is.Not.Null);
+            Assert.Multiple(() =>
+            {
+                Assert.That(updatedEntity.BiomarkerId, Is.EqualTo(updateBiomarkerOrder.BiomarkerId));
+                Assert.That(updatedEntity.UserId, Is.EqualTo(updateBiomarkerOrder.UserId));
+                Assert.That(updatedEntity.OrderNumber, Is.EqualTo(updateBiomarkerOrder.OrderNumber));
+                Assert.That(updatedEntity.PreferredUnit, Is.EqualTo(updateBiomarkerOrder.PreferredUnit));
+            });
+        }
+
+
+        #endregion
+
+
+        #region TearDown
+
+        [TearDown]
+        public void TearDown()
+        {
+            _context.Database.EnsureDeleted();
+        }
+
+        #endregion
 
 
         [Test]
         public async Task CreatedUser_GivenMockedUserDto_ReturnOkResult()
         {
             //Arrange
-            var sut = new UserUOW(_ceContext, _communicationService);
+            var sut = new UserUOW(_context, _communicationService);
             var user = MockDataProvider.GetMockedUser();
             var userIdInfoRecord = MockDataProvider.GetUserIdInformationRecord();
 
@@ -81,7 +146,7 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
         public async Task ProcessCreationRequest_GivenMockedAccessDto_ReturnOkResult()
         {
             //Arrange
-            var sut = new UserUOW(_ceContext, _communicationService);
+            var sut = new UserUOW(_context, _communicationService);
             var accessDto = MockDataProvider.GetMockedAccessRequestDto();
 
             //Act
@@ -102,10 +167,10 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
             mockedUser.UserId = userId;
             mockedUser.TenantID = mockIds.TenantId;
                 
-            _ceContext.Users.Add(mockedUser);
-            _ceContext.SaveChanges();
+            _context.Users.Add(mockedUser);
+            _context.SaveChanges();
 
-            var sut = new UserUOW(_ceContext, _communicationService);
+            var sut = new UserUOW(_context, _communicationService);
             
             //Act
             var returnedUser = sut.GetUser(userId);

@@ -3,21 +3,21 @@ namespace CE_API_Test.TestUtilities;
 
 public class MockedInputPatientDataService
 {
-    public ScoringRequestDto? GetPatientBiomarkers(string patientId) => GetMockedPatientById(patientId);
+    public static ScoringRequestDto GetPatientBiomarkers(string patientId) => GetMockedPatientById(patientId);
 
-    private ScoringRequestDto GetMockedPatientById(string patientId)
+    private static ScoringRequestDto GetMockedPatientById(string patientId)
     {
-        var patientData = CreateMockedPatientData(patientId);
+        var patientData = CreateMockedPatientData();
 
         return patientData.First();
     }
 
-    private List<ScoringRequestDto> CreateMockedPatientData(string patientId)
+    private static List<ScoringRequestDto> CreateMockedPatientData()
     {
         var patientDto = new ScoringRequestDto();
         var mockDataProvider = new MockPatientDataProvider(patientDto);
 
-        patientDto = mockDataProvider.CreateMockedData(patientId);
+        patientDto = mockDataProvider.CreateMockedData();
 
         return new List<ScoringRequestDto>() { patientDto };
     }
@@ -33,14 +33,14 @@ public class MockedInputPatientDataService
             _random = new Random();
         }
 
-        public ScoringRequestDto CreateMockedData(string patientId)
+        public ScoringRequestDto CreateMockedData()
         {
-            FillDtoPropertiesWithRandomValues(patientId);
+            FillDtoPropertiesWithRandomValues();
 
             return _ScoringRequestDto;
         }
 
-        private void FillDtoPropertiesWithRandomValues(string patientId)
+        private void FillDtoPropertiesWithRandomValues()
         {
             foreach (var property in _ScoringRequestDto.GetType().GetProperties())
             {
@@ -49,26 +49,24 @@ public class MockedInputPatientDataService
                 {
                     var wrapperInstance = Activator.CreateInstance(property.PropertyType);
                     var valueProperty = property.PropertyType.GetProperty("Value");
-
-                    valueProperty.SetValue(wrapperInstance, GetRandomValue(valueProperty.PropertyType));
-                    property.SetValue(_ScoringRequestDto, wrapperInstance);
+                    if (valueProperty is not null)
+                    {
+                        valueProperty.SetValue(wrapperInstance, GetRandomValue(valueProperty.PropertyType));
+                        property.SetValue(_ScoringRequestDto, wrapperInstance);
+                    }
                 }
             }
         }
 
-        private object? GetRandomValue(Type valuePropPropertyType)
+        private object GetRandomValue(Type valuePropPropertyType)
         {
-            switch (valuePropPropertyType.Name)
-            {
-                case "Boolean":
-                    return GetRandomBoolValue();
-                case "Single":
-                    return GetNextFloatValue();
-                case "String":
-                    return "Mock";
-                default:
-                    return null;
-            }
+            return valuePropPropertyType.Name switch {
+                "Boolean" => GetRandomBoolValue(),
+                "Single" => GetNextFloatValue(),
+                "String" => "Mock",
+                _ => Activator.CreateInstance(valuePropPropertyType)!,
+            };
+            
         }
 
         private bool GetRandomBoolValue() => _random.Next(2) > 1;

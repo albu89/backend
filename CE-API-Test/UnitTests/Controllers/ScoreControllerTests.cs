@@ -2,7 +2,6 @@
 using CE_API_Test.TestUtilities;
 using CE_API_V2.Controllers;
 using CE_API_V2.Hasher;
-using CE_API_V2.Localization.JsonStringFactroy;
 using CE_API_V2.Models;
 using CE_API_V2.Models.DTO;
 using CE_API_V2.Models.Mapping;
@@ -10,7 +9,6 @@ using CE_API_V2.Services;
 using CE_API_V2.Services.Interfaces;
 using CE_API_V2.UnitOfWorks;
 using CE_API_V2.UnitOfWorks.Interfaces;
-using CE_API_V2.Validators;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
@@ -21,7 +19,6 @@ namespace CE_API_Test.UnitTests.Controllers
     [TestFixture]
     public class ScoreControllerTests
     {
-        private HttpClient _httpClient;
         private IScoringUOW _scoringUow;
         private IValueConversionUOW _valueConversionUow;
         private IPatientIdHashingUOW _patientHashingUow;
@@ -56,11 +53,11 @@ namespace CE_API_Test.UnitTests.Controllers
             valueConversionUow
                 .Setup(x => x.ConvertToScoringRequest(It.IsAny<ScoringRequestDto>(), It.IsAny<string>(),
                     It.IsAny<string>())).Returns(mockedScoringRequest);
-            scoringTemplateService.Setup(x => x.GetTemplate(It.IsAny<string>())).Returns(Task.FromResult(new ScoreSummary()));
+            scoringTemplateService.Setup(x => x.GetTemplate(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(new ScoreSummary()));
 
             _valueConversionUow = valueConversionUow.Object;
             var hashingUowMock = new Mock<IPatientIdHashingUOW>();
-            hashingUowMock.Setup(x => x.HashPatientId(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTimeOffset>())).Returns(It.IsAny<string>);
+            hashingUowMock.Setup(x => x.HashPatientId(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>())).Returns(It.IsAny<string>);
             _patientHashingUow = hashingUowMock.Object;
             _inputValidationService = new InputValidationService(new CE_API_V2.Validators.ScoringRequestValidator());
             _scoringTemplateService = scoringTemplateService.Object;
@@ -118,7 +115,7 @@ namespace CE_API_Test.UnitTests.Controllers
         }
 
         [Test]
-        public async Task GetScoringRequest_GivenCorrespondingRequestGuid_ReturnsOkResultWithSocringSummary()
+        public async Task GetScoringRequest_GivenCorrespondingRequestGuid_ReturnsOkResultWithScoringSummary()
         {
             //Arrange
             string name = "name";
@@ -231,7 +228,7 @@ namespace CE_API_Test.UnitTests.Controllers
         }
 
         [Test]
-        public async Task GetScoringRequestsParameterless_WithoutParameters_ReturnOkRequestResult()
+        public void GetScoringRequestsParameterless_WithoutParameters_ReturnOkRequestResult()
         {
             //Arrange
             var sut = new ScoreController(_scoringUow, _patientHashingUow,  _inputValidationService, _scoringTemplateService, _mapper);
@@ -248,12 +245,12 @@ namespace CE_API_Test.UnitTests.Controllers
         }
 
         [Test]
-        public async Task GetScoringRequests_WithParameters_ReturnOkRequestResult()
+        public void GetScoringRequests_WithParameters_ReturnOkRequestResult()
         {
             //Arrange
             string name = "name";
             string lastname = "lastname";
-            DateTime dateOfBirth = new DateTime(2000, 1, 1);
+            DateTime dateOfBirth = new(2000, 1, 1);
 
             var sut = new ScoreController(_scoringUow, _patientHashingUow,  _inputValidationService, _scoringTemplateService, _mapper);
 

@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Globalization;
+using AutoMapper;
 using CE_API_V2.Data;
 using CE_API_V2.Data.Repositories;
 using CE_API_V2.Data.Repositories.Interfaces;
@@ -179,8 +180,8 @@ namespace CE_API_V2.UnitOfWorks
         public ScoringResponseSummary GetScoreSummary(ScoringResponse recentScore)
         {
             var scoreSummary = _mapper.Map<ScoringResponse, ScoringResponseSummary>(recentScore);
-
-            return _scoreSummaryUtility.SetAdditionalScoringParams(scoreSummary);
+            
+            return _scoreSummaryUtility.SetAdditionalScoringParams(scoreSummary, CultureInfo.CurrentUICulture.Name);
         }
 
         private async Task<ScoringResponse?> RequestScore(ScoringRequest scoringRequest)

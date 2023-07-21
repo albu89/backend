@@ -1,10 +1,11 @@
-﻿using CE_API_V2.Models.Enum;
 using System.ComponentModel.DataAnnotations;
+using CE_API_V2.Models.Enum;
 
 namespace CE_API_V2.Models
 {
     public class User
     {
+        public ICollection<BiomarkerOrderModel> BiomarkerOrders { get; set; }
         //Not transmitted by the frontend-Dto
         [Key]
         public string UserId { get; set; }

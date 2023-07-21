@@ -8,11 +8,11 @@ namespace CE_API_V2.Models.DTO
     public class ScoringRequestDto
     {
         #region BaseInfo
-        public string FirstName { get; set; }
+        public string? FirstName { get; set; } = string.Empty;
 
-        public string LastName { get; set; }
+        public string? LastName { get; set; } = string.Empty;
 
-        public DateTime DateOfBirth { get; set; }
+        public DateTime? DateOfBirth { get; set; }
         #endregion
 
         #region Additional Properties

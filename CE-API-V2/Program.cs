@@ -74,7 +74,6 @@ builder.Services.AddScoped<IBiomarkersTemplateService, BiomarkersTemplateService
 builder.Services.AddScoped<IValidator<ScoringRequestDto>,ScoringRequestValidator>();
 builder.Services.AddScoped<IPatientIdHashingUOW, PatientIdHashingUOW>();
 builder.Services.AddScoped<IScoringUOW, ScoringUOW>();
-builder.Services.AddScoped<IPatientIdHashingUOW, PatientIdHashingUOW>();
 builder.Services.AddScoped<IValueConversionUOW, ValueConversionUOW>();
 builder.Services.AddScoped<IUserUOW, UserUOW>();
 builder.Services.AddScoped<IInputValidationService, InputValidationService>();

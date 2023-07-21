@@ -10,4 +10,6 @@ public interface IGenericRepository<T>
     IEnumerable<T> Get( Expression<Func<T, bool>> filter = default,
         Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = default,
         string includeProperties = "");
+
+    T Update(T entityToUpdate);
 }

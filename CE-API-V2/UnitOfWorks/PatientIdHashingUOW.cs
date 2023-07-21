@@ -12,7 +12,7 @@ namespace CE_API_V2.Hasher
             _config = config;
         }
 
-        public string HashPatientId(string firstName, string lastName, DateTimeOffset dateOfBirth)
+        public string HashPatientId(string firstName, string lastName, DateTime dateOfBirth)
         {
             try
             {
@@ -20,7 +20,7 @@ namespace CE_API_V2.Hasher
                 // Immediately dereference the values once used
                 firstName = null;
                 lastName = null;
-                dateOfBirth = new DateTimeOffset();
+                dateOfBirth = new DateTime();
                 using HMACSHA512 hmac = new HMACSHA512(Encoding.UTF8.GetBytes(_config["Salt"]));
                 byte[] hashValue = hmac.ComputeHash(bytes);
                 string hash = Convert.ToBase64String(hashValue);
@@ -33,7 +33,7 @@ namespace CE_API_V2.Hasher
             }
         }
 
-        public bool VerifyPatientId(string firstName, string lastName, DateTimeOffset dateOfBirth, string hashedPatientInfo)
+        public bool VerifyPatientId(string firstName, string lastName, DateTime dateOfBirth, string hashedPatientInfo)
         {
             try
             {
@@ -41,7 +41,7 @@ namespace CE_API_V2.Hasher
                 // Immediately dereference the values once used
                 firstName = null;
                 lastName = null;
-                dateOfBirth = new DateTimeOffset();
+                dateOfBirth = new DateTime();
                 bool err = false;
 
                 using (HMACSHA512 hmac = new HMACSHA512(Encoding.UTF8.GetBytes(_config["Salt"])))

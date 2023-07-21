@@ -3,7 +3,9 @@ using AutoMapper;
 using CE_API_V2.Constants;
 using CE_API_V2.Models.DTO;
 using CE_API_V2.Services.Interfaces;
+using CE_API_V2.UnitOfWorks.Interfaces;
 using CE_API_V2.Utility;
+using Microsoft.Identity.Client;
 
 namespace CE_API_V2.Services;
 
@@ -14,23 +16,26 @@ public class ScoringTemplateService : IScoringTemplateService
     private readonly IMapper _mapper;
     private readonly IScoreSummaryUtility _scoreSummaryUtility;
     private readonly IBiomarkersTemplateService _biomarkersTemplateService;
+    private readonly IUserUOW _userUow;
 
-    public ScoringTemplateService(IMapper mapper, IBiomarkersTemplateService biomarkersTemplateService, IScoreSummaryUtility scoreSummaryUtility)
+    public ScoringTemplateService(IMapper mapper, IBiomarkersTemplateService biomarkersTemplateService, IScoreSummaryUtility scoreSummaryUtility, IUserUOW userUow)
     {
         _mapper = mapper;
         _biomarkersTemplateService = biomarkersTemplateService;
         _scoreSummaryUtility = scoreSummaryUtility;
+        _userUow = userUow;
     }
 
-    public async Task<ScoreSummary> GetTemplate(string locale = LocalizationConstants.DefaultLocale)
+    public async Task<ScoreSummary> GetTemplate(string userId, string locale = LocalizationConstants.DefaultLocale)
     {
         var filePath = TryGetLocalizedFilePath(locale);
         using StreamReader reader = new StreamReader(filePath);
         var json = await reader.ReadToEndAsync();
 
         var deserializedSchema = JsonSerializer.Deserialize<ScoringSchema>(json);
-        var categories = _scoreSummaryUtility.GetCategories();
+        var categories = _scoreSummaryUtility.GetCategories(locale);
         var biomarkers = await _biomarkersTemplateService.GetTemplate(locale);
+        biomarkers = _userUow.OrderTemplate(biomarkers, userId);
 
         var scoreSchemaDto = _mapper.Map<ScoreSummary>(deserializedSchema);
         scoreSchemaDto.Biomarkers = biomarkers.ToList();

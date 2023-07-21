@@ -1,5 +1,6 @@
 ﻿using CE_API_V2.Models.DTO;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using CE_API_V2.Services.Interfaces;
 using AutoMapper;
 using CE_API_V2.Constants;
@@ -8,7 +9,10 @@ namespace CE_API_V2.Services
 {
     public class BiomarkersTemplateService : IBiomarkersTemplateService
     {
-        private const string GeneralBiomarkerSchemaFile = "BiomarkersSchema.json";
+        
+        private const string GeneralBiomarkerSchemaFile = "BiomarkersSchema";
+        private const string GeneralBiomarkerSchemaInfoFile = "BiomarkersSchema.info";
+        private const string GeneralBiomarkersSchemaFileEnding = ".json";
 
         private readonly IMapper _mapper;
 
@@ -19,12 +23,30 @@ namespace CE_API_V2.Services
         
         public async Task<IEnumerable<BiomarkerSchemaDto>> GetTemplate(string locale = LocalizationConstants.DefaultLocale)
         {
-            var generalBiomarkerSchema = await DeserializeSchema<List<BiomarkersGeneral>>(GeneralBiomarkerSchemaFile);
+            return await GetTemplateFromUrl(locale, Path.Combine(LocalizationConstants.TemplatesSubpath, string.Concat(GeneralBiomarkerSchemaFile, GeneralBiomarkersSchemaFileEnding)));
+        }
+        private async Task<IEnumerable<BiomarkerSchemaDto>> GetTemplateFromUrl(string locale, string filePath)
+        {
+
+            var generalBiomarkerSchema = await DeserializeSchema<List<BiomarkersGeneral>>(filePath);
 
             var localizedSchemaFilePath = TryGetLocalizedFilePath(locale);
             var localizedBiomarkerSchema = await DeserializeSchema<List<BiomarkersLocalized>>(localizedSchemaFilePath);
 
             return CombineSchemas(generalBiomarkerSchema, localizedBiomarkerSchema);
+        }
+        public async Task<Dictionary<string, IEnumerable<BiomarkerSchemaDto>>> GetAllTemplates()
+        {
+            var result = new Dictionary<string, IEnumerable<BiomarkerSchemaDto>>();
+            var defaultTemplatePath = Path.Combine(LocalizationConstants.TemplatesSubpath, string.Concat(GeneralBiomarkerSchemaFile, GeneralBiomarkersSchemaFileEnding));
+            var allFiles = Directory.GetFiles(LocalizationConstants.TemplatesSubpath).Where(x => x.Contains(GeneralBiomarkerSchemaInfoFile));
+            foreach (var file in allFiles)
+            {
+                var locale = Regex.Match(file, $"{GeneralBiomarkerSchemaInfoFile}\\.(.*)\\.json").Groups.Values.FirstOrDefault().Value;
+                var schema = await GetTemplateFromUrl(locale, defaultTemplatePath);
+                result.Add(locale, schema);
+            }
+            return result;
         }
 
         private async Task<T?> DeserializeSchema<T>(string filePath)
@@ -61,12 +83,12 @@ namespace CE_API_V2.Services
 
         private static string TryGetLocalizedFilePath(string locale)
         {
-            var path = string.Concat("BiomarkersSchema.info.",locale, ".json");
+            var path = Path.Combine(LocalizationConstants.TemplatesSubpath, string.Concat("BiomarkersSchema.info.",locale, ".json"));
 
             if (File.Exists(path))
                 return path;
             
-            path = string.Concat("BiomarkersSchema.info.", LocalizationConstants.DefaultLocale, ".json");
+            path = Path.Combine(LocalizationConstants.TemplatesSubpath, string.Concat("BiomarkersSchema.info.", LocalizationConstants.DefaultLocale, ".json"));
             if (!File.Exists(path))
             {
                 throw new FileNotFoundException($"The requested file was not found. Requested File: {path}");

@@ -5,6 +5,7 @@ using CE_API_V2.Models.DTO;
 using CE_API_V2.Models.Mapping;
 using CE_API_V2.Services;
 using CE_API_V2.Services.Interfaces;
+using CE_API_V2.UnitOfWorks.Interfaces;
 using CE_API_V2.Utility;
 using Microsoft.IdentityModel.Tokens;
 using Moq;
@@ -29,9 +30,13 @@ public class ScoreSummaryUtilityTests
         var mapperConfig = new MapperConfiguration(mc => { mc.AddProfile(new MappingProfile()); });
         var mapper = mapperConfig.CreateMapper();
 
+        var userUowMock = new Mock<IUserUOW>();
+        userUowMock.Setup(u => u.GetUser(It.IsAny<string>())).Returns(new User() { UserId = "123" });
+        userUowMock.Setup(u => u.OrderTemplate(It.IsAny<IEnumerable<BiomarkerSchemaDto>>(), It.IsAny<string>())).Returns(biomarkersTemplateService.Object.GetTemplate("").GetAwaiter().GetResult());
+
         _scoreSummaryUtility = new ScoreSummaryUtility(mapper); //No mock needed
         _biomarkerServiceTemplateService = biomarkersTemplateService.Object;
-        _scoringTemplateService = new ScoringTemplateService(mapper, _biomarkerServiceTemplateService, _scoreSummaryUtility);
+        _scoringTemplateService = new ScoringTemplateService(mapper, _biomarkerServiceTemplateService, _scoreSummaryUtility, userUowMock.Object);
     }
 
     [Test]
@@ -61,9 +66,9 @@ public class ScoreSummaryUtilityTests
 
     [Test]
     [TestCase(0.10, "<5%")]
-    [TestCase(0.30, "20%")]
-    [TestCase(0.70, "50%")]
-    [TestCase(0.74, ">75%")]
+    [TestCase(0.301, "20%")]
+    [TestCase(0.701, "50%")]
+    [TestCase(0.751, ">75%")]
     public async Task SetAdditionalScoringParams_GivenVariousScores_ExpectedAddedMissingParameters(double score, string expectedRiskValue)
     {
         //Arrange
@@ -90,7 +95,6 @@ public class ScoreSummaryUtilityTests
     [TestCase("en-GB")]
     [TestCase("de-DE")]
     [TestCase("fr-FR")]
-
     public async Task GetCategories_GivenCorrectLocalization_ExpectedCategories(string locale)
     {
         //Arrange
@@ -102,7 +106,7 @@ public class ScoreSummaryUtilityTests
         result.Should().NotBeNull();
         result.Count().Should().Be(4);
         result.Any(x => x.RiskValue.IsNullOrEmpty()).Should().BeFalse();
-        result.Any(x => x.Id ==0).Should().BeFalse();
+        result.Any(x => x.Id == 0).Should().BeFalse();
         result.Any(x => x.LongText.IsNullOrEmpty()).Should().BeFalse();
         result.Any(x => x.LowerLimit.IsNullOrEmpty()).Should().BeFalse();
         result.Any(x => x.ShortText.IsNullOrEmpty()).Should().BeFalse();
@@ -115,15 +119,15 @@ public class ScoreSummaryUtilityTests
         //Arrange
         var locale = "wrongvalue";
 
-       var expectedAbbreviations = new Dictionary<string, string>
+        var expectedAbbreviations = new Dictionary<string, string>
         {
-            {"CTA", "computed tomography angiography"},
-            {"FFR", "fractional flow reserve"},
-            {"iwFR", "instantaneous wave-free ratio"}
+            { "CTA", "computed tomography angiography" },
+            { "FFR", "fractional flow reserve" },
+            { "iwFR", "instantaneous wave-free ratio" }
         };
 
         //ActPrior
-        var getTemplateTask = () => _scoringTemplateService.GetTemplate(locale);
+        var getTemplateTask = () => _scoringTemplateService.GetTemplate("123", locale);
         var result = await getTemplateTask.Should().NotThrowAsync();
 
         //Assert

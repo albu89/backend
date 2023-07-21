@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Reflection;
+using System.Text.Json.Serialization;
 using CE_API_V2.Models.DTO;
 namespace CE_API_V2.Utility;
 
@@ -7,10 +8,22 @@ public static class ValidationHelpers
     public static string? GetJsonPropertyKeyName(string propertyName, Type typeToCheck)
     {
         var props = typeToCheck.GetProperties();
+        if (props is null)
+        {
+            return "";
+        }
         var prop = props.FirstOrDefault(x => x.Name == propertyName);
         var customAttribute = prop.GetCustomAttributes(typeof(JsonPropertyNameAttribute), false).FirstOrDefault() as JsonPropertyNameAttribute;
         return customAttribute?.Name;
     }
+
+    public static PropertyInfo? GetPropertyByJsonKey(string jsonKey, Type typeToCheck)
+    {
+        var props = typeToCheck.GetProperties();
+        var prop = props.FirstOrDefault(prop => (prop.GetCustomAttributes(typeof(JsonPropertyNameAttribute), false).FirstOrDefault() as JsonPropertyNameAttribute)?.Name == jsonKey);
+        return prop;
+    }
+
     private static BiomarkerSchemaUnitDto? GetCorrespondingUnit(IEnumerable<BiomarkerSchemaDto> template, string requestUnitType, string propertyName)
     {
 

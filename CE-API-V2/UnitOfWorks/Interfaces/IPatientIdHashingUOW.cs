@@ -2,8 +2,8 @@
 {
 public interface IPatientIdHashingUOW
 {
-        public string HashPatientId(string firstName, string lastName, DateTimeOffset dateOfBirth);
+        public string HashPatientId(string firstName, string lastName, DateTime dateOfBirth);
 
-        public bool VerifyPatientId(string firstName, string lastName, DateTimeOffset dateOfBirth, string hashedPatientInfo);
+        public bool VerifyPatientId(string firstName, string lastName, DateTime dateOfBirth, string hashedPatientInfo);
     }
 }

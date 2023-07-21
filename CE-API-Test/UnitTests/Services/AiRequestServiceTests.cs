@@ -24,7 +24,7 @@ namespace CE_API_Test.UnitTests.Services
             _scoringRequest = MockDataProvider.GetMockedScoringRequest();
             
             //Act
-            var result = await _sut.RequestScore(_scoringRequest);
+            var result = await _sut!.RequestScore(_scoringRequest);
 
             //Assert
             result.Should().NotBeNull();

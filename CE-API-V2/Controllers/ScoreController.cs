@@ -11,11 +11,14 @@ using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using System.Globalization;
 using System.Security.Claims;
+using CE_API_V2.Models.Exceptions;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CE_API_V2.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
 public class ScoreController : ControllerBase
 {
     private readonly IInputValidationService _inputValidationService;
@@ -48,14 +51,15 @@ public class ScoreController : ControllerBase
     [TypeFilter(typeof(ValidationExceptionFilter))]
     public async Task<IActionResult> PostPatientData([FromBody] ScoringRequestDto value, string? locale)
     {
-        if (value == null)
+        if (value == null || string.IsNullOrEmpty(value.FirstName) || string.IsNullOrEmpty(value.LastName) || value.DateOfBirth is null)
         {
             return BadRequest();
         }
-        var patientId = _hashingUow.HashPatientId(value.FirstName, value.LastName, value.DateOfBirth);
+
+        var patientId = _hashingUow.HashPatientId(value.FirstName, value.LastName, value.DateOfBirth.Value);
         value.FirstName = null;
         value.LastName = null;
-        value.DateOfBirth = new DateTime();
+        value.DateOfBirth = null;
 
         //POST
         var userCulture = new CultureInfo("en-GB");
@@ -73,7 +77,7 @@ public class ScoreController : ControllerBase
         var validationResult = _inputValidationService.ScoringRequestIsValid(value);
         if (!validationResult.IsValid)
         {
-            throw new ValidationException("Scoringrequest was not valid.", validationResult.Errors);
+            throw new BiomarkersValidationException("Scoringrequest was not valid.", validationResult.Errors, userCulture);
         }
 
         var userId = GetUserId();
@@ -98,7 +102,7 @@ public class ScoreController : ControllerBase
 
     [HttpGet("patient")]
     [Produces("application/json", Type = typeof(IEnumerable<ScoringHistoryDto>))]
-    public IActionResult GetScoringRequests(string name, string lastname, DateTimeOffset dateOfBirth)
+    public IActionResult GetScoringRequests(string name, string lastname, DateTime dateOfBirth)
     {
         var requests = GetScoringRequestList(name, lastname, dateOfBirth);
 
@@ -107,13 +111,26 @@ public class ScoreController : ControllerBase
 
     [HttpGet("request")]
     [Produces("application/json", Type = typeof(IEnumerable<ScoringResponseSummary>))]
-    public IActionResult GetScoringRequest(string name, string lastname, DateTime dateOfBirth, Guid requestId)
+    public IActionResult GetScoringRequest(string name, string lastname, DateTime dateOfBirth, Guid requestId, string locale = "en-GB")
     {
         var patientId = _hashingUow.HashPatientId(name, lastname, dateOfBirth);
         // Immediately dereference the values once used
         name = null;
         lastname = null;
         dateOfBirth = new DateTime();
+        
+        var userCulture = new CultureInfo("en-GB");
+        try
+        {
+            userCulture = new CultureInfo(locale);
+        }
+        catch (Exception e)
+        {
+            // Log exception
+            Console.Error.WriteLine(e);
+        }
+
+        CultureInfo.CurrentUICulture = userCulture;
 
         var userId = GetUserId();
         var scoringResponse = _scoringUow.RetrieveScoringResponse(requestId, userId);
@@ -128,13 +145,13 @@ public class ScoreController : ControllerBase
         return scoreSummary is null ? BadRequest() : Ok(scoreSummary);
     }
 
-    private IEnumerable<ScoringHistoryDto> GetScoringRequestList(string name, string lastname, DateTimeOffset dateOfBirth)
+    private IEnumerable<ScoringHistoryDto> GetScoringRequestList(string name, string lastname, DateTime dateOfBirth)
     {
         var patientId = _hashingUow.HashPatientId(name, lastname, dateOfBirth);
         // Immediately dereference the values once used
         name = null;
         lastname = null;
-        dateOfBirth = new DateTimeOffset();
+        dateOfBirth = new DateTime();
         var userId = GetUserId();
 
         return _scoringUow.RetrieveScoringHistoryForPatient(patientId, userId);

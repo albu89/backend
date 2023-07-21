@@ -7,7 +7,7 @@ namespace CE_API_V2.Services
 {
     public class UserInformationExtractor : IUserInformationExtractor
     {
-        public UserIdsRecord GetUserIdInformation(ClaimsPrincipal? user)
+        public UserIdsRecord GetUserIdInformation(ClaimsPrincipal user)
         {
             var userId = GetClaimValue(user, ClaimTypes.NameIdentifier);
             var tenantId = GetClaimValue(user, ClaimConstants.TenantId); 
@@ -19,7 +19,7 @@ namespace CE_API_V2.Services
             };
         }
 
-        private string GetClaimValue(ClaimsPrincipal claimsPrincipal, string value)
+        private static string GetClaimValue(ClaimsPrincipal claimsPrincipal, string value)
         {
             var extractedValue = claimsPrincipal?.Claims?.Any() == true
                 ? claimsPrincipal.FindFirstValue(value)

@@ -5,5 +5,5 @@ namespace CE_API_V2.Services.Interfaces;
 
 public interface IScoringTemplateService
 {
-    public Task<ScoreSummary> GetTemplate(string locale = LocalizationConstants.DefaultLocale);
+    public Task<ScoreSummary> GetTemplate( string userId, string locale = LocalizationConstants.DefaultLocale);
 }

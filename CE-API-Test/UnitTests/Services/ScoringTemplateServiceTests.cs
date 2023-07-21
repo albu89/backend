@@ -4,6 +4,8 @@ using CE_API_V2.Models.DTO;
 using CE_API_V2.Models.Mapping;
 using CE_API_V2.Services;
 using CE_API_V2.Services.Interfaces;
+using CE_API_V2.UnitOfWorks;
+using CE_API_V2.UnitOfWorks.Interfaces;
 using CE_API_V2.Utility;
 using Moq;
 using NSubstitute;
@@ -26,10 +28,14 @@ public class ScoringTemplateServiceTests
 
         var mapperConfig = new MapperConfiguration(mc => { mc.AddProfile(new MappingProfile()); });
         var mapper = mapperConfig.CreateMapper();
+        
+        var userUowMock = new Mock<IUserUOW>();
+        userUowMock.Setup(u => u.GetUser(It.IsAny<string>())).Returns(new User(){ UserId = "123"});
+        userUowMock.Setup(u => u.OrderTemplate(It.IsAny<IEnumerable<BiomarkerSchemaDto>>(), It.IsAny<string>())).Returns(biomarkersTemplateService.Object.GetTemplate().GetAwaiter().GetResult());
 
         _scoreSummaryUtility = new ScoreSummaryUtility(mapper); //No mock needed
         _biomarkerServiceTemplateService = biomarkersTemplateService.Object;
-        _scoringTemplateService = new ScoringTemplateService(mapper, _biomarkerServiceTemplateService, _scoreSummaryUtility);
+        _scoringTemplateService = new ScoringTemplateService(mapper, _biomarkerServiceTemplateService, _scoreSummaryUtility, userUowMock.Object);
     }
 
     [Test]
@@ -41,7 +47,7 @@ public class ScoringTemplateServiceTests
         //Arrange
 
         //Act
-        var getTemplateTask = () => _scoringTemplateService.GetTemplate(locale);
+        var getTemplateTask = () => _scoringTemplateService.GetTemplate("123", locale);
         var result = await getTemplateTask.Should().NotThrowAsync();
 
         //Assert
@@ -66,7 +72,7 @@ public class ScoringTemplateServiceTests
         };
 
         //ActPrior
-        var getTemplateTask = () => _scoringTemplateService.GetTemplate(locale);
+        var getTemplateTask = () => _scoringTemplateService.GetTemplate("123", locale);
         var result = await getTemplateTask.Should().NotThrowAsync();
 
         //Assert

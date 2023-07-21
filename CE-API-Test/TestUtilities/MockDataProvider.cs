@@ -4,6 +4,7 @@ using CE_API_V2.Models.Enum;
 using CE_API_V2.Models.Records;
 using System.Collections.Immutable;
 using System.Text.Json;
+using CE_API_V2.Models.Mapping;
 using static CE_API_V2.Models.Enum.PatientDataEnums;
 
 namespace CE_API_Test.TestUtilities
@@ -13,7 +14,7 @@ namespace CE_API_Test.TestUtilities
         internal static ScoringRequestDto GetMockedScoringRequestDto()
         {
             var mockingService = new MockedInputPatientDataService();
-            var biomarkers = mockingService.GetPatientBiomarkers("2");
+            var biomarkers = MockedInputPatientDataService.GetPatientBiomarkers("2");
 
             return biomarkers;
         }
@@ -172,11 +173,9 @@ namespace CE_API_Test.TestUtilities
 
             foreach (var property in mockedAiDto.GetType().GetProperties())
             {
-                var propertyType = Nullable.GetUnderlyingType(property.PropertyType) != null
-                    ? Nullable.GetUnderlyingType(property.PropertyType)
-                    : property.PropertyType;
+                var propertyType = Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType;
 
-                switch (propertyType.Name)
+                switch (propertyType?.Name ?? string.Empty)
                 {
                     case "String":
                         property.SetValue(mockedAiDto, "mock");
@@ -367,7 +366,9 @@ namespace CE_API_Test.TestUtilities
                 Surname = "Mock",
                 TelephoneNumber = "Mock",
                 UnitLabValues = "Mock",
-                Role = UserRole.MedicalDoctor
+                Role = UserRole.MedicalDoctor,
+                UserId = "MockedUserId",
+                TenantID = "MockedTenantId"
             };
         }
 
@@ -457,6 +458,54 @@ namespace CE_API_Test.TestUtilities
                 RecommendationLongText = "RecommendationLongText",
                 Biomarkers = GetFakeBiomarkers()
             };
+        }
+
+
+        public static BiomarkerOrder GetMockedOrder()
+        {
+            var order = new BiomarkerOrder()
+            {
+                Alat = new BiomarkerOrderEntry() { OrderNumber = 1, PreferredUnit = "SI" },
+                Age = new BiomarkerOrderEntry() { OrderNumber = 2, PreferredUnit = "SI" },
+                Albumin = new BiomarkerOrderEntry() { OrderNumber = 3, PreferredUnit = "SI" },
+                Betablocker = new BiomarkerOrderEntry() { OrderNumber = 4, PreferredUnit = "SI" },
+                Bilirubin = new BiomarkerOrderEntry() { OrderNumber = 5, PreferredUnit = "SI" },
+                Cholesterol = new BiomarkerOrderEntry() { OrderNumber = 6, PreferredUnit = "SI" },
+                Diabetes = new BiomarkerOrderEntry() { OrderNumber = 7, PreferredUnit = "SI" },
+                Diuretic = new BiomarkerOrderEntry() { OrderNumber = 8, PreferredUnit = "SI" },
+                Hdl = new BiomarkerOrderEntry() { OrderNumber = 9, PreferredUnit = "SI" },
+                Height = new BiomarkerOrderEntry() { OrderNumber = 10, PreferredUnit = "SI" },
+                Ldl = new BiomarkerOrderEntry() { OrderNumber = 11, PreferredUnit = "SI" },
+                Leukocytes = new BiomarkerOrderEntry() { OrderNumber = 12, PreferredUnit = "SI" },
+                Mchc = new BiomarkerOrderEntry() { OrderNumber = 13, PreferredUnit = "SI" },
+                Protein = new BiomarkerOrderEntry() { OrderNumber = 14, PreferredUnit = "SI" },
+                Sex = new BiomarkerOrderEntry() { OrderNumber = 15, PreferredUnit = "SI" },
+                Urea = new BiomarkerOrderEntry() { OrderNumber = 16, PreferredUnit = "SI" },
+                Weight = new BiomarkerOrderEntry() { OrderNumber = 17, PreferredUnit = "SI" },
+                AlkalinePhosphatase = new BiomarkerOrderEntry() { OrderNumber = 18, PreferredUnit = "SI" },
+                CaAntagonist = new BiomarkerOrderEntry() { OrderNumber = 19, PreferredUnit = "SI" },
+                ChestPain = new BiomarkerOrderEntry() { OrderNumber = 20, PreferredUnit = "SI" },
+                GlucoseFasting = new BiomarkerOrderEntry() { OrderNumber = 21, PreferredUnit = "SI" },
+                NicotineConsumption = new BiomarkerOrderEntry() { OrderNumber = 22, PreferredUnit = "SI" },
+                OrganicNitrate = new BiomarkerOrderEntry() { OrderNumber = 23, PreferredUnit = "SI" },
+                PancreaticAmylase = new BiomarkerOrderEntry() { OrderNumber = 24, PreferredUnit = "SI" },
+                UricAcid = new BiomarkerOrderEntry() { OrderNumber = 25, PreferredUnit = "SI" },
+                CholesterolLowering_Statin = new BiomarkerOrderEntry() { OrderNumber = 26, PreferredUnit = "SI" },
+                DiastolicBloodPressure = new BiomarkerOrderEntry() { OrderNumber = 27, PreferredUnit = "SI" },
+                HsTroponinT = new BiomarkerOrderEntry() { OrderNumber = 28, PreferredUnit = "SI" },
+                prior_CAD = new BiomarkerOrderEntry() { OrderNumber = 29, PreferredUnit = "SI" },
+                SystolicBloodPressure = new BiomarkerOrderEntry() { OrderNumber = 30, PreferredUnit = "SI" },
+                ACEInhibitor = new BiomarkerOrderEntry() { OrderNumber = 31, PreferredUnit = "SI" },
+                RestingECG = new BiomarkerOrderEntry() { OrderNumber = 32, PreferredUnit = "SI" },
+                TCAggregationInhibitor = new BiomarkerOrderEntry() { OrderNumber = 33, PreferredUnit = "SI" },
+            };
+            return order;
+        }
+
+        public static List<BiomarkerOrderModel> GetMockedOrderModels()
+        {
+            return ManualMapper.ToBiomarkerOrderModels(GetMockedOrder());
+            
         }
     }
 }

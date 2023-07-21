@@ -47,12 +47,4 @@
       <None Remove="Templates\RequestAccessEmailBody.html" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Content Update="BiomarkersSchema.info.en-GB.json">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      </Content>
-    </ItemGroup>
-
 </Project>
