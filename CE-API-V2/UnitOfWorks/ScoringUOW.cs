@@ -7,7 +7,6 @@ using CE_API_V2.Models;
 using CE_API_V2.Models.DTO;
 using CE_API_V2.Services.Interfaces;
 using CE_API_V2.UnitOfWorks.Interfaces;
-using CE_API_V2.Utility;
 
 namespace CE_API_V2.UnitOfWorks
 {
@@ -20,8 +19,8 @@ namespace CE_API_V2.UnitOfWorks
     
         private CEContext _context;
     
-        private IGenericRepository<ScoringRequest> _scoringRequestRepository;
-        private IGenericRepository<ScoringResponse> _scoringResponseRepository;
+        private IGenericRepository<ScoringRequestModel> _scoringRequestRepository;
+        private IGenericRepository<ScoringResponseModel> _scoringResponseRepository;
     
         public ScoringUOW(CEContext context,
             IAiRequestService requestService,
@@ -36,34 +35,34 @@ namespace CE_API_V2.UnitOfWorks
             _valueConversionUow = valueConversionUow;
         }        
     
-        public IGenericRepository<ScoringRequest> ScoringRequestRepository
+        public IGenericRepository<ScoringRequestModel> ScoringRequestRepository
         {
             get
             {
                 if (_scoringRequestRepository == null)
-                    _scoringRequestRepository = new GenericRepository<ScoringRequest>(_context);
+                    _scoringRequestRepository = new GenericRepository<ScoringRequestModel>(_context);
     
                 return _scoringRequestRepository;
             }
         }
     
-        public IGenericRepository<ScoringResponse> ScoringResponseRepository
+        public IGenericRepository<ScoringResponseModel> ScoringResponseRepository
         {
             get
             {
                 if (_scoringResponseRepository == null)
-                    _scoringResponseRepository = new GenericRepository<ScoringResponse>(_context);
+                    _scoringResponseRepository = new GenericRepository<ScoringResponseModel>(_context);
     
                 return _scoringResponseRepository;
             }
         }
     
-        public ScoringRequest StoreScoringRequest(ScoringRequest scoringRequest, string UserId)
+        public ScoringRequestModel StoreScoringRequest(ScoringRequestModel scoringRequestModel, string UserId)
         {
             try
             {
-                scoringRequest.UserId = UserId;
-                ScoringRequestRepository.Insert(scoringRequest);
+                scoringRequestModel.UserId = UserId;
+                ScoringRequestRepository.Insert(scoringRequestModel);
                 _context.SaveChanges();
             }
             catch (Exception e)
@@ -72,10 +71,10 @@ namespace CE_API_V2.UnitOfWorks
                 throw new NotImplementedException();
             }
     
-            return scoringRequest;
+            return scoringRequestModel;
         }
     
-        public ScoringRequest RetrieveScoringRequest(Guid ScoringRequestId, string userId)
+        public ScoringRequestModel RetrieveScoringRequest(Guid ScoringRequestId, string userId)
         {
             var scoringRequest = ScoringRequestRepository.GetByGuid(ScoringRequestId);
     
@@ -86,11 +85,11 @@ namespace CE_API_V2.UnitOfWorks
             return scoringRequest;
         }
     
-        public ScoringResponse StoreScoringResponse(ScoringResponse scoringResponse)
+        public ScoringResponseModel StoreScoringResponse(ScoringResponseModel scoringResponseModel)
         {
             try
             {
-                ScoringResponseRepository.Insert(scoringResponse);
+                ScoringResponseRepository.Insert(scoringResponseModel);
                 _context.SaveChanges();
             }
             catch (Exception e)
@@ -98,17 +97,17 @@ namespace CE_API_V2.UnitOfWorks
                 throw new NotImplementedException();
             }
     
-            return scoringResponse;
+            return scoringResponseModel;
         }
     
-        public IEnumerable<ScoringHistoryDto>? RetrieveScoringHistoryForUser(string UserId)
+        public IEnumerable<SimpleScore>? RetrieveScoringHistoryForUser(string UserId)
         {
-            IEnumerable<ScoringHistoryDto> scoringHistory;
+            IEnumerable<SimpleScore> scoringHistory;
             
             try
             {
                 var scoringRequests = ScoringRequestRepository.Get(x => x.UserId == UserId, null, "Response");
-                scoringHistory = _mapper.Map<List<ScoringHistoryDto>>(scoringRequests);
+                scoringHistory = _mapper.Map<List<SimpleScore>>(scoringRequests);
             }
             catch (Exception e)
             {
@@ -119,15 +118,15 @@ namespace CE_API_V2.UnitOfWorks
             return scoringHistory;
         }
     
-        public IEnumerable<ScoringHistoryDto> RetrieveScoringHistoryForPatient(string PatientId, string UserId)
+        public IEnumerable<SimpleScore> RetrieveScoringHistoryForPatient(string PatientId, string UserId)
         {
-            var scoringHistory = new List<ScoringHistoryDto>();
+            var scoringHistory = new List<SimpleScore>();
     
             try
             {
                 var scoringRequests = ScoringRequestRepository.Get(x => x.UserId.Equals(UserId) &&
                                                                              x.PatientId.Equals(PatientId), null, "Response").ToList();
-                scoringHistory = _mapper.Map<List<ScoringHistoryDto>>(scoringRequests);
+                scoringHistory = _mapper.Map<List<SimpleScore>>(scoringRequests);
             }
             catch (Exception e)
             {
@@ -136,9 +135,9 @@ namespace CE_API_V2.UnitOfWorks
             return scoringHistory;
         }
     
-        public ScoringResponse? RetrieveScoringResponse(Guid scoringRequestId, string userId)
+        public ScoringResponseModel? RetrieveScoringResponse(Guid scoringRequestId, string userId)
         {
-            ScoringResponse? scoringResponse;
+            ScoringResponseModel? scoringResponse;
             try
             {
                 scoringResponse = ScoringResponseRepository.Get(x => x.Request.UserId.Equals(userId) &&
@@ -152,13 +151,11 @@ namespace CE_API_V2.UnitOfWorks
             return scoringResponse;
         }
     
-        public async Task<ScoringResponse> ProcessScoringRequest(ScoringRequestDto value, string userId, string patientId)
+        public async Task<ScoringResponseModel> ProcessScoringRequest(ScoringRequest value, string userId, string patientId)
         {
             var scoringRequest = _valueConversionUow.ConvertToScoringRequest(value, userId, patientId);
-
             if (StoreScoringRequest(scoringRequest, userId) is null)
             {
-                // TODO: Better error handling
                 return null;
             }
             
@@ -171,22 +168,20 @@ namespace CE_API_V2.UnitOfWorks
 
             if(StoreScoringResponse(scoringResponse) is null)
             {
-                // TODO: Handling for failed store
             }
             
             return scoringResponse;
         }
-        
-        public ScoringResponseSummary GetScoreSummary(ScoringResponse recentScore)
+        public ScoringResponse GetScoreSummary(ScoringResponseModel recentScore)
         {
-            var scoreSummary = _mapper.Map<ScoringResponse, ScoringResponseSummary>(recentScore);
+            var scoreSummary = _mapper.Map<ScoringResponseModel, ScoringResponse>(recentScore);
             
             return _scoreSummaryUtility.SetAdditionalScoringParams(scoreSummary, CultureInfo.CurrentUICulture.Name);
         }
 
-        private async Task<ScoringResponse?> RequestScore(ScoringRequest scoringRequest)
+        private async Task<ScoringResponseModel?> RequestScore(ScoringRequestModel scoringRequest)
         {
-            ScoringResponse requestedScore = null;
+            ScoringResponseModel requestedScore = null;
     
             bool scoreIsSucessfullyRetrieved = false;
             int retry = 0;

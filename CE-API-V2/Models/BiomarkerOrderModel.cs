@@ -9,6 +9,6 @@ namespace CE_API_V2.Models
         public int OrderNumber { get; set; }
         public string PreferredUnit { get; set; }
         [JsonIgnore]
-        public User User { get; set; }
+        public UserModel User { get; set; }
     }
 }

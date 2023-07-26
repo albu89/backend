@@ -4,7 +4,7 @@
     /// <summary>
     /// Class holding the response data which is calculated/transferred by the AI
     /// </summary>
-    public class ScoringResponse
+    public class ScoringResponseModel
     {
         public Guid Id { get; set; }
 
@@ -14,7 +14,7 @@
         public DateTimeOffset CreatedOn { get; }
         
         [JsonIgnore]
-        public ScoringRequest Request { get; set; }
+        public ScoringRequestModel Request { get; set; }
         public Guid RequestId { get; set; }
     }
 }

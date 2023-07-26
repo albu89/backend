@@ -3,56 +3,56 @@ namespace CE_API_Test.TestUtilities;
 
 public class MockedInputPatientDataService
 {
-    public static ScoringRequestDto GetPatientBiomarkers(string patientId) => GetMockedPatientById(patientId);
+    public static ScoringRequest? GetPatientBiomarkers(string patientId) => GetMockedPatient();
 
-    private static ScoringRequestDto GetMockedPatientById(string patientId)
+    private static ScoringRequest GetMockedPatient()
     {
         var patientData = CreateMockedPatientData();
 
         return patientData.First();
     }
 
-    private static List<ScoringRequestDto> CreateMockedPatientData()
+    private static List<ScoringRequest> CreateMockedPatientData()
     {
-        var patientDto = new ScoringRequestDto();
+        var patientDto = new ScoringRequest();
         var mockDataProvider = new MockPatientDataProvider(patientDto);
 
         patientDto = mockDataProvider.CreateMockedData();
 
-        return new List<ScoringRequestDto>() { patientDto };
+        return new List<ScoringRequest>() { patientDto };
     }
 
     internal class MockPatientDataProvider
     {
-        private readonly ScoringRequestDto _ScoringRequestDto;
+        private readonly ScoringRequest _scoringRequest;
         private readonly Random _random;
 
-        public MockPatientDataProvider(ScoringRequestDto ScoringRequestDto)
+        public MockPatientDataProvider(ScoringRequest scoringRequest)
         {
-            _ScoringRequestDto = ScoringRequestDto;
+            _scoringRequest = scoringRequest;
             _random = new Random();
         }
 
-        public ScoringRequestDto CreateMockedData()
+        public ScoringRequest CreateMockedData()
         {
             FillDtoPropertiesWithRandomValues();
 
-            return _ScoringRequestDto;
+            return _scoringRequest;
         }
 
         private void FillDtoPropertiesWithRandomValues()
         {
-            foreach (var property in _ScoringRequestDto.GetType().GetProperties())
+            foreach (var property in _scoringRequest.GetType().GetProperties())
             {
                 if (property.PropertyType.IsGenericType &&
-                    property.PropertyType.GetGenericTypeDefinition() == typeof(BiomarkerValueDto<>))
+                    property.PropertyType.GetGenericTypeDefinition() == typeof(BiomarkerValue<>))
                 {
                     var wrapperInstance = Activator.CreateInstance(property.PropertyType);
                     var valueProperty = property.PropertyType.GetProperty("Value");
                     if (valueProperty is not null)
                     {
                         valueProperty.SetValue(wrapperInstance, GetRandomValue(valueProperty.PropertyType));
-                        property.SetValue(_ScoringRequestDto, wrapperInstance);
+                        property.SetValue(_scoringRequest, wrapperInstance);
                     }
                 }
             }

@@ -8,34 +8,34 @@ namespace CE_API_Test.UnitTests.Services
     public class AiRequestServiceTests
     {
         private IAiRequestService _sut;
-        private ScoringRequest _scoringRequest;
+        private ScoringRequestModel _scoringRequestModel;
 
         [SetUp]
         public void SetUp()
         {
             _sut = MockServiceProvider.GenerateAiRequestService();
-            _scoringRequest = MockDataProvider.GetMockedScoringRequest();
+            _scoringRequestModel = MockDataProvider.GetMockedScoringRequest();
         }
     
         [Test]
         public async Task RequestScore_GivenMockedScoringRequest_ReturnsScoringResponse()
         {
             //Arrange
-            _scoringRequest = MockDataProvider.GetMockedScoringRequest();
+            _scoringRequestModel = MockDataProvider.GetMockedScoringRequest();
             
             //Act
-            var result = await _sut!.RequestScore(_scoringRequest);
+            var result = await _sut!.RequestScore(_scoringRequestModel);
 
             //Assert
             result.Should().NotBeNull();
-            result.Should().BeOfType(typeof(ScoringResponse));
+            result.Should().BeOfType(typeof(ScoringResponseModel));
         }
 
         [Test]
         public async Task? PostPatientData_GivenIncorrectHttpConfiguration_ThrowsException()
         {
             //Arrange
-            Func<Task> requestFunc = async () => await _sut.RequestScore(_scoringRequest);
+            Func<Task> requestFunc = async () => await _sut.RequestScore(_scoringRequestModel);
 
             //Act
 

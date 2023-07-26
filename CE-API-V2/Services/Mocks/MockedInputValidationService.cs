@@ -6,8 +6,8 @@ namespace CE_API_V2.Services.Mocks;
 
 public class MockedInputValidationService : IInputValidationService
 {
-    public ValidationResult ScoringRequestIsValid(ScoringRequestDto value) => new ();
-    public bool ValidateUser(CreateUserDto user) => true;
-    public bool BiomarkersAreValid(ScoringRequestDto value) => true;
-    public bool ValidateAccessRequest(AccessRequestDto user) => true;
+    public ValidationResult ScoringRequestIsValid(ScoringRequest request) => new ();
+    public bool ValidateUser(CreateUser user) => true;
+    public bool BiomarkersAreValid(ScoringRequest value) => true;
+    public bool ValidateAccessRequest(AccessRequest user) => true;
 }

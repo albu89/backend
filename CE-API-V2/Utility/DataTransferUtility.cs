@@ -59,14 +59,14 @@ namespace CE_API_V2.Utility
             return returnString;
         }
 
-        public static ScoringResponse ToScoringResponse(string jsonResponse)
+        public static ScoringResponseModel ToScoringResponse(string jsonResponse)
         {
-            var deserializedResponse = JsonSerializationHelper.DeserializeObject<ScoringResponse>(jsonResponse);
+            var deserializedResponse = JsonSerializationHelper.DeserializeObject<ScoringResponseModel>(jsonResponse);
 
             return deserializedResponse;
         }
 
-        public static ScoringResponse? FormatResponse(string jsonResponse)
+        public static ScoringResponseModel? FormatResponse(string jsonResponse)
         {
             var scoringResponse = ToScoringResponse(jsonResponse);
 

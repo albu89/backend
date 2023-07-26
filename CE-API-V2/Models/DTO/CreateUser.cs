@@ -1,11 +1,13 @@
-﻿using CE_API_V2.Models.Enum;
+﻿using System.Text.Json.Serialization;
+using CE_API_V2.Models.Enum;
 
 namespace CE_API_V2.Models.DTO;
 
-public class UserDto
+public class CreateUser
 {
     //Person related
     public string Salutation { get; set; }
+    public string Title { get; set; }
     public string Surname { get; set; }
     public string FirstName { get; set; }
     public string ProfessionalSpecialisation { get; set; }
@@ -15,14 +17,15 @@ public class UserDto
     //Contact details
     public string Address { get; set; }
     public string City { get; set; }
+    public string ZipCode { get; set; }
     public string CountryCode { get; set; }
     public string Country { get; set; }
     public string TelephoneNumber { get; set; }
-    public string EMailAdress { get; set; }
+    public string EMailAddress { get; set; }
 
     //Settings
     public string Language { get; set; }
     public string UnitLabValues { get; set; }
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public PatientDataEnums.ClinicalSetting ClinicalSetting { get; set; }
-    public UserRole Role { get; set; }
 }

@@ -1,13 +1,11 @@
 ﻿using AutoMapper;
 using CE_API_V2.Models.DTO;
-using CE_API_V2.Models;
 using CE_API_V2.UnitOfWorks.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using CE_API_V2.Services.Interfaces;
 using Azure.Communication.Email;
 using CE_API_V2.Utility;
-using System.Security.Claims;
 using CE_API_V2.Models.Mapping;
 
 namespace CE_API_V2.Controllers
@@ -25,10 +23,10 @@ namespace CE_API_V2.Controllers
         private readonly UserHelper _userHelper;
 
         public UserController(IMapper mapper,
-                                IUserUOW userUOW,
-                                IInputValidationService inputValidationService,
-                                IUserInformationExtractor userInformationExtractor,
-                                UserHelper userHelper)
+            IUserUOW userUOW,
+            IInputValidationService inputValidationService,
+            IUserInformationExtractor userInformationExtractor,
+            UserHelper userHelper)
         {
             _mapper = mapper;
             _userUOW = userUOW;
@@ -38,52 +36,31 @@ namespace CE_API_V2.Controllers
             _userHelper = userHelper;
         }
 
-        [HttpPost("preferences")]
-        public async Task<IActionResult> StoreOrEditBiomarkerOrder(BiomarkerOrder dtos)
-        {
-            try
-            {
-                var idInformation = _userInformationExtractor.GetUserIdInformation(User);
-                var user = _userUow.GetUser(idInformation.UserId);
-
-                var order = ManualMapper.ToBiomarkerOrderModels(dtos);
-                foreach (var orderEntry in order){
-                    orderEntry.UserId = user.UserId;
-                }
-
-                await _userUOW.StoreOrEditBiomarkerOrder(order, user.UserId);
-                var orderDto = ManualMapper.ToBiomarkerOrder(_userUOW.GetBiomarkerOrders(user.UserId));
-                return Ok(orderDto);
-            }
-            catch (Exception)
-            {
-                return BadRequest();
-            }
-        }
-
-        [HttpGet("preferences")]
-        public async Task<IActionResult> GetBiomarkerOrders()
-        {
-            try
-            {
-                var idInformation = _userInformationExtractor.GetUserIdInformation(User);
-                var user = _userUow.GetUser(idInformation.UserId);
-
-                var biomarkerOrders = ManualMapper.ToBiomarkerOrder(_userUOW.GetBiomarkerOrders(user.UserId));
-
-                return  Ok(biomarkerOrders);
-            }
-            catch (Exception)
-            {
-                return BadRequest();
-            }
-        }
-
-        [HttpPost("me")]
+        [HttpGet(Name = "GetCurrentUser")]
         [Authorize]
-        public async Task<IActionResult> CreateUser([FromBody] CreateUserDto userDto)
+        [Produces("application/json", Type = typeof(User))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult GetCurrentUser()
         {
-            if (!_inputValidationService.ValidateUser(userDto))
+            var idInformation = _userInformationExtractor.GetUserIdInformation(User);
+            var userId = idInformation.UserId;
+
+            var currentUser = _userUow.GetUser(userId);
+
+            var userDto = _mapper.Map<User>(currentUser);
+
+            return currentUser is not null ? Ok(userDto) : NotFound();
+        }
+
+        [HttpPost(Name = "CreateCurrentUser")]
+        [Authorize]
+        [Produces("application/json", Type = typeof(User))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> CreateUser([FromBody] CreateUser user)
+        {
+            if (!_inputValidationService.ValidateUser(user))
             {
                 return BadRequest();
             }
@@ -96,40 +73,96 @@ namespace CE_API_V2.Controllers
                 return BadRequest();
             }
 
-            var user = _userHelper.MapToUserModel(userDto, idInformation);
+            var userModel = _userHelper.MapToUserModel(user, idInformation);
 
-            var storedUser = await _userUow.StoreUser(user);
+            var storedUser = await _userUow.StoreUser(userModel);
 
-            return storedUser is not null ? Ok(_mapper.Map<UserDto>(storedUser)) : BadRequest();
+            return storedUser is not null ? Ok(_mapper.Map<User>(storedUser)) : BadRequest();
         }
 
-        [HttpPost("request")]
+        [HttpPost("request", Name = "RequestApplicationAccess")]
         [Authorize]
-        public async Task<IActionResult> RequestAccess([FromBody] AccessRequestDto accessDto)
+        [Produces("application/json", Type = typeof(User))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> RequestAccess([FromBody] AccessRequest access)
         {
-            if (!_inputValidationService.ValidateAccessRequest(accessDto))
+            if (!_inputValidationService.ValidateAccessRequest(access))
             {
                 return BadRequest();
-            };
+            }
+            ;
 
-            EmailSendStatus requestStatus = await _userUow.ProcessAccessRequest(accessDto);
+            EmailSendStatus requestStatus = await _userUow.ProcessAccessRequest(access);
 
             return requestStatus.Equals(EmailSendStatus.Succeeded) ? Ok() : BadRequest();
         }
 
+        [HttpGet("preferences", Name = "GetPreferences")]
+        [Produces("application/json", Type = typeof(BiomarkerOrder))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetPreferences()
+        {
+            try
+            {
+                var idInformation = _userInformationExtractor.GetUserIdInformation(User);
+                var user = _userUow.GetUser(idInformation.UserId);
+                var biomarkerOrders = ManualMapper.ToBiomarkerOrder(_userUOW.GetBiomarkerOrders(user.UserId));
 
-        [HttpGet("me")]
-        [Authorize]
-        public async Task<IActionResult> GetCurrentUser()
+                return Ok(biomarkerOrders);
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+
+        [HttpPost("preferences", Name = "ModifyPreferences")]
+        [Produces("application/json", Type = typeof(BiomarkerOrder))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> SetPreferences([FromBody] BiomarkerOrder order)
         {
             var idInformation = _userInformationExtractor.GetUserIdInformation(User);
-            var userId = idInformation.UserId;
+            var user = _userUow.GetUser(idInformation.UserId);
 
-            var currentUser = _userUow.GetUser(userId);
+            var orderModelList = ManualMapper.ToBiomarkerOrderModels(order);
+            foreach (var orderEntry in orderModelList)
+            {
+                orderEntry.UserId = user.UserId;
+            }
 
-            var userDto = _mapper.Map<UserDto>(currentUser);
+            await _userUOW.StoreOrEditBiomarkerOrder(orderModelList, user.UserId);
+            var orderDto = ManualMapper.ToBiomarkerOrder(_userUOW.GetBiomarkerOrders(user.UserId));
+            return Ok(orderDto);
+        }
+        [HttpPatch("preferences", Name = "CreatePreferences")]
+        [Produces("application/json", Type = typeof(BiomarkerOrder))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> ModifyPreferences([FromBody] BiomarkerOrder order)
+        {
+            try
+            {
+                var idInformation = _userInformationExtractor.GetUserIdInformation(User);
+                var user = _userUow.GetUser(idInformation.UserId);
 
-            return currentUser is not null ? Ok(userDto) : BadRequest();
+                var orderModelList = ManualMapper.ToBiomarkerOrderModels(order);
+                foreach (var orderEntry in orderModelList)
+                {
+                    orderEntry.UserId = user.UserId;
+                }
+
+                await _userUOW.StoreOrEditBiomarkerOrder(orderModelList, user.UserId);
+                var orderDto = ManualMapper.ToBiomarkerOrder(_userUOW.GetBiomarkerOrders(user.UserId));
+                return Ok(orderDto);
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
         }
     }
 }

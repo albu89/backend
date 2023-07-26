@@ -3,7 +3,7 @@ using CE_API_V2.Models.Enum;
 
 namespace CE_API_V2.Models
 {
-    public class User
+    public class UserModel
     {
         public ICollection<BiomarkerOrderModel> BiomarkerOrders { get; set; }
         //Not transmitted by the frontend-Dto
@@ -13,6 +13,7 @@ namespace CE_API_V2.Models
 
         //User related information
         public string Salutation { get; set; }
+        public string Title { get; set; }
         public string Surname { get; set; }
         public string FirstName { get; set; }
         public string ProfessionalSpecialisation { get; set; }
@@ -23,10 +24,11 @@ namespace CE_API_V2.Models
         //ContactDetails?
         public string Address { get; set; }
         public string City { get; set; }
+        public string ZipCode { get; set; }
         public string CountryCode { get; set; }
         public string Country { get; set; }
         public string TelephoneNumber { get; set; }
-        public string EMailAdress { get; set; }
+        public string EMailAddress { get; set; }
         public DateTimeOffset CreatedOn { get; }
 
         //Settings

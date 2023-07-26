@@ -32,7 +32,7 @@ public class BiomarkersTemplateServiceTests
         var result = await getTemplateTask.Should().NotThrowAsync();
 
         //Assert
-        result.Subject.Should().BeOfType<List<BiomarkerSchemaDto>>();
+        result.Subject.Should().BeOfType<List<BiomarkerSchema>>();
         result.Subject.Should().NotBeNull();
         result.Subject.Count().Should().Be(33);
         result.Subject.Any(x => string.IsNullOrEmpty(x.Id)).Should().BeFalse();
@@ -66,7 +66,7 @@ public class BiomarkersTemplateServiceTests
         var result = await getTemplateTask.Should().NotThrowAsync();
 
         //Assert
-        result.Subject.Should().BeOfType<List<BiomarkerSchemaDto>>();
+        result.Subject.Should().BeOfType<List<BiomarkerSchema>>();
         result.Subject.Should().NotBeNull();
         result.Subject.Count().Should().Be(33);
         result.Subject.Any(x => string.IsNullOrEmpty(x.Id)).Should().BeFalse();

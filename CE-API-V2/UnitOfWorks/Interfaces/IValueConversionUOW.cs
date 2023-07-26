@@ -5,6 +5,7 @@ namespace CE_API_V2.UnitOfWorks;
 
 public interface IValueConversionUOW
 {
-    public ScoringRequest ConvertToScoringRequest(ScoringRequestDto scoringRequestDto, string userId, string patientId);
-    public void ConvertToSiValues(ScoringRequest scoringRequestDto);
+    public ScoringRequestModel ConvertToScoringRequest(ScoringRequest scoringRequest, string userId, string patientId);
+    
+    public void ConvertToSiValues(ScoringRequestModel scoringRequestDto);
 }

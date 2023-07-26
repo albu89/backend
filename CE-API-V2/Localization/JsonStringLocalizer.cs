@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Localization;
+﻿using Microsoft.Extensions.Localization;
 using Newtonsoft.Json;
 using System.Globalization;
 

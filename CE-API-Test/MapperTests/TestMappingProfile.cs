@@ -22,7 +22,7 @@ public class TestMappingProfile
     public void RequestDtoToRequest()
     {
         var dto = MockDataProvider.CreateScoringRequestDto();
-        var request = _mapper.Map<ScoringRequest>(dto);
+        var request = _mapper.Map<ScoringRequestModel>(dto);
         request.Should().NotBeNull();
         request.Id.Should().NotBeEmpty();
         request?.Biomarkers?.Should().NotBeNull();
@@ -65,7 +65,7 @@ public class TestMappingProfile
         var userDto = MockDataProvider.GetMockedCreateUserDto();
 
         //Act
-        var user = _mapper.Map<User>(userDto);
+        var user = _mapper.Map<UserModel>(userDto);
 
         //Assert
         user.Should().NotBeNull();

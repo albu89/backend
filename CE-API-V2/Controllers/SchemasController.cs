@@ -27,7 +27,7 @@ namespace CE_API_V2.Controllers
         }
 
         [HttpGet("biomarkers")]
-        [Produces("application/json", Type = typeof(IEnumerable<BiomarkerSchemaDto>))]
+        [Produces("application/json", Type = typeof(IEnumerable<BiomarkerSchema>))]
         public async Task<IActionResult> GetInputFormTemplate(string? locale = null)
         {
             
@@ -39,7 +39,7 @@ namespace CE_API_V2.Controllers
             var idInformation = _userInformationExtractor.GetUserIdInformation(User);
                 var user = _userUOW.GetUser(idInformation.UserId);
             var userId = user.UserId.ToString();
-            IEnumerable<BiomarkerSchemaDto> schema = _userUOW.OrderTemplate(template, userId);
+            IEnumerable<BiomarkerSchema> schema = _userUOW.OrderTemplate(template, userId);
 
             return schema.Any() ? Ok(schema) : NotFound();
         }

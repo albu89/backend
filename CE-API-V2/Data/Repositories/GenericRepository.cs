@@ -35,8 +35,8 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
     }
     
     public virtual IEnumerable<T> Get(
-        Expression<Func<T, bool>> filter = default,
-        Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = default,
+        Expression<Func<T, bool>>? filter = default,
+        Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = default,
         string includeProperties = "")
     {
         IQueryable<T> query = dbSet;
@@ -47,7 +47,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
         }
 
         foreach (var includeProperty in includeProperties.Split
-                     (new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                     (new [] { ',' }, StringSplitOptions.RemoveEmptyEntries))
         {
             query = query.Include(includeProperty);
         }

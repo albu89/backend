@@ -5,6 +5,6 @@ namespace CE_API_V2.Services.Interfaces
 {
     public interface ICommunicationService
     {
-        public Task<EmailSendStatus> SendAccessRequest(AccessRequestDto userDto);
+        public Task<EmailSendStatus> SendAccessRequest(AccessRequest user);
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 namespace CE_API_V2.Models;
 
-public class ScoringRequest
+public class ScoringRequestModel
 {
     [Key]
     public Guid Id { get; set; }
@@ -9,5 +9,5 @@ public class ScoringRequest
     public string PatientId { get; set; }
     public virtual Biomarkers? Biomarkers { get; set; }
     public DateTimeOffset CreatedOn { get; }
-    public virtual ScoringResponse? Response { get; set; }
+    public virtual ScoringResponseModel? Response { get; set; }
 }

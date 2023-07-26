@@ -9,7 +9,6 @@ using CE_API_V2.UnitOfWorks.Interfaces;
 using CE_API_V2.Utility;
 using Microsoft.IdentityModel.Tokens;
 using Moq;
-using NSubstitute;
 
 namespace CE_API_Test.UnitTests.Services;
 
@@ -23,7 +22,7 @@ public class ScoreSummaryUtilityTests
     [OneTimeSetUp]
     public void OneTimeSetup()
     {
-        var biomarkersTemplateMock = new List<BiomarkerSchemaDto> { new() } as IEnumerable<BiomarkerSchemaDto>;
+        var biomarkersTemplateMock = new List<BiomarkerSchema> { new() } as IEnumerable<BiomarkerSchema>;
         var biomarkersTemplateService = new Mock<IBiomarkersTemplateService>();
         biomarkersTemplateService.Setup(x => x.GetTemplate(It.IsAny<string>())).Returns(Task.FromResult(biomarkersTemplateMock));
 
@@ -31,8 +30,8 @@ public class ScoreSummaryUtilityTests
         var mapper = mapperConfig.CreateMapper();
 
         var userUowMock = new Mock<IUserUOW>();
-        userUowMock.Setup(u => u.GetUser(It.IsAny<string>())).Returns(new User() { UserId = "123" });
-        userUowMock.Setup(u => u.OrderTemplate(It.IsAny<IEnumerable<BiomarkerSchemaDto>>(), It.IsAny<string>())).Returns(biomarkersTemplateService.Object.GetTemplate("").GetAwaiter().GetResult());
+        userUowMock.Setup(u => u.GetUser(It.IsAny<string>())).Returns(new UserModel() { UserId = "123" });
+        userUowMock.Setup(u => u.OrderTemplate(It.IsAny<IEnumerable<BiomarkerSchema>>(), It.IsAny<string>())).Returns(biomarkersTemplateService.Object.GetTemplate("").GetAwaiter().GetResult());
 
         _scoreSummaryUtility = new ScoreSummaryUtility(mapper); //No mock needed
         _biomarkerServiceTemplateService = biomarkersTemplateService.Object;

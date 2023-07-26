@@ -19,10 +19,10 @@ public class ValidatorTest
     public void Tests()
     {
         CultureInfo.CurrentUICulture = new CultureInfo("en-GB");
-        var invalidRequest = new ScoringRequestDto()
+        var invalidRequest = new ScoringRequest()
         {
-            Age = new BiomarkerValueDto<int>() { UnitType = "SI", Value = 0 },
-            AlkalinePhosphatase = new BiomarkerValueDto<float>() { UnitType = "SI", Value = 0 },
+            Age = new BiomarkerValue<int>() { UnitType = "SI", Value = 0 },
+            AlkalinePhosphatase = new BiomarkerValue<float>() { UnitType = "SI", Value = 0 },
         };
 
         var valRes = _validator.TestValidate(invalidRequest);

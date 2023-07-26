@@ -16,7 +16,7 @@ namespace CE_API_Test.UnitTests.Services
         [SetUp]
         public void SetUp()
         {
-            var testConfig = new Dictionary<string, string>()
+            var testConfig = new Dictionary<string, string?>()
             {
                 { "AzureCommunicationService:Endpoint", "https://ce-v2-communication-services.communication.azure.com/" },
                 { "AzureCommunicationService:MailFrom", "DoNotReply@70cd7cba-30aa-4feb-9e09-06c33c97bfb5.azurecomm.net" },

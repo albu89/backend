@@ -10,12 +10,12 @@ namespace CE_API_Test.UnitTests.Services
     [TestFixture]
     internal class PatientWebDtoToPatientAiDtoConverterTests
     {
-        private ScoringRequest _scoringRequest;
+        private ScoringRequestModel _scoringRequestModel;
 
         [SetUp]
         public void Setup()
         {
-            _scoringRequest = MockDataProvider.GetMockedScoringRequest();
+            _scoringRequestModel = MockDataProvider.GetMockedScoringRequest();
         }
 
         [Test]
@@ -24,7 +24,7 @@ namespace CE_API_Test.UnitTests.Services
             //Arrange
 
             //Act
-            var convertedObject = DtoConverter.ConvertToAiDto(_scoringRequest.Biomarkers);
+            var convertedObject = DtoConverter.ConvertToAiDto(_scoringRequestModel.Biomarkers);
 
             //Assert
             convertedObject.Should().NotBeNull();

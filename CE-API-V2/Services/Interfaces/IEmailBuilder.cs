@@ -5,5 +5,5 @@ namespace CE_API_V2.Services.Interfaces;
 
 public interface IEmailBuilder
 {
-    public EMailConfiguration GetEmailConfiguration(AccessRequestDto userDto);
+    public EMailConfiguration GetEmailConfiguration(AccessRequest user);
 }

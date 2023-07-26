@@ -14,13 +14,13 @@ public class UserHelper
         _mapper = mapper;
     }
 
-    public User MapToUserModel(CreateUserDto userDto, UserIdsRecord userInformation)
+    public UserModel MapToUserModel(CreateUser user, UserIdsRecord userInformation)
     {
-        var user = _mapper.Map<CreateUserDto, User>(userDto); 
-        user.Role = UserRole.MedicalDoctor; 
-        user.UserId = userInformation.UserId;
-        user.TenantID = userInformation.TenantId;
+        var userModel = _mapper.Map<CreateUser, UserModel>(user); 
+        userModel.Role = UserRole.MedicalDoctor; 
+        userModel.UserId = userInformation.UserId;
+        userModel.TenantID = userInformation.TenantId;
 
-        return user;
+        return userModel;
     }
 }

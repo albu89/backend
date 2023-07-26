@@ -4,8 +4,6 @@ using CE_API_V2.Constants;
 using CE_API_V2.Models.DTO;
 using CE_API_V2.Services.Interfaces;
 using CE_API_V2.UnitOfWorks.Interfaces;
-using CE_API_V2.Utility;
-using Microsoft.Identity.Client;
 
 namespace CE_API_V2.Services;
 

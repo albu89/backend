@@ -1,6 +1,7 @@
+using Azure.Communication.Email;
+using CE_API_V2.Data.Repositories.Interfaces;
 using CE_API_V2.Models;
 using CE_API_V2.Models.DTO;
-using Azure.Communication.Email;
 
 namespace CE_API_V2.UnitOfWorks.Interfaces
 {
@@ -10,10 +11,11 @@ namespace CE_API_V2.UnitOfWorks.Interfaces
         public Task StoreOrEditBiomarkerOrder(IEnumerable<BiomarkerOrderModel> biomarkerOrder, string userId);
         public void StoreBiomarkerOrderEntry(BiomarkerOrderModel biomarkerOrder);
         public void EditBiomarkerOrderEntry(BiomarkerOrderModel biomarkerOrder);
-        public IEnumerable<BiomarkerSchemaDto> OrderTemplate(IEnumerable<BiomarkerSchemaDto> biomarkersSchema, string userId);
-        public Task<EmailSendStatus> ProcessAccessRequest(AccessRequestDto userDto);
-        public Task<User> StoreUser(User user);
-        public User GetUser(string userId);
+        public IEnumerable<BiomarkerSchema> OrderTemplate(IEnumerable<BiomarkerSchema> biomarkersSchema, string userId);
+        public UserModel GetUser(string userId);
         IEnumerable<BiomarkerOrderModel> GetBiomarkerOrders(string userId);
+        public IGenericRepository<UserModel> UserRepository { get; }
+        public Task<EmailSendStatus> ProcessAccessRequest(AccessRequest user);
+        public Task<UserModel> StoreUser(UserModel userModel);
     }
 }

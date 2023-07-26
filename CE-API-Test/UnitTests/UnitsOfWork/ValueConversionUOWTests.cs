@@ -27,7 +27,7 @@ namespace CE_API_Test.UnitTests.UnitsOfWork
                 .Build();
             
             var mapperMock = new Mock<IMapper>();
-            mapperMock.Setup(x => x.Map<ScoringRequest>(It.IsAny<ScoringRequestDto>())).Returns(new ScoringRequest());
+            mapperMock.Setup(x => x.Map<ScoringRequestModel>(It.IsAny<ScoringRequest>())).Returns(new ScoringRequestModel());
             
             _mapper = mapperMock.Object;
         }
@@ -38,7 +38,7 @@ namespace CE_API_Test.UnitTests.UnitsOfWork
         {
             //Arrange
             var patientIdHashingUow = new PatientIdHashingUOW(_config);   
-            var scoringRequestDto = new ScoringRequestDto();
+            var scoringRequestDto = new ScoringRequest();
             var userId = "anonymous";
             var patientId = patientIdHashingUow.HashPatientId("mock", "mock", DateTime.Now);
             
@@ -50,7 +50,7 @@ namespace CE_API_Test.UnitTests.UnitsOfWork
 
             //Assert
             result.Should().NotBeNull();
-            result.Should().BeOfType(typeof(ScoringRequest));
+            result.Should().BeOfType(typeof(ScoringRequestModel));
             result.PatientId.Should().Be(patientId);
             result.UserId.Should().Be(userId);
         }

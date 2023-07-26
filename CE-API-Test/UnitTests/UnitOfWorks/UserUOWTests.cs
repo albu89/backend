@@ -2,7 +2,6 @@ using CE_API_V2.Data;
 using CE_API_V2.Models;
 using CE_API_V2.UnitOfWorks;
 using Microsoft.EntityFrameworkCore;
-using NUnit.Framework.Internal;
 using CE_API_V2.Services.Interfaces;
 using CE_API_V2.UnitOfWorks.Interfaces;
 using Moq;
@@ -13,9 +12,6 @@ using AutoMapper;
 using CE_API_V2.Models.Mapping;
 using CE_API_V2.Models.Records;
 using Azure.Communication.Email;
-using Microsoft.Extensions.Logging;
-using Castle.Core.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 
 namespace CE_API_Test.UnitTests.UnitOfWorks
 {
@@ -45,13 +41,13 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
             
             var userInfoExtractorMock = new Mock<IUserInformationExtractor>();
 
-            inputValidationServiceMock.Setup(x => x.ValidateUser(It.IsAny<CreateUserDto>())).Returns(true);
+            inputValidationServiceMock.Setup(x => x.ValidateUser(It.IsAny<CreateUser>())).Returns(true);
             userInfoExtractorMock.Setup(x => x.GetUserIdInformation(It.IsAny<ClaimsPrincipal>())).Returns(new UserIdsRecord());
             var communicationService = new Mock<ICommunicationService>();
             userInfoExtractorMock.Setup(x 
                 => x.GetUserIdInformation(It.IsAny<ClaimsPrincipal>())).Returns(new UserIdsRecord());
             communicationService.Setup(x 
-                => x.SendAccessRequest(It.IsAny<AccessRequestDto>())).Returns(Task.FromResult(EmailSendStatus.Succeeded));
+                => x.SendAccessRequest(It.IsAny<AccessRequest>())).Returns(Task.FromResult(EmailSendStatus.Succeeded));
                 
             _communicationService = communicationService.Object;
 

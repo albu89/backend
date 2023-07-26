@@ -17,7 +17,7 @@ internal class JsonSerializationHelperTests
 
         //Act
         var deserializedScoringResponse =
-            JsonSerializationHelper.DeserializeObject<ScoringResponse>(scoringResponseJson);
+            JsonSerializationHelper.DeserializeObject<ScoringResponseModel>(scoringResponseJson);
 
         //Assert
         AssertObjectAndPropertiesNotNull(deserializedScoringResponse);
@@ -31,7 +31,7 @@ internal class JsonSerializationHelperTests
 
         //Act
         var deserializedscoringRequest =
-            JsonSerializationHelper.DeserializeObject<ScoringRequestDto>(mockedSerializedScoringRequest);
+            JsonSerializationHelper.DeserializeObject<ScoringRequest>(mockedSerializedScoringRequest);
 
         //Assert
         AssertObjectAndPropertiesNotNull(deserializedscoringRequest);
@@ -45,7 +45,7 @@ internal class JsonSerializationHelperTests
 
         //Act
         var deserializedscoringRequest =
-            JsonSerializationHelper.DeserializeObject<ScoringResponse>(scoringRequestJson);
+            JsonSerializationHelper.DeserializeObject<ScoringResponseModel>(scoringRequestJson);
 
         //Assert
         deserializedscoringRequest.Should().NotBeNull();
@@ -59,7 +59,7 @@ internal class JsonSerializationHelperTests
 
         //Act
         var deserializedscoringRequest =
-            JsonSerializationHelper.DeserializeObject<ScoringResponse>(scoringRequestJson);
+            JsonSerializationHelper.DeserializeObject<ScoringResponseModel>(scoringRequestJson);
 
         //Assert
         deserializedscoringRequest.Should().BeNull();
@@ -79,42 +79,42 @@ internal class JsonSerializationHelperTests
         }
     }
 
-    private void AssertObjectAndPropertiesNotNull(ScoringRequestDto scoringRequestDto)
+    private void AssertObjectAndPropertiesNotNull(ScoringRequest scoringRequest)
     {
-        AssertNotNull(scoringRequestDto.Age);
-        AssertNotNull(scoringRequestDto.ACEInhibitor);
-        AssertNotNull(scoringRequestDto.Alat);
-        AssertNotNull(scoringRequestDto.Albumin);
-        AssertNotNull(scoringRequestDto.AlkalinePhosphatase);
-        AssertNotNull(scoringRequestDto.Betablocker);
-        AssertNotNull(scoringRequestDto.Bilirubin);
-        AssertNotNull(scoringRequestDto.CaAntagonist);
-        AssertNotNull(scoringRequestDto.Cholesterol);
-        AssertNotNull(scoringRequestDto.CholesterolLowering_Statin);
-        AssertNotNull(scoringRequestDto.Diabetes);
-        AssertNotNull(scoringRequestDto.DiastolicBloodPressure);
-        AssertNotNull(scoringRequestDto.Diuretic);
-        AssertNotNull(scoringRequestDto.GlucoseFasting);
-        AssertNotNull(scoringRequestDto.Hdl);
-        AssertNotNull(scoringRequestDto.Height);
-        AssertNotNull(scoringRequestDto.HsTroponinT);
-        AssertNotNull(scoringRequestDto.Ldl);
-        AssertNotNull(scoringRequestDto.Leukocytes);
-        AssertNotNull(scoringRequestDto.Mchc);
-        AssertNotNull(scoringRequestDto.NicotineConsumption);
-        AssertNotNull(scoringRequestDto.OrganicNitrate);
-        AssertNotNull(scoringRequestDto.PancreaticAmylase);
-        AssertNotNull(scoringRequestDto.Protein);
-        AssertNotNull(scoringRequestDto.RestingECG);
-        AssertNotNull(scoringRequestDto.Sex);
-        AssertNotNull(scoringRequestDto.SystolicBloodPressure);
-        AssertNotNull(scoringRequestDto.TCAggregationInhibitor);
-        AssertNotNull(scoringRequestDto.ChestPain);
-        AssertNotNull(scoringRequestDto.Urea);
-        AssertNotNull(scoringRequestDto.UricAcid);
-        AssertNotNull(scoringRequestDto.Weight);
-        AssertNotNull(scoringRequestDto.clinical_setting);
-        AssertNotNull(scoringRequestDto.prior_CAD);
+        AssertNotNull(scoringRequest.Age);
+        AssertNotNull(scoringRequest.ACEInhibitor);
+        AssertNotNull(scoringRequest.Alat);
+        AssertNotNull(scoringRequest.Albumin);
+        AssertNotNull(scoringRequest.AlkalinePhosphatase);
+        AssertNotNull(scoringRequest.Betablocker);
+        AssertNotNull(scoringRequest.Bilirubin);
+        AssertNotNull(scoringRequest.CaAntagonist);
+        AssertNotNull(scoringRequest.Cholesterol);
+        AssertNotNull(scoringRequest.CholesterolLowering_Statin);
+        AssertNotNull(scoringRequest.Diabetes);
+        AssertNotNull(scoringRequest.DiastolicBloodPressure);
+        AssertNotNull(scoringRequest.Diuretic);
+        AssertNotNull(scoringRequest.GlucoseFasting);
+        AssertNotNull(scoringRequest.Hdl);
+        AssertNotNull(scoringRequest.Height);
+        AssertNotNull(scoringRequest.HsTroponinT);
+        AssertNotNull(scoringRequest.Ldl);
+        AssertNotNull(scoringRequest.Leukocytes);
+        AssertNotNull(scoringRequest.Mchc);
+        AssertNotNull(scoringRequest.NicotineConsumption);
+        AssertNotNull(scoringRequest.OrganicNitrate);
+        AssertNotNull(scoringRequest.PancreaticAmylase);
+        AssertNotNull(scoringRequest.Protein);
+        AssertNotNull(scoringRequest.RestingECG);
+        AssertNotNull(scoringRequest.Sex);
+        AssertNotNull(scoringRequest.SystolicBloodPressure);
+        AssertNotNull(scoringRequest.TCAggregationInhibitor);
+        AssertNotNull(scoringRequest.ChestPain);
+        AssertNotNull(scoringRequest.Urea);
+        AssertNotNull(scoringRequest.UricAcid);
+        AssertNotNull(scoringRequest.Weight);
+        AssertNotNull(scoringRequest.clinical_setting);
+        AssertNotNull(scoringRequest.prior_CAD);
         
     }
 

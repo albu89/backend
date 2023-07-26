@@ -4,9 +4,9 @@ namespace CE_API_V2.Services.Mocks
 {
     public class ScoringResponseMocker
     {
-        public ScoringResponse MockScoringResponse()
+        public ScoringResponseModel MockScoringResponse()
         {
-            return new ScoringResponse()
+            return new ScoringResponseModel()
             {
                 Id = new Guid(),
                 classifier_class = 2,

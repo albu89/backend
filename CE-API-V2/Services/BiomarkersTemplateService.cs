@@ -21,11 +21,11 @@ namespace CE_API_V2.Services
             _mapper = mapper;
         }
         
-        public async Task<IEnumerable<BiomarkerSchemaDto>> GetTemplate(string locale = LocalizationConstants.DefaultLocale)
+        public async Task<IEnumerable<BiomarkerSchema>> GetTemplate(string locale = LocalizationConstants.DefaultLocale)
         {
             return await GetTemplateFromUrl(locale, Path.Combine(LocalizationConstants.TemplatesSubpath, string.Concat(GeneralBiomarkerSchemaFile, GeneralBiomarkersSchemaFileEnding)));
         }
-        private async Task<IEnumerable<BiomarkerSchemaDto>> GetTemplateFromUrl(string locale, string filePath)
+        private async Task<IEnumerable<BiomarkerSchema>> GetTemplateFromUrl(string locale, string filePath)
         {
 
             var generalBiomarkerSchema = await DeserializeSchema<List<BiomarkersGeneral>>(filePath);
@@ -35,9 +35,9 @@ namespace CE_API_V2.Services
 
             return CombineSchemas(generalBiomarkerSchema, localizedBiomarkerSchema);
         }
-        public async Task<Dictionary<string, IEnumerable<BiomarkerSchemaDto>>> GetAllTemplates()
+        public async Task<Dictionary<string, IEnumerable<BiomarkerSchema>>> GetAllTemplates()
         {
-            var result = new Dictionary<string, IEnumerable<BiomarkerSchemaDto>>();
+            var result = new Dictionary<string, IEnumerable<BiomarkerSchema>>();
             var defaultTemplatePath = Path.Combine(LocalizationConstants.TemplatesSubpath, string.Concat(GeneralBiomarkerSchemaFile, GeneralBiomarkersSchemaFileEnding));
             var allFiles = Directory.GetFiles(LocalizationConstants.TemplatesSubpath).Where(x => x.Contains(GeneralBiomarkerSchemaInfoFile));
             foreach (var file in allFiles)
@@ -64,15 +64,15 @@ namespace CE_API_V2.Services
             return deserialized;
         }
 
-        private List<BiomarkerSchemaDto> CombineSchemas(List<BiomarkersGeneral> generalBiomarkerSchema, List<BiomarkersLocalized> localizedBiomarkerSchema)
+        private List<BiomarkerSchema> CombineSchemas(List<BiomarkersGeneral> generalBiomarkerSchema, List<BiomarkersLocalized> localizedBiomarkerSchema)
         {
 
-            var biomarkerSchemaList  = new List<BiomarkerSchemaDto>();
+            var biomarkerSchemaList  = new List<BiomarkerSchema>();
 
             foreach (var item in generalBiomarkerSchema)
             {
                 var langSpec = localizedBiomarkerSchema.Find(x => x.Id.Equals(item.Id));
-                var biomarkerSchemaDto = _mapper.Map<BiomarkerSchemaDto>(item);
+                var biomarkerSchemaDto = _mapper.Map<BiomarkerSchema>(item);
                 _mapper.Map(langSpec, biomarkerSchemaDto);
 
                 biomarkerSchemaList.Add(biomarkerSchemaDto);

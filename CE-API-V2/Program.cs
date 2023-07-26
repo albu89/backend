@@ -4,6 +4,7 @@ using CE_API_V2.Data;
 using CE_API_V2.Hasher;
 using CE_API_V2.Models.Mapping;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using CE_API_V2.Models.DTO;
 using CE_API_V2.Services;
 using CE_API_V2.Services.Interfaces;
@@ -13,15 +14,11 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
 using Microsoft.OpenApi.Models;
-using CE_API_V2.Services.Mocks;
 using CE_API_V2.Utility;
 using CE_API_V2.Validators;
 using FluentValidation;
 using CE_API_V2.Localization.JsonStringFactroy;
-using CE_API_V2.Localization;
 using Microsoft.Extensions.Localization;
-using Microsoft.AspNetCore.Localization;
-using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,10 +31,9 @@ var config = new ConfigurationBuilder()
     .AddEnvironmentVariables()
     .AddUserSecrets<Program>()
     .Build();
-var allowSpecificOrigins = "AllowSpecific";
 var azureAdSection = config.GetSection("Azure:AD");
 
-if(builder.Environment.IsProduction())
+if (builder.Environment.IsProduction())
 {
     var keyVaultEndpoint = config["Azure:KeyVaultEndpoint"];
 
@@ -71,7 +67,7 @@ builder.Services.AddSingleton<UserHelper>();
 #region UOW
 
 builder.Services.AddScoped<IBiomarkersTemplateService, BiomarkersTemplateService>();
-builder.Services.AddScoped<IValidator<ScoringRequestDto>,ScoringRequestValidator>();
+builder.Services.AddScoped<IValidator<ScoringRequest>, ScoringRequestValidator>();
 builder.Services.AddScoped<IPatientIdHashingUOW, PatientIdHashingUOW>();
 builder.Services.AddScoped<IScoringUOW, ScoringUOW>();
 builder.Services.AddScoped<IValueConversionUOW, ValueConversionUOW>();
@@ -86,6 +82,7 @@ builder.Services.AddScoped<IScoringTemplateService, ScoringTemplateService>();
 builder.Services.AddScoped<IScoreSummaryUtility, ScoreSummaryUtility>();
 
 #endregion
+
 
 #region Localization
 builder.Services.AddLocalization();
@@ -107,15 +104,22 @@ builder.Services.AddAuthorization(options =>
     {
         policy.RequireAuthenticatedUser();
     });
+    
+    // options.AddPolicy("Administrator", policy =>
+    // {
+    //     policy.RequireRole("CE.User");
+    // });
 });
 
-var allowedHosts = config.GetSection("AllowedHosts").GetChildren().Select(x => x.Value).ToArray();
-
-builder.Services.AddControllers()
-    .AddJsonOptions(options =>
+builder.Services.AddControllers(
+        options =>
+        {
+            options.AllowEmptyInputInBodyModelBinding = true;
+        })
+    .AddJsonOptions(jsonOptions =>
     {
-        options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
-
+        jsonOptions.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+        jsonOptions.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
 builder.Services.AddEndpointsApiExplorer();
 
@@ -162,11 +166,13 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Cardio Explorer API v1");
+    c.SwaggerEndpoint("/swagger/v1/swagger.yaml", "Cardio Explorer API v1");
     c.OAuthClientId(config["Azure:AD:ClientId"]);
     c.OAuthUsePkce();
     c.OAuthScopeSeparator(" ");
 });
+
+var allowedHosts = config.GetSection("AllowedHosts").GetChildren().Select(x => x.Value).ToArray();
 
 app.UseCors(options =>
 {

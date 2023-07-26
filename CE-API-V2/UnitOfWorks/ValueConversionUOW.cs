@@ -13,16 +13,16 @@ namespace CE_API_V2.UnitOfWorks
             _mapper = mapper;
         }
 
-        public ScoringRequest ConvertToScoringRequest(ScoringRequestDto scoringRequestDto, string userId, string patientId)
+        public ScoringRequestModel ConvertToScoringRequest(ScoringRequest scoringRequest, string userId, string patientId)
         {
-            var requestModel = _mapper.Map<ScoringRequest>(scoringRequestDto);
+            var requestModel = _mapper.Map<ScoringRequestModel>(scoringRequest);
             requestModel.UserId = userId;
             requestModel.PatientId = patientId;
 
             return requestModel;
         }
 
-        public void ConvertToSiValues(ScoringRequest scoringRequest)
+        public void ConvertToSiValues(ScoringRequestModel scoringRequest)
         {
         }
     }

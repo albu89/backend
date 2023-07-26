@@ -15,12 +15,12 @@ namespace CE_API_V2.Utility
             _mapper = mapper;
         }
 
-        public ScoringResponseSummary SetAdditionalScoringParams(ScoringResponseSummary scoreSummaryScore, string locale = LocalizationConstants.DefaultLocale)
+        public ScoringResponse SetAdditionalScoringParams(ScoringResponse scoreResponse, string locale = LocalizationConstants.DefaultLocale)
         {
-            scoreSummaryScore.Warnings = ScoreEvaluator.EvaluateWarnings();
-            scoreSummaryScore = SetRecommendation(scoreSummaryScore, locale);
+            scoreResponse.Warnings = ScoreEvaluator.EvaluateWarnings();
+            scoreResponse = SetRecommendation(scoreResponse, locale);
             
-            return scoreSummaryScore;
+            return scoreResponse;
         }
 
         public IEnumerable<RecommendationCategory> GetCategories(string locale = LocalizationConstants.DefaultLocale)
@@ -34,12 +34,12 @@ namespace CE_API_V2.Utility
             return parsedDoc;
         }
 
-        private ScoringResponseSummary SetRecommendation(ScoringResponseSummary scoreSummaryScore, string locale)
+        private ScoringResponse SetRecommendation(ScoringResponse scoreResponse, string locale)
         {
-            var scoreRecommendation = GetScoreRecommendation((double)scoreSummaryScore.classifier_score, locale);
-            _mapper.Map(scoreRecommendation, scoreSummaryScore);
+            var scoreRecommendation = GetScoreRecommendation((double)scoreResponse.classifier_score, locale);
+            _mapper.Map(scoreRecommendation, scoreResponse);
 
-            return scoreSummaryScore;
+            return scoreResponse;
         }
 
         private RecommendationCategory GetScoreRecommendation(double score, string locale)

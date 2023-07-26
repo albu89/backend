@@ -43,7 +43,7 @@ public class ScoringUnitOfWorkTests
         _ceContext = new CEContext(options);
         var valueConversionUow = new Mock<IValueConversionUOW>();
         valueConversionUow
-                .Setup(x => x.ConvertToScoringRequest(It.IsAny<ScoringRequestDto>(), It.IsAny<string>(),
+                .Setup(x => x.ConvertToScoringRequest(It.IsAny<ScoringRequest>(), It.IsAny<string>(),
                     It.IsAny<string>())).Returns(mockedScoringRequest);
         _scoringUow = new ScoringUOW(_ceContext, _requestService, _mapper, valueConversionUow.Object, _scoreSummaryUtility);
     }
@@ -183,7 +183,7 @@ public class ScoringUnitOfWorkTests
 
         //Assert
         result.Should().NotBeNull();
-        result.Should().BeOfType<ScoringResponse>();
+        result.Should().BeOfType<ScoringResponseModel>();
         result.classifier_score.Should().NotBeNull();
         result.classifier_sign.Should().NotBeNull();
     }

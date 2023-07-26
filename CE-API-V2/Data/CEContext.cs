@@ -6,11 +6,11 @@ namespace CE_API_V2.Data
     public class CEContext : DbContext
     {
 
-        public DbSet<ScoringRequest> ScoringRequests { get; set; }
-        public DbSet<ScoringResponse> ScoringResponses { get; set; }
+        public DbSet<ScoringRequestModel> ScoringRequests { get; set; }
+        public DbSet<ScoringResponseModel> ScoringResponses { get; set; }
         public DbSet<Biomarkers> Biomarkers { get; set; }
         public DbSet<BiomarkerOrderModel> BiomarkerOrders { get; set; }
-        public DbSet<User> Users { get; set; }
+        public DbSet<UserModel> Users { get; set; }
 
         public CEContext() { }
 
@@ -26,24 +26,28 @@ namespace CE_API_V2.Data
                 .WithOne(r => r.Biomarkers)
                 .HasForeignKey<Biomarkers>(b => b.RequestId)
                 ;
-
-            modelBuilder.Entity<ScoringResponse>()
-                .HasOne(b => b.Request)
-                .WithOne(r => r.Response)
-                .HasForeignKey<ScoringResponse>(r => r.RequestId)
-                ;
-            modelBuilder.Entity<ScoringResponse>()
-                .Property(r => r.CreatedOn)
-                .HasDefaultValueSql("getdate()");
-            
-            modelBuilder.Entity<ScoringRequest>()
-                .Property(r => r.CreatedOn)
-                .HasDefaultValueSql("getdate()");
-            
             modelBuilder.Entity<Biomarkers>()
                 .Property(r => r.CreatedOn)
                 .HasDefaultValueSql("getdate()");
 
+            modelBuilder.Entity<ScoringResponseModel>()
+                .ToTable("ScoringResponses")
+                .HasOne(b => b.Request)
+                .WithOne(r => r.Response)
+                .HasForeignKey<ScoringResponseModel>(r => r.RequestId)
+                ;
+            modelBuilder.Entity<ScoringResponseModel>()
+                .Property(r => r.CreatedOn)
+                .HasDefaultValueSql("getdate()");
+            
+            modelBuilder.Entity<ScoringRequestModel>()
+                .ToTable("ScoringRequests")
+                .Property(r => r.CreatedOn)
+                .HasDefaultValueSql("getdate()");
+            
+            modelBuilder.Entity<UserModel>()
+                .ToTable("Users");
+            
             modelBuilder.Entity<BiomarkerOrderModel>(entity =>
             {
                 entity.HasKey(b => new { b.UserId,
@@ -53,11 +57,12 @@ namespace CE_API_V2.Data
                 .HasForeignKey(u => u.UserId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_BiomarkerOrders_User");
+                entity.ToTable("BiomarkerOrders");
             });
 
-            modelBuilder.Entity<User>()
+            modelBuilder.Entity<UserModel>()
                 .HasKey(u => u.UserId);
-            modelBuilder.Entity<User>()
+            modelBuilder.Entity<UserModel>()
                 .Property(u => u.CreatedOn)
                 .HasDefaultValueSql("getdate()");
         }

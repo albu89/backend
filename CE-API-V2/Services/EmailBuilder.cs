@@ -15,16 +15,16 @@ public class EmailBuilder : IEmailBuilder
         _config = configuration;
     }
 
-    public EMailConfiguration GetEmailConfiguration(AccessRequestDto accessDto)
+    public EMailConfiguration GetEmailConfiguration(AccessRequest access)
     {
         var emailBody = _emailTemplateProvider.GetRequestBodyTemplate();
-        var mappingDictionary = GetEmailMessageMappingDictionary(accessDto);
+        var mappingDictionary = GetEmailMessageMappingDictionary(access);
         var htmlContent = FormatEmailContent(mappingDictionary, emailBody);
 
         return new()
         {
             HtmlContent = htmlContent,
-            Recipient = accessDto.EmailAddress,
+            Recipient = access.EmailAddress,
             Sender = _config.GetValue<string>("AzureCommunicationService:MailFrom"),
             Subject = _config.GetValue<string>("AzureCommunicationService:RequestMailSubject"),
         };
@@ -50,14 +50,14 @@ public class EmailBuilder : IEmailBuilder
         return requestEmailBodyTemplate;
     }
 
-    private Dictionary<string, string> GetEmailMessageMappingDictionary(AccessRequestDto userDto)
+    private Dictionary<string, string> GetEmailMessageMappingDictionary(AccessRequest user)
     {
         return new()
         {
-            { "{{{EmailAddress}}}", userDto.EmailAddress },
-            { "{{{FirstName}}}", userDto.FirstName },
-            { "{{{LastName}}}", userDto.Surname },
-            { "{{{PhoneNumber}}}", userDto.PhoneNumber},
+            { "{{{EmailAddress}}}", user.EmailAddress },
+            { "{{{FirstName}}}", user.FirstName },
+            { "{{{LastName}}}", user.Surname },
+            { "{{{PhoneNumber}}}", user.PhoneNumber},
         };
     }
 }

@@ -1,7 +1,4 @@
-﻿using System.Drawing.Text;
-using static CE_API_V2.Utility.ScoreSummaryUtility;
-
-namespace CE_API_V2.Models.DTO
+﻿namespace CE_API_V2.Models.DTO
 {
     public class ScoreSummary 
     {
@@ -28,7 +25,7 @@ namespace CE_API_V2.Models.DTO
         public string? RecommendationScoreRangeHeader { get; set; }
         public IEnumerable<RecommendationCategory>? RecommendationCategories { get; set; }
 
-        public IEnumerable<BiomarkerSchemaDto>? Biomarkers { get; set; }
+        public IEnumerable<BiomarkerSchema>? Biomarkers { get; set; }
     }
 }
 

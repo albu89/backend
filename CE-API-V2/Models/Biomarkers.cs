@@ -8,7 +8,7 @@ public class Biomarkers
     [Key]
     public Guid Id { get; set; }
     [JsonIgnore]
-    public ScoringRequest Request { get; set; }
+    public ScoringRequestModel Request { get; set; }
     public Guid RequestId { get; set; }
 
     public PatientDataEnums.ClinicalSetting ClinicalSetting { get; set; } // Enum

@@ -5,9 +5,9 @@ using CE_API_V2.Models.DTO;
 
 namespace CE_API_V2.Utility;
 
-public class BiomarkerValueJsonConverter<T> : JsonConverter<BiomarkerValueDto<T>> where T : struct, IConvertible 
+public class BiomarkerValueJsonConverter<T> : JsonConverter<BiomarkerValue<T>> where T : struct, IConvertible 
 {
-    public override BiomarkerValueDto<T>? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    public override BiomarkerValue<T>? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         using var jsonDoc = JsonDocument.ParseValue(ref reader);
         var myOptions = new JsonSerializerOptions(options);
@@ -24,11 +24,11 @@ public class BiomarkerValueJsonConverter<T> : JsonConverter<BiomarkerValueDto<T>
             }
         }
         
-        var result = JsonSerializer.Deserialize<BiomarkerValueDto<T>>(data, myOptions);
+        var result = JsonSerializer.Deserialize<BiomarkerValue<T>>(data, myOptions);
         return result;
     }
-    public override void Write(Utf8JsonWriter writer, BiomarkerValueDto<T> valueDto, JsonSerializerOptions options)
+    public override void Write(Utf8JsonWriter writer, BiomarkerValue<T> value, JsonSerializerOptions options)
     {
-        JsonSerializer.Serialize(writer, valueDto, options);
+        JsonSerializer.Serialize(writer, value, options);
     }
 }

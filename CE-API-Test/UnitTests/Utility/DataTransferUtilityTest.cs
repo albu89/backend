@@ -9,12 +9,12 @@ namespace CE_API_Test.UnitTests.Utility;
 [TestFixture]
 internal class DataTransferUtilityTest
 {
-    private ScoringRequest _scoringRequest;
+    private ScoringRequestModel _scoringRequestModel;
 
     [SetUp]
     public void Setup()
     {
-        _scoringRequest = MockDataProvider.GetMockedScoringRequest();
+        _scoringRequestModel = MockDataProvider.GetMockedScoringRequest();
     }
 
     [Test]
@@ -37,10 +37,10 @@ internal class DataTransferUtilityTest
         //Arrange
 
         //Act
-        var result = DtoConverter.ConvertToAiDto(_scoringRequest.Biomarkers);
+        var result = DtoConverter.ConvertToAiDto(_scoringRequestModel.Biomarkers);
 
         //Assert
-        AssertCorrectMapping(result, _scoringRequest);
+        AssertCorrectMapping(result, _scoringRequestModel);
     }
 
     [Test]
@@ -69,53 +69,53 @@ internal class DataTransferUtilityTest
 
         //Assert
         result.Should().NotBeNull();
-        result.Should().BeOfType(typeof(ScoringResponse));
+        result.Should().BeOfType(typeof(ScoringResponseModel));
     }
 
-    private void AssertCorrectMapping(AiDto result, ScoringRequest scoringRequest)
+    private void AssertCorrectMapping(AiDto result, ScoringRequestModel scoringRequestModel)
     {
         result.Id.Should().BeEmpty();
         // result.Datum.Should().Be(scoringRequestDto.InputDate.Value);
-        AssertFloatValue(result.Age, scoringRequest.Biomarkers.Age);
-        AssertFloatValue(result.Sex_0_female_1male, TypeToFloatConverter.MapEnumValueToFloat(scoringRequest.Biomarkers.Sex));
-        AssertFloatValue(result.Gr_sse, scoringRequest.Biomarkers.Height);
-        AssertFloatValue(result.Gewicht, scoringRequest.Biomarkers.Weight);
-        AssertFloatValue(result.Thoraxschmerzen__0_keine_1_extr, TypeToFloatConverter.MapEnumValueToFloat(scoringRequest.Biomarkers.ChestPain));
-        AssertFloatValue(result.Nicotin_0_nein_1_St__N__2_ja, TypeToFloatConverter.MapEnumValueToFloat(scoringRequest.Biomarkers.Nicotine));
+        AssertFloatValue(result.Age, scoringRequestModel.Biomarkers.Age);
+        AssertFloatValue(result.Sex_0_female_1male, TypeToFloatConverter.MapEnumValueToFloat(scoringRequestModel.Biomarkers.Sex));
+        AssertFloatValue(result.Gr_sse, scoringRequestModel.Biomarkers.Height);
+        AssertFloatValue(result.Gewicht, scoringRequestModel.Biomarkers.Weight);
+        AssertFloatValue(result.Thoraxschmerzen__0_keine_1_extr, TypeToFloatConverter.MapEnumValueToFloat(scoringRequestModel.Biomarkers.ChestPain));
+        AssertFloatValue(result.Nicotin_0_nein_1_St__N__2_ja, TypeToFloatConverter.MapEnumValueToFloat(scoringRequestModel.Biomarkers.Nicotine));
 
-        AssertFloatValue(result.Diabetes_0_no_1_NIDDM_2_IDDM, TypeToFloatConverter.MapEnumValueToFloat(scoringRequest.Biomarkers.Diabetes));
-        AssertFloatValue(result.Statin_od_Chol_senker, TypeToFloatConverter.MapBoolToFloat(scoringRequest.Biomarkers.Statin));
-        AssertFloatValue(result.Tc_Aggregation, TypeToFloatConverter.MapBoolToFloat(scoringRequest.Biomarkers.TcAggInhibitor));
-        AssertFloatValue(result.ACE_od_ATII, TypeToFloatConverter.MapBoolToFloat(scoringRequest.Biomarkers.AceInhibitor));
-        AssertFloatValue(result.CA_Antagonist, TypeToFloatConverter.MapBoolToFloat(scoringRequest.Biomarkers.CaAntagonist));
-        AssertFloatValue(result.Betablocker, TypeToFloatConverter.MapBoolToFloat(scoringRequest.Biomarkers.Betablocker));
-        AssertFloatValue(result.Diureticum, TypeToFloatConverter.MapBoolToFloat(scoringRequest.Biomarkers.Diuretic));
-        AssertFloatValue(result.Nitrat_od_Dancor, TypeToFloatConverter.MapBoolToFloat(scoringRequest.Biomarkers.OganicNitrate));
+        AssertFloatValue(result.Diabetes_0_no_1_NIDDM_2_IDDM, TypeToFloatConverter.MapEnumValueToFloat(scoringRequestModel.Biomarkers.Diabetes));
+        AssertFloatValue(result.Statin_od_Chol_senker, TypeToFloatConverter.MapBoolToFloat(scoringRequestModel.Biomarkers.Statin));
+        AssertFloatValue(result.Tc_Aggregation, TypeToFloatConverter.MapBoolToFloat(scoringRequestModel.Biomarkers.TcAggInhibitor));
+        AssertFloatValue(result.ACE_od_ATII, TypeToFloatConverter.MapBoolToFloat(scoringRequestModel.Biomarkers.AceInhibitor));
+        AssertFloatValue(result.CA_Antagonist, TypeToFloatConverter.MapBoolToFloat(scoringRequestModel.Biomarkers.CaAntagonist));
+        AssertFloatValue(result.Betablocker, TypeToFloatConverter.MapBoolToFloat(scoringRequestModel.Biomarkers.Betablocker));
+        AssertFloatValue(result.Diureticum, TypeToFloatConverter.MapBoolToFloat(scoringRequestModel.Biomarkers.Diuretic));
+        AssertFloatValue(result.Nitrat_od_Dancor, TypeToFloatConverter.MapBoolToFloat(scoringRequestModel.Biomarkers.OganicNitrate));
 
-        AssertFloatValue(result.BD_syst, scoringRequest.Biomarkers.SystolicBloodPressure);
-        AssertFloatValue(result.BD_diast, scoringRequest.Biomarkers.DiastolicBloodPressure);
-        AssertFloatValue(result.q_Zacken_0_nein_1_ja, TypeToFloatConverter.MapEnumValueToFloat(scoringRequest.Biomarkers.RestingECG));
+        AssertFloatValue(result.BD_syst, scoringRequestModel.Biomarkers.SystolicBloodPressure);
+        AssertFloatValue(result.BD_diast, scoringRequestModel.Biomarkers.DiastolicBloodPressure);
+        AssertFloatValue(result.q_Zacken_0_nein_1_ja, TypeToFloatConverter.MapEnumValueToFloat(scoringRequestModel.Biomarkers.RestingECG));
 
-        AssertFloatValue(result.Pankreas_Amylase, scoringRequest.Biomarkers.PancreaticAmylase);
-        AssertFloatValue(result.Alk_Phase, scoringRequest.Biomarkers.AlkalinePhosphate);
-        AssertFloatValue(result.Troponin, scoringRequest.Biomarkers.HsTroponinT);
-        AssertFloatValue(result.ALAT, scoringRequest.Biomarkers.Alat);
+        AssertFloatValue(result.Pankreas_Amylase, scoringRequestModel.Biomarkers.PancreaticAmylase);
+        AssertFloatValue(result.Alk_Phase, scoringRequestModel.Biomarkers.AlkalinePhosphate);
+        AssertFloatValue(result.Troponin, scoringRequestModel.Biomarkers.HsTroponinT);
+        AssertFloatValue(result.ALAT, scoringRequestModel.Biomarkers.Alat);
 
-        AssertFloatValue(result.Glucose, scoringRequest.Biomarkers.Glucose);
+        AssertFloatValue(result.Glucose, scoringRequestModel.Biomarkers.Glucose);
 
-        AssertFloatValue(result.Bilirubin, scoringRequest.Biomarkers.Bilirubin);
-        AssertFloatValue(result.Harnstoff, scoringRequest.Biomarkers.Urea);
-        AssertFloatValue(result.Harnsaure, scoringRequest.Biomarkers.UricAcid);
+        AssertFloatValue(result.Bilirubin, scoringRequestModel.Biomarkers.Bilirubin);
+        AssertFloatValue(result.Harnstoff, scoringRequestModel.Biomarkers.Urea);
+        AssertFloatValue(result.Harnsaure, scoringRequestModel.Biomarkers.UricAcid);
 
-        AssertFloatValue(result.Cholesterin_gesamt, scoringRequest.Biomarkers.Cholesterol);
-        AssertFloatValue(result.HDL, scoringRequest.Biomarkers.Hdl);
-        AssertFloatValue(result.LDL, scoringRequest.Biomarkers.Ldl);
+        AssertFloatValue(result.Cholesterin_gesamt, scoringRequestModel.Biomarkers.Cholesterol);
+        AssertFloatValue(result.HDL, scoringRequestModel.Biomarkers.Hdl);
+        AssertFloatValue(result.LDL, scoringRequestModel.Biomarkers.Ldl);
 
-        AssertFloatValue(result.Total_Proteine, scoringRequest.Biomarkers.Protein);
-        AssertFloatValue(result.Albumin, scoringRequest.Biomarkers.Albumin);
+        AssertFloatValue(result.Total_Proteine, scoringRequestModel.Biomarkers.Protein);
+        AssertFloatValue(result.Albumin, scoringRequestModel.Biomarkers.Albumin);
 
-        AssertFloatValue(result.Leuko, scoringRequest.Biomarkers.Leukocytes);
-        AssertFloatValue(result.MCHC__g_l_oder___, scoringRequest.Biomarkers.Mchc);
+        AssertFloatValue(result.Leuko, scoringRequestModel.Biomarkers.Leukocytes);
+        AssertFloatValue(result.MCHC__g_l_oder___, scoringRequestModel.Biomarkers.Mchc);
 
         //Todo - currently unused?
         //result.CustomToken = string.Empty;

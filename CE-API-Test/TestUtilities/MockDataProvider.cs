@@ -11,9 +11,8 @@ namespace CE_API_Test.TestUtilities
 {
     internal static class MockDataProvider
     {
-        internal static ScoringRequestDto GetMockedScoringRequestDto()
+        internal static ScoringRequest GetMockedScoringRequestDto()
         {
-            var mockingService = new MockedInputPatientDataService();
             var biomarkers = MockedInputPatientDataService.GetPatientBiomarkers("2");
 
             return biomarkers;
@@ -26,61 +25,61 @@ namespace CE_API_Test.TestUtilities
             return JsonSerializer.Serialize(scoringRequestDtoMock);
         }
 
-        internal static ScoringRequestDto CreateScoringRequestDto()
+        internal static ScoringRequest CreateScoringRequestDto()
         {
-            return new ScoringRequestDto()
+            return new ScoringRequest()
             {
                 FirstName = "FirstName",
                 LastName = "LastName",
                 DateOfBirth = DateTime.UtcNow,
-                Age = new BiomarkerValueDto<int>() { Value = 20 },
-                ACEInhibitor = new BiomarkerValueDto<bool>() { Value = true },
-                Alat = new BiomarkerValueDto<float>() { Value = 2 },
-                Albumin = new BiomarkerValueDto<float>() { Value = 2.0f },
-                AlkalinePhosphatase = new BiomarkerValueDto<float>() { Value = 2 },
-                Betablocker = new BiomarkerValueDto<bool>() { Value = true },
-                Bilirubin = new BiomarkerValueDto<float>() { Value = 2.0f },
-                CaAntagonist = new BiomarkerValueDto<bool>() { Value = true },
-                Cholesterol = new BiomarkerValueDto<float>() { Value = 2.0f },
-                CholesterolLowering_Statin = new BiomarkerValueDto<bool>() { Value = true },
-                Diabetes = new BiomarkerValueDto<DiabetesStatus>() { Value = DiabetesStatus.Iddm },
-                DiastolicBloodPressure = new BiomarkerValueDto<int>() { Value = 2 },
-                Diuretic = new BiomarkerValueDto<bool>() { Value = true },
-                GlucoseFasting = new BiomarkerValueDto<float>() { Value = 2.0f },
-                Hdl = new BiomarkerValueDto<float>() { Value = 2.0f },
-                Height = new BiomarkerValueDto<int>() { Value = 180 },
-                HsTroponinT = new BiomarkerValueDto<float>() { Value = 2.0f },
-                Ldl = new BiomarkerValueDto<float>() { Value = 2.0f },
-                Leukocytes = new BiomarkerValueDto<float>() { Value = 2.0f },
-                Mchc = new BiomarkerValueDto<float>() { Value = 2.0f },
-                NicotineConsumption = new BiomarkerValueDto<NicotineConsumption>() { Value = NicotineConsumption.StANc },
-                OrganicNitrate = new BiomarkerValueDto<bool>() { Value = true },
-                PancreaticAmylase = new BiomarkerValueDto<float>() { Value = 2 },
-                Protein = new BiomarkerValueDto<float>() { Value = 2.0f },
-                RestingECG = new BiomarkerValueDto<RestingEcg>() { Value = RestingEcg.Screening },
-                Sex = new BiomarkerValueDto<Sex>() { Value = Sex.Female },
-                SystolicBloodPressure = new BiomarkerValueDto<int>() { Value = 2 },
-                TCAggregationInhibitor = new BiomarkerValueDto<bool>() { Value = true },
-                ChestPain = new BiomarkerValueDto<ChestPain>() { Value = ChestPain.Possible },
-                Urea = new BiomarkerValueDto<float>() { Value = 2.0f },
-                UricAcid = new BiomarkerValueDto<float>() { Value = 2.0f },
-                Weight = new BiomarkerValueDto<int>() { Value = 100 },
-                clinical_setting = new BiomarkerValueDto<ClinicalSetting>() { Value = ClinicalSetting.PrimaryCare },
-                prior_CAD = new BiomarkerValueDto<bool>() { Value = true },
+                Age = new BiomarkerValue<int>() { Value = 20 },
+                ACEInhibitor = new BiomarkerValue<bool>() { Value = true },
+                Alat = new BiomarkerValue<float>() { Value = 2 },
+                Albumin = new BiomarkerValue<float>() { Value = 2.0f },
+                AlkalinePhosphatase = new BiomarkerValue<float>() { Value = 2 },
+                Betablocker = new BiomarkerValue<bool>() { Value = true },
+                Bilirubin = new BiomarkerValue<float>() { Value = 2.0f },
+                CaAntagonist = new BiomarkerValue<bool>() { Value = true },
+                Cholesterol = new BiomarkerValue<float>() { Value = 2.0f },
+                CholesterolLowering_Statin = new BiomarkerValue<bool>() { Value = true },
+                Diabetes = new BiomarkerValue<DiabetesStatus>() { Value = DiabetesStatus.Iddm },
+                DiastolicBloodPressure = new BiomarkerValue<int>() { Value = 2 },
+                Diuretic = new BiomarkerValue<bool>() { Value = true },
+                GlucoseFasting = new BiomarkerValue<float>() { Value = 2.0f },
+                Hdl = new BiomarkerValue<float>() { Value = 2.0f },
+                Height = new BiomarkerValue<int>() { Value = 180 },
+                HsTroponinT = new BiomarkerValue<float>() { Value = 2.0f },
+                Ldl = new BiomarkerValue<float>() { Value = 2.0f },
+                Leukocytes = new BiomarkerValue<float>() { Value = 2.0f },
+                Mchc = new BiomarkerValue<float>() { Value = 2.0f },
+                NicotineConsumption = new BiomarkerValue<NicotineConsumption>() { Value = NicotineConsumption.StANc },
+                OrganicNitrate = new BiomarkerValue<bool>() { Value = true },
+                PancreaticAmylase = new BiomarkerValue<float>() { Value = 2 },
+                Protein = new BiomarkerValue<float>() { Value = 2.0f },
+                RestingECG = new BiomarkerValue<RestingEcg>() { Value = RestingEcg.Screening },
+                Sex = new BiomarkerValue<Sex>() { Value = Sex.Female },
+                SystolicBloodPressure = new BiomarkerValue<int>() { Value = 2 },
+                TCAggregationInhibitor = new BiomarkerValue<bool>() { Value = true },
+                ChestPain = new BiomarkerValue<ChestPain>() { Value = ChestPain.Possible },
+                Urea = new BiomarkerValue<float>() { Value = 2.0f },
+                UricAcid = new BiomarkerValue<float>() { Value = 2.0f },
+                Weight = new BiomarkerValue<int>() { Value = 100 },
+                clinical_setting = new BiomarkerValue<ClinicalSetting>() { Value = ClinicalSetting.PrimaryCare },
+                prior_CAD = new BiomarkerValue<bool>() { Value = true },
             };
         }
 
-        internal static ScoringResponse GetMockedScoringResponseForRequest(ScoringRequest request)
+        internal static ScoringResponseModel GetMockedScoringResponseForRequest(ScoringRequestModel requestModel)
         {
             var response = GetMockedScoringResponse();
-            response.Request = request;
-            response.RequestId = request.Id;
+            response.Request = requestModel;
+            response.RequestId = requestModel.Id;
             return response;
         }
 
-        internal static ScoringRequest GetMockedScoringRequest(string userId = "", string patientId = "")
+        internal static ScoringRequestModel GetMockedScoringRequest(string userId = "", string patientId = "")
         {
-            return new ScoringRequest
+            return new ScoringRequestModel
             {
                 Id = Guid.NewGuid(),
                 PatientId = patientId.Equals(string.Empty) ? "PatientId" : patientId,
@@ -158,7 +157,7 @@ namespace CE_API_Test.TestUtilities
         internal static string GetExpectedQueryString() =>
             "Datum=02/02/2000 00:00:00&Age=2&Sex_0_female_1male=2&Gr_sse=2&Gewicht=2&Thoraxschmerzen__0_keine_1_extr=2&Nicotin_0_nein_1_St__N__2_ja=2&Diabetes_0_no_1_NIDDM_2_IDDM=2&Statin_od_Chol_senker=2&Tc_Aggregation=2&ACE_od_ATII=2&CA_Antagonist=2&Betablocker=2&Diureticum=2&Nitrat_od_Dancor=2&BD_syst=2&BD_diast=2&q_Zacken_0_nein_1_ja=0&Pankreas_Amylase=2&Alk_Phase=2&Troponin=2&ALAT=2&Glucose=2&Bilirubin=2&Harnstoff=2&Harnsaure=2&Cholesterin_gesamt=2&HDL=2&LDL=2&Total_Proteine=2&Albumin=2&Leuko=2&MCHC__g_l_oder___=2&ASAT=2&Art__Hypertonie=2&CK=2&Chlorid=2&Dyspnoe=2&Gamma_GT=2&Hypercholesterin_mie=2&INR=2&Interne_Nummer=2&Kalium=2&Kreatinin=2&MCV__fl_=2&Natrium=2&OAK=2&Phosphat=2&Repolarisationsst_runge=2";
 
-        internal static ScoringResponse GetMockedScoringResponse() =>
+        internal static ScoringResponseModel GetMockedScoringResponse() =>
             new()
             {
                 Id = new Guid(),
@@ -218,9 +217,9 @@ namespace CE_API_Test.TestUtilities
             return biomarkersList;
         }
 
-        public static IEnumerable<ScoringHistoryDto> GetMockedScoringRequestHistory()
+        public static IEnumerable<SimpleScore> GetMockedScoringRequestHistory()
         {
-            var scoringHistoryList = new List<ScoringHistoryDto>();
+            var scoringHistoryList = new List<SimpleScore>();
 
             for (int i = 0; i < 3; i++)
             {
@@ -230,103 +229,105 @@ namespace CE_API_Test.TestUtilities
             return scoringHistoryList;
         }
 
-        private static ScoringHistoryDto CreateMockedHistoryDto() => new()
+        private static SimpleScore CreateMockedHistoryDto() => new()
         {
             RequestId = Guid.NewGuid(),
             RequestTimeStamp = DateTimeOffset.Now,
-            Score = 1.0f
+            Score = 1.0f,
+            Risk = ">75%",
+            RiskClass = 4
         };
 
-        internal static ScoringRequestDto CreateValidScoringRequestDto()
+        internal static ScoringRequest CreateValidScoringRequestDto()
         {
-            return new ScoringRequestDto()
+            return new ScoringRequest()
             {
                 FirstName = "Mock",
                 LastName = "Mock",
                 DateOfBirth = new DateTime(1990, 01, 01),
-                Age = new BiomarkerValueDto<int>() { Value = 20, UnitType = "SI" },
-                ACEInhibitor = new BiomarkerValueDto<bool>() { Value = true, UnitType = "SI" },
-                Alat = new BiomarkerValueDto<float>() { Value = 5, UnitType = "SI" },
-                Albumin = new BiomarkerValueDto<float>() { Value = 20.0f, UnitType = "SI" },
-                AlkalinePhosphatase = new BiomarkerValueDto<float>() { Value = 100, UnitType = "SI" },
-                Betablocker = new BiomarkerValueDto<bool>() { Value = true, UnitType = "SI" },
-                Bilirubin = new BiomarkerValueDto<float>() { Value = 2.0f, UnitType = "SI" },
-                CaAntagonist = new BiomarkerValueDto<bool>() { Value = true, UnitType = "SI" },
-                ChestPain = new BiomarkerValueDto<ChestPain>() { Value = ChestPain.Possible, UnitType = "SI" },
-                Cholesterol = new BiomarkerValueDto<float>() { Value = 2.0f, UnitType = "SI" },
-                CholesterolLowering_Statin = new BiomarkerValueDto<bool>() { Value = true, UnitType = "SI" },
-                Diabetes = new BiomarkerValueDto<DiabetesStatus>() { Value = DiabetesStatus.Niddm, UnitType = "SI" },
-                DiastolicBloodPressure = new BiomarkerValueDto<int>() { Value = 30, UnitType = "SI" },
-                Diuretic = new BiomarkerValueDto<bool>() { Value = true, UnitType = "SI" },
-                GlucoseFasting = new BiomarkerValueDto<float>() { Value = 2.0f, UnitType = "SI" },
-                Hdl = new BiomarkerValueDto<float>() { Value = 2.0f, UnitType = "SI" },
-                Height = new BiomarkerValueDto<int>() { Value = 180, UnitType = "SI" },
-                HsTroponinT = new BiomarkerValueDto<float>() { Value = 2.0f, UnitType = "SI" },
-                Ldl = new BiomarkerValueDto<float>() { Value = 2.0f, UnitType = "SI" },
-                Leukocytes = new BiomarkerValueDto<float>() { Value = 2.0f, UnitType = "SI" },
-                Mchc = new BiomarkerValueDto<float>() { Value = 2.0f, UnitType = "SI" },
-                NicotineConsumption = new BiomarkerValueDto<NicotineConsumption>() { Value = NicotineConsumption.StANc, UnitType = "SI" },
-                OrganicNitrate = new BiomarkerValueDto<bool>() { Value = true, UnitType = "SI" },
-                PancreaticAmylase = new BiomarkerValueDto<float>() { Value = 2, UnitType = "SI" },
-                Protein = new BiomarkerValueDto<float>() { Value = 5.0f, UnitType = "SI" },
-                RestingECG = new BiomarkerValueDto<RestingEcg>() { Value = RestingEcg.Yes, UnitType = "SI" },
-                Sex = new BiomarkerValueDto<Sex>() { Value = Sex.Female, UnitType = "SI" },
-                SystolicBloodPressure = new BiomarkerValueDto<int>() { Value = 50, UnitType = "SI" },
-                TCAggregationInhibitor = new BiomarkerValueDto<bool>() { Value = true, UnitType = "SI" },
-                Urea = new BiomarkerValueDto<float>() { Value = 2.0f, UnitType = "SI" },
-                UricAcid = new BiomarkerValueDto<float>() { Value = 10.0f, UnitType = "SI" },
-                Weight = new BiomarkerValueDto<int>() { Value = 100, UnitType = "SI" },
-                clinical_setting = new BiomarkerValueDto<ClinicalSetting>() { Value = ClinicalSetting.PrimaryCare, UnitType = "SI" },
-                prior_CAD = new BiomarkerValueDto<bool>() { Value = true, UnitType = "SI" },
+                Age = new BiomarkerValue<int>() { Value = 20, UnitType="SI" },
+                ACEInhibitor = new BiomarkerValue<bool>() { Value = true, UnitType = "SI" },
+                Alat = new BiomarkerValue<float>() { Value = 5, UnitType = "SI" },
+                Albumin = new BiomarkerValue<float>() { Value = 20.0f, UnitType = "SI" },
+                AlkalinePhosphatase = new BiomarkerValue<float>() { Value = 100, UnitType = "SI" },
+                Betablocker = new BiomarkerValue<bool>() { Value = true, UnitType = "SI" },
+                Bilirubin = new BiomarkerValue<float>() { Value = 2.0f, UnitType = "SI" },
+                CaAntagonist = new BiomarkerValue<bool>() { Value = true, UnitType = "SI" },
+                ChestPain = new BiomarkerValue<ChestPain>() { Value = ChestPain.Possible, UnitType = "SI" },
+                Cholesterol = new BiomarkerValue<float>() { Value = 2.0f, UnitType = "SI" },
+                CholesterolLowering_Statin = new BiomarkerValue<bool>() { Value = true, UnitType = "SI" },
+                Diabetes = new BiomarkerValue<DiabetesStatus>() { Value = DiabetesStatus.Niddm, UnitType = "SI" },
+                DiastolicBloodPressure = new BiomarkerValue<int>() { Value = 30, UnitType = "SI" },
+                Diuretic = new BiomarkerValue<bool>() { Value = true, UnitType = "SI" },
+                GlucoseFasting = new BiomarkerValue<float>() { Value = 2.0f, UnitType = "SI" },
+                Hdl = new BiomarkerValue<float>() { Value = 2.0f, UnitType = "SI" },
+                Height = new BiomarkerValue<int>() { Value = 180, UnitType = "SI" },
+                HsTroponinT = new BiomarkerValue<float>() { Value = 2.0f, UnitType = "SI" },
+                Ldl = new BiomarkerValue<float>() { Value = 2.0f, UnitType = "SI" },
+                Leukocytes = new BiomarkerValue<float>() { Value = 2.0f, UnitType = "SI" },
+                Mchc = new BiomarkerValue<float>() { Value = 2.0f, UnitType = "SI" },
+                NicotineConsumption = new BiomarkerValue<NicotineConsumption>() { Value = NicotineConsumption.StANc , UnitType = "SI" },
+                OrganicNitrate = new BiomarkerValue<bool>() { Value = true, UnitType = "SI" },
+                PancreaticAmylase = new BiomarkerValue<float>() { Value = 2, UnitType = "SI" },
+                Protein = new BiomarkerValue<float>() { Value = 5.0f, UnitType = "SI" },
+                RestingECG = new BiomarkerValue<RestingEcg>() { Value = RestingEcg.Yes, UnitType = "SI" },
+                Sex = new BiomarkerValue<Sex>() { Value = Sex.Female, UnitType = "SI" },
+                SystolicBloodPressure = new BiomarkerValue<int>() { Value = 50, UnitType = "SI" },
+                TCAggregationInhibitor = new BiomarkerValue<bool>() { Value = true, UnitType = "SI" },
+                Urea = new BiomarkerValue<float>() { Value = 2.0f, UnitType = "SI" },
+                UricAcid = new BiomarkerValue<float>() { Value = 10.0f, UnitType = "SI" },
+                Weight = new BiomarkerValue<int>() { Value = 100, UnitType = "SI" },
+                clinical_setting = new BiomarkerValue<ClinicalSetting>() { Value = ClinicalSetting.PrimaryCare, UnitType = "SI" },
+                prior_CAD = new BiomarkerValue<bool>() { Value = true, UnitType = "SI" },
             };
         }
-        internal static ScoringRequestDto CreateNotValidScoringRequestDto()
+        internal static ScoringRequest CreateNotValidScoringRequestDto()
         {
-            return new ScoringRequestDto()
+            return new ScoringRequest()
             {
                 FirstName = "Mock",
                 LastName = "Mock",
                 DateOfBirth = new DateTime(1990, 01, 01),
-                Age = new BiomarkerValueDto<int>() { Value = 1, UnitType = "SI" },
-                ACEInhibitor = new BiomarkerValueDto<bool>() { Value = true, UnitType = "SI" },
-                Alat = new BiomarkerValueDto<float>() { Value = 5, UnitType = "notValid" },
-                Albumin = new BiomarkerValueDto<float>() { Value = 20.0f, UnitType = "SI" },
-                AlkalinePhosphatase = new BiomarkerValueDto<float>() { Value = 100, UnitType = "SI" },
-                Betablocker = new BiomarkerValueDto<bool>() { Value = true, UnitType = "SI" },
-                Bilirubin = new BiomarkerValueDto<float>() { Value = 2.0f, UnitType = "SI" },
-                CaAntagonist = new BiomarkerValueDto<bool>() { Value = true, UnitType = "SI" },
-                ChestPain = new BiomarkerValueDto<ChestPain>() { Value = ChestPain.Possible, UnitType = "SI" },
-                Cholesterol = new BiomarkerValueDto<float>() { Value = 2.0f, UnitType = "SI" },
-                CholesterolLowering_Statin = new BiomarkerValueDto<bool>() { Value = true, UnitType = "SI" },
-                Diabetes = new BiomarkerValueDto<DiabetesStatus>() { Value = DiabetesStatus.Niddm, UnitType = "SI" },
-                DiastolicBloodPressure = new BiomarkerValueDto<int>() { Value = 30, UnitType = "SI" },
-                Diuretic = new BiomarkerValueDto<bool>() { Value = true, UnitType = "SI" },
-                GlucoseFasting = new BiomarkerValueDto<float>() { Value = 2.0f, UnitType = "SI" },
-                Hdl = new BiomarkerValueDto<float>() { Value = 2.0f, UnitType = "SI" },
-                Height = new BiomarkerValueDto<int>() { Value = 400, UnitType = "SI" },
-                HsTroponinT = new BiomarkerValueDto<float>() { Value = 2.0f, UnitType = "SI" },
-                Ldl = new BiomarkerValueDto<float>() { Value = 2.0f, UnitType = "SI" },
-                Leukocytes = new BiomarkerValueDto<float>() { Value = 2.0f, UnitType = "SI" },
-                Mchc = new BiomarkerValueDto<float>() { Value = 2.0f, UnitType = "SI" },
-                NicotineConsumption = new BiomarkerValueDto<NicotineConsumption>() { Value = NicotineConsumption.StANc, UnitType = "SI" },
-                OrganicNitrate = new BiomarkerValueDto<bool>() { Value = true, UnitType = "SI" },
-                PancreaticAmylase = new BiomarkerValueDto<float>() { Value = 2, UnitType = "SI" },
-                Protein = new BiomarkerValueDto<float>() { Value = 5.0f, UnitType = "SI" },
-                RestingECG = new BiomarkerValueDto<RestingEcg>() { Value = RestingEcg.Yes, UnitType = "SI" },
-                Sex = new BiomarkerValueDto<Sex>() { Value = Sex.Female, UnitType = "SI" },
-                SystolicBloodPressure = new BiomarkerValueDto<int>() { Value = 50, UnitType = "notValid" },
-                TCAggregationInhibitor = new BiomarkerValueDto<bool>() { Value = true, UnitType = "SI" },
-                Urea = new BiomarkerValueDto<float>() { Value = 2.0f, UnitType = "SI" },
-                UricAcid = new BiomarkerValueDto<float>() { Value = 10.0f, UnitType = "SI" },
-                Weight = new BiomarkerValueDto<int>() { Value = 13, UnitType = "SI" },
-                clinical_setting = new BiomarkerValueDto<ClinicalSetting>() { Value = ClinicalSetting.PrimaryCare, UnitType = "SI" },
-                prior_CAD = new BiomarkerValueDto<bool>() { Value = true, UnitType = "SI" },
+                Age = new BiomarkerValue<int>() { Value = 1, UnitType = "SI" },
+                ACEInhibitor = new BiomarkerValue<bool>() { Value = true, UnitType = "SI" },
+                Alat = new BiomarkerValue<float>() { Value = 5, UnitType = "notValid" },
+                Albumin = new BiomarkerValue<float>() { Value = 20.0f, UnitType = "SI" },
+                AlkalinePhosphatase = new BiomarkerValue<float>() { Value = 100, UnitType = "SI" },
+                Betablocker = new BiomarkerValue<bool>() { Value = true, UnitType = "SI" },
+                Bilirubin = new BiomarkerValue<float>() { Value = 2.0f, UnitType = "SI" },
+                CaAntagonist = new BiomarkerValue<bool>() { Value = true, UnitType = "SI" },
+                ChestPain = new BiomarkerValue<ChestPain>() { Value = ChestPain.Possible, UnitType = "SI" },
+                Cholesterol = new BiomarkerValue<float>() { Value = 2.0f, UnitType = "SI" },
+                CholesterolLowering_Statin = new BiomarkerValue<bool>() { Value = true, UnitType = "SI" },
+                Diabetes = new BiomarkerValue<DiabetesStatus>() { Value = DiabetesStatus.Niddm, UnitType = "SI" },
+                DiastolicBloodPressure = new BiomarkerValue<int>() { Value = 30, UnitType = "SI" },
+                Diuretic = new BiomarkerValue<bool>() { Value = true, UnitType = "SI" },
+                GlucoseFasting = new BiomarkerValue<float>() { Value = 2.0f, UnitType = "SI" },
+                Hdl = new BiomarkerValue<float>() { Value = 2.0f, UnitType = "SI" },
+                Height = new BiomarkerValue<int>() { Value = 400, UnitType = "SI" },
+                HsTroponinT = new BiomarkerValue<float>() { Value = 2.0f, UnitType = "SI" },
+                Ldl = new BiomarkerValue<float>() { Value = 2.0f, UnitType = "SI" },
+                Leukocytes = new BiomarkerValue<float>() { Value = 2.0f, UnitType = "SI" },
+                Mchc = new BiomarkerValue<float>() { Value = 2.0f, UnitType = "SI" },
+                NicotineConsumption = new BiomarkerValue<NicotineConsumption>() { Value = NicotineConsumption.StANc, UnitType = "SI" },
+                OrganicNitrate = new BiomarkerValue<bool>() { Value = true, UnitType = "SI" },
+                PancreaticAmylase = new BiomarkerValue<float>() { Value = 2, UnitType = "SI" },
+                Protein = new BiomarkerValue<float>() { Value = 5.0f, UnitType = "SI" },
+                RestingECG = new BiomarkerValue<RestingEcg>() { Value = RestingEcg.Yes, UnitType = "SI" },
+                Sex = new BiomarkerValue<Sex>() { Value = Sex.Female, UnitType = "SI" },
+                SystolicBloodPressure = new BiomarkerValue<int>() { Value = 50, UnitType = "notValid" },
+                TCAggregationInhibitor = new BiomarkerValue<bool>() { Value = true, UnitType = "SI" },
+                Urea = new BiomarkerValue<float>() { Value = 2.0f, UnitType = "SI" },
+                UricAcid = new BiomarkerValue<float>() { Value = 10.0f, UnitType = "SI" },
+                Weight = new BiomarkerValue<int>() { Value = 13, UnitType = "SI" },
+                clinical_setting = new BiomarkerValue<ClinicalSetting>() { Value = ClinicalSetting.PrimaryCare, UnitType = "SI" },
+                prior_CAD = new BiomarkerValue<bool>() { Value = true, UnitType = "SI" },
             };
         }
 
-        public static UserDto GetMockedUserDto()
+        public static User GetMockedUserDto()
         {
-            return new UserDto()
+            return new User()
             {
                 Address = "Mock",
                 City = "Mock",
@@ -334,7 +335,7 @@ namespace CE_API_Test.TestUtilities
                 Country = "Mock",
                 CountryCode = "Mock",
                 Department = "Mock",
-                EMailAdress = "Mock",
+                EMailAddress = "Mock",
                 FirstName = "Mock",
                 Language = "Mock",
                 PreferredLab = "Mock",
@@ -346,18 +347,20 @@ namespace CE_API_Test.TestUtilities
                 Role = UserRole.MedicalDoctor
             };
         }
-
-        public static User GetMockedUser()
+        
+        public static UserModel GetMockedUser()
         {
-            return new User()
+            return new UserModel()
             {
+                ZipCode = "12345",
+                Title = "Dr.",
                 Address = "Mock",
                 City = "Mock",
                 ClinicalSetting = ClinicalSetting.SecondaryCare,
                 Country = "Mock",
                 CountryCode = "Mock",
                 Department = "Mock",
-                EMailAdress = "Mock",
+                EMailAddress = "Mock",
                 FirstName = "Mock",
                 Language = "Mock",
                 PreferredLab = "Mock",
@@ -371,10 +374,10 @@ namespace CE_API_Test.TestUtilities
                 TenantID = "MockedTenantId"
             };
         }
-
-        public static CreateUserDto GetMockedCreateUserDto()
+        
+        public static CreateUser GetMockedCreateUserDto()
         {
-            return new CreateUserDto()
+            return new CreateUser()
             {
                 Address = "Mock",
                 City = "Mock",
@@ -382,7 +385,7 @@ namespace CE_API_Test.TestUtilities
                 Country = "Mock",
                 CountryCode = "Mock",
                 Department = "Mock",
-                EMailAdress = "Mock",
+                EMailAddress = "Mock",
                 FirstName = "Mock",
                 Language = "Mock",
                 PreferredLab = "Mock",
@@ -399,10 +402,10 @@ namespace CE_API_Test.TestUtilities
             TenantId = "MockedTenantId",
             UserId = "MockedUserId",
         };
-
-        public static AccessRequestDto GetMockedAccessRequestDto()
+        
+        public static AccessRequest GetMockedAccessRequestDto()
         {
-            return new AccessRequestDto()
+            return new AccessRequest()
             {
                 EmailAddress = "MockedAddress",
                 FirstName = "MockedFirstName",
@@ -440,11 +443,11 @@ namespace CE_API_Test.TestUtilities
                 RecommendationTableHeader = "",
                 RecommendationScoreRangeHeader = "",
                 RecommendationCategories = new List<RecommendationCategory> { new() },
-                Biomarkers = new List<BiomarkerSchemaDto> { new() },
+                Biomarkers = new List<BiomarkerSchema> { new() },
             };
         }
 
-        public static ScoringResponseSummary GetScoringResponseSummaryMock()
+        public static ScoringResponse GetScoringResponseSummaryMock()
         {
             return new()
             {

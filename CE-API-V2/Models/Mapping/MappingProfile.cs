@@ -8,20 +8,20 @@ namespace CE_API_V2.Models.Mapping
     {
         public MappingProfile()
         {
-            CreateMap<ScoringRequest, ScoringHistoryDto>()
+            CreateMap<ScoringRequestModel, SimpleScore>()
                 .ForMember(dest => dest.Score, opt => opt.MapFrom(src => src.Response.classifier_score))
                 .ForMember(dest => dest.RequestId, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.RequestTimeStamp, opt => opt.MapFrom(src => src.CreatedOn))
+                .ForMember(dest => dest.RiskClass, opt => opt.MapFrom(src => src.Response.classifier_class))
+                .ForMember(dest => dest.Risk, opt => opt.MapFrom(src => $">{src.Response.classifier_score}"))
                 ;
 
-            CreateMap<ScoringRequestDto, ScoringRequest>()
+            CreateMap<ScoringRequest, ScoringRequestModel>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(_ => Guid.NewGuid()))
                 .ForMember(dest => dest.Biomarkers, opt => opt.MapFrom(src => src))
                 ;
 
-            CreateMap<ScoringResponse, ScoringResponseDto>();
-
-            CreateMap<ScoringRequestDto, Biomarkers>()
+            CreateMap<ScoringRequest, Biomarkers>()
                 .ForMember(dest => dest.Glucose, opt => opt.MapFrom(src => src.GlucoseFasting))
                 .ForMember(dest => dest.Nicotine, opt => opt.MapFrom(src => src.NicotineConsumption))
                 .ForMember(dest => dest.AceInhibitor, opt => opt.MapFrom(src => src.ACEInhibitor))
@@ -51,50 +51,50 @@ namespace CE_API_V2.Models.Mapping
                 .ForMember(dest => dest.HsTroponinTUnit, opt => opt.MapFrom(src => src.HsTroponinT.UnitType))
                 .ForMember(dest => dest.ProteinUnit, opt => opt.MapFrom(src => src.Protein.UnitType))
                 ;
-            
-            CreateMap<CreateUserDto, User>()
+
+            CreateMap<CreateUser, UserModel>()
                 .ForMember(dest => dest.UserId, opt => opt.MapFrom(_ => string.Empty))
                 .ForMember(dest => dest.TenantID, opt => opt.MapFrom(_ => string.Empty));
 
-            CreateMap<User, UserDto>();
+            CreateMap<UserModel, User>();
 
-            CreateMap(typeof(BiomarkerValueDto<string>), typeof(string))
+            CreateMap(typeof(BiomarkerValue<string>), typeof(string))
                 .ConvertUsing(typeof(ValueToUnderlyingTypeConverter<string>));
-            CreateMap(typeof(BiomarkerValueDto<int>), typeof(int))
+            CreateMap(typeof(BiomarkerValue<int>), typeof(int))
                 .ConvertUsing(typeof(ValueToUnderlyingTypeConverter<int>));
-            CreateMap(typeof(BiomarkerValueDto<float>), typeof(float))
+            CreateMap(typeof(BiomarkerValue<float>), typeof(float))
                 .ConvertUsing(typeof(ValueToUnderlyingTypeConverter<float>));
-            CreateMap(typeof(BiomarkerValueDto<bool>), typeof(bool))
+            CreateMap(typeof(BiomarkerValue<bool>), typeof(bool))
                 .ConvertUsing(typeof(ValueToUnderlyingTypeConverter<bool>));
-            CreateMap(typeof(BiomarkerValueDto<PatientDataEnums.Sex>), typeof(PatientDataEnums.Sex))
+            CreateMap(typeof(BiomarkerValue<PatientDataEnums.Sex>), typeof(PatientDataEnums.Sex))
                 .ConvertUsing(typeof(ValueToUnderlyingTypeConverter<PatientDataEnums.Sex>));
-            CreateMap(typeof(BiomarkerValueDto<PatientDataEnums.NicotineConsumption>),
+            CreateMap(typeof(BiomarkerValue<PatientDataEnums.NicotineConsumption>),
                     typeof(PatientDataEnums.NicotineConsumption))
                 .ConvertUsing(typeof(ValueToUnderlyingTypeConverter<PatientDataEnums.NicotineConsumption>));
-            CreateMap(typeof(BiomarkerValueDto<PatientDataEnums.ChestPain>), typeof(PatientDataEnums.ChestPain))
+            CreateMap(typeof(BiomarkerValue<PatientDataEnums.ChestPain>), typeof(PatientDataEnums.ChestPain))
                 .ConvertUsing(typeof(ValueToUnderlyingTypeConverter<PatientDataEnums.ChestPain>));
-            CreateMap(typeof(BiomarkerValueDto<PatientDataEnums.ClinicalSetting>),
+            CreateMap(typeof(BiomarkerValue<PatientDataEnums.ClinicalSetting>),
                     typeof(PatientDataEnums.ClinicalSetting))
                 .ConvertUsing(typeof(ValueToUnderlyingTypeConverter<PatientDataEnums.ClinicalSetting>));
-            CreateMap(typeof(BiomarkerValueDto<PatientDataEnums.DiabetesStatus>),
+            CreateMap(typeof(BiomarkerValue<PatientDataEnums.DiabetesStatus>),
                     typeof(PatientDataEnums.DiabetesStatus))
                 .ConvertUsing(typeof(ValueToUnderlyingTypeConverter<PatientDataEnums.DiabetesStatus>));
-            CreateMap(typeof(BiomarkerValueDto<PatientDataEnums.RestingEcg>), typeof(PatientDataEnums.RestingEcg))
+            CreateMap(typeof(BiomarkerValue<PatientDataEnums.RestingEcg>), typeof(PatientDataEnums.RestingEcg))
                 .ConvertUsing(typeof(ValueToUnderlyingTypeConverter<PatientDataEnums.RestingEcg>));
             ;
 
-            CreateMap<BiomarkersGeneral, BiomarkerSchemaDto>()
+            CreateMap<BiomarkersGeneral, BiomarkerSchema>()
                 .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.Category))
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.OrderNumber, opt => opt.MapFrom(src => src.OrderNumber))
                 .ForMember(dest => dest.PreferredUnit, opt => opt.MapFrom(src => src.PreferredUnit))
                 .ForMember(dest => dest.Units, opt => opt.MapFrom(src => src.Units));
 
-            CreateMap<BiomarkersLocalized, BiomarkerSchemaDto>()
+            CreateMap<BiomarkersLocalized, BiomarkerSchema>()
                 .ForMember(dest => dest.InfoText, opt => opt.MapFrom(src => src.InfoText))
                 .ForMember(dest => dest.Fieldname, opt => opt.MapFrom(src => src.Fieldname));
 
-            CreateMap<ScoringResponse, ScoringResponseSummary>()
+            CreateMap<ScoringResponseModel, ScoringResponse>()
                 .ForMember(dest => dest.Biomarkers, opt => opt.MapFrom(src => src.Request.Biomarkers))
                 .ForMember(dest => dest.RiskValue, opt => opt.Ignore())
                 .ForMember(dest => dest.Warnings, opt => opt.Ignore())
@@ -109,7 +109,7 @@ namespace CE_API_V2.Models.Mapping
                 .ForMember(dest => dest.Biomarkers, opt => opt.MapFrom(src => src))
                 .ForAllMembers(opts => opts.Ignore());
             
-            CreateMap<IEnumerable<BiomarkerSchemaDto>, ScoreSummary>()
+            CreateMap<IEnumerable<BiomarkerSchema>, ScoreSummary>()
                 .ForMember(dest => dest.Biomarkers, opt => opt.MapFrom(src => src))
                 .ForAllMembers(opts => opts.Ignore());
 
@@ -117,7 +117,7 @@ namespace CE_API_V2.Models.Mapping
                 .ForMember(dest => dest.RecommendationCategories, opt => opt.MapFrom(src => src.ToArray()))
                 .ForAllMembers(opts => opts.Ignore());
 
-            CreateMap<RecommendationCategory, ScoringResponseSummary>()
+            CreateMap<RecommendationCategory, ScoringResponse>()
                 .ForMember(dest => dest.RecommendationSummary, opt => opt.MapFrom(src => src.ShortText))
                 .ForMember(dest => dest.RecommendationLongText, opt => opt.MapFrom(src => src.LongText))
                 .ForMember(dest => dest.RiskValue, opt => opt.MapFrom(src => src.RiskValue))
@@ -129,9 +129,9 @@ namespace CE_API_V2.Models.Mapping
                 .ForMember(dest => dest.Biomarkers, opt => opt.Ignore());
         }
     }
-    public class ValueToUnderlyingTypeConverter<T> : ITypeConverter<BiomarkerValueDto<T>, T>
+    public class ValueToUnderlyingTypeConverter<T> : ITypeConverter<BiomarkerValue<T>, T>
     {
-        public T Convert(BiomarkerValueDto<T> source, T destination, ResolutionContext context)
+        public T Convert(BiomarkerValue<T> source, T destination, ResolutionContext context)
         {
             return source.Value;
         }

@@ -13,16 +13,16 @@ namespace CE_API_V2.Services
         {
             _scoringRequestValidator = scoringRequestValidator;
         }
-        public ValidationResult ScoringRequestIsValid(ScoringRequestDto value)
+        public ValidationResult ScoringRequestIsValid(ScoringRequest request)
         {
-            return _scoringRequestValidator.Validate(value);
+            return _scoringRequestValidator.Validate(request);
         }
-        public bool ValidateUser(CreateUserDto user)
+        public bool ValidateUser(CreateUser user)
         {
             return true;
         }
 
-        public bool ValidateAccessRequest(AccessRequestDto user)
+        public bool ValidateAccessRequest(AccessRequest user)
         {
             return true;
         }

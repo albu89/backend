@@ -24,27 +24,27 @@ public static class ValidationHelpers
         return prop;
     }
 
-    private static BiomarkerSchemaUnitDto? GetCorrespondingUnit(IEnumerable<BiomarkerSchemaDto> template, string requestUnitType, string propertyName)
+    private static BiomarkerSchemaUnit? GetCorrespondingUnit(IEnumerable<BiomarkerSchema> template, string requestUnitType, string propertyName)
     {
 
         if (requestUnitType == null)
             throw new ArgumentNullException(nameof(requestUnitType));
-        var unitToTest = template.FirstOrDefault(x => x.Id == GetJsonPropertyKeyName(propertyName, typeof(ScoringRequestDto)))?
+        var unitToTest = template.FirstOrDefault(x => x.Id == GetJsonPropertyKeyName(propertyName, typeof(ScoringRequest)))?
             .Units?.FirstOrDefault(x => x.UnitType == requestUnitType);
         return unitToTest;
     }
-    public static float GetMaxValue(string propertyName, string unitType, IEnumerable<BiomarkerSchemaDto> template)
+    public static float GetMaxValue(string propertyName, string unitType, IEnumerable<BiomarkerSchema> template)
     {
         return GetCorrespondingUnit(template, unitType, propertyName)?.Maximum ?? 0;
     }
-    public static float GetMinValue(string propertyName, string unitType, IEnumerable<BiomarkerSchemaDto> template)
+    public static float GetMinValue(string propertyName, string unitType, IEnumerable<BiomarkerSchema> template)
     {
         return GetCorrespondingUnit(template, unitType, propertyName)?.Minimum ?? 0;
     }
 
-    public static IEnumerable<BiomarkerSchemaUnitDto> GetAllUnitsForProperty(string propertyName, IEnumerable<BiomarkerSchemaDto> template)
+    public static IEnumerable<BiomarkerSchemaUnit> GetAllUnitsForProperty(string propertyName, IEnumerable<BiomarkerSchema> template)
     {
-        var units = template.FirstOrDefault(x => x.Id == GetJsonPropertyKeyName(propertyName, typeof(ScoringRequestDto)))?
+        var units = template.FirstOrDefault(x => x.Id == GetJsonPropertyKeyName(propertyName, typeof(ScoringRequest)))?
             .Units;
         return units;
     }

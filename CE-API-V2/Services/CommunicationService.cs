@@ -23,9 +23,9 @@ public class CommunicationService : ICommunicationService
         MailRecipient = _config.GetValue<string>("AzureCommunicationService:MailRecipient");
     }
 
-    public async Task<EmailSendStatus> SendAccessRequest(AccessRequestDto accessDto)
+    public async Task<EmailSendStatus> SendAccessRequest(AccessRequest access)
     {
-        var emailConfiguration = _emailBuilder.GetEmailConfiguration(accessDto);
+        var emailConfiguration = _emailBuilder.GetEmailConfiguration(access);
         var emailClient = _emailClientService.GetEmailClient();
         var emailResult = await SendEMail(emailClient, emailConfiguration);
 

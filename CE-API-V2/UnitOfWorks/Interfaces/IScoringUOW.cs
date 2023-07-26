@@ -5,22 +5,23 @@ namespace CE_API_V2.UnitOfWorks.Interfaces;
 
 public interface IScoringUOW
 {
-    IGenericRepository<ScoringRequest> ScoringRequestRepository { get; }
+    IGenericRepository<ScoringRequestModel> ScoringRequestRepository { get; }
     
-    IGenericRepository<ScoringResponse> ScoringResponseRepository { get; }
+    IGenericRepository<ScoringResponseModel> ScoringResponseRepository { get; }
     
-    ScoringRequest StoreScoringRequest(ScoringRequest scoringRequest, string UserId);
+    ScoringRequestModel StoreScoringRequest(ScoringRequestModel scoringRequestModel, string UserId);
     
-    ScoringRequest RetrieveScoringRequest(Guid ScoringRequestId, string userId);
+    ScoringRequestModel RetrieveScoringRequest(Guid ScoringRequestId, string userId);
     
-    ScoringResponse StoreScoringResponse(ScoringResponse scoringResponse);
+    ScoringResponseModel StoreScoringResponse(ScoringResponseModel scoringResponseModel);
     
-    IEnumerable<ScoringHistoryDto>? RetrieveScoringHistoryForUser(string UserId);
+    IEnumerable<SimpleScore>? RetrieveScoringHistoryForUser(string UserId);
     
-    IEnumerable<ScoringHistoryDto> RetrieveScoringHistoryForPatient(string PatientId, string UserId);
+    IEnumerable<SimpleScore> RetrieveScoringHistoryForPatient(string PatientId, string UserId);
     
-    ScoringResponse RetrieveScoringResponse(Guid ScoringRequestId, string UserId);
+    ScoringResponseModel RetrieveScoringResponse(Guid ScoringRequestId, string UserId);
     
-    Task<ScoringResponse> ProcessScoringRequest(ScoringRequestDto scoringRequest, string userId, string patientId);
-    ScoringResponseSummary GetScoreSummary(ScoringResponse recentScore);
+    Task<ScoringResponseModel> ProcessScoringRequest(ScoringRequest scoringRequestModel, string userId, string patientId);
+    
+    ScoringResponse GetScoreSummary(ScoringResponseModel recentScore);
 }

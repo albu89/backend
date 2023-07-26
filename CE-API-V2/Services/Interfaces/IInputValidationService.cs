@@ -4,7 +4,7 @@ namespace CE_API_V2.Services.Interfaces;
 
 public interface IInputValidationService
 {
-    public ValidationResult ScoringRequestIsValid(ScoringRequestDto value);
-    public bool ValidateUser(CreateUserDto user);
-    public bool ValidateAccessRequest(AccessRequestDto user);
+    public ValidationResult ScoringRequestIsValid(ScoringRequest request);
+    public bool ValidateUser(CreateUser user);
+    public bool ValidateAccessRequest(AccessRequest user);
 }

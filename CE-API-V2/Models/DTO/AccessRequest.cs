@@ -1,6 +1,6 @@
 ﻿namespace CE_API_V2.Models.DTO
 {
-    public class AccessRequestDto
+    public class AccessRequest
     {
         public string Surname { get; set; }
         public string FirstName { get; set; }

@@ -19,22 +19,22 @@ public class AiRequestService : IAiRequestService
         _env = env;
     }
 
-    public async Task<ScoringResponse>? RequestScore(ScoringRequest scoringRequest)
+    public async Task<ScoringResponseModel>? RequestScore(ScoringRequestModel scoringRequestModel)
     {
-        if (scoringRequest is null)
+        if (scoringRequestModel is null)
             return null;
 
-        var patientDataToAiDto = DtoConverter.ConvertToAiDto(scoringRequest.Biomarkers);
+        var patientDataToAiDto = DtoConverter.ConvertToAiDto(scoringRequestModel.Biomarkers);
         var response = await GetScoreAsync(patientDataToAiDto);
 
         return response;
     }
 
-    private async Task<ScoringResponse> GetScoreAsync(AiDto patientDataDto)
+    private async Task<ScoringResponseModel> GetScoreAsync(AiDto patientDataDto)
     {
         var requestString = $"{_config.GetValue<string>("AiSubpath")}{DataTransferUtility.CreateQueryString(patientDataDto)}";
         var fullstring = _httpClient.BaseAddress + requestString;
-        ScoringResponse scoringResponse = null;
+        ScoringResponseModel scoringResponseModel = null;
         HttpResponseMessage response = null;
 
         try
@@ -47,17 +47,17 @@ public class AiRequestService : IAiRequestService
             }
 
             var jsonResponse = await response.Content.ReadAsStringAsync();
-            scoringResponse = DataTransferUtility.FormatResponse(jsonResponse);
+            scoringResponseModel = DataTransferUtility.FormatResponse(jsonResponse);
         }
         catch (HttpRequestException e) //Todo
         {
             if (_env.IsStaging() || _env.IsDevelopment())
             {
                 ScoringResponseMocker responseMocker = new();
-                scoringResponse = responseMocker.MockScoringResponse();
+                scoringResponseModel = responseMocker.MockScoringResponse();
             }
         }
-        scoringResponse.Id = Guid.NewGuid();
-        return scoringResponse;
+        scoringResponseModel.Id = Guid.NewGuid();
+        return scoringResponseModel;
     }
 }

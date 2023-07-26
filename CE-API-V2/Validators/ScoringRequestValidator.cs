@@ -1,17 +1,14 @@
-﻿using System.Globalization;
-using CE_API_V2.Models.DTO;
+﻿using CE_API_V2.Models.DTO;
 using CE_API_V2.Services;
 using FluentValidation;
 using CE_API_V2.Utility;
 using AutoMapper;
 using CE_API_V2.Models.Mapping;
-using Microsoft.Extensions.Localization;
-using CE_API_V2.Localization;
 using CE_API_V2.Localization.JsonStringFactroy;
 
 namespace CE_API_V2.Validators
 {
-    public class ScoringRequestValidator : AbstractValidator<ScoringRequestDto>
+    public class ScoringRequestValidator : AbstractValidator<ScoringRequest>
     {
         public ScoringRequestValidator()
         {
@@ -31,18 +28,18 @@ namespace CE_API_V2.Validators
                 {
                     RuleFor(scoringRequest => scoringRequest.Age.UnitType).NotNull().DependentRules(() =>
                     {
-                        var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequestDto.Age), template).Select(x => x.UnitType);
+                        var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequest.Age), template).Select(x => x.UnitType);
                         RuleFor(scoringRequest => scoringRequest.Age.UnitType).Must(x => unitTypes.Contains(x))
-                            .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Age), typeof(ScoringRequestDto))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
-                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Age), typeof(ScoringRequestDto))}}}");
+                            .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Age), typeof(ScoringRequest))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
+                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Age), typeof(ScoringRequest))}}}");
                         
                         RuleFor(scoringRequest => (float)scoringRequest.Age.Value)
                             .LessThanOrEqualTo(x => ValidationHelpers.GetMaxValue(nameof(x.Age), x.Age.UnitType, template))
-                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Age), typeof(ScoringRequestDto))}}}");
+                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Age), typeof(ScoringRequest))}}}");
                         
                         RuleFor(scoringRequest => (float)scoringRequest.Age.Value)
                             .GreaterThanOrEqualTo(x => ValidationHelpers.GetMinValue(nameof(x.Age), x.Age.UnitType, template))
-                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Age), typeof(ScoringRequestDto))}}}");
+                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Age), typeof(ScoringRequest))}}}");
                     });
                 });
             });
@@ -53,14 +50,14 @@ namespace CE_API_V2.Validators
                 {
                     RuleFor(scoringRequest => scoringRequest.Sex.UnitType).NotNull().DependentRules(() =>
                     {
-                        var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequestDto.Sex), template).Select(x => x.UnitType);
+                        var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequest.Sex), template).Select(x => x.UnitType);
                         RuleFor(scoringRequest => scoringRequest.Sex.UnitType).Must(x => unitTypes.Contains(x))
-                            .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Sex), typeof(ScoringRequestDto))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
-                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Sex), typeof(ScoringRequestDto))}}}");
+                            .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Sex), typeof(ScoringRequest))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
+                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Sex), typeof(ScoringRequest))}}}");
 
                         RuleFor(scoringRequest => scoringRequest.Sex.Value)
                             .IsInEnum()
-                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Sex), typeof(ScoringRequestDto))}}}");
+                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Sex), typeof(ScoringRequest))}}}");
                     });
                 });
             });
@@ -71,18 +68,18 @@ namespace CE_API_V2.Validators
                 {
                     RuleFor(scoringRequest => scoringRequest.Height.UnitType).NotNull().DependentRules(() =>
                     {
-                        var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequestDto.Height), template).Select(x => x.UnitType);
+                        var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequest.Height), template).Select(x => x.UnitType);
                         RuleFor(scoringRequest => scoringRequest.Height.UnitType).Must(x => unitTypes.Contains(x))
-                            .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Height), typeof(ScoringRequestDto))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
-                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Height), typeof(ScoringRequestDto))}}}");
+                            .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Height), typeof(ScoringRequest))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
+                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Height), typeof(ScoringRequest))}}}");
 
                         RuleFor(scoringRequest => (float)scoringRequest.Height.Value)
                             .LessThanOrEqualTo(x => ValidationHelpers.GetMaxValue(nameof(x.Height), x.Height.UnitType, template))
-                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Height), typeof(ScoringRequestDto))}}}");
+                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Height), typeof(ScoringRequest))}}}");
                         
                         RuleFor(scoringRequest => (float)scoringRequest.Height.Value)
                             .GreaterThanOrEqualTo(x => ValidationHelpers.GetMinValue(nameof(x.Height), x.Height.UnitType, template))
-                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Height), typeof(ScoringRequestDto))}}}");
+                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Height), typeof(ScoringRequest))}}}");
                     });
                 });
             });
@@ -94,18 +91,18 @@ namespace CE_API_V2.Validators
                 {
                     RuleFor(scoringRequest => scoringRequest.Weight.UnitType).NotNull().DependentRules(() =>
                     {
-                        var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequestDto.Weight), template).Select(x => x.UnitType);
+                        var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequest.Weight), template).Select(x => x.UnitType);
                         RuleFor(scoringRequest => scoringRequest.Weight.UnitType).Must(x => unitTypes.Contains(x))
-                            .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Weight), typeof(ScoringRequestDto))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
-                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Weight), typeof(ScoringRequestDto))}}}");
+                            .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Weight), typeof(ScoringRequest))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
+                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Weight), typeof(ScoringRequest))}}}");
 
                         RuleFor(scoringRequest => (float)scoringRequest.Weight.Value)
                             .LessThanOrEqualTo(x => ValidationHelpers.GetMaxValue(nameof(x.Weight), x.Weight.UnitType, template))
-                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Weight), typeof(ScoringRequestDto))}}}");
+                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Weight), typeof(ScoringRequest))}}}");
                         
                         RuleFor(scoringRequest => (float)scoringRequest.Weight.Value)
                             .GreaterThanOrEqualTo(x => ValidationHelpers.GetMinValue(nameof(x.Weight), x.Weight.UnitType, template))
-                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Weight), typeof(ScoringRequestDto))}}}");
+                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Weight), typeof(ScoringRequest))}}}");
                     });
                 });
             });
@@ -116,12 +113,12 @@ namespace CE_API_V2.Validators
                 {
                     RuleFor(scoringRequest => scoringRequest.ChestPain.UnitType).NotNull().DependentRules(() =>
                     {
-                        var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequestDto.ChestPain), template).Select(x => x.UnitType);
+                        var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequest.ChestPain), template).Select(x => x.UnitType);
                         RuleFor(scoringRequest => scoringRequest.ChestPain.UnitType).Must(x => unitTypes.Contains(x))
-                            .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.ChestPain), typeof(ScoringRequestDto))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
-                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.ChestPain), typeof(ScoringRequestDto))}}}");
+                            .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.ChestPain), typeof(ScoringRequest))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
+                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.ChestPain), typeof(ScoringRequest))}}}");
 
-                        RuleFor(scoringRequest => scoringRequest.ChestPain.Value).IsInEnum().WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.ChestPain), typeof(ScoringRequestDto))}}}");
+                        RuleFor(scoringRequest => scoringRequest.ChestPain.Value).IsInEnum().WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.ChestPain), typeof(ScoringRequest))}}}");
                     });
                 });
             });
@@ -132,12 +129,12 @@ namespace CE_API_V2.Validators
                 {
                     RuleFor(scoringRequest => scoringRequest.NicotineConsumption.UnitType).NotNull().DependentRules(() =>
                     {
-                        var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequestDto.NicotineConsumption), template).Select(x => x.UnitType);
+                        var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequest.NicotineConsumption), template).Select(x => x.UnitType);
                         RuleFor(scoringRequest => scoringRequest.NicotineConsumption.UnitType).Must(x => unitTypes.Contains(x))
-                            .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.NicotineConsumption), typeof(ScoringRequestDto))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
-                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.NicotineConsumption), typeof(ScoringRequestDto))}}}");
+                            .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.NicotineConsumption), typeof(ScoringRequest))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
+                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.NicotineConsumption), typeof(ScoringRequest))}}}");
 
-                        RuleFor(scoringRequest => scoringRequest.NicotineConsumption.Value).IsInEnum().WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.NicotineConsumption), typeof(ScoringRequestDto))}}}");
+                        RuleFor(scoringRequest => scoringRequest.NicotineConsumption.Value).IsInEnum().WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.NicotineConsumption), typeof(ScoringRequest))}}}");
                     });
                 });
             });
@@ -148,12 +145,12 @@ namespace CE_API_V2.Validators
                 {
                     RuleFor(scoringRequest => scoringRequest.Diabetes.UnitType).NotNull().DependentRules(() =>
                     {
-                        var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequestDto.Diabetes), template).Select(x => x.UnitType);
+                        var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequest.Diabetes), template).Select(x => x.UnitType);
                         RuleFor(scoringRequest => scoringRequest.Diabetes.UnitType).Must(x => unitTypes.Contains(x))
-                            .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Diabetes), typeof(ScoringRequestDto))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
-                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Diabetes), typeof(ScoringRequestDto))}}}");
+                            .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Diabetes), typeof(ScoringRequest))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
+                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Diabetes), typeof(ScoringRequest))}}}");
 
-                        RuleFor(scoringRequest => scoringRequest.Diabetes.Value).IsInEnum().WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Diabetes), typeof(ScoringRequestDto))}}}");
+                        RuleFor(scoringRequest => scoringRequest.Diabetes.Value).IsInEnum().WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Diabetes), typeof(ScoringRequest))}}}");
                     });
                 });
             });
@@ -162,12 +159,12 @@ namespace CE_API_V2.Validators
             {
                 RuleFor(scoringRequest => scoringRequest.Cholesterol.Value).NotNull().DependentRules(() =>
                 {
-                    var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequestDto.Cholesterol), template).Select(x => x.UnitType);
+                    var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequest.Cholesterol), template).Select(x => x.UnitType);
                     RuleFor(scoringRequest => scoringRequest.Cholesterol.UnitType).Must(x => unitTypes.Contains(x))
-                        .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Cholesterol), typeof(ScoringRequestDto))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
-                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Cholesterol), typeof(ScoringRequestDto))}}}");
+                        .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Cholesterol), typeof(ScoringRequest))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
+                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Cholesterol), typeof(ScoringRequest))}}}");
 
-                    RuleFor(scoringRequest => scoringRequest.Cholesterol.UnitType).NotNull().WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Cholesterol), typeof(ScoringRequestDto))}}}");
+                    RuleFor(scoringRequest => scoringRequest.Cholesterol.UnitType).NotNull().WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Cholesterol), typeof(ScoringRequest))}}}");
                 });
             });
             //TCAaggregation
@@ -175,12 +172,12 @@ namespace CE_API_V2.Validators
             {
                 RuleFor(scoringRequest => scoringRequest.TCAggregationInhibitor.Value).NotNull().DependentRules(() =>
                 {
-                    var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequestDto.TCAggregationInhibitor), template).Select(x => x.UnitType);
+                    var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequest.TCAggregationInhibitor), template).Select(x => x.UnitType);
                     RuleFor(scoringRequest => scoringRequest.TCAggregationInhibitor.UnitType).Must(x => unitTypes.Contains(x))
-                        .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.TCAggregationInhibitor), typeof(ScoringRequestDto))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
-                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.TCAggregationInhibitor), typeof(ScoringRequestDto))}}}");
+                        .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.TCAggregationInhibitor), typeof(ScoringRequest))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
+                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.TCAggregationInhibitor), typeof(ScoringRequest))}}}");
 
-                    RuleFor(scoringRequest => scoringRequest.TCAggregationInhibitor.UnitType).NotNull().WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.TCAggregationInhibitor), typeof(ScoringRequestDto))}}}");
+                    RuleFor(scoringRequest => scoringRequest.TCAggregationInhibitor.UnitType).NotNull().WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.TCAggregationInhibitor), typeof(ScoringRequest))}}}");
                 });
             });
             //ACEInhibitor
@@ -188,14 +185,14 @@ namespace CE_API_V2.Validators
             {
                 RuleFor(scoringRequest => scoringRequest.ACEInhibitor.Value).NotNull().DependentRules(() =>
                 {
-                    var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequestDto.ACEInhibitor), template).Select(x => x.UnitType);
+                    var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequest.ACEInhibitor), template).Select(x => x.UnitType);
                     RuleFor(scoringRequest => scoringRequest.ACEInhibitor.UnitType).Must(x => unitTypes.Contains(x))
-                        .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.ACEInhibitor), typeof(ScoringRequestDto))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
-                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.ACEInhibitor), typeof(ScoringRequestDto))}}}");
+                        .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.ACEInhibitor), typeof(ScoringRequest))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
+                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.ACEInhibitor), typeof(ScoringRequest))}}}");
 
                     RuleFor(scoringRequest => scoringRequest.ACEInhibitor.UnitType)
                         .NotNull()
-                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.ACEInhibitor), typeof(ScoringRequestDto))}}}");
+                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.ACEInhibitor), typeof(ScoringRequest))}}}");
                 });
             });
 
@@ -204,14 +201,14 @@ namespace CE_API_V2.Validators
             {
                 RuleFor(scoringRequest => scoringRequest.Betablocker.Value).NotNull().DependentRules(() =>
                 {
-                    var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequestDto.Betablocker), template).Select(x => x.UnitType);
+                    var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequest.Betablocker), template).Select(x => x.UnitType);
                     RuleFor(scoringRequest => scoringRequest.Betablocker.UnitType).Must(x => unitTypes.Contains(x))
-                        .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Betablocker), typeof(ScoringRequestDto))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
-                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Betablocker), typeof(ScoringRequestDto))}}}");
+                        .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Betablocker), typeof(ScoringRequest))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
+                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Betablocker), typeof(ScoringRequest))}}}");
 
                     RuleFor(scoringRequest => scoringRequest.Betablocker.UnitType)
                         .NotNull()
-                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Betablocker), typeof(ScoringRequestDto))}}}");
+                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Betablocker), typeof(ScoringRequest))}}}");
                 });
             });
             //Diuretic
@@ -219,28 +216,28 @@ namespace CE_API_V2.Validators
             {
                 RuleFor(scoringRequest => scoringRequest.Diuretic.Value).NotNull().DependentRules(() =>
                 {
-                    var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequestDto.Diuretic), template).Select(x => x.UnitType);
+                    var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequest.Diuretic), template).Select(x => x.UnitType);
                     RuleFor(scoringRequest => scoringRequest.Diuretic.UnitType).Must(x => unitTypes.Contains(x))
-                        .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Diuretic), typeof(ScoringRequestDto))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
-                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Diuretic), typeof(ScoringRequestDto))}}}");
+                        .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Diuretic), typeof(ScoringRequest))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
+                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Diuretic), typeof(ScoringRequest))}}}");
 
                     RuleFor(scoringRequest => scoringRequest.Diuretic.UnitType)
                         .NotNull()
-                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Diuretic), typeof(ScoringRequestDto))}}}");
+                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Diuretic), typeof(ScoringRequest))}}}");
                 });
             });//CaAntagonist
             RuleFor(scoringRequest => scoringRequest.CaAntagonist).NotNull().DependentRules(() =>
             {
                 RuleFor(scoringRequest => scoringRequest.CaAntagonist.Value).NotNull().DependentRules(() =>
                 {
-                    var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequestDto.CaAntagonist), template).Select(x => x.UnitType);
+                    var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequest.CaAntagonist), template).Select(x => x.UnitType);
                     RuleFor(scoringRequest => scoringRequest.CaAntagonist.UnitType).Must(x => unitTypes.Contains(x))
-                        .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.CaAntagonist), typeof(ScoringRequestDto))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
-                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.CaAntagonist), typeof(ScoringRequestDto))}}}");
+                        .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.CaAntagonist), typeof(ScoringRequest))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
+                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.CaAntagonist), typeof(ScoringRequest))}}}");
 
                     RuleFor(scoringRequest => scoringRequest.CaAntagonist.UnitType)
                         .NotNull()
-                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.CaAntagonist), typeof(ScoringRequestDto))}}}");
+                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.CaAntagonist), typeof(ScoringRequest))}}}");
                 });
             });
             //OrganicNitrate
@@ -248,14 +245,14 @@ namespace CE_API_V2.Validators
             {
                 RuleFor(scoringRequest => scoringRequest.OrganicNitrate.Value).NotNull().DependentRules(() =>
                 {
-                    var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequestDto.OrganicNitrate), template).Select(x => x.UnitType);
+                    var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequest.OrganicNitrate), template).Select(x => x.UnitType);
                     RuleFor(scoringRequest => scoringRequest.OrganicNitrate.UnitType).Must(x => unitTypes.Contains(x))
-                        .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.OrganicNitrate), typeof(ScoringRequestDto))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
-                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.OrganicNitrate), typeof(ScoringRequestDto))}}}");
+                        .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.OrganicNitrate), typeof(ScoringRequest))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
+                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.OrganicNitrate), typeof(ScoringRequest))}}}");
 
                     RuleFor(scoringRequest => scoringRequest.OrganicNitrate.UnitType)
                         .NotNull()
-                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.OrganicNitrate), typeof(ScoringRequestDto))}}}");
+                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.OrganicNitrate), typeof(ScoringRequest))}}}");
                 });
             });
             //SystolicBloodPressure Validation
@@ -265,18 +262,18 @@ namespace CE_API_V2.Validators
                 {
                     RuleFor(scoringRequest => scoringRequest.SystolicBloodPressure.UnitType).NotNull().DependentRules(() =>
                     {
-                        var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequestDto.SystolicBloodPressure), template).Select(x => x.UnitType);
+                        var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequest.SystolicBloodPressure), template).Select(x => x.UnitType);
                         RuleFor(scoringRequest => scoringRequest.SystolicBloodPressure.UnitType).Must(x => unitTypes.Contains(x))
-                            .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.SystolicBloodPressure), typeof(ScoringRequestDto))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
-                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.SystolicBloodPressure), typeof(ScoringRequestDto))}}}");
+                            .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.SystolicBloodPressure), typeof(ScoringRequest))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
+                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.SystolicBloodPressure), typeof(ScoringRequest))}}}");
 
                         RuleFor(scoringRequest => (float)scoringRequest.SystolicBloodPressure.Value)
                             .LessThanOrEqualTo(x => ValidationHelpers.GetMaxValue(nameof(x.SystolicBloodPressure), x.SystolicBloodPressure.UnitType, template))
-                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.SystolicBloodPressure), typeof(ScoringRequestDto))}}}");
+                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.SystolicBloodPressure), typeof(ScoringRequest))}}}");
                         
                         RuleFor(scoringRequest => (float)scoringRequest.SystolicBloodPressure.Value)
                             .GreaterThanOrEqualTo(x => ValidationHelpers.GetMinValue(nameof(x.SystolicBloodPressure), x.SystolicBloodPressure.UnitType, template))
-                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.SystolicBloodPressure), typeof(ScoringRequestDto))}}}");
+                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.SystolicBloodPressure), typeof(ScoringRequest))}}}");
                     });
                 });
             });
@@ -287,18 +284,18 @@ namespace CE_API_V2.Validators
                 {
                     RuleFor(scoringRequest => scoringRequest.DiastolicBloodPressure.UnitType).NotNull().DependentRules(() =>
                     {
-                        var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequestDto.DiastolicBloodPressure), template).Select(x => x.UnitType);
+                        var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequest.DiastolicBloodPressure), template).Select(x => x.UnitType);
                         RuleFor(scoringRequest => scoringRequest.DiastolicBloodPressure.UnitType).Must(x => unitTypes.Contains(x))
-                            .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.DiastolicBloodPressure), typeof(ScoringRequestDto))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
-                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.DiastolicBloodPressure), typeof(ScoringRequestDto))}}}");
+                            .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.DiastolicBloodPressure), typeof(ScoringRequest))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
+                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.DiastolicBloodPressure), typeof(ScoringRequest))}}}");
 
                         RuleFor(scoringRequest => (float)scoringRequest.DiastolicBloodPressure.Value)
                             .LessThanOrEqualTo(x => ValidationHelpers.GetMaxValue(nameof(x.DiastolicBloodPressure), x.DiastolicBloodPressure.UnitType, template))
-                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.DiastolicBloodPressure), typeof(ScoringRequestDto))}}}");
+                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.DiastolicBloodPressure), typeof(ScoringRequest))}}}");
                         
                         RuleFor(scoringRequest => (float)scoringRequest.DiastolicBloodPressure.Value)
                             .GreaterThanOrEqualTo(x => ValidationHelpers.GetMinValue(nameof(x.DiastolicBloodPressure), x.DiastolicBloodPressure.UnitType, template))
-                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.DiastolicBloodPressure), typeof(ScoringRequestDto))}}}");
+                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.DiastolicBloodPressure), typeof(ScoringRequest))}}}");
                     });
                 });
             });
@@ -311,7 +308,7 @@ namespace CE_API_V2.Validators
                     {
                         RuleFor(scoringRequest => scoringRequest.RestingECG.Value)
                             .IsInEnum()
-                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.RestingECG), typeof(ScoringRequestDto))}}}");
+                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.RestingECG), typeof(ScoringRequest))}}}");
                     });
                 });
             });
@@ -322,18 +319,18 @@ namespace CE_API_V2.Validators
                 {
                     RuleFor(scoringRequest => scoringRequest.PancreaticAmylase.UnitType).NotNull().DependentRules(() =>
                     {
-                        var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequestDto.PancreaticAmylase), template).Select(x => x.UnitType);
+                        var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequest.PancreaticAmylase), template).Select(x => x.UnitType);
                         RuleFor(scoringRequest => scoringRequest.PancreaticAmylase.UnitType).Must(x => unitTypes.Contains(x))
-                            .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.PancreaticAmylase), typeof(ScoringRequestDto))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
-                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.PancreaticAmylase), typeof(ScoringRequestDto))}}}");
+                            .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.PancreaticAmylase), typeof(ScoringRequest))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
+                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.PancreaticAmylase), typeof(ScoringRequest))}}}");
 
                         RuleFor(scoringRequest => (float)scoringRequest.PancreaticAmylase.Value)
                             .LessThanOrEqualTo(x => ValidationHelpers.GetMaxValue(nameof(x.PancreaticAmylase), x.PancreaticAmylase.UnitType, template))
-                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.PancreaticAmylase), typeof(ScoringRequestDto))}}}");
+                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.PancreaticAmylase), typeof(ScoringRequest))}}}");
                         
                         RuleFor(scoringRequest => (float)scoringRequest.PancreaticAmylase.Value)
                             .GreaterThanOrEqualTo(x => ValidationHelpers.GetMinValue(nameof(x.PancreaticAmylase), x.PancreaticAmylase.UnitType, template))
-                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.PancreaticAmylase), typeof(ScoringRequestDto))}}}");
+                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.PancreaticAmylase), typeof(ScoringRequest))}}}");
                     });
                 });
             });
@@ -344,18 +341,18 @@ namespace CE_API_V2.Validators
                 {
                     RuleFor(scoringRequest => scoringRequest.AlkalinePhosphatase.UnitType).NotNull().DependentRules(() =>
                     {
-                        var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequestDto.AlkalinePhosphatase), template).Select(x => x.UnitType);
+                        var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequest.AlkalinePhosphatase), template).Select(x => x.UnitType);
                         RuleFor(scoringRequest => scoringRequest.AlkalinePhosphatase.UnitType).Must(x => unitTypes.Contains(x))
-                            .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.AlkalinePhosphatase), typeof(ScoringRequestDto))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
-                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.AlkalinePhosphatase), typeof(ScoringRequestDto))}}}");
+                            .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.AlkalinePhosphatase), typeof(ScoringRequest))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
+                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.AlkalinePhosphatase), typeof(ScoringRequest))}}}");
 
                         RuleFor(scoringRequest => (float)scoringRequest.AlkalinePhosphatase.Value)
                             .LessThanOrEqualTo(x => ValidationHelpers.GetMaxValue(nameof(x.AlkalinePhosphatase), x.AlkalinePhosphatase.UnitType, template))
-                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.AlkalinePhosphatase), typeof(ScoringRequestDto))}}}");
+                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.AlkalinePhosphatase), typeof(ScoringRequest))}}}");
                         
                         RuleFor(scoringRequest => (float)scoringRequest.AlkalinePhosphatase.Value)
                             .GreaterThanOrEqualTo(x => ValidationHelpers.GetMinValue(nameof(x.AlkalinePhosphatase), x.AlkalinePhosphatase.UnitType, template))
-                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.AlkalinePhosphatase), typeof(ScoringRequestDto))}}}");
+                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.AlkalinePhosphatase), typeof(ScoringRequest))}}}");
                     });
                 });
             });
@@ -366,18 +363,18 @@ namespace CE_API_V2.Validators
                 {
                     RuleFor(scoringRequest => scoringRequest.HsTroponinT.UnitType).NotNull().DependentRules(() =>
                     {
-                        var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequestDto.HsTroponinT), template).Select(x => x.UnitType);
+                        var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequest.HsTroponinT), template).Select(x => x.UnitType);
                         RuleFor(scoringRequest => scoringRequest.HsTroponinT.UnitType).Must(x => unitTypes.Contains(x))
-                            .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.HsTroponinT), typeof(ScoringRequestDto))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
-                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.HsTroponinT), typeof(ScoringRequestDto))}}}");
+                            .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.HsTroponinT), typeof(ScoringRequest))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
+                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.HsTroponinT), typeof(ScoringRequest))}}}");
 
                         RuleFor(scoringRequest => (float)scoringRequest.HsTroponinT.Value)
                         .LessThanOrEqualTo(x => ValidationHelpers.GetMaxValue(nameof(x.HsTroponinT), x.HsTroponinT.UnitType, template))
-                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.HsTroponinT), typeof(ScoringRequestDto))}}}");
+                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.HsTroponinT), typeof(ScoringRequest))}}}");
                         
                         RuleFor(scoringRequest => (float)scoringRequest.HsTroponinT.Value)
                         .GreaterThanOrEqualTo(x => ValidationHelpers.GetMinValue(nameof(x.HsTroponinT), x.HsTroponinT.UnitType, template))
-                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.HsTroponinT), typeof(ScoringRequestDto))}}}");
+                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.HsTroponinT), typeof(ScoringRequest))}}}");
                     });
                 });
             });
@@ -388,18 +385,18 @@ namespace CE_API_V2.Validators
                 {
                     RuleFor(scoringRequest => scoringRequest.Alat.UnitType).NotNull().DependentRules(() =>
                     {
-                        var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequestDto.Alat), template).Select(x => x.UnitType);
+                        var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequest.Alat), template).Select(x => x.UnitType);
                         RuleFor(scoringRequest => scoringRequest.Alat.UnitType).Must(x => unitTypes.Contains(x))
-                            .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Alat), typeof(ScoringRequestDto))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
-                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Alat), typeof(ScoringRequestDto))}}}");
+                            .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Alat), typeof(ScoringRequest))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
+                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Alat), typeof(ScoringRequest))}}}");
 
                         RuleFor(scoringRequest => (float)scoringRequest.Alat.Value)
                         .LessThanOrEqualTo(x => ValidationHelpers.GetMaxValue(nameof(x.Alat), x.Alat.UnitType, template))
-                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Alat), typeof(ScoringRequestDto))}}}");
+                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Alat), typeof(ScoringRequest))}}}");
                         
                         RuleFor(scoringRequest => (float)scoringRequest.Alat.Value)
                         .GreaterThanOrEqualTo(x => ValidationHelpers.GetMinValue(nameof(x.Alat), x.Alat.UnitType, template))
-                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Alat), typeof(ScoringRequestDto))}}}");
+                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Alat), typeof(ScoringRequest))}}}");
                     });
                 });
             });
@@ -410,18 +407,18 @@ namespace CE_API_V2.Validators
                 {
                     RuleFor(scoringRequest => scoringRequest.GlucoseFasting.UnitType).NotNull().DependentRules(() =>
                     {
-                        var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequestDto.GlucoseFasting), template).Select(x => x.UnitType);
+                        var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequest.GlucoseFasting), template).Select(x => x.UnitType);
                         RuleFor(scoringRequest => scoringRequest.GlucoseFasting.UnitType).Must(x => unitTypes.Contains(x))
-                            .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.GlucoseFasting), typeof(ScoringRequestDto))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
-                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.GlucoseFasting), typeof(ScoringRequestDto))}}}");
+                            .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.GlucoseFasting), typeof(ScoringRequest))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
+                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.GlucoseFasting), typeof(ScoringRequest))}}}");
 
                         RuleFor(scoringRequest => (float)scoringRequest.GlucoseFasting.Value)
                         .LessThanOrEqualTo(x => ValidationHelpers.GetMaxValue(nameof(x.GlucoseFasting), x.GlucoseFasting.UnitType, template))
-                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.GlucoseFasting), typeof(ScoringRequestDto))}}}");
+                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.GlucoseFasting), typeof(ScoringRequest))}}}");
                         
                         RuleFor(scoringRequest => (float)scoringRequest.GlucoseFasting.Value)
                         .GreaterThanOrEqualTo(x => ValidationHelpers.GetMinValue(nameof(x.GlucoseFasting), x.GlucoseFasting.UnitType, template))
-                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.GlucoseFasting), typeof(ScoringRequestDto))}}}");
+                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.GlucoseFasting), typeof(ScoringRequest))}}}");
                     });
                 });
             });
@@ -432,18 +429,18 @@ namespace CE_API_V2.Validators
                 {
                     RuleFor(scoringRequest => scoringRequest.Bilirubin.UnitType).NotNull().DependentRules(() =>
                     {
-                        var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequestDto.Bilirubin), template).Select(x => x.UnitType);
+                        var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequest.Bilirubin), template).Select(x => x.UnitType);
                         RuleFor(scoringRequest => scoringRequest.Bilirubin.UnitType).Must(x => unitTypes.Contains(x))
-                            .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Bilirubin), typeof(ScoringRequestDto))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
-                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Bilirubin), typeof(ScoringRequestDto))}}}");
+                            .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Bilirubin), typeof(ScoringRequest))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
+                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Bilirubin), typeof(ScoringRequest))}}}");
 
                         RuleFor(scoringRequest => (float)scoringRequest.Bilirubin.Value)
                         .LessThanOrEqualTo(x => ValidationHelpers.GetMaxValue(nameof(x.Bilirubin), x.Bilirubin.UnitType, template))
-                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Bilirubin), typeof(ScoringRequestDto))}}}");
+                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Bilirubin), typeof(ScoringRequest))}}}");
                         
                         RuleFor(scoringRequest => (float)scoringRequest.Bilirubin.Value)
                         .GreaterThanOrEqualTo(x => ValidationHelpers.GetMinValue(nameof(x.Bilirubin), x.Bilirubin.UnitType, template))
-                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Bilirubin), typeof(ScoringRequestDto))}}}");
+                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Bilirubin), typeof(ScoringRequest))}}}");
                     });
                 });
             });
@@ -455,18 +452,18 @@ namespace CE_API_V2.Validators
                 {
                     RuleFor(scoringRequest => scoringRequest.Urea.UnitType).NotNull().DependentRules(() =>
                     {
-                        var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequestDto.Urea), template).Select(x => x.UnitType);
+                        var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequest.Urea), template).Select(x => x.UnitType);
                         RuleFor(scoringRequest => scoringRequest.Urea.UnitType).Must(x => unitTypes.Contains(x))
-                            .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Urea), typeof(ScoringRequestDto))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
-                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Urea), typeof(ScoringRequestDto))}}}");
+                            .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Urea), typeof(ScoringRequest))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
+                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Urea), typeof(ScoringRequest))}}}");
 
                         RuleFor(scoringRequest => (float)scoringRequest.Urea.Value)
                         .LessThanOrEqualTo(x => ValidationHelpers.GetMaxValue(nameof(x.Urea), x.Urea.UnitType, template))
-                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Urea), typeof(ScoringRequestDto))}}}");
+                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Urea), typeof(ScoringRequest))}}}");
                         
                         RuleFor(scoringRequest => (float)scoringRequest.Urea.Value)
                         .GreaterThanOrEqualTo(x => ValidationHelpers.GetMinValue(nameof(x.Urea), x.Urea.UnitType, template))
-                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Urea), typeof(ScoringRequestDto))}}}");
+                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Urea), typeof(ScoringRequest))}}}");
                     });
                 });
             });
@@ -477,18 +474,18 @@ namespace CE_API_V2.Validators
                 {
                     RuleFor(scoringRequest => scoringRequest.UricAcid.UnitType).NotNull().DependentRules(() =>
                     {
-                        var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequestDto.UricAcid), template).Select(x => x.UnitType);
+                        var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequest.UricAcid), template).Select(x => x.UnitType);
                         RuleFor(scoringRequest => scoringRequest.UricAcid.UnitType).Must(x => unitTypes.Contains(x))
-                            .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.UricAcid), typeof(ScoringRequestDto))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
-                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.UricAcid), typeof(ScoringRequestDto))}}}");
+                            .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.UricAcid), typeof(ScoringRequest))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
+                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.UricAcid), typeof(ScoringRequest))}}}");
 
                         RuleFor(scoringRequest => (float)scoringRequest.UricAcid.Value)
                         .LessThanOrEqualTo(x => ValidationHelpers.GetMaxValue(nameof(x.UricAcid), x.UricAcid.UnitType, template))
-                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.UricAcid), typeof(ScoringRequestDto))}}}");
+                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.UricAcid), typeof(ScoringRequest))}}}");
                         
                         RuleFor(scoringRequest => (float)scoringRequest.UricAcid.Value)
                         .GreaterThanOrEqualTo(x => ValidationHelpers.GetMinValue(nameof(x.UricAcid), x.UricAcid.UnitType, template))
-                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.UricAcid), typeof(ScoringRequestDto))}}}");
+                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.UricAcid), typeof(ScoringRequest))}}}");
                     });
                 });
             });
@@ -499,18 +496,18 @@ namespace CE_API_V2.Validators
                 {
                     RuleFor(scoringRequest => scoringRequest.Cholesterol.UnitType).NotNull().DependentRules(() =>
                     {
-                        var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequestDto.Cholesterol), template).Select(x => x.UnitType);
+                        var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequest.Cholesterol), template).Select(x => x.UnitType);
                         RuleFor(scoringRequest => scoringRequest.Cholesterol.UnitType).Must(x => unitTypes.Contains(x))
-                            .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Cholesterol), typeof(ScoringRequestDto))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
-                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Cholesterol), typeof(ScoringRequestDto))}}}");
+                            .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Cholesterol), typeof(ScoringRequest))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
+                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Cholesterol), typeof(ScoringRequest))}}}");
 
                         RuleFor(scoringRequest => (float)scoringRequest.Cholesterol.Value)
                         .LessThanOrEqualTo(x => ValidationHelpers.GetMaxValue(nameof(x.Cholesterol), x.Cholesterol.UnitType, template))
-                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Cholesterol), typeof(ScoringRequestDto))}}}");
+                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Cholesterol), typeof(ScoringRequest))}}}");
                         
                         RuleFor(scoringRequest => (float)scoringRequest.Cholesterol.Value)
                         .GreaterThanOrEqualTo(x => ValidationHelpers.GetMinValue(nameof(x.Cholesterol), x.Cholesterol.UnitType, template))
-                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Cholesterol), typeof(ScoringRequestDto))}}}");
+                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Cholesterol), typeof(ScoringRequest))}}}");
                     });
                 });
             });
@@ -521,18 +518,18 @@ namespace CE_API_V2.Validators
                 {
                     RuleFor(scoringRequest => scoringRequest.Hdl.UnitType).NotNull().DependentRules(() =>
                     {
-                        var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequestDto.Hdl), template).Select(x => x.UnitType);
+                        var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequest.Hdl), template).Select(x => x.UnitType);
                         RuleFor(scoringRequest => scoringRequest.Hdl.UnitType).Must(x => unitTypes.Contains(x))
-                            .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Hdl), typeof(ScoringRequestDto))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
-                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Hdl), typeof(ScoringRequestDto))}}}");
+                            .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Hdl), typeof(ScoringRequest))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
+                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Hdl), typeof(ScoringRequest))}}}");
 
                         RuleFor(scoringRequest => (float)scoringRequest.Hdl.Value)
                         .LessThanOrEqualTo(x => ValidationHelpers.GetMaxValue(nameof(x.Hdl), x.Hdl.UnitType, template))
-                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Hdl), typeof(ScoringRequestDto))}}}");
+                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Hdl), typeof(ScoringRequest))}}}");
                         
                         RuleFor(scoringRequest => (float)scoringRequest.Hdl.Value)
                         .GreaterThanOrEqualTo(x => ValidationHelpers.GetMinValue(nameof(x.Hdl), x.Hdl.UnitType, template))
-                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Hdl), typeof(ScoringRequestDto))}}}");
+                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Hdl), typeof(ScoringRequest))}}}");
                     });
                 });
             });
@@ -543,18 +540,18 @@ namespace CE_API_V2.Validators
                 {
                     RuleFor(scoringRequest => scoringRequest.Ldl.UnitType).NotNull().DependentRules(() =>
                     {
-                        var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequestDto.Ldl), template).Select(x => x.UnitType);
+                        var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequest.Ldl), template).Select(x => x.UnitType);
                         RuleFor(scoringRequest => scoringRequest.Ldl.UnitType).Must(x => unitTypes.Contains(x))
-                            .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Ldl), typeof(ScoringRequestDto))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
-                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Ldl), typeof(ScoringRequestDto))}}}");
+                            .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Ldl), typeof(ScoringRequest))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
+                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Ldl), typeof(ScoringRequest))}}}");
 
                         RuleFor(scoringRequest => (float)scoringRequest.Ldl.Value)
                         .LessThanOrEqualTo(x => ValidationHelpers.GetMaxValue(nameof(x.Ldl), x.Ldl.UnitType, template))
-                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Ldl), typeof(ScoringRequestDto))}}}");
+                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Ldl), typeof(ScoringRequest))}}}");
                         
                         RuleFor(scoringRequest => (float)scoringRequest.Ldl.Value)
                         .GreaterThanOrEqualTo(x => ValidationHelpers.GetMinValue(nameof(x.Ldl), x.Ldl.UnitType, template))
-                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Ldl), typeof(ScoringRequestDto))}}}");
+                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Ldl), typeof(ScoringRequest))}}}");
                     });
                 });
             });
@@ -565,18 +562,18 @@ namespace CE_API_V2.Validators
                 {
                     RuleFor(scoringRequest => scoringRequest.Protein.UnitType).NotNull().DependentRules(() =>
                     {
-                        var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequestDto.Protein), template).Select(x => x.UnitType);
+                        var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequest.Protein), template).Select(x => x.UnitType);
                         RuleFor(scoringRequest => scoringRequest.Protein.UnitType).Must(x => unitTypes.Contains(x))
-                            .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Protein), typeof(ScoringRequestDto))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
-                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Protein), typeof(ScoringRequestDto))}}}");
+                            .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Protein), typeof(ScoringRequest))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
+                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Protein), typeof(ScoringRequest))}}}");
 
                         RuleFor(scoringRequest => (float)scoringRequest.Protein.Value)
                         .LessThanOrEqualTo(x => ValidationHelpers.GetMaxValue(nameof(x.Protein), x.Protein.UnitType, template))
-                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Protein), typeof(ScoringRequestDto))}}}");
+                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Protein), typeof(ScoringRequest))}}}");
                         
                         RuleFor(scoringRequest => (float)scoringRequest.Protein.Value)
                         .GreaterThanOrEqualTo(x => ValidationHelpers.GetMinValue(nameof(x.Protein), x.Protein.UnitType, template))
-                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Protein), typeof(ScoringRequestDto))}}}");
+                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Protein), typeof(ScoringRequest))}}}");
                     });
                 });
             });
@@ -587,18 +584,18 @@ namespace CE_API_V2.Validators
                 {
                     RuleFor(scoringRequest => scoringRequest.Albumin.UnitType).NotNull().DependentRules(() =>
                     {
-                        var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequestDto.Albumin), template).Select(x => x.UnitType);
+                        var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequest.Albumin), template).Select(x => x.UnitType);
                         RuleFor(scoringRequest => scoringRequest.Albumin.UnitType).Must(x => unitTypes.Contains(x))
-                            .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Albumin), typeof(ScoringRequestDto))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
-                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Albumin), typeof(ScoringRequestDto))}}}");
+                            .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Albumin), typeof(ScoringRequest))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
+                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Albumin), typeof(ScoringRequest))}}}");
 
                         RuleFor(scoringRequest => (float)scoringRequest.Albumin.Value)
                         .LessThanOrEqualTo(x => ValidationHelpers.GetMaxValue(nameof(x.Albumin), x.Albumin.UnitType, template))
-                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Albumin), typeof(ScoringRequestDto))}}}");
+                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Albumin), typeof(ScoringRequest))}}}");
                         
                         RuleFor(scoringRequest => (float)scoringRequest.Albumin.Value)
                         .GreaterThanOrEqualTo(x => ValidationHelpers.GetMinValue(nameof(x.Albumin), x.Albumin.UnitType, template))
-                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Albumin), typeof(ScoringRequestDto))}}}");
+                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Albumin), typeof(ScoringRequest))}}}");
                     });
                 });
             });
@@ -609,18 +606,18 @@ namespace CE_API_V2.Validators
                 {
                     RuleFor(scoringRequest => scoringRequest.Leukocytes.UnitType).NotNull().DependentRules(() =>
                     {
-                        var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequestDto.Leukocytes), template).Select(x => x.UnitType);
+                        var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequest.Leukocytes), template).Select(x => x.UnitType);
                         RuleFor(scoringRequest => scoringRequest.Leukocytes.UnitType).Must(x => unitTypes.Contains(x))
-                            .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Leukocytes), typeof(ScoringRequestDto))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
-                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Leukocytes), typeof(ScoringRequestDto))}}}");
+                            .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Leukocytes), typeof(ScoringRequest))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
+                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Leukocytes), typeof(ScoringRequest))}}}");
 
                         RuleFor(scoringRequest => (float)scoringRequest.Leukocytes.Value)
                         .LessThanOrEqualTo(x => ValidationHelpers.GetMaxValue(nameof(x.Leukocytes), x.Leukocytes.UnitType, template))
-                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Leukocytes), typeof(ScoringRequestDto))}}}");
+                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Leukocytes), typeof(ScoringRequest))}}}");
                         
                         RuleFor(scoringRequest => (float)scoringRequest.Leukocytes.Value)
                         .GreaterThanOrEqualTo(x => ValidationHelpers.GetMinValue(nameof(x.Leukocytes), x.Leukocytes.UnitType, template))
-                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Leukocytes), typeof(ScoringRequestDto))}}}");
+                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Leukocytes), typeof(ScoringRequest))}}}");
                     });
                 });
             });
@@ -631,18 +628,18 @@ namespace CE_API_V2.Validators
                 {
                     RuleFor(scoringRequest => scoringRequest.Mchc.UnitType).NotNull().DependentRules(() =>
                     {
-                        var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequestDto.Mchc), template).Select(x => x.UnitType);
+                        var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequest.Mchc), template).Select(x => x.UnitType);
                         RuleFor(scoringRequest => scoringRequest.Mchc.UnitType).Must(x => unitTypes.Contains(x))
-                            .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Mchc), typeof(ScoringRequestDto))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
-                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Mchc), typeof(ScoringRequestDto))}}}");
+                            .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Mchc), typeof(ScoringRequest))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
+                            .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Mchc), typeof(ScoringRequest))}}}");
 
                         RuleFor(scoringRequest => (float)scoringRequest.Mchc.Value)
                         .LessThanOrEqualTo(x => ValidationHelpers.GetMaxValue(nameof(x.Mchc), x.Mchc.UnitType, template))
-                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Mchc), typeof(ScoringRequestDto))}}}");
+                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Mchc), typeof(ScoringRequest))}}}");
                         
                         RuleFor(scoringRequest => (float)scoringRequest.Mchc.Value)
                         .GreaterThanOrEqualTo(x => ValidationHelpers.GetMinValue(nameof(x.Mchc), x.Mchc.UnitType, template))
-                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequestDto.Mchc), typeof(ScoringRequestDto))}}}");
+                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Mchc), typeof(ScoringRequest))}}}");
                     });
                 });
             });

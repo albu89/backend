@@ -13,18 +13,18 @@ namespace CE_API_V2.UnitOfWorks
     public class UserUOW : IUserUOW
     {
         private readonly CEContext _context;
+        private readonly IGenericRepository<UserModel> _userRepository;
         private IGenericRepository<BiomarkerOrderModel>? biomarkerOrderRepository;
-        private readonly IGenericRepository<User> _userRepository;
         private readonly ICommunicationService _communicationService;
 
         public UserUOW(CEContext context, ICommunicationService communicationService)
         {
             _context = context;
-            _userRepository = new GenericRepository<User>(_context);
+            _userRepository = new GenericRepository<UserModel>(_context);
             _communicationService = communicationService;
         }
 
-        public IGenericRepository<User> UserRepository => _userRepository;
+        public IGenericRepository<UserModel> UserRepository => _userRepository;
 
         public IGenericRepository<BiomarkerOrderModel> BiomarkerOrderRepository
         {
@@ -36,11 +36,11 @@ namespace CE_API_V2.UnitOfWorks
             }
         }
 
-        public IEnumerable<BiomarkerSchemaDto> OrderTemplate(IEnumerable<BiomarkerSchemaDto> biomarkersSchemas, string userId)
+        public IEnumerable<BiomarkerSchema> OrderTemplate(IEnumerable<BiomarkerSchema> biomarkersSchemas, string userId)
         {
             List<BiomarkerOrderModel> orders = BiomarkerOrderRepository.Get(e => e.UserId == userId).OrderBy(x => x.OrderNumber).ToList();
 
-            var sortedList = new List<BiomarkerSchemaDto>();
+            var sortedList = new List<BiomarkerSchema>();
             foreach (var entry in orders)
             {
                 var schemaEntry = biomarkersSchemas.First(x => x.Id == entry.BiomarkerId);
@@ -81,7 +81,6 @@ namespace CE_API_V2.UnitOfWorks
 
         public async Task StoreOrEditBiomarkerOrder(IEnumerable<BiomarkerOrderModel> biomarkerOrders, string userId)
         {
-            var all = BiomarkerOrderRepository.Get();
             var allOrders = BiomarkerOrderRepository.Get(x => x.UserId == userId).Select(x => x.BiomarkerId).ToList();
             foreach (var entry in biomarkerOrders)
             {
@@ -124,9 +123,9 @@ namespace CE_API_V2.UnitOfWorks
             }
         }
 
-        public async Task<User> StoreUser(User user)
+        public async Task<UserModel> StoreUser(UserModel userModel)
         {
-            var storedUser = _userRepository.GetById(user.UserId);
+            var storedUser = _userRepository.GetById(userModel.UserId);
             if (storedUser != null)
             {
                 return storedUser;
@@ -134,7 +133,7 @@ namespace CE_API_V2.UnitOfWorks
 
             try
             {
-                UserRepository.Insert(user);
+                UserRepository.Insert(userModel);
                 await _context.SaveChangesAsync();
             }
             catch (Exception)
@@ -142,20 +141,20 @@ namespace CE_API_V2.UnitOfWorks
                 throw new NotImplementedException();
             }
 
-            storedUser = UserRepository.GetById(user.UserId);
+            storedUser = UserRepository.GetById(userModel.UserId);
 
             return storedUser;
         }
 
-        public User GetUser(string userId)
+        public UserModel GetUser(string userId)
         {
             var user = UserRepository.GetById(userId);
 
             return user;
         }
 
-        public async Task<EmailSendStatus> ProcessAccessRequest(AccessRequestDto accessDto)
-            => await _communicationService.SendAccessRequest(accessDto);
+        public async Task<EmailSendStatus> ProcessAccessRequest(AccessRequest access)
+            => await _communicationService.SendAccessRequest(access);
 
         public IEnumerable<BiomarkerOrderModel> GetBiomarkerOrders(string userId)
         {
