@@ -20,7 +20,7 @@
     "units": [
       {
         "name": "years",
-        "ConversionFactor": 1,
+        "conversionFactor": 1,
         "unitType": "SI",
         "type": "integer",
         "minimum": 17,
@@ -234,7 +234,7 @@
     "units": [
       {
         "name": "mmHg",
-        "ConversionFactor": 1,
+        "conversionFactor": 1,
         "unitType": "SI",
         "type": "integer",
         "minimum": 50,
@@ -251,7 +251,7 @@
     "units": [
       {
         "name": "mmHg",
-        "ConversionFactor": 1,
+        "conversionFactor": 1,
         "unitType": "SI",
         "type": "integer",
         "minimum": 30,
@@ -290,7 +290,7 @@
     "units": [
       {
         "name": "U/L",
-        "ConversionFactor": 1,
+        "conversionFactor": 1,
         "unitType": "SI",
         "type": "integer",
         "minimum": 1,
@@ -299,7 +299,7 @@
       },
       {
         "name": "U/L",
-        "ConversionFactor": 1,
+        "conversionFactor": 1,
         "unitType": "Conventional",
         "type": "integer",
         "minimum": 1,
@@ -316,7 +316,7 @@
     "units": [
       {
         "name": "U/L",
-        "ConversionFactor": 1,
+        "conversionFactor": 1,
         "unitType": "SI",
         "type": "integer",
         "minimum": 5,
@@ -325,7 +325,7 @@
       },
       {
         "name": "U/L",
-        "ConversionFactor": 1,
+        "conversionFactor": 1,
         "unitType": "Conventional",
         "type": "integer",
         "minimum": 5,
@@ -342,7 +342,7 @@
     "units": [
       {
         "name": "ng/L",
-        "ConversionFactor": 1,
+        "conversionFactor": 1,
         "unitType": "SI",
         "type": "float",
         "minimum": 0.01,
@@ -351,7 +351,7 @@
       },
       {
         "name": "pg/ml",
-        "ConversionFactor": 1,
+        "conversionFactor": 1,
         "unitType": "Conventional",
         "type": "float",
         "minimum": 0.01,
@@ -368,7 +368,7 @@
     "units": [
       {
         "name": "U/L",
-        "ConversionFactor": 1,
+        "conversionFactor": 1,
         "unitType": "SI",
         "type": "integer",
         "minimum": 5,
@@ -377,7 +377,7 @@
       },
       {
         "name": "U/L",
-        "ConversionFactor": 1,
+        "conversionFactor": 1,
         "unitType": "Conventional",
         "type": "integer",
         "minimum": 5,
@@ -394,7 +394,7 @@
     "units": [
       {
         "name": "mmol/L",
-        "ConversionFactor": 1,
+        "conversionFactor": 1,
         "unitType": "SI",
         "type": "float",
         "minimum": 0.25,
@@ -403,7 +403,7 @@
       },
       {
         "name": "mg/dl",
-        "ConversionFactor": 0.05551,
+        "conversionFactor": 0.05551,
         "unitType": "Conventional",
         "type": "float",
         "minimum": 0.0138775,
@@ -420,7 +420,7 @@
     "units": [
       {
         "name": "µmol/L",
-        "ConversionFactor": 1,
+        "conversionFactor": 1,
         "unitType": "SI",
         "type": "float",
         "minimum": 1.7,
@@ -429,7 +429,7 @@
       },
       {
         "name": "mg/dl",
-        "ConversionFactor": 17.1,
+        "conversionFactor": 17.1,
         "unitType": "Conventional",
         "type": "float",
         "minimum": 29.07,
@@ -446,7 +446,7 @@
     "units": [
       {
         "name": "mmol/L",
-        "ConversionFactor": 1,
+        "conversionFactor": 1,
         "unitType": "SI",
         "type": "float",
         "minimum": 0.25,
@@ -455,7 +455,7 @@
       },
       {
         "name": "mg/dl",
-        "ConversionFactor": 0.1665,
+        "conversionFactor": 0.1665,
         "unitType": "Conventional",
         "type": "float",
         "minimum": 0.041625,
@@ -472,7 +472,7 @@
     "units": [
       {
         "name": "µmol/L",
-        "ConversionFactor": 1,
+        "conversionFactor": 1,
         "unitType": "SI",
         "type": "float",
         "minimum": 10.0,
@@ -481,7 +481,7 @@
       },
       {
         "name": "mg/dl",
-        "ConversionFactor": 58.823,
+        "conversionFactor": 58.823,
         "unitType": "Conventional",
         "type": "float",
         "minimum": 588.23,
@@ -498,7 +498,7 @@
     "units": [
       {
         "name": "mmol/L",
-        "ConversionFactor": 1,
+        "conversionFactor": 1,
         "unitType": "SI",
         "type": "float",
         "minimum": 0.1,
@@ -507,7 +507,7 @@
       },
       {
         "name": "mg/dl",
-        "ConversionFactor": 0.02586,
+        "conversionFactor": 0.02586,
         "unitType": "Conventional",
         "type": "float",
         "minimum": 0.002586,
@@ -524,7 +524,7 @@
     "units": [
       {
         "name": "mmol/L",
-        "ConversionFactor": 1,
+        "conversionFactor": 1,
         "unitType": "SI",
         "type": "float",
         "minimum": 0.1,
@@ -533,7 +533,7 @@
       },
       {
         "name": "mg/dl",
-        "ConversionFactor": 0.02586,
+        "conversionFactor": 0.02586,
         "unitType": "Conventional",
         "type": "float",
         "minimum": 0.002586,
@@ -550,7 +550,7 @@
     "units": [
       {
         "name": "mmol/L",
-        "ConversionFactor": 1,
+        "conversionFactor": 1,
         "unitType": "SI",
         "type": "float",
         "minimum": 0.03,
@@ -559,7 +559,7 @@
       },
       {
         "name": "mg/dl",
-        "ConversionFactor": 0.02586,
+        "conversionFactor": 0.02586,
         "unitType": "Conventional",
         "type": "float",
         "minimum": 0.0007758,
@@ -576,7 +576,7 @@
     "units": [
       {
         "name": "g/L",
-        "ConversionFactor": 1,
+        "conversionFactor": 1,
         "unitType": "SI",
         "type": "float",
         "minimum": 5.0,
@@ -585,7 +585,7 @@
       },
       {
         "name": "g/dL",
-        "ConversionFactor": 10,
+        "conversionFactor": 10,
         "unitType": "Conventional",
         "type": "float",
         "minimum": 50.0,
@@ -602,7 +602,7 @@
     "units": [
       {
         "name": "g/L",
-        "ConversionFactor": 1,
+        "conversionFactor": 1,
         "unitType": "SI",
         "type": "float",
         "minimum": 5.0,
@@ -611,7 +611,7 @@
       },
       {
         "name": "g/dL",
-        "ConversionFactor": 10,
+        "conversionFactor": 10,
         "unitType": "Conventional",
         "type": "float",
         "minimum": 50.0,
@@ -628,7 +628,7 @@
     "units": [
       {
         "name": "G/L",
-        "ConversionFactor": 1,
+        "conversionFactor": 1,
         "unitType": "SI",
         "type": "float",
         "minimum": 0.03,
@@ -637,7 +637,7 @@
       },
       {
         "name": "1000/µl",
-        "ConversionFactor": 1,
+        "conversionFactor": 1,
         "unitType": "Conventional",
         "type": "float",
         "minimum": 0.03,
@@ -654,7 +654,7 @@
     "units": [
       {
         "name": "g/L",
-        "ConversionFactor": 1,
+        "conversionFactor": 1,
         "unitType": "SI",
         "type": "float",
         "minimum": 0.0,
@@ -663,7 +663,7 @@
       },
       {
         "name": "g/dL",
-        "ConversionFactor": 10,
+        "conversionFactor": 10,
         "unitType": "Conventional",
         "type": "float",
         "minimum": 0.0,

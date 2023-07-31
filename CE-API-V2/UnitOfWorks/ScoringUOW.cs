@@ -159,12 +159,14 @@ namespace CE_API_V2.UnitOfWorks
                 return null;
             }
             
-            _valueConversionUow.ConvertToSiValues(scoringRequest);
+            var convertedSiValue = _valueConversionUow.ConvertToSiValues(value);
 
-            var scoringResponse = await RequestScore(scoringRequest) ?? throw new Exception();
+            var convertedSiScoringRequest = _valueConversionUow.ConvertToScoringRequest(convertedSiValue, userId, patientId);
 
-            scoringResponse.Request = scoringRequest;
-            scoringResponse.RequestId = scoringRequest.Id;
+            var scoringResponse = await RequestScore(convertedSiScoringRequest) ?? throw new Exception();
+
+            scoringResponse.Request = convertedSiScoringRequest;
+            scoringResponse.RequestId = convertedSiScoringRequest.Id;
 
             if(StoreScoringResponse(scoringResponse) is null)
             {

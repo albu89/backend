@@ -1,10 +1,13 @@
 ﻿using AutoMapper;
+using CE_API_Test.TestUtilities;
 using CE_API_V2.Hasher;
 using CE_API_V2.Models;
 using CE_API_V2.Models.DTO;
+using CE_API_V2.Models.Mapping;
 using CE_API_V2.UnitOfWorks;
 using Microsoft.Extensions.Configuration;
 using Moq;
+using NSubstitute;
 
 namespace CE_API_Test.UnitTests.UnitsOfWork
 {
@@ -51,6 +54,34 @@ namespace CE_API_Test.UnitTests.UnitsOfWork
             //Assert
             result.Should().NotBeNull();
             result.Should().BeOfType(typeof(ScoringRequestModel));
+            result.PatientId.Should().Be(patientId);
+            result.UserId.Should().Be(userId);
+        }
+
+        [Test]
+        public void ConvertToSIValue()
+        {
+            //Arrange
+            var patientIdHashingUow = new PatientIdHashingUOW(_config);
+            var scoringRequestDto = MockDataProvider.CreateNotValidScoringRequestDto();
+            var userId = "anonymous";
+            var patientId = patientIdHashingUow.HashPatientId("mock", "mock", DateTime.Now);
+
+            var mapperConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new MappingProfile());
+            });
+            var mapper = mapperConfig.CreateMapper();
+            var sut = new ValueConversionUOW(mapper);
+         
+            //Act
+            sut.ConvertToSiValues(scoringRequestDto);
+            var result = sut.ConvertToScoringRequest(scoringRequestDto, userId, patientId);
+
+            //Assert
+            result.Should().NotBeNull();
+            result.Should().BeOfType(typeof(ScoringRequestModel));
+            result.Biomarkers.Protein.Should().Be(0.5f);
             result.PatientId.Should().Be(patientId);
             result.UserId.Should().Be(userId);
         }
