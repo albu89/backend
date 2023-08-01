@@ -28,7 +28,7 @@
     "ShortText": "Invasive angiography (with iwFr/FFR).",
     "LongText": "Missing",
     "LowerLimit": "0.73",
-    "UpperLimit": "1.01",
+    "UpperLimit": "1.00",
     "RiskValue": ">75%"
   }
 ]

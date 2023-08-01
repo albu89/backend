@@ -188,8 +188,8 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
             var newClinicalSetting = PatientDataEnums.ClinicalSetting.SecondaryCare;
             var expectedClinicalSetting = PatientDataEnums.ClinicalSetting.PrimaryCare;
 
-            var newUserRole = UserRole.SuperAdmin;
-            var expectedUserRole = UserRole.MedicalDoctor;
+            var newUserRole = UserRole.SystemAdmin;
+            var expectedUserRole = UserRole.User;
 
             var expectedBiomarkerOrder = originalUser.BiomarkerOrders;
             var newBiomarkerOrder = new Collection<BiomarkerOrderModel>

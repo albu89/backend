@@ -6,5 +6,7 @@
         public string FirstName { get; set; }
         public string EmailAddress { get; set; }
         public string PhoneNumber { get; set; }
+        public string Organization { get; set; }
+        public string Country { get; set; }
     }
 }

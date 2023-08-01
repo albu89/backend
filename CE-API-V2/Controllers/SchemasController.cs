@@ -10,7 +10,7 @@ namespace CE_API_V2.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(policy: "CountryPolicy")]
     public class SchemasController : ControllerBase
     {
         private readonly IBiomarkersTemplateService _biomarkersTemplateService;
@@ -30,15 +30,15 @@ namespace CE_API_V2.Controllers
         [Produces("application/json", Type = typeof(IEnumerable<BiomarkerSchema>))]
         public async Task<IActionResult> GetInputFormTemplate(string? locale = null)
         {
-            
+
             if (string.IsNullOrEmpty(locale))
             {
                 locale = LocalizationConstants.DefaultLocale;
             }
             var template = await _biomarkersTemplateService.GetTemplate(locale);
             var idInformation = _userInformationExtractor.GetUserIdInformation(User);
-                var user = _userUOW.GetUser(idInformation.UserId);
-            var userId = user.UserId.ToString();
+            var user = _userUOW.GetUser(idInformation.UserId);
+            var userId = user.UserId?.ToString();
             IEnumerable<BiomarkerSchema> schema = _userUOW.OrderTemplate(template, userId);
 
             return schema.Any() ? Ok(schema) : NotFound();
@@ -54,7 +54,7 @@ namespace CE_API_V2.Controllers
 
             return template is not null ? Ok(template) : NotFound();
         }
-        
+
         private string GetUserId()
         {
             var userId = User?.Claims?.Any() == true ? User.FindFirstValue(ClaimTypes.NameIdentifier) : "anonymous";

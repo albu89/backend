@@ -103,7 +103,7 @@ namespace CE_API_Test.TestUtilities
                 Cholesterol = 123,
                 CholesterolUnit = "SI",
                 Diabetes = DiabetesStatus.Iddm,
-                RestingECG = RestingEcg.Screening,
+                Qwave = RestingEcg.Screening,
                 Diuretic = false,
                 Hdl = 123,
                 HdlUnit = "SI",
@@ -111,8 +111,8 @@ namespace CE_API_Test.TestUtilities
                 HeightUnit = "SI",
                 Ldl = 123,
                 LdlUnit = "SI",
-                Leukocytes = 123,
-                LeukocytesUnit = "SI",
+                Leukocyte = 123,
+                LeukocyteUnit = "SI",
                 Mchc = 123,
                 MchcUnit = "SI",
                 Sex = Sex.Male,
@@ -122,29 +122,29 @@ namespace CE_API_Test.TestUtilities
                 ProteinUnit = "SI",
                 Urea = 123,
                 UreaUnit = "SI",
-                CaAntagonist = false,
-                ChestPain = ChestPain.Possible,
+                Calciumant = false,
+                Chestpain = ChestPain.Possible,
                 Glucose = 123,
                 GlucoseUnit = "SI",
-                PancreaticAmylase = 123,
-                PancreaticAmylaseUnit = "SI",
-                UricAcid = 123,
-                UricAcidUnit = "SI",
-                DiastolicBloodPressure = 123,
-                DiastolicBloodPressureUnit = "SI",
-                HsTroponinT = 123,
-                HsTroponinTUnit = "SI",
-                SystolicBloodPressure = 123,
-                SystolicBloodPressureUnit = "SI",
+                Amylasep = 123,
+                AmylasepUnit = "SI",
+                Uricacid = 123,
+                UricacidUnit = "SI",
+                Diastolicbp = 123,
+                DiastolicbpUnit = "SI",
+                Hstroponint = 123,
+                HstroponintUnit = "SI",
+                Systolicbp = 123,
+                SystolicbpUnit = "SI",
                 Nicotine = NicotineConsumption.StANc,
                 Statin = false,
-                AceInhibitor = false,
-                AlkalinePhosphate = 123,
-                AlkalinePhosphataseUnit = "SI",
+                Aceinhibitor = false,
+                Alkaline = 123,
+                AlkalineUnit = "SI",
                 Betablocker = false,
                 ClinicalSetting = ClinicalSetting.PrimaryCare,
-                OganicNitrate = false,
-                TcAggInhibitor = false,
+                Nitrate = false,
+                Tcagginhibitor = false,
                 PriorCAD = false
             };
         }
@@ -345,7 +345,7 @@ namespace CE_API_Test.TestUtilities
                 Surname = "Mock",
                 TelephoneNumber = "Mock",
                 UnitLabValues = "Mock",
-                Role = UserRole.MedicalDoctor
+                Role = UserRole.User
             };
         }
         
@@ -370,7 +370,7 @@ namespace CE_API_Test.TestUtilities
                 Surname = "Mock",
                 TelephoneNumber = "Mock",
                 UnitLabValues = "Mock",
-                Role = UserRole.MedicalDoctor,
+                Role = UserRole.User,
                 UserId = "MockedUserId",
                 TenantID = "MockedTenantId",
                 BiomarkerOrders = new Collection<BiomarkerOrderModel>
@@ -424,8 +424,6 @@ namespace CE_API_Test.TestUtilities
 
         public static ScoreSummary GetScoreSummaryMock()
         {
-            var emptyArray = new string[] { };
-
             return new()
             {
                 ScoreHeader = "ScoreHeader",

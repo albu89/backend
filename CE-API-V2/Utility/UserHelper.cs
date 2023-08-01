@@ -17,7 +17,7 @@ public class UserHelper
     public UserModel MapToUserModel(CreateUser user, UserIdsRecord userInformation)
     {
         var userModel = _mapper.Map<CreateUser, UserModel>(user); 
-        userModel.Role = UserRole.MedicalDoctor; 
+        userModel.Role = UserRole.User; 
         userModel.UserId = userInformation.UserId;
         userModel.TenantID = userInformation.TenantId;
 

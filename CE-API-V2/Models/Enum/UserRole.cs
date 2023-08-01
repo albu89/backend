@@ -2,7 +2,7 @@
 
 public enum UserRole
 {
-    MedicalDoctor,
-    ConsumerAdmin,
-    SuperAdmin
+    User,
+    Admin,
+    SystemAdmin
 }

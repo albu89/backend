@@ -38,7 +38,6 @@ namespace CE_API_V2.Controllers
         }
 
         [HttpGet(Name = "GetCurrentUser")]
-        [Authorize]
         [Produces("application/json", Type = typeof(User))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -55,7 +54,6 @@ namespace CE_API_V2.Controllers
         }
 
         [HttpPost(Name = "CreateCurrentUser")]
-        [Authorize]
         [Produces("application/json", Type = typeof(User))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -98,8 +96,8 @@ namespace CE_API_V2.Controllers
         }
 
         [HttpPost("request", Name = "RequestApplicationAccess")]
-        [Authorize]
-        [Produces("application/json", Type = typeof(User))]
+        [AllowAnonymous]
+        [Produces("application/json", Type = typeof(OkResult))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> RequestAccess([FromBody] AccessRequest access)
@@ -108,7 +106,6 @@ namespace CE_API_V2.Controllers
             {
                 return BadRequest();
             }
-            ;
 
             EmailSendStatus requestStatus = await _userUow.ProcessAccessRequest(access);
 

@@ -36,25 +36,25 @@ public class TestMappingProfile
         request?.Biomarkers?.Glucose.Should().Be(dto.GlucoseFasting.Value);
         request?.Biomarkers?.Hdl.Should().Be(dto.Hdl.Value);
         request?.Biomarkers?.Height.Should().Be(dto.Height.Value);
-        request?.Biomarkers?.HsTroponinT.Should().Be(dto.HsTroponinT.Value);
+        request?.Biomarkers?.Hstroponint.Should().Be(dto.HsTroponinT.Value);
         request?.Biomarkers?.Ldl.Should().Be(dto.Ldl.Value);
-        request?.Biomarkers?.Leukocytes.Should().Be(dto.Leukocytes.Value);
+        request?.Biomarkers?.Leukocyte.Should().Be(dto.Leukocytes.Value);
         request?.Biomarkers?.Mchc.Should().Be(dto.Mchc.Value);
         request?.Biomarkers?.Nicotine.Should().Be(dto.NicotineConsumption.Value);
         request?.Biomarkers?.Protein.Should().Be(dto.Protein.Value);
         request?.Biomarkers?.Sex.Should().Be(dto.Sex.Value);
         request?.Biomarkers?.Statin.Should().Be(dto.CholesterolLowering_Statin.Value);
-        request?.Biomarkers?.SystolicBloodPressure.Should().Be(dto.SystolicBloodPressure.Value);
+        request?.Biomarkers?.Systolicbp.Should().Be(dto.SystolicBloodPressure.Value);
         request?.Biomarkers?.Urea.Should().Be(dto.Urea.Value);
         request?.Biomarkers?.Albumin.Should().Be(dto.Albumin.Value);
-        request?.Biomarkers?.AceInhibitor.Should().Be(dto.ACEInhibitor.Value);
-        request?.Biomarkers?.AlkalinePhosphate.Should().Be(dto.AlkalinePhosphatase.Value); // TODO: Check naming
+        request?.Biomarkers?.Aceinhibitor.Should().Be(dto.ACEInhibitor.Value);
+        request?.Biomarkers?.Alkaline.Should().Be(dto.AlkalinePhosphatase.Value); // TODO: Check naming
         request?.Biomarkers?.Betablocker.Should().Be(dto.Betablocker.Value);
-        request?.Biomarkers?.RestingECG.Should().Be(dto.RestingECG.Value);
-        request?.Biomarkers?.CaAntagonist.Should().Be(dto.CaAntagonist.Value);
-        request?.Biomarkers?.ChestPain.Should().Be(dto.ChestPain.Value);
-        request?.Biomarkers?.PancreaticAmylase.Should().Be(dto.PancreaticAmylase.Value);
-        request?.Biomarkers?.TcAggInhibitor.Should().Be(dto.TCAggregationInhibitor.Value);
+        request?.Biomarkers?.Qwave.Should().Be(dto.RestingECG.Value);
+        request?.Biomarkers?.Calciumant.Should().Be(dto.CaAntagonist.Value);
+        request?.Biomarkers?.Chestpain.Should().Be(dto.ChestPain.Value);
+        request?.Biomarkers?.Amylasep.Should().Be(dto.PancreaticAmylase.Value);
+        request?.Biomarkers?.Tcagginhibitor.Should().Be(dto.TCAggregationInhibitor.Value);
         request?.Biomarkers?.PriorCAD.Should().Be(dto.prior_CAD.Value);
     }
 

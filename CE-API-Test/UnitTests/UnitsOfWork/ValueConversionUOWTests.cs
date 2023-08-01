@@ -111,7 +111,7 @@ namespace CE_API_Test.UnitTests.UnitsOfWork
             result.Biomarkers.Weight.Should().Be(50);
             
             // conversion-factor = 58.823; 58.823 * 150f = 8,823.45f
-            result.Biomarkers.UricAcid.Should().Be(8_823.45f);
+            result.Biomarkers.Uricacid.Should().Be(8_823.45f);
         }
     }
 }

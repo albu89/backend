@@ -4,13 +4,14 @@ using Microsoft.AspNetCore.Mvc;
 using CE_API_V2.Models.DTO;
 using CE_API_V2.UnitOfWorks.Interfaces;
 using CE_API_V2.Utility;
+using Microsoft.AspNetCore.Authorization;
 using CE_API_V2.Models;
 
 namespace CE_API_V2.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    // [Authorize(Policy = "Administrator")]
+    [Authorize(Policy = "Administrator")]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public class UsersController : ControllerBase

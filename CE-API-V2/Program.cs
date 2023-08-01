@@ -19,6 +19,8 @@ using CE_API_V2.Validators;
 using FluentValidation;
 using CE_API_V2.Localization.JsonStringFactroy;
 using Microsoft.Extensions.Localization;
+using CE_API_V2.Utility.Auth;
+using Microsoft.AspNetCore.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -98,17 +100,27 @@ builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddMicrosoftIdentityWebApi(azureAdSection);
 
+var countryCode = builder.Configuration.GetValue<string>("Country") ?? "CH";
+
+builder.Services.AddSingleton<IAuthorizationHandler, CountryRequirementHandler>();
+
+var countryPolicy = new AuthorizationPolicyBuilder()
+    .AddRequirements(new CountryRequirement(countryCode)).Build();
+;
+
 builder.Services.AddAuthorization(options =>
 {
+    options.DefaultPolicy = countryPolicy;
     options.AddPolicy("SwaggerPolicy", policy =>
     {
         policy.RequireAuthenticatedUser();
     });
-    
-    // options.AddPolicy("Administrator", policy =>
-    // {
-    //     policy.RequireRole("CE.User");
-    // });
+    options.AddPolicy("Administrator", policy =>
+    {
+        policy.RequireRole("CE.Admin", "CE.SystemAdmin");
+    });
+
+    options.AddPolicy("CountryPolicy", countryPolicy);
 });
 
 builder.Services.AddControllers(
