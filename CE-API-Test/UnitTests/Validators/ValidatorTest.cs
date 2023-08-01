@@ -87,6 +87,16 @@ public class ValidatorTest
         validRequest.Cholesterol.Value = 2000.0f;
         validationResult = _validator.TestValidate(validRequest);
         validationResult.ShouldHaveValidationErrorFor(x => x.Cholesterol.Value);
+        
+        validRequest.Cholesterol.Value = 2000.0f;
+        validRequest.Cholesterol.UnitType = "Conventional";
+        validationResult = _validator.TestValidate(validRequest);
+        validationResult.ShouldNotHaveValidationErrorFor(x => x.Cholesterol.Value);
+        
+        validRequest.Cholesterol.Value = 3867.0f;
+        validRequest.Cholesterol.UnitType = "Conventional";
+        validationResult = _validator.TestValidate(validRequest);
+        validationResult.ShouldHaveValidationErrorFor(x => x.Cholesterol.Value);
 
         validRequest.Hdl.Value = 200.0f;
         validationResult = _validator.TestValidate(validRequest);
@@ -95,6 +105,16 @@ public class ValidatorTest
         validRequest.Ldl.Value = 0.01f;
         validationResult = _validator.TestValidate(validRequest);
         validationResult.ShouldHaveValidationErrorFor(x => x.Ldl.Value);
+        
+        validRequest.Ldl.Value = 0.5f;
+        validRequest.Ldl.UnitType = "Conventional";
+        validationResult = _validator.TestValidate(validRequest);
+        validationResult.ShouldHaveValidationErrorFor(x => x.Ldl.Value);
+        
+        validRequest.Ldl.Value = 1.17f;
+        validRequest.Ldl.UnitType = "Conventional";
+        validationResult = _validator.TestValidate(validRequest);
+        validationResult.ShouldNotHaveValidationErrorFor(x => x.Ldl.Value);
 
         validRequest.Protein.Value = 4.0f;
         validationResult = _validator.TestValidate(validRequest);
@@ -112,6 +132,11 @@ public class ValidatorTest
         validationResult = _validator.TestValidate(validRequest);
         validationResult.ShouldHaveValidationErrorFor(x => x.Mchc.Value);
 
+        validRequest.Mchc.UnitType = "Conventional";
+        validationResult = _validator.TestValidate(validRequest);
+        validationResult.ShouldHaveValidationErrorFor(x => x.Mchc.Value);
+
+        validRequest.Mchc.Value = 99;
         validRequest.Mchc.UnitType = "Conventional";
         validationResult = _validator.TestValidate(validRequest);
         validationResult.ShouldNotHaveValidationErrorFor(x => x.Mchc.Value);

@@ -1,6 +1,4 @@
 
-k
-;CE-API-Test/UnitTests/UnitOfWorks/ScoringUnitOfWorkTests.cs,8\3\836c3c43eafc25299e1087c09935083bdd8ef25f
 \
 ,CE-API-V2/UnitOfWorks/PatientIdHashingUOW.cs,8\e\8e56703d11bf7d7a68d5b7d8829ce3df32d55ff2
 h
@@ -15,22 +13,14 @@ Y
 )CE-API-V2/Utility/TypeToFloatConverter.cs,0\9\09e79a58147073a1292b539c397cf0d305f337c9
 V
 &CE-API-V2/Scripts/StoreClientSecret.sh,f\7\f7e2e82fb51b850ebaa95750f94ccc6539580a35
-p
-@CE-API-Test/UnitTests/Services/BiomarkersTemplateServiceTests.cs,a\2\a2fb7739eefd40bfff6832dd8ac75ca6f5954585
 {
 KCE-API-Test/UnitTests/Services/PatientWebDtoToPatientAiDtoConverterTests.cs,d\8\d8cd9ad9e513423b353d9310217ff8e6949425bd
-g
-7CE-API-Test/UnitTests/Services/AiRequestServiceTests.cs,9\c\9cc66ebced8215e2a9753989ecaae0f2fbbf9cdc
-d
-4CE-API-Test/UnitTests/UnitsOfWork/ScoringUOWTests.cs,f\0\f0254653531bf47eeaeed747c105a568222db8ac
 V
 &CE-API-V2/appsettings.Development.json,1\5\15ea031c7bc6ef446f55e682b62dae627f83d3b2
 J
 CE-API-V2/CE-API-V2.csproj,3\0\301fef1fbedf769312763e0e5ff84bc9359dbf72
 k
 ;CE-API-V2/Services/Interfaces/IBiomarkersTemplateService.cs,8\5\853a0772fe7504912c58e68868489d2aff9d298a
-Y
-)CE-API-V2/Models/Enum/PatientDataEnums.cs,9\a\9afcc6712fc100aab3f416be54668cbe1061eab7
 Y
 )CE-API-V2/Models/Records/UserIdsRecord.cs,7\6\761b9d4a704405fc0eda529bc075ae2bd83ed6c2
 M
