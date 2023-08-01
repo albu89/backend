@@ -127,6 +127,15 @@ namespace CE_API_V2.Models.Mapping
                 .ForMember(dest => dest.classifier_score, opt => opt.Ignore())
                 .ForMember(dest => dest.classifier_sign, opt => opt.Ignore())
                 .ForMember(dest => dest.Biomarkers, opt => opt.Ignore());
+
+            CreateMap<UserModel, User>()
+                .ForMember(dest => dest.BiomarkerOrders, opt => opt.Ignore());
+
+            CreateMap<User, UserModel>()
+                .ForMember(dest => dest.BiomarkerOrders, opt => opt.Ignore())
+                .ForMember(dest => dest.Role, opt => opt.Ignore())
+                .ForMember(dest => dest.ClinicalSetting, opt => opt.Ignore())
+                .ForMember(src => src.BiomarkerOrders, opt => opt.Ignore());
         }
     }
     public class ValueToUnderlyingTypeConverter<T> : ITypeConverter<BiomarkerValue<T>, T>

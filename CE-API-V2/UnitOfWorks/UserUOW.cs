@@ -1,4 +1,5 @@
-﻿using CE_API_V2.Data.Repositories.Interfaces;
+﻿using AutoMapper;
+using CE_API_V2.Data.Repositories.Interfaces;
 using CE_API_V2.Data;
 using CE_API_V2.Data.Repositories;
 using CE_API_V2.Models;
@@ -7,6 +8,7 @@ using CE_API_V2.Services.Interfaces;
 using CE_API_V2.UnitOfWorks.Interfaces;
 using Azure.Communication.Email;
 using CE_API_V2.Data.Extensions;
+using CE_API_V2.Utility;
 
 namespace CE_API_V2.UnitOfWorks
 {
@@ -159,6 +161,24 @@ namespace CE_API_V2.UnitOfWorks
         public IEnumerable<BiomarkerOrderModel> GetBiomarkerOrders(string userId)
         {
             return BiomarkerOrderRepository.Get(x => x.UserId == userId);
+        }
+
+        public async Task<UserModel> UpdateUser(string userId, UserModel updatedUser)
+        {
+            var storedUser = _userRepository.GetById(userId) ?? throw new KeyNotFoundException();
+            var updatedUserModel = UserModelUpdater.UpdateUserModel(updatedUser, storedUser, out _);
+
+            try
+            {
+                UserRepository.Update(updatedUserModel);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                throw new NotImplementedException();
+            }
+
+            return UserRepository.GetById(storedUser.UserId);
         }
     }
 }

@@ -1,9 +1,11 @@
-﻿using CE_API_V2.Models.Enum;
+﻿using System.Text.Json.Serialization;
+using CE_API_V2.Models.Enum;
 
 namespace CE_API_V2.Models.DTO;
 
 public class User
 {
+    public string UserId { get; set; }
     //Person related
     public string Salutation { get; set; }
     public string Title { get; set; }
@@ -27,6 +29,6 @@ public class User
     public string UnitLabValues { get; set; }
     public PatientDataEnums.ClinicalSetting ClinicalSetting { get; set; }
     public UserRole Role { get; set; }
-    
+    [JsonIgnore]
     public IEnumerable<BiomarkerOrder> BiomarkerOrders {get; set; }
 }

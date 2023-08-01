@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using CE_API_V2.Models.DTO;
 using CE_API_V2.UnitOfWorks.Interfaces;
 using CE_API_V2.Utility;
+using CE_API_V2.Models;
 
 namespace CE_API_V2.Controllers
 {
@@ -36,23 +37,38 @@ namespace CE_API_V2.Controllers
         [HttpGet(Name = "GetUsersList")]
         [Produces("application/json", Type = typeof(IEnumerable<User>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetCurrentUser()
+        public async Task<IActionResult> GetAllUsers()
         {
             return Ok(new List<User>());
         }
         
         [HttpGet("{id}", Name = "GetById")]
         [Produces("application/json", Type = typeof(User))]
-        public async Task<IActionResult> GetUserById(Guid id)
+        public async Task<IActionResult> GetUserById(string id)
         {
             return Ok();
         }
         
-        [HttpPost("{id}", Name = "CreateUser")]
+        [HttpPost(Name = "CreateUser")]
         [Produces("application/json", Type = typeof(User))]
-        public async Task<IActionResult> CreateUserById(Guid id, [FromBody] User user)
+        public async Task<IActionResult> CreateUserById([FromBody] User user)
         {
             return Ok();
+        }
+
+        [HttpPatch("{id}", Name = "UpdateUserById")]
+        [Produces("application/json", Type = typeof(User))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> UpdateUserById([FromBody] CreateUser user, string id)
+        {
+            var mappedUser = _mapper.Map<UserModel>(user);
+
+            var updatedUser = await _userUow.UpdateUser(id, mappedUser);
+
+            var userDto = _mapper.Map<User>(updatedUser);
+
+            return Ok(userDto);
         }
 
         [HttpGet("{id}/preferences", Name = "GetPreferencesForUser")]

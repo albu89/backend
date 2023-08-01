@@ -17,5 +17,6 @@ namespace CE_API_V2.UnitOfWorks.Interfaces
         public IGenericRepository<UserModel> UserRepository { get; }
         public Task<EmailSendStatus> ProcessAccessRequest(AccessRequest user);
         public Task<UserModel> StoreUser(UserModel userModel);
+        public Task<UserModel> UpdateUser(string userId, UserModel userModel);
     }
 }
