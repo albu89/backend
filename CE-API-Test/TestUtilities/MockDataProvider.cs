@@ -3,6 +3,7 @@ using CE_API_V2.Models.DTO;
 using CE_API_V2.Models.Enum;
 using CE_API_V2.Models.Records;
 using System.Collections.Immutable;
+using System.Collections.ObjectModel;
 using System.Text.Json;
 using CE_API_V2.Models.Mapping;
 using static CE_API_V2.Models.Enum.PatientDataEnums;
@@ -371,8 +372,13 @@ namespace CE_API_Test.TestUtilities
                 UnitLabValues = "Mock",
                 Role = UserRole.MedicalDoctor,
                 UserId = "MockedUserId",
-                TenantID = "MockedTenantId"
-            };
+                TenantID = "MockedTenantId",
+                BiomarkerOrders = new Collection<BiomarkerOrderModel>
+                {
+                    new() { OrderNumber = 1, BiomarkerId = "first", PreferredUnit = "unit", User = null, UserId = "id" },
+                    new() { OrderNumber = 2, BiomarkerId = "second", PreferredUnit = "unit", User = null, UserId = "id" }
+                }
+        };
         }
         
         public static CreateUser GetMockedCreateUserDto()

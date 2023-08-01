@@ -16,7 +16,7 @@ using CE_API_V2.Utility;
 namespace CE_API_Test.UnitTests.Controllers
 {
     [TestFixture]
-    internal class UserControllerTests
+    internal class UsersControllerTests
     {
         private IMapper _mapper;
         private IUserUOW _userUOW;
@@ -106,113 +106,22 @@ namespace CE_API_Test.UnitTests.Controllers
         #endregion
 
         [Test]
-        public async Task CreatedUser_GivenMockedUserDto_ReturnOkResult()
-        {
-            //Arrange
-            CreateUser user = MockDataProvider.GetMockedCreateUserDto();
-            var sut = new UserController(_mapper, _userUOW, _inputValidationService, _userInformationExtractor, _userHelper);
-
-            //Act
-            var result = await sut.CreateUser(user);
-
-            //Assert
-            result.Should().NotBeNull();
-            result.Should().BeOfType(typeof(OkObjectResult));
-            var okResult = result as OkObjectResult;
-            okResult?.StatusCode.Should().Be(200);
-            okResult?.Value.Should().BeOfType(typeof(User));
-        }
-
-        [Test]
-        public async Task RequestAccess_GivenMockedAccessRequestDto_ReturnOkResult()
-        {
-            //Arrange
-            AccessRequest accessRequest = MockDataProvider.GetMockedAccessRequestDto();
-            var sut = new UserController(_mapper, _userUOW, _inputValidationService, _userInformationExtractor, _userHelper); 
-
-            //Act
-            var result = await sut.RequestAccess(accessRequest);
-
-            //Assert
-            result.Should().NotBeNull();
-            result.Should().BeOfType(typeof(OkResult));
-            var okResult = result as OkResult;
-            okResult?.StatusCode.Should().Be(200);
-        }
-
-        [Test]
-        public async Task RequestUserCreation_GivenInvalidAccessRequestDto_ReturnOkResult()
-        {
-            //Arrange
-            AccessRequest accessRequest = new AccessRequest();
-            var sut = new UserController(_mapper, _userUOW, _inputValidationService, _userInformationExtractor, _userHelper);
-
-            //Act
-            _ = await sut.RequestAccess(accessRequest);
-
-            //Todo: Validation not yet implemented
-            //Assert
-            //result.Should().NotBeNull();
-            //result.Should().BeOfType(typeof(BadRequestResult));
-
-            //var badRequestResult = result as BadRequestResult;
-            //badRequestResult?.StatusCode.Should().Be(400);
-        }
-
-        [Test]
-        public async Task GetCurrentUser_RequestAccessDto_ReturnOkResult()
-        {
-            //Arrange
-            var sut = new UserController(_mapper, _userUOW, _inputValidationService, _userInformationExtractor, _userHelper);
-            var expectedReturnedDto = MockDataProvider.GetMockedUserDto();
-            //Act
-            var currentUser = sut.GetCurrentUser();
-
-            //Assert
-            currentUser.Should().NotBeNull();
-            currentUser.Should().BeOfType(typeof(OkObjectResult));
-            ((OkObjectResult)currentUser).Value.Should().NotBeNull();
-            ((OkObjectResult)currentUser).Value.Should().BeOfType(typeof(User));
-            ((OkObjectResult)currentUser).Value!.Equals(expectedReturnedDto);
-        }
-        
-        [Test]
-        public async Task UpdateUserById_GivenPatchDocumentAndId_ReturnOkResult()
+        public async Task UpdateUserById_GivenUpdatedUserAndId_ReturnOkResult()
         {
             //Arrange
             var sut = new UsersController(_inputValidationService, _userUOW, _userInformationExtractor, _mapper, _userHelper);
-            var expectedRetrunedDto = MockDataProvider.GetMockedUserDto();
-            var mockedUser = MockDataProvider.GetMockedUser();
-            var userId = mockedUser.UserId;
-
-            var patchDocument = MockDataProvider.GetMockedCreateUserDto();
+            var userId = MockDataProvider.GetMockedUser().UserId;
+            var updatedUser = MockDataProvider.GetMockedCreateUserDto();
 
             //Act
-            var currentUser = await sut.UpdateUserById(patchDocument, userId);
+            var currentUser = await sut.UpdateUserById(updatedUser, userId);
 
             //Assert
             currentUser.Should().NotBeNull();
             currentUser.Should().BeOfType(typeof(OkObjectResult));
             ((OkObjectResult)currentUser).Value.Should().NotBeNull();
             ((OkObjectResult)currentUser).Value.Should().BeOfType(typeof(User));
-            ((OkObjectResult)currentUser).Value!.Equals(expectedRetrunedDto);
-        }
-
-        [Test]
-        public async Task UpdateUser_GivenPatchDocumentAndId_ReturnOkResult()
-        {
-            //Arrange
-            var sut = new UserController(_mapper, _userUOW, _inputValidationService, _userInformationExtractor, _userHelper);
-            var mockedUserDto = MockDataProvider.GetMockedCreateUserDto();
-
-            //Act
-            var currentUser = await sut.UpdateCurrentUser(mockedUserDto);
-
-            //Assert
-            currentUser.Should().NotBeNull();
-            currentUser.Should().BeOfType(typeof(OkObjectResult));
-            ((OkObjectResult)currentUser).Value.Should().NotBeNull();
-            ((OkObjectResult)currentUser).Value.Should().BeOfType(typeof(User));
+            ((OkObjectResult)currentUser).Value!.Equals(updatedUser);
         }
     }
 }

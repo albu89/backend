@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using CE_API_V2.Services.Interfaces;
 using Azure.Communication.Email;
+using CE_API_V2.Models;
 using CE_API_V2.Utility;
 using CE_API_V2.Models.Mapping;
 
@@ -80,6 +81,22 @@ namespace CE_API_V2.Controllers
             return storedUser is not null ? Ok(_mapper.Map<User>(storedUser)) : BadRequest();
         }
 
+        [HttpPatch(Name = "UpdateUser")]
+        [Produces("application/json", Type = typeof(User))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> UpdateCurrentUser([FromBody] CreateUser user)
+        {
+            var userId = _userInformationExtractor.GetUserIdInformation(User).UserId;
+            UserModel? mappedUser = _mapper.Map<UserModel>(user);
+
+            var updatedUser = await _userUow.UpdateUser(userId, mappedUser);
+
+            var userDto = _mapper.Map<User>(updatedUser);
+
+            return Ok(userDto);
+        }
+
         [HttpPost("request", Name = "RequestApplicationAccess")]
         [Authorize]
         [Produces("application/json", Type = typeof(User))]
@@ -138,6 +155,7 @@ namespace CE_API_V2.Controllers
             var orderDto = ManualMapper.ToBiomarkerOrder(_userUOW.GetBiomarkerOrders(user.UserId));
             return Ok(orderDto);
         }
+
         [HttpPatch("preferences", Name = "CreatePreferences")]
         [Produces("application/json", Type = typeof(BiomarkerOrder))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
