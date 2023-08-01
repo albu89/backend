@@ -7,5 +7,5 @@ public interface IValueConversionUOW
 {
     public ScoringRequestModel ConvertToScoringRequest(ScoringRequest scoringRequest, string userId, string patientId);
     
-    public ScoringRequest ConvertToSiValues(ScoringRequest scoringRequestDto);
+    public Task<ScoringRequest> ConvertToSiValues(ScoringRequest scoringRequest);
 }

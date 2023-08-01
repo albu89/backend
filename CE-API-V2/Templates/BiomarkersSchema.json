@@ -406,8 +406,8 @@
         "conversionFactor": 0.05551,
         "unitType": "Conventional",
         "type": "float",
-        "minimum": 0.0138775,
-        "maximum": 2.49795,
+        "minimum": 4.50,
+        "maximum": 810.66,
         "clinicalSetting": "None"
       }
     ],
@@ -432,8 +432,8 @@
         "conversionFactor": 17.1,
         "unitType": "Conventional",
         "type": "float",
-        "minimum": 29.07,
-        "maximum": 7353.0,
+        "minimum": 0.01,
+        "maximum": 25.15,
         "clinicalSetting": "None"
       }
     ],
@@ -458,8 +458,8 @@
         "conversionFactor": 0.1665,
         "unitType": "Conventional",
         "type": "float",
-        "minimum": 0.041625,
-        "maximum": 7.4925,
+        "minimum": 1.50,
+        "maximum": 270.27,
         "clinicalSetting": "None"
       }
     ],
@@ -484,8 +484,8 @@
         "conversionFactor": 58.823,
         "unitType": "Conventional",
         "type": "float",
-        "minimum": 588.23,
-        "maximum": 129410.6,
+        "minimum": 0.17,
+        "maximum": 37.40,
         "clinicalSetting": "None"
       }
     ],
@@ -510,8 +510,8 @@
         "conversionFactor": 0.02586,
         "unitType": "Conventional",
         "type": "float",
-        "minimum": 0.002586,
-        "maximum": 2.586,
+        "minimum": 3.87,
+        "maximum": 3866.98,
         "clinicalSetting": "None"
       }
     ],
@@ -536,8 +536,8 @@
         "conversionFactor": 0.02586,
         "unitType": "Conventional",
         "type": "float",
-        "minimum": 0.002586,
-        "maximum": 2.586,
+        "minimum": 3.87,
+        "maximum": 3866.98,
         "clinicalSetting": "None"
       }
     ],
@@ -562,8 +562,8 @@
         "conversionFactor": 0.02586,
         "unitType": "Conventional",
         "type": "float",
-        "minimum": 0.0007758,
-        "maximum": 0.54306,
+        "minimum": 1.16,
+        "maximum": 812.06,
         "clinicalSetting": "None"
       }
     ],
@@ -588,8 +588,8 @@
         "conversionFactor": 10,
         "unitType": "Conventional",
         "type": "float",
-        "minimum": 50.0,
-        "maximum": 1850.0,
+        "minimum": 0.5,
+        "maximum": 18.5,
         "clinicalSetting": "None"
       }
     ],
@@ -614,8 +614,8 @@
         "conversionFactor": 10,
         "unitType": "Conventional",
         "type": "float",
-        "minimum": 50.0,
-        "maximum": 5000.0,
+        "minimum": 0.5,
+        "maximum": 50.0,
         "clinicalSetting": "None"
       }
     ],
@@ -667,7 +667,7 @@
         "unitType": "Conventional",
         "type": "float",
         "minimum": 0.0,
-        "maximum": 10000.0,
+        "maximum": 100.0,
         "clinicalSetting": "None"
       }
     ],
