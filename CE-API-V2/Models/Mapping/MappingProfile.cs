@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CE_API_V2.Models.DTO;
 using CE_API_V2.Models.Enum;
+using CE_API_V2.Utility;
 
 namespace CE_API_V2.Models.Mapping
 {
@@ -143,6 +144,16 @@ namespace CE_API_V2.Models.Mapping
                 .ForMember(dest => dest.Role, opt => opt.Ignore())
                 .ForMember(dest => dest.ClinicalSetting, opt => opt.Ignore())
                 .ForMember(src => src.BiomarkerOrders, opt => opt.Ignore());
+
+            CreateMap<RecommendationCategoryStaticPart, RecommendationCategory>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.LongText, opt => opt.MapFrom(src => src.LowerLimit))
+                .ForMember(dest => dest.UpperLimit, opt => opt.MapFrom(src => src.UpperLimit))
+                .ForMember(dest => dest.RiskValue, opt => opt.MapFrom(src => src.RiskValue));
+
+            CreateMap<RecommendationCategoryLocalizedPart, RecommendationCategory>()
+                .ForMember(dest => dest.LongText, opt => opt.MapFrom(src => src.LongText))
+                .ForMember(dest => dest.ShortText, opt => opt.MapFrom(src => src.ShortText));
         }
     }
     public class ValueToUnderlyingTypeConverter<T> : ITypeConverter<BiomarkerValue<T>, T>

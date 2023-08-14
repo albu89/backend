@@ -10,7 +10,6 @@ namespace CE_API_V2.Utility.Auth
         {
             var country = context.User.FindFirst(c => c.Type == "ctry")?.Value ?? "??";
             var userRole = context.User.FindFirst(c => c.Type == ClaimTypes.Role)?.Value ?? UserRole.User.ToString();
-            Console.WriteLine($"{userRole} trying to access {country} but country is {requirement.RequiredCountry}");
 
             if (userRole.ToLowerInvariant() == "CE." + UserRole.SystemAdmin.ToString().ToLowerInvariant())
             {

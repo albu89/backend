@@ -5,6 +5,10 @@ using CE_API_V2.Utility;
 using AutoMapper;
 using CE_API_V2.Models.Mapping;
 using CE_API_V2.Localization.JsonStringFactroy;
+using CE_API_V2.Models;
+using CE_API_V2.Models.Enum;
+using CE_API_V2.UnitOfWorks.Interfaces;
+using FluentValidation.Results;
 
 namespace CE_API_V2.Validators
 {
@@ -154,19 +158,6 @@ namespace CE_API_V2.Validators
                     });
                 });
             });
-            //Cholesterol
-            RuleFor(scoringRequest => scoringRequest.Cholesterol).NotNull().DependentRules(() =>
-            {
-                RuleFor(scoringRequest => scoringRequest.Cholesterol.Value).NotNull().DependentRules(() =>
-                {
-                    var unitTypes = ValidationHelpers.GetAllUnitsForProperty(nameof(ScoringRequest.Cholesterol), template).Select(x => x.UnitType);
-                    RuleFor(scoringRequest => scoringRequest.Cholesterol.UnitType).Must(x => unitTypes.Contains(x))
-                        .WithMessage(x => $"'{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Cholesterol), typeof(ScoringRequest))}}}': {loc["Validation.ErrorUnitDoesNotExist"]}")
-                        .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Cholesterol), typeof(ScoringRequest))}}}");
-
-                    RuleFor(scoringRequest => scoringRequest.Cholesterol.UnitType).NotNull().WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.Cholesterol), typeof(ScoringRequest))}}}");
-                });
-            });
             //TCAaggregation
             RuleFor(scoringRequest => scoringRequest.TCAggregationInhibitor).NotNull().DependentRules(() =>
             {
@@ -309,6 +300,25 @@ namespace CE_API_V2.Validators
                         RuleFor(scoringRequest => scoringRequest.RestingECG.Value)
                             .IsInEnum()
                             .WithName($"{{{ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.RestingECG), typeof(ScoringRequest))}}}");
+                        RuleFor(request => request.RestingECG.Value).Custom(((ecg, context) =>
+                        {
+                            var clinicalSetting = (context.RootContextData["currentUser"] as UserModel)?.ClinicalSetting;
+                            var higherPrevalence = context.InstanceToValidate.prior_CAD.Value || clinicalSetting == PatientDataEnums.ClinicalSetting.SecondaryCare;
+                            
+                            if (ecg == PatientDataEnums.RestingEcg.No && higherPrevalence)
+                            {
+                                var valFailure = new ValidationFailure($"{nameof(ScoringRequest.RestingECG)}.{nameof(ScoringRequest.RestingECG.Value)}", loc["Validation.EcgNoWhenPriorCadOrSecondaryCare"])
+                                {
+                                    FormattedMessagePlaceholderValues = new Dictionary<string, object>
+                                    {
+                                        {
+                                            "PropertyName", ValidationHelpers.GetJsonPropertyKeyName(nameof(ScoringRequest.RestingECG), typeof(ScoringRequest))
+                                        }
+                                    }
+                                };
+                                context.AddFailure(valFailure);                                
+                            }
+                        }));
                     });
                 });
             });

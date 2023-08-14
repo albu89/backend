@@ -1,8 +1,10 @@
 ﻿using System.Globalization;
+using System.Text.Json;
 using AutoMapper;
 using CE_API_V2.Constants;
 using CE_API_V2.Models.DTO;
 using CE_API_V2.Services.Interfaces;
+using static CE_API_V2.Models.Enum.PatientDataEnums;
 
 namespace CE_API_V2.Utility
 {
@@ -23,73 +25,127 @@ namespace CE_API_V2.Utility
             return scoreResponse;
         }
 
-        public IEnumerable<RecommendationCategory> GetCategories(string locale = LocalizationConstants.DefaultLocale)
+        public IEnumerable<RecommendationCategory> GetCategories(string locale = LocalizationConstants.DefaultLocale, PrevalenceClass prevalenceClass = default)
         {
-            var path = TryGetLocalizedFilePath(locale);
-            using StreamReader reader = new StreamReader(path);
-            var file = reader.ReadToEnd();
+            var filePathValues = GetFilePath("ClinicalSetting.", prevalenceClass.ToString());
+            var filePathLocalizedText = GetFilePath($"Info.{prevalenceClass}.", locale);
 
-            var parsedDoc = JsonSerializationHelper.DeserializeObject<RecommendationCategory[]>(file);
+            var staticPart = ReadFileContent(filePathValues);
+            var localizedPart = ReadFileContent(filePathLocalizedText);
 
-            return parsedDoc;
+            var deserializedStaticPart = JsonSerializationHelper.DeserializeObject<RecommendationCategoryStaticPart[]>(staticPart);
+            var deserializedLocalizedPart = JsonSerializationHelper.DeserializeObject<RecommendationCategoryLocalizedPart[]>(localizedPart);
+
+            return CombineSchemas(deserializedStaticPart, deserializedLocalizedPart, prevalenceClass);
         }
 
         private ScoringResponse SetRecommendation(ScoringResponse scoreResponse, string locale)
         {
-            var scoreRecommendation = GetScoreRecommendation((double)scoreResponse.classifier_score, locale);
-            _mapper.Map(scoreRecommendation, scoreResponse);
+            var score = (double)scoreResponse.classifier_score;
+            var priorCad = scoreResponse.Biomarkers.PriorCAD;
+            var clinicalSetting = scoreResponse.Biomarkers.ClinicalSetting;
 
+            var scoreRecommendation = GetScoreRecommendation(score, priorCad, clinicalSetting, locale);
+            _mapper.Map(scoreRecommendation, scoreResponse);
+            scoreResponse.Prevalence = scoreRecommendation.Prevalence;
             return scoreResponse;
         }
 
-        private RecommendationCategory GetScoreRecommendation(double score, string locale)
+        private string GetFilePath(string filePartName, string valueClass)
         {
-            var categories = GetCategories(locale);
-
-            return GetMatchingCategory(categories, score);
-        }
-
-        private string TryGetLocalizedFilePath(string locale)
-        {
-            var filePath = CombineFilePath(locale);
+            var filePath = CombineFilePath(filePartName, valueClass);
 
             if (File.Exists(filePath))
-                return  filePath;
+                return filePath;
 
-            filePath = CombineFilePath(LocalizationConstants.DefaultLocale);
+            filePath = CombineFilePath(filePartName, LocalizationConstants.DefaultLocale);
 
+            CheckIfFileExists(filePath);
+
+            return filePath;
+        }
+        
+        private string CombineFilePath(string filePartName, string distinguisher)
+        {
+            var file = string.Concat("Recommendation.", filePartName, distinguisher, ".json");
+
+            return Path.Combine(LocalizationConstants.TemplatesSubpath, file);
+        }
+
+        private void CheckIfFileExists(string filePath)
+        {
             if (!File.Exists(filePath))
             {
                 throw new FileNotFoundException($"The requested file was not found. Requested File: {filePath}");
             }
-
-            return filePath;
         }
 
-        private string CombineFilePath(string locale)
+        private string ReadFileContent(string filePath)
         {
-            var file = string.Concat("Recommendation.", locale, ".json");
-            return Path.Combine(LocalizationConstants.TemplatesSubpath, file);
+            using StreamReader reader = new StreamReader(filePath);
+            return reader.ReadToEnd();
         }
+
+        private IEnumerable<RecommendationCategory> CombineSchemas(RecommendationCategoryStaticPart[] recommendationSettings, RecommendationCategoryLocalizedPart[] recommendationLocalized, PrevalenceClass prevalenceCategory)
+        {
+            var recommendationCategories = new List<RecommendationCategory>();
+
+            foreach (var item in recommendationSettings)
+            {
+                var langSpec = recommendationLocalized.FirstOrDefault(x => x.Id.Equals(item.Id));
+                var recommendationCategory = _mapper.Map<RecommendationCategory>(item);
+                _mapper.Map(langSpec, recommendationCategory);
+                recommendationCategory.Prevalence = prevalenceCategory;
+                recommendationCategories.Add(recommendationCategory);
+            }
+
+            return recommendationCategories;
+        }
+
+        private RecommendationCategory GetScoreRecommendation(double score, bool priorCad, ClinicalSetting clinicalSetting, string locale)
+        {
+            var valueClass = DeterminePrevalenceClass(clinicalSetting, priorCad);
+            var categories = GetCategories(locale, valueClass);
+
+            return GetMatchingCategory(categories, score);
+        }
+
+        private PrevalenceClass DeterminePrevalenceClass(ClinicalSetting clinicalSetting, bool priorCad)
+            => clinicalSetting == ClinicalSetting.SecondaryCare || priorCad ? PrevalenceClass.Secondary : PrevalenceClass.Primary;
 
         private RecommendationCategory? GetMatchingCategory(IEnumerable<RecommendationCategory> recommendationCategories, double score)
         {
-            RecommendationCategory matchingObject = null;
+            RecommendationCategory? matchingObject = null;
 
             foreach (var category in recommendationCategories)
             {
-                var parsedUpperLimit = double.Parse(category.UpperLimit, CultureInfo.InvariantCulture);
-                var parsedLowerLimit = double.Parse(category.LowerLimit, CultureInfo.InvariantCulture);
+                var parsedUpperLimit = ParseLimit(category.UpperLimit);
+                var parsedLowerLimit = ParseLimit(category.LowerLimit);
                 var insideUpperLimit = score < parsedUpperLimit;
-                var insideLowerLimit = score >= parsedLowerLimit;
-                if (insideUpperLimit && insideLowerLimit)
+                var insideOrLowerLimit = score >= parsedLowerLimit;
+                if (insideUpperLimit && insideOrLowerLimit)
                 {
                     matchingObject = category;
                     break;
                 }
             }
 
+            if (matchingObject is null)
+            {
+                var lastCategory = recommendationCategories.LastOrDefault();
+
+                matchingObject = score > ParseLimit(lastCategory?.UpperLimit) ? recommendationCategories.LastOrDefault() : null;
+            }
+
             return matchingObject;
+        }
+
+        private double ParseLimit(string value) => double.Parse(value, CultureInfo.InvariantCulture);
+  
+        public enum PrevalenceClass
+        {
+            Primary,
+            Secondary
         }
     }
 }

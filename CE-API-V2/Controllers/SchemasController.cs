@@ -3,6 +3,7 @@ using CE_API_V2.Constants;
 using CE_API_V2.Models.DTO;
 using CE_API_V2.Services.Interfaces;
 using CE_API_V2.UnitOfWorks.Interfaces;
+using CE_API_V2.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -49,17 +50,10 @@ namespace CE_API_V2.Controllers
         [Produces("application/json", Type = typeof(IEnumerable<ScoringSchema>))]
         public async Task<IActionResult> GetScoringSchema(string? locale = null)
         {
-            var currentUserId = GetUserId();
+            var currentUserId = UserHelper.GetUserId(User);
             var template = await _scoringTemplateService.GetTemplate(currentUserId, locale);
 
             return template is not null ? Ok(template) : NotFound();
-        }
-
-        private string GetUserId()
-        {
-            var userId = User?.Claims?.Any() == true ? User.FindFirstValue(ClaimTypes.NameIdentifier) : "anonymous";
-            userId ??= "anonymous";
-            return userId;
         }
     }
 

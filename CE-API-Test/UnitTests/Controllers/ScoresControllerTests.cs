@@ -12,7 +12,9 @@ using CE_API_V2.UnitOfWorks.Interfaces;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Client;
 using Moq;
+using NSubstitute;
 
 namespace CE_API_Test.UnitTests.Controllers
 {
@@ -23,6 +25,7 @@ namespace CE_API_Test.UnitTests.Controllers
         private IPatientIdHashingUOW _patientHashingUow;
         private IInputValidationService _inputValidationService;
         private IMapper _mapper;
+        private IUserUOW _userUow;
 
         [SetUp]
         public void SetUp()
@@ -39,10 +42,13 @@ namespace CE_API_Test.UnitTests.Controllers
             var valueConversionUow = new Mock<IValueConversionUOW>();
             var inputValidationServiceMock = new Mock<IInputValidationService>();
             var scoringTemplateService = new Mock<IScoringTemplateService>();
+            var userUow = new Mock<IUserUOW>();
+
+            userUow.Setup(u => u.GetUser(It.IsAny<string>())).Returns(MockDataProvider.GetMockedUser);
             
             var mockedResponseTask = Task.FromResult(MockDataProvider.GetMockedScoringResponse());
             inputValidationServiceMock.Setup(x => x.ValidateUser(It.IsAny<CreateUser>())).Returns(true);
-            inputValidationServiceMock.Setup(x => x.ScoringRequestIsValid(It.IsAny<ScoringRequest>())).Returns(new ValidationResult());
+            inputValidationServiceMock.Setup(x => x.ScoringRequestIsValid(It.IsAny<ScoringRequest>(), It.IsAny<UserModel>())).Returns(new ValidationResult());
 
             SetupMockedScoringUOW(mockedResponseTask);
             requestServiceMock.Setup(x => x.RequestScore(It.IsAny<ScoringRequestModel>())).Returns(mockedResponseTask);
@@ -55,13 +61,14 @@ namespace CE_API_Test.UnitTests.Controllers
             hashingUowMock.Setup(x => x.HashPatientId(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>())).Returns(It.IsAny<string>);
             _patientHashingUow = hashingUowMock.Object;
             _inputValidationService = new InputValidationService(new CE_API_V2.Validators.ScoringRequestValidator());
+            _userUow = userUow.Object;
         }
 
         [Test]
         public async Task PostPatientData_GivenMockedDto_ReturnOkResult()
         {
             //Arrange
-            var sut = new ScoresController(_scoringUow, _patientHashingUow,  _inputValidationService);
+            var sut = new ScoresController(_scoringUow, _patientHashingUow,  _inputValidationService, _userUow);
             var mockedBiomarkers = MockDataProvider.CreateValidScoringRequestDto();
 
             //Act
@@ -81,7 +88,7 @@ namespace CE_API_Test.UnitTests.Controllers
         public async Task PostPatientData_GivenNull_ReturnBadRequestResult()
         {
             //Arrange
-            var sut = new ScoresController(_scoringUow, _patientHashingUow,  _inputValidationService);
+            var sut = new ScoresController(_scoringUow, _patientHashingUow,  _inputValidationService, _userUow);
 
             //Act
             var result = await sut.PostPatientData(null, null);
@@ -98,7 +105,7 @@ namespace CE_API_Test.UnitTests.Controllers
         public async Task PostPatientData_GivenDtoWithInvalidValues_ReturnBadRequestResult()
         {
             //Arrange
-            var sut = new ScoresController(_scoringUow, _patientHashingUow,  _inputValidationService);
+            var sut = new ScoresController(_scoringUow, _patientHashingUow,  _inputValidationService, _userUow);
             var mockedBiomarkersNV = MockDataProvider.CreateNotValidScoringRequestDto();
 
             //Act
@@ -156,7 +163,7 @@ namespace CE_API_Test.UnitTests.Controllers
 
             _scoringUow = scoringUowMock.Object;
 
-            var sut = new ScoresController(_scoringUow, _patientHashingUow,  _inputValidationService);
+            var sut = new ScoresController(_scoringUow, _patientHashingUow,  _inputValidationService, _userUow);
             ////Act
             var result = sut.GetScoringRequest(name, lastname, dateOfBirth, requestId);
 
@@ -212,7 +219,7 @@ namespace CE_API_Test.UnitTests.Controllers
                 .Returns(scoringHistoryMock);
             _scoringUow = scoringUowMock.Object;
 
-            var sut = new ScoresController(_scoringUow, _patientHashingUow,  _inputValidationService);
+            var sut = new ScoresController(_scoringUow, _patientHashingUow,  _inputValidationService, _userUow);
             
             ////Act
             var result = sut.GetScoringRequest(name, lastname, dateOfBirth, testGuid);
@@ -229,7 +236,7 @@ namespace CE_API_Test.UnitTests.Controllers
         public void GetScoringRequestsParameterless_WithoutParameters_ReturnOkRequestResult()
         {
             //Arrange
-            var sut = new ScoresController(_scoringUow, _patientHashingUow,  _inputValidationService);
+            var sut = new ScoresController(_scoringUow, _patientHashingUow,  _inputValidationService, _userUow);
 
             ////Act
             var result = sut.GetScoringRequests();
@@ -250,7 +257,7 @@ namespace CE_API_Test.UnitTests.Controllers
             string lastname = "lastname";
             DateTime dateOfBirth = new(2000, 1, 1);
 
-            var sut = new ScoresController(_scoringUow, _patientHashingUow,  _inputValidationService);
+            var sut = new ScoresController(_scoringUow, _patientHashingUow,  _inputValidationService, _userUow);
 
             ////Act
             var result = sut.GetScoringRequests(name, lastname, dateOfBirth);

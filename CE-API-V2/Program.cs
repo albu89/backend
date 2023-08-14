@@ -1,3 +1,4 @@
+using System.Reflection;
 using AutoMapper;
 using Azure.Identity;
 using CE_API_V2.Data;
@@ -5,6 +6,7 @@ using CE_API_V2.Hasher;
 using CE_API_V2.Models.Mapping;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using CE_API_V2.Controllers.Middlewares;
 using CE_API_V2.Models.DTO;
 using CE_API_V2.Services;
 using CE_API_V2.Services.Interfaces;
@@ -23,7 +25,6 @@ using CE_API_V2.Utility.Auth;
 using Microsoft.AspNetCore.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
-
 
 
 // Add services to the container.
@@ -92,7 +93,7 @@ builder.Services.AddSingleton<IStringLocalizerFactory, JsonStringLocalizerFactor
 #endregion
 
 #region Validation
-builder.Services.AddSingleton(new ScoringRequestValidator());
+builder.Services.AddSingleton<ScoringRequestValidator>();
 #endregion
 
 builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
@@ -174,6 +175,12 @@ builder.Services.AddHttpClient<IAiRequestService, AiRequestService>(client =>
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<CEContext>();
+    dbContext.Database.Migrate();
+}
+
 // Configure the HTTP request pipeline.
 app.UseSwagger();
 app.UseSwaggerUI(c =>
@@ -192,7 +199,10 @@ app.UseCors(options =>
     options.AllowAnyHeader();
     options.AllowAnyMethod();
     options.AllowCredentials();
+    options.WithExposedHeaders("x-api-version");
 });
+
+app.UseMiddleware<StaticInformationMiddleware>();
 
 app.UseHttpsRedirection();
 

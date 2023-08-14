@@ -1,0 +1,22 @@
+[
+  {
+    "Id": 1,
+    "ShortText": "No diagnostic testing mandated.",
+    "LongText": "Choice of the test based on clinical likelihood, patient characteristics and preference, availability, as well as local expertise. Medical guidelines recommend a conservative approach to management. This typically involves lifestyle modifications and risk factor reduction."
+  },
+  {
+    "Id": 2,
+    "ShortText": "Anatomical non-invasive evaluation (e.g., coronary CT angiography (CTA).",
+    "LongText": "Choice of the test based on clinical likelihood, patient characteristics and preference, availability, as well as local expertise. Anatomical non-invasive evaluation, by visualizing the coronary arterylumen and wall using an intravenous contrast agent, can be performed with coronary CTA, which provides high accuracy for the detection of obstructive coronary stenoses defined by ICA, because both tests are based on anatomy. However, stenoses estimated to be 50-90% by visual inspection are not necessarily functionally significant, i.e. they do not always induce myocardial ischaemia. Therefore, either non-invasive or invasive functional testing is recommended for further evaluation of angiographic stenosis detected by coronary CTA invasive angiography, unless a very high-grade (>90% diameter stenosis) stenosis is detected via invasive angiography. The presence or absence of non-obstructive coronary atherosclerosis on coronary CTA provides prognostic information, and can be used to guide preventivetherapy."
+  },
+  {
+    "Id": 3,
+    "ShortText": "Testing for ischemia (non-invasive functional imaging preferred).",
+    "LongText": "Choice of the test based on clinical likelihood, patient characteristics and preference, availability, as well as local expertise. Anatomical non-invasive evaluation, by visualizing the coronary arterylumen and wall using an intravenous contrast agent, can be performed with coronary CTA, which provides high accuracy for the detection of obstructive coronary stenoses defined by ICA, because both tests are based on anatomy. However, stenoses estimated to be 50-90% by visual inspection are not necessarily functionally significant, i.e. they do not always induce myocardial ischaemia. Therefore, either non-invasive or invasive functional testing is recommended for further evaluation of angiographic stenosis detected by coronary CTA invasive angiography, unless a very high-grade (>90% diameter stenosis) stenosis is detected via invasive angiography. The presence or absence of non-obstructive coronary atherosclerosis on coronary CTA provides prognostic information, and can be used to guide preventive therapy."
+  },
+  {
+    "Id": 4,
+    "ShortText": "Testing for ischemia (imaging testing preferred) with consideration of invasive angiography (with iwFR/FFR).",
+    "LongText": "Choice of the test based on clinical likelihood, patient characteristics and preference, availability, as well as local expertise. Functional non-invasive tests for the diagnosis of obstructive CAD recommended urgently to visualize the coronary arteries and identify any blockages. The opening of narrowed arteries (angioplasty) can reduce the risk of a heart attack by restoring normal blood flow to the heart. Angioplasty involves the insertion of a small tube (catheter) into the artery and inflating a tiny balloon to open up the artery."
+  }
+]

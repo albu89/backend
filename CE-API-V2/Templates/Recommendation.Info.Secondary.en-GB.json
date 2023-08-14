@@ -1,0 +1,22 @@
+[
+  {
+    "Id": 1,
+    "ShortText": "No diagnostic testing mandated.",
+    "LongText": "Missing"
+  },
+  {
+    "Id": 2,
+    "ShortText": "Anatomical non-invasive evaluation (e.g., coronary CT angiography (CTA).",
+    "LongText": "Missing"
+  },
+  {
+    "Id": 3,
+    "ShortText": "Testing for ischemia (non-invasive functional imaging preferred).",
+    "LongText": "Missing"
+  },
+  {
+    "Id": 4,
+    "ShortText": "Invasive angiography (with iwFR/FFR).",
+    "LongText": "Missing"
+  }
+]

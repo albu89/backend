@@ -9,11 +9,12 @@ using CE_API_V2.UnitOfWorks.Interfaces;
 using CE_API_V2.Utility;
 using Microsoft.IdentityModel.Tokens;
 using Moq;
+using static CE_API_V2.Models.Enum.PatientDataEnums;
 
 namespace CE_API_Test.UnitTests.Services;
 
 [TestFixture]
-public class ScoreSummaryUtilityTests
+public class ScoreUtilityTests
 {
     private IScoringTemplateService _scoringTemplateService;
     private IBiomarkersTemplateService _biomarkerServiceTemplateService;
@@ -40,8 +41,8 @@ public class ScoreSummaryUtilityTests
 
     [Test]
     [TestCase("en-GB", "No diagnostic testing mandated.")]
-    [TestCase("de-DE", "DEDE")]
-    public async Task SetAdditionalScoringParams_GivenVariousLocales_ExpectedAddedMissingParameters(string locale, string expectedRecommendationSummary)
+    [TestCase("de-DE", "DEDEDE")]
+    public void SetAdditionalScoringParams_GivenVariousLocales_ExpectedAddedMissingParameters(string locale, string expectedRecommendationSummary)
     {
         //Arrange
         var scoreSummary = MockDataProvider.GetScoringResponseSummaryMock();
@@ -64,11 +65,30 @@ public class ScoreSummaryUtilityTests
     }
 
     [Test]
-    [TestCase(0.10, "<5%")]
-    [TestCase(0.301, "20%")]
-    [TestCase(0.701, "50%")]
-    [TestCase(0.751, ">75%")]
-    public async Task SetAdditionalScoringParams_GivenVariousScores_ExpectedAddedMissingParameters(double score, string expectedRiskValue)
+    [TestCase(0.711993, "<5%", ClinicalSetting.PrimaryCare, false)]
+    [TestCase(0.711994, "20%", ClinicalSetting.PrimaryCare, false)]
+    [TestCase(0.8714438, "50%", ClinicalSetting.PrimaryCare, false)]
+    [TestCase(0.9154612, ">75%", ClinicalSetting.PrimaryCare, false)]
+    [TestCase(0.1203603, "<5%", ClinicalSetting.PrimaryCare, true)] //ExpectedSecondary
+    [TestCase(0.1203604, "20%", ClinicalSetting.PrimaryCare, true)] //ExpectedSecondary
+    [TestCase(0.711993, "20%", ClinicalSetting.PrimaryCare, true)] //ExpectedSecondary
+    [TestCase(0.711994, "50%", ClinicalSetting.PrimaryCare, true)] //ExpectedSecondary
+    [TestCase(0.8714437, "50%", ClinicalSetting.PrimaryCare, true)] //ExpectedSecondary
+    [TestCase(0.8714438, ">90%", ClinicalSetting.PrimaryCare, true)] //ExpectedSecondary
+    [TestCase(0.1203603, "<5%", ClinicalSetting.SecondaryCare, false)] //ExpectedSecondary
+    [TestCase(0.12, "<5%", ClinicalSetting.SecondaryCare, false)] //ExpectedSecondary
+    [TestCase(0.1203607, "20%", ClinicalSetting.SecondaryCare, false)] //ExpectedSecondary
+    [TestCase(0.3453607, "20%", ClinicalSetting.SecondaryCare, false)] //ExpectedSecondary
+    [TestCase(0.711994, "50%", ClinicalSetting.SecondaryCare, false)] //ExpectedSecondary
+    [TestCase(0.8714437, "50%", ClinicalSetting.SecondaryCare, false)] //ExpectedSecondary
+    [TestCase(0.8714438, ">90%", ClinicalSetting.SecondaryCare, false)] //ExpectedSecondary
+    [TestCase(0.12, "<5%", ClinicalSetting.SecondaryCare, true)] //ExpectedSecondary
+    [TestCase(0.1203604, "20%", ClinicalSetting.SecondaryCare, true)] //ExpectedSecondary
+    [TestCase(0.31, "20%", ClinicalSetting.SecondaryCare, true)] //ExpectedSecondary
+    [TestCase(0.711993, "20%", ClinicalSetting.SecondaryCare, true)] //ExpectedSecondary
+    [TestCase(0.711998, "50%", ClinicalSetting.SecondaryCare, true)] //ExpectedSecondary
+    [TestCase(0.871444, ">90%", ClinicalSetting.SecondaryCare, true)] //ExpectedSecondary
+    public void SetAdditionalScoringParams_GivenVariousScoresAndClinicalSettings_ExpectedAddedMissingParameters(double score, string expectedRiskValue, ClinicalSetting clinicalSetting, bool priorCad)
     {
         //Arrange
         var scoreSummary = MockDataProvider.GetScoringResponseSummaryMock();
@@ -77,7 +97,9 @@ public class ScoreSummaryUtilityTests
         scoreSummary.RecommendationSummary = null;
         scoreSummary.Warnings = null;
         scoreSummary.classifier_score = score;
-
+        scoreSummary.Biomarkers.PriorCAD = priorCad;
+        scoreSummary.Biomarkers.ClinicalSetting = clinicalSetting;
+        
         //Act
         var result = _scoreSummaryUtility.SetAdditionalScoringParams(scoreSummary, "en-GB");
 

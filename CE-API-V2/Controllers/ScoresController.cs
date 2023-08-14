@@ -7,7 +7,9 @@ using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using System.Globalization;
 using System.Security.Claims;
+using System.Web;
 using CE_API_V2.Models.Exceptions;
+using CE_API_V2.Utility;
 using Microsoft.AspNetCore.Authorization;
 
 namespace CE_API_V2.Controllers;
@@ -21,14 +23,17 @@ public class ScoresController : ControllerBase
     private readonly IInputValidationService _inputValidationService;
     private readonly IPatientIdHashingUOW _hashingUow;
     private readonly IScoringUOW _scoringUow;
+    private readonly IUserUOW _userUow;
 
     public ScoresController(IScoringUOW scoringUow,
         IPatientIdHashingUOW patientIdUow,
-        IInputValidationService inputValidationService)
+        IInputValidationService inputValidationService,
+        IUserUOW userUow)
     {
         _hashingUow = patientIdUow;
         _scoringUow = scoringUow;
         _inputValidationService = inputValidationService;
+        _userUow = userUow;
     }
 
     [HttpGet(Name = "GetScoreList")]
@@ -40,12 +45,12 @@ public class ScoresController : ControllerBase
         IEnumerable<SimpleScore> requests;
         if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(lastname) || dateOfBirth is null)
         {
-            var userId = GetUserId();
+            var userId = UserHelper.GetUserId(User);
             requests = _scoringUow.RetrieveScoringHistoryForUser(userId);
 
             return requests is null ? BadRequest() : Ok(requests);
         }
-        var patientId = _hashingUow.HashPatientId(name, lastname, dateOfBirth.Value);
+        var patientId = _hashingUow.HashPatientId(HttpUtility.UrlDecode(name), HttpUtility.UrlDecode(lastname), dateOfBirth.Value);
 
         requests = GetScoringRequestList(patientId);
 
@@ -62,7 +67,7 @@ public class ScoresController : ControllerBase
             return BadRequest();
         }
 
-        var patientId = _hashingUow.HashPatientId(name, lastname, dateOfBirth);
+        var patientId = _hashingUow.HashPatientId(HttpUtility.UrlDecode(name), HttpUtility.UrlDecode(lastname), dateOfBirth);
         name = null;
         lastname = null;
         dateOfBirth = new DateTime();
@@ -81,7 +86,7 @@ public class ScoresController : ControllerBase
 
         CultureInfo.CurrentUICulture = userCulture;
 
-        var userId = GetUserId();
+        var userId = UserHelper.GetUserId(User);
         var scoringResponse = _scoringUow.RetrieveScoringResponse(id, userId);
 
         if (scoringResponse?.Request.PatientId != patientId)
@@ -127,13 +132,15 @@ public class ScoresController : ControllerBase
         }
 
         CultureInfo.CurrentUICulture = userCulture;
-        var validationResult = _inputValidationService.ScoringRequestIsValid(value);
+        
+        var userId = UserHelper.GetUserId(User);
+        var currentUser = _userUow.GetUser(userId);
+        var validationResult = _inputValidationService.ScoringRequestIsValid(value, currentUser);
         if (!validationResult.IsValid)
         {
             throw new BiomarkersValidationException("Scoringrequest was not valid.", validationResult.Errors, userCulture);
         }
 
-        var userId = GetUserId();
 
 
         var requestedScore = await _scoringUow.ProcessScoringRequest(value, userId, patientId);
@@ -145,14 +152,7 @@ public class ScoresController : ControllerBase
 
     private IEnumerable<SimpleScore> GetScoringRequestList(string patientId)
     {
-        var userId = GetUserId();
+        var userId = UserHelper.GetUserId(User);
         return _scoringUow.RetrieveScoringHistoryForPatient(patientId, userId);
-    }
-
-    private string GetUserId()
-    {
-        var userId = User?.Claims?.Any() == true ? User.FindFirstValue(ClaimTypes.NameIdentifier) : "anonymous";
-        userId ??= "anonymous";
-        return userId;
     }
 }

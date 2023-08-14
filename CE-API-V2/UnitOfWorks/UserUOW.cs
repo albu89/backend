@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using CE_API_V2.Data.Repositories.Interfaces;
+﻿using CE_API_V2.Data.Repositories.Interfaces;
 using CE_API_V2.Data;
 using CE_API_V2.Data.Repositories;
 using CE_API_V2.Models;

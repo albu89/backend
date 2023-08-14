@@ -2,12 +2,32 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "DotNetAutoAttach",
+            "type": "DotNetWatch",
             "request": "launch",
             "name": ".NET Core Watch",
             "args": [],
             "env": {
                 "ASPNETCORE_ENVIRONMENT": "Development"
+            },
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "\\bNow listening on:\\s+(https?://\\S+)",
+                "uriFormat": "%s/swagger"
+            },
+        },
+        {
+            "type": "DotNetWatch",
+            "request": "launch",
+            "name": ".NET Core Watch",
+            "project": "${workspaceFolder}/CE-API-V2/CE-API-V2.csproj",
+            "args": [],
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            },
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "\\bNow listening on:\\s+(https?://\\S+)",
+                "uriFormat": "%s/swagger"
             },
         },
         {

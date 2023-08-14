@@ -1,0 +1,26 @@
+[
+  {
+    "Id": 1,
+    "LowerLimit": "0",
+    "UpperLimit": "0.1203604",
+    "RiskValue": "<5%"
+  },
+  {
+    "Id": 2,
+    "LowerLimit": "0.1203604",
+    "UpperLimit": "0.711994",
+    "RiskValue": "20%"
+  },
+  {
+    "Id": 3,
+    "LowerLimit": "0.711994",
+    "UpperLimit": "0.8714438",
+    "RiskValue": "50%"
+  },
+  {
+    "Id": 4,
+    "LowerLimit": "0.8714438",
+    "UpperLimit": "1.00",
+    "RiskValue": ">90%"
+  }
+]

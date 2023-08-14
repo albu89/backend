@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Security.Claims;
+using AutoMapper;
 using CE_API_V2.Models;
 using CE_API_V2.Models.DTO;
 using CE_API_V2.Models.Enum;
@@ -22,5 +23,13 @@ public class UserHelper
         userModel.TenantID = userInformation.TenantId;
 
         return userModel;
+    }
+    
+    
+    public static string GetUserId(ClaimsPrincipal user)
+    {
+        var userId = user?.Claims?.Any() == true ? user.FindFirstValue(ClaimTypes.NameIdentifier) : "anonymous";
+        userId ??= "anonymous";
+        return userId;
     }
 }

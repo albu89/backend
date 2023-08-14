@@ -1,6 +1,8 @@
-﻿using CE_API_V2.Models.DTO;
+﻿using CE_API_V2.Models;
+using CE_API_V2.Models.DTO;
 using CE_API_V2.Services.Interfaces;
 using CE_API_V2.Validators;
+using FluentValidation;
 using FluentValidation.Results;
 
 namespace CE_API_V2.Services
@@ -13,9 +15,11 @@ namespace CE_API_V2.Services
         {
             _scoringRequestValidator = scoringRequestValidator;
         }
-        public ValidationResult ScoringRequestIsValid(ScoringRequest request)
+        public ValidationResult ScoringRequestIsValid(ScoringRequest request, UserModel currentUser)
         {
-            return _scoringRequestValidator.Validate(request);
+            var ctx = new ValidationContext<ScoringRequest>(request);
+            ctx.RootContextData.Add("currentUser", currentUser);
+            return _scoringRequestValidator.Validate(ctx);
         }
         public bool ValidateUser(CreateUser user)
         {

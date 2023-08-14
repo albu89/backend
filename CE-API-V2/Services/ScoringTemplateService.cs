@@ -4,6 +4,7 @@ using CE_API_V2.Constants;
 using CE_API_V2.Models.DTO;
 using CE_API_V2.Services.Interfaces;
 using CE_API_V2.UnitOfWorks.Interfaces;
+using CE_API_V2.Utility;
 
 namespace CE_API_V2.Services;
 
@@ -31,7 +32,10 @@ public class ScoringTemplateService : IScoringTemplateService
         var json = await reader.ReadToEndAsync();
 
         var deserializedSchema = JsonSerializer.Deserialize<ScoringSchema>(json);
-        var categories = _scoreSummaryUtility.GetCategories(locale);
+        var primaryCategories = _scoreSummaryUtility.GetCategories(locale, ScoreSummaryUtility.PrevalenceClass.Primary);
+        var categories = primaryCategories.ToList();
+        var secondaryCategories = _scoreSummaryUtility.GetCategories(locale, ScoreSummaryUtility.PrevalenceClass.Secondary);
+        categories.AddRange(secondaryCategories);
         var biomarkers = await _biomarkersTemplateService.GetTemplate(locale);
         biomarkers = _userUow.OrderTemplate(biomarkers, userId);
 

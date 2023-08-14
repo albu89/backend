@@ -1,3 +1,4 @@
 ﻿{
-  "ErrorUnitDoesNotExist": "the given unit type does not exist."
+  "ErrorUnitDoesNotExist": "The given unit type does not exist.",
+  "EcgNoWhenPriorCadOrSecondaryCare": "Value 'No' is not allowed for 'q_wave' when PriorCAD is true or prevalence is set to Secondary Care."
 }

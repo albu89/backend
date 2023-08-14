@@ -20,7 +20,7 @@ public class BiomarkerValueJsonConverter<T> : JsonConverter<BiomarkerValue<T>> w
             var descriptionName = property.CustomAttributes.FirstOrDefault(x => x.AttributeType == typeof(DescriptionAttribute))?.ConstructorArguments.FirstOrDefault().ToString();
             if (!string.IsNullOrEmpty(descriptionName))
             {
-                data = data.Replace(descriptionName.ToLower(), $"\"{property.Name.ToLower()}\"");
+                data = data.Replace(descriptionName, $"\"{property.Name}\"");
             }
         }
         
