@@ -8,7 +8,11 @@ public interface IScoringUOW
     IGenericRepository<ScoringRequestModel> ScoringRequestRepository { get; }
     
     IGenericRepository<ScoringResponseModel> ScoringResponseRepository { get; }
-    
+
+    public IGenericRepository<Biomarkers> BiomarkersRepository { get; }
+
+    public Biomarkers StoreBiomarkers(Guid scoringRequestId, Biomarkers biomarkers);
+
     ScoringRequestModel StoreScoringRequest(ScoringRequestModel scoringRequestModel, string UserId);
     
     ScoringRequestModel RetrieveScoringRequest(Guid ScoringRequestId, string userId);
@@ -21,7 +25,7 @@ public interface IScoringUOW
     
     ScoringResponseModel RetrieveScoringResponse(Guid ScoringRequestId, string UserId);
     
-    Task<ScoringResponseModel> ProcessScoringRequest(ScoringRequest scoringRequestModel, string userId, string patientId);
+    Task<ScoringResponse> ProcessScoringRequest(ScoringRequest scoringRequestModel, string userId, string patientId, Guid? existingScoringRequest = null);
     
-    ScoringResponse GetScoreSummary(ScoringResponseModel recentScore);
+    ScoringResponse GetScoreSummary(ScoringResponseModel recentScore, Biomarkers biomarkers);
 }

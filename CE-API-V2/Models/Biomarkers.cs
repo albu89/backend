@@ -10,6 +10,9 @@ public class Biomarkers
     [JsonIgnore]
     public ScoringRequestModel Request { get; set; }
     public Guid RequestId { get; set; }
+    
+    [JsonIgnore]
+    public ScoringResponseModel Response { get; set; }
 
     public PatientDataEnums.ClinicalSetting ClinicalSetting { get; set; } // Enum
 

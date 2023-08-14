@@ -86,7 +86,6 @@ builder.Services.AddScoped<IScoreSummaryUtility, ScoreSummaryUtility>();
 
 #endregion
 
-
 #region Localization
 builder.Services.AddLocalization();
 builder.Services.AddSingleton<IStringLocalizerFactory, JsonStringLocalizerFactory>();

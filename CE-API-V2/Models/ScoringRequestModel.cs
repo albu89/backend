@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using CE_API_V2.Models.DTO;
 namespace CE_API_V2.Models;
 
 public class ScoringRequestModel
@@ -6,8 +7,17 @@ public class ScoringRequestModel
     [Key]
     public Guid Id { get; set; }
     public string UserId { get; set; }
+    public UserModel User { get; set; }
     public string PatientId { get; set; }
-    public virtual Biomarkers? Biomarkers { get; set; }
+    public virtual IEnumerable<Biomarkers>? Biomarkers { get; set; } = new List<Biomarkers>();
+    public virtual Biomarkers? LatestBiomarkers => Biomarkers?.MaxBy(t => t.CreatedOn) ?? null;
+    public virtual IEnumerable<ScoringResponseModel>? Responses { get; set; } = new List<ScoringResponseModel>();
+    public virtual ScoringResponseModel LatestResponse => LatestBiomarkers?.Response;
     public DateTimeOffset CreatedOn { get; }
-    public virtual ScoringResponseModel? Response { get; set; }
+    public void AddBiomarkers(Biomarkers biomarkers)
+    {
+        if (Biomarkers.Any(b => b.Id == biomarkers.Id))
+            return;
+        Biomarkers = Biomarkers?.Append(biomarkers).ToList();
+    }
 }

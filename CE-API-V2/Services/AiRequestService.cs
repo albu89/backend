@@ -24,7 +24,7 @@ public class AiRequestService : IAiRequestService
         if (scoringRequestModel is null)
             return null;
 
-        var patientDataToAiDto = DtoConverter.ConvertToAiDto(scoringRequestModel.Biomarkers);
+        var patientDataToAiDto = DtoConverter.ConvertToAiDto(scoringRequestModel.Biomarkers.OrderByDescending(t => t.CreatedOn).FirstOrDefault());
         var response = await GetScoreAsync(patientDataToAiDto);
 
         return response;

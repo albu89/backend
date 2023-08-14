@@ -52,7 +52,7 @@ namespace CE_API_Test.UnitTests.UnitsOfWork
             var sut = new ValueConversionUOW(_mapper, _templateService);
 
             //Act
-            var result = sut.ConvertToScoringRequest(scoringRequestDto, userId, patientId);
+            var (result, _) = sut.ConvertToScoringRequest(scoringRequestDto, userId, patientId);
 
             //Assert
             result.Should().NotBeNull();
@@ -93,25 +93,26 @@ namespace CE_API_Test.UnitTests.UnitsOfWork
          
             //Act
             await sut.ConvertToSiValues(scoringRequestDto);
-            var result = sut.ConvertToScoringRequest(scoringRequestDto, userId, patientId);
+            var (result, biomarkers) = sut.ConvertToScoringRequest(scoringRequestDto, userId, patientId);
+            result.AddBiomarkers(biomarkers);
 
             //Assert
             result.Should().NotBeNull();
             result.Should().BeOfType(typeof(ScoringRequestModel));
             
             // conversion-factor = 10; 10 * 5.0f = 50f
-            result.Biomarkers.Protein.Should().Be(50f);
+            result.LatestBiomarkers.Protein.Should().Be(50f);
             result.PatientId.Should().Be(patientId);
             result.UserId.Should().Be(userId);
             
             // conversion-factor = 1; 1 * 58f = 58f
-            result.Biomarkers.Alat.Should().Be(58f);
+            result.LatestBiomarkers.Alat.Should().Be(58f);
             
             // conversion-factor = 1; 1 * 50 = 50
-            result.Biomarkers.Weight.Should().Be(50);
+            result.LatestBiomarkers.Weight.Should().Be(50);
             
             // conversion-factor = 58.823; 58.823 * 150f = 8,823.45f
-            result.Biomarkers.Uricacid.Should().Be(8_823.45f);
+            result.LatestBiomarkers.Uricacid.Should().Be(8_823.45f);
         }
     }
 }

@@ -10,17 +10,14 @@ namespace CE_API_V2.Models.Mapping
         public MappingProfile()
         {
             CreateMap<ScoringRequestModel, SimpleScore>()
-                .ForMember(dest => dest.Score, opt => opt.MapFrom(src => src.Response.classifier_score))
+                .ForMember(dest => dest.Score, opt => opt.MapFrom(src => src.LatestResponse.classifier_score))
                 .ForMember(dest => dest.RequestId, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dest => dest.RequestTimeStamp, opt => opt.MapFrom(src => src.CreatedOn))
-                .ForMember(dest => dest.RiskClass, opt => opt.MapFrom(src => src.Response.classifier_class))
-                .ForMember(dest => dest.Risk, opt => opt.MapFrom(src => $">{src.Response.classifier_score}"))
+                .ForMember(dest => dest.RequestTimeStamp, opt => opt.MapFrom(src => src.LatestBiomarkers.CreatedOn))
+                .ForMember(dest => dest.RiskClass, opt => opt.MapFrom(src => src.LatestResponse.RiskClass))
+                .ForMember(dest => dest.Risk, opt => opt.MapFrom(src => src.LatestResponse.Risk))
                 ;
 
-            CreateMap<ScoringRequest, ScoringRequestModel>()
-                .ForMember(dest => dest.Id, opt => opt.MapFrom(_ => Guid.NewGuid()))
-                .ForMember(dest => dest.Biomarkers, opt => opt.MapFrom(src => src))
-                ;
+            CreateMap<ScoringRequest, ScoringRequestModel>();
 
             CreateMap<ScoringRequest, Biomarkers>()
                 .ForMember(dest => dest.Glucose, opt => opt.MapFrom(src => src.GlucoseFasting))
@@ -102,8 +99,17 @@ namespace CE_API_V2.Models.Mapping
                 .ForMember(dest => dest.InfoText, opt => opt.MapFrom(src => src.InfoText))
                 .ForMember(dest => dest.Fieldname, opt => opt.MapFrom(src => src.Fieldname));
 
+            CreateMap<ScoringResponse, ScoringResponseModel>()
+                .ForMember(dest => dest.Score, opt => opt.MapFrom(src => src.classifier_score))
+                .ForMember(dest => dest.Recommendation, opt => opt.MapFrom(src => src.RecommendationSummary))
+                .ForMember(dest => dest.RecommendationLong, opt => opt.MapFrom(src => src.RecommendationLongText))
+                .ForMember(dest => dest.Warnings, opt => opt.MapFrom(src => src.Warnings))
+                .ForMember(dest => dest.Risk, opt => opt.MapFrom(src => src.RiskValue))
+                .ForMember(dest => dest.RiskClass, opt => opt.MapFrom(src => src.RiskClass))
+                ;
+
             CreateMap<ScoringResponseModel, ScoringResponse>()
-                .ForMember(dest => dest.Biomarkers, opt => opt.MapFrom(src => src.Request.Biomarkers))
+                .ForMember(dest => dest.Biomarkers, opt => opt.MapFrom(src => src.Request.LatestBiomarkers))
                 .ForMember(dest => dest.RiskValue, opt => opt.Ignore())
                 .ForMember(dest => dest.Warnings, opt => opt.Ignore())
                 .ForMember(dest => dest.RecommendationSummary, opt => opt.Ignore())

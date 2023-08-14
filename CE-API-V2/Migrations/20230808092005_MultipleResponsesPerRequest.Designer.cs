@@ -4,6 +4,7 @@ using CE_API_V2.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CE_API_V2.Migrations
 {
     [DbContext(typeof(CEContext))]
-    partial class CEContextModelSnapshot : ModelSnapshot
+    [Migration("20230808092005_MultipleResponsesPerRequest")]
+    partial class MultipleResponsesPerRequest
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -285,23 +288,8 @@ namespace CE_API_V2.Migrations
                         .HasColumnType("datetimeoffset")
                         .HasDefaultValueSql("getdate()");
 
-                    b.Property<string>("Recommendation")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("RecommendationLong")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<Guid>("RequestId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Risk")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("RiskClass")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Score")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("classifier_class")
                         .HasColumnType("int");

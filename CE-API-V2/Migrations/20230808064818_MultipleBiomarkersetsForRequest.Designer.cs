@@ -4,6 +4,7 @@ using CE_API_V2.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CE_API_V2.Migrations
 {
     [DbContext(typeof(CEContext))]
-    partial class CEContextModelSnapshot : ModelSnapshot
+    [Migration("20230808064818_MultipleBiomarkersetsForRequest")]
+    partial class MultipleBiomarkersetsForRequest
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -277,31 +280,13 @@ namespace CE_API_V2.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("BiomarkersId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTimeOffset>("CreatedOn")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetimeoffset")
                         .HasDefaultValueSql("getdate()");
 
-                    b.Property<string>("Recommendation")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("RecommendationLong")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<Guid>("RequestId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Risk")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("RiskClass")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Score")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("classifier_class")
                         .HasColumnType("int");
@@ -314,11 +299,8 @@ namespace CE_API_V2.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BiomarkersId")
-                        .IsUnique()
-                        .HasFilter("[BiomarkersId] IS NOT NULL");
-
-                    b.HasIndex("RequestId");
+                    b.HasIndex("RequestId")
+                        .IsUnique();
 
                     b.ToTable("ScoringResponses", (string)null);
                 });
@@ -448,33 +430,20 @@ namespace CE_API_V2.Migrations
 
             modelBuilder.Entity("CE_API_V2.Models.ScoringResponseModel", b =>
                 {
-                    b.HasOne("CE_API_V2.Models.Biomarkers", "Biomarkers")
-                        .WithOne("Response")
-                        .HasForeignKey("CE_API_V2.Models.ScoringResponseModel", "BiomarkersId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
                     b.HasOne("CE_API_V2.Models.ScoringRequestModel", "Request")
-                        .WithMany("Responses")
-                        .HasForeignKey("RequestId")
+                        .WithOne("Response")
+                        .HasForeignKey("CE_API_V2.Models.ScoringResponseModel", "RequestId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Biomarkers");
-
                     b.Navigation("Request");
-                });
-
-            modelBuilder.Entity("CE_API_V2.Models.Biomarkers", b =>
-                {
-                    b.Navigation("Response")
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("CE_API_V2.Models.ScoringRequestModel", b =>
                 {
                     b.Navigation("Biomarkers");
 
-                    b.Navigation("Responses");
+                    b.Navigation("Response");
                 });
 
             modelBuilder.Entity("CE_API_V2.Models.UserModel", b =>

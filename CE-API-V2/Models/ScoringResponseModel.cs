@@ -1,4 +1,6 @@
-﻿    using System.Text.Json.Serialization;
+﻿    using System.ComponentModel.DataAnnotations.Schema;
+    using System.Text.Json.Serialization;
+    using CE_API_V2.Models.DTO;
     namespace CE_API_V2.Models
 {
     /// <summary>
@@ -12,6 +14,20 @@
         public double? classifier_score { get; set; }
         public int? classifier_sign { get; set; }
         public DateTimeOffset CreatedOn { get; }
+        
+        public string? Score { get; set; }
+        public string? Risk { get; set; }
+        public int? RiskClass { get; set; }
+        public string? Recommendation { get; set; }
+        public string? RecommendationLong { get; set; }
+        [NotMapped]
+        public string[]? Warnings { get; set; }
+
+
+
+        [JsonIgnore]
+        public virtual Biomarkers Biomarkers { get; set; }
+        public Guid? BiomarkersId { get; set; }
         
         [JsonIgnore]
         public ScoringRequestModel Request { get; set; }

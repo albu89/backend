@@ -23,19 +23,33 @@ namespace CE_API_V2.Data
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<Biomarkers>()
                 .HasOne(b => b.Request)
-                .WithOne(r => r.Biomarkers)
-                .HasForeignKey<Biomarkers>(b => b.RequestId)
-                ;
+                .WithMany(r => r.Biomarkers)
+                .HasForeignKey(b => b.RequestId);
+
             modelBuilder.Entity<Biomarkers>()
                 .Property(r => r.CreatedOn)
                 .HasDefaultValueSql("getdate()");
 
+            
+            modelBuilder.Entity<ScoringResponseModel>()
+                .ToTable("ScoringResponses")
+                .HasOne(b => b.Biomarkers)
+                .WithOne(b => b.Response)
+                .HasForeignKey<ScoringResponseModel>(r => r.BiomarkersId)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.NoAction);
+            
             modelBuilder.Entity<ScoringResponseModel>()
                 .ToTable("ScoringResponses")
                 .HasOne(b => b.Request)
-                .WithOne(r => r.Response)
-                .HasForeignKey<ScoringResponseModel>(r => r.RequestId)
-                ;
+                .WithMany(b => b.Responses)
+                .HasForeignKey(r => r.RequestId);
+
+            modelBuilder.Entity<ScoringRequestModel>()
+                .HasOne(b => b.User)
+                .WithMany(r => r.ScoringRequestModels)
+                .HasForeignKey(r => r.UserId);
+
             modelBuilder.Entity<ScoringResponseModel>()
                 .Property(r => r.CreatedOn)
                 .HasDefaultValueSql("getdate()");

@@ -88,65 +88,69 @@ namespace CE_API_Test.TestUtilities
                 Biomarkers = GetFakeBiomarkers()
             };
         }
-        private static Biomarkers GetFakeBiomarkers()
+        private static IEnumerable<Biomarkers> GetFakeBiomarkers()
         {
-            return new Biomarkers
+            var biomarkerList = new List<Biomarkers>
             {
-                Age = 25,
-                AgeUnit = "SI",
-                Alat = 213,
-                AlatUnit = "SI",
-                Albumin = 123,
-                AlbuminUnit = "SI",
-                Bilirubin = 123,
-                BilirubinUnit = "SI",
-                Cholesterol = 123,
-                CholesterolUnit = "SI",
-                Diabetes = DiabetesStatus.Iddm,
-                Qwave = RestingEcg.Screening,
-                Diuretic = false,
-                Hdl = 123,
-                HdlUnit = "SI",
-                Height = 176,
-                HeightUnit = "SI",
-                Ldl = 123,
-                LdlUnit = "SI",
-                Leukocyte = 123,
-                LeukocyteUnit = "SI",
-                Mchc = 123,
-                MchcUnit = "SI",
-                Sex = Sex.Male,
-                Weight = 90,
-                WeightUnit = "SI",
-                Protein = 123,
-                ProteinUnit = "SI",
-                Urea = 123,
-                UreaUnit = "SI",
-                Calciumant = false,
-                Chestpain = ChestPain.Possible,
-                Glucose = 123,
-                GlucoseUnit = "SI",
-                Amylasep = 123,
-                AmylasepUnit = "SI",
-                Uricacid = 123,
-                UricacidUnit = "SI",
-                Diastolicbp = 123,
-                DiastolicbpUnit = "SI",
-                Hstroponint = 123,
-                HstroponintUnit = "SI",
-                Systolicbp = 123,
-                SystolicbpUnit = "SI",
-                Nicotine = NicotineConsumption.StANc,
-                Statin = false,
-                Aceinhibitor = false,
-                Alkaline = 123,
-                AlkalineUnit = "SI",
-                Betablocker = false,
-                ClinicalSetting = ClinicalSetting.PrimaryCare,
-                Nitrate = false,
-                Tcagginhibitor = false,
-                PriorCAD = false
+                new Biomarkers
+                {
+                    Age = 25,
+                    AgeUnit = "SI",
+                    Alat = 213,
+                    AlatUnit = "SI",
+                    Albumin = 123,
+                    AlbuminUnit = "SI",
+                    Bilirubin = 123,
+                    BilirubinUnit = "SI",
+                    Cholesterol = 123,
+                    CholesterolUnit = "SI",
+                    Diabetes = DiabetesStatus.Iddm,
+                    Qwave = RestingEcg.Screening,
+                    Diuretic = false,
+                    Hdl = 123,
+                    HdlUnit = "SI",
+                    Height = 176,
+                    HeightUnit = "SI",
+                    Ldl = 123,
+                    LdlUnit = "SI",
+                    Leukocyte = 123,
+                    LeukocyteUnit = "SI",
+                    Mchc = 123,
+                    MchcUnit = "SI",
+                    Sex = Sex.Male,
+                    Weight = 90,
+                    WeightUnit = "SI",
+                    Protein = 123,
+                    ProteinUnit = "SI",
+                    Urea = 123,
+                    UreaUnit = "SI",
+                    Calciumant = false,
+                    Chestpain = ChestPain.Possible,
+                    Glucose = 123,
+                    GlucoseUnit = "SI",
+                    Amylasep = 123,
+                    AmylasepUnit = "SI",
+                    Uricacid = 123,
+                    UricacidUnit = "SI",
+                    Diastolicbp = 123,
+                    DiastolicbpUnit = "SI",
+                    Hstroponint = 123,
+                    HstroponintUnit = "SI",
+                    Systolicbp = 123,
+                    SystolicbpUnit = "SI",
+                    Nicotine = NicotineConsumption.StANc,
+                    Statin = false,
+                    Aceinhibitor = false,
+                    Alkaline = 123,
+                    AlkalineUnit = "SI",
+                    Betablocker = false,
+                    ClinicalSetting = ClinicalSetting.PrimaryCare,
+                    Nitrate = false,
+                    Tcagginhibitor = false,
+                    PriorCAD = false
+                }
             };
+            return biomarkerList;
         }
 
         internal static string GetMockedSerializedResponse()
@@ -202,16 +206,16 @@ namespace CE_API_Test.TestUtilities
             return mockedAiDto;
         }
 
-        public static List<Biomarkers> GetFakeBiomarkersList()
+        public static List<IEnumerable<Biomarkers>> GetFakeBiomarkersList()
         {
-            var biomarkersList = new List<Biomarkers>
+            var biomarkersList = new List<IEnumerable<Biomarkers>>
             {
                 GetFakeBiomarkers(),
                 GetFakeBiomarkers(),
                 GetFakeBiomarkers(),
                 GetFakeBiomarkers()
             };
-            foreach (var biomarkers in biomarkersList)
+            foreach (var biomarkers in biomarkersList.FirstOrDefault())
             {
                 biomarkers.Id = Guid.NewGuid();
             }
@@ -463,7 +467,7 @@ namespace CE_API_Test.TestUtilities
                 Warnings = Array.Empty<string>(),
                 RecommendationSummary = "RecommendationSummary",
                 RecommendationLongText = "RecommendationLongText",
-                Biomarkers = GetFakeBiomarkers()
+                Biomarkers = GetFakeBiomarkers().FirstOrDefault()
             };
         }
 

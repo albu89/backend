@@ -5,7 +5,7 @@ namespace CE_API_V2.UnitOfWorks;
 
 public interface IValueConversionUOW
 {
-    public ScoringRequestModel ConvertToScoringRequest(ScoringRequest scoringRequest, string userId, string patientId);
+    public (ScoringRequestModel, Biomarkers) ConvertToScoringRequest(ScoringRequest scoringRequest, string userId, string patientId);
     
     public Task<ScoringRequest> ConvertToSiValues(ScoringRequest scoringRequest);
 }

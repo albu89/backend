@@ -21,7 +21,7 @@ pipelines:
                 - REPORTS_PATH=./test-reports/build_${BITBUCKET_BUILD_NUMBER}
                 - dotnet restore ${SOLUTION_PATH}
                 - dotnet build --no-restore --configuration Release ${SOLUTION_PATH}
-                - dotnet test --no-build --configuration Release ${SOLUTION_PATH}
+                - dotnet test --no-build --configuration Release ${SOLUTION_PATH} -v:n
           - step:
               name: Lint the code
               caches:

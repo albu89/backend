@@ -14,4 +14,5 @@ public class ScoringResponse
     public string? RecommendationLongText { get; set; }
     public ScoreSummaryUtility.PrevalenceClass Prevalence { get; set; }
     public Biomarkers? Biomarkers { get; set; }
+    public bool CanEdit { get; set; }
 }

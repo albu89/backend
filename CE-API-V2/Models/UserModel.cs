@@ -36,5 +36,6 @@ namespace CE_API_V2.Models
         public string UnitLabValues { get; set; } //Todo FK checken
         //public string BioMarkerOrder { get; set; } // Todo - ist das hier auch benötigt? 
         public PatientDataEnums.ClinicalSetting ClinicalSetting { get; set; }
+        public IEnumerable<ScoringRequestModel> ScoringRequestModels { get; set; }
     }
 }

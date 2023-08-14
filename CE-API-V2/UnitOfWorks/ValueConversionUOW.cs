@@ -19,13 +19,14 @@ namespace CE_API_V2.UnitOfWorks
             _templateService = templateService;
         }
 
-        public ScoringRequestModel ConvertToScoringRequest(ScoringRequest scoringRequest, string userId, string patientId)
+        public (ScoringRequestModel, Biomarkers) ConvertToScoringRequest(ScoringRequest scoringRequest, string userId, string patientId)
         {
             var requestModel = _mapper.Map<ScoringRequestModel>(scoringRequest);
+            var biomarkers = _mapper.Map<Biomarkers>(scoringRequest);
             requestModel.UserId = userId;
             requestModel.PatientId = patientId;
 
-            return requestModel;
+            return (requestModel, biomarkers);
         }
 
         /// <summary>

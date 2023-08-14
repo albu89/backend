@@ -24,7 +24,7 @@ namespace CE_API_Test.UnitTests.Services
             //Arrange
 
             //Act
-            var convertedObject = DtoConverter.ConvertToAiDto(_scoringRequestModel.Biomarkers);
+            var convertedObject = DtoConverter.ConvertToAiDto(_scoringRequestModel.LatestBiomarkers);
 
             //Assert
             convertedObject.Should().NotBeNull();

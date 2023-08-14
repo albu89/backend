@@ -20,6 +20,7 @@ public class ScoringUnitOfWorkTests
     private IMapper _mapper;
     private IAiRequestService _requestService;
     private IScoreSummaryUtility _scoreSummaryUtility;
+    private IValueConversionUOW _valueConversionUow;
     private string _userId = "TestUserId";
     private string _patientId = "TestPatientId";
 
@@ -38,14 +39,32 @@ public class ScoringUnitOfWorkTests
         _mapper = mapperConfig.CreateMapper();
 
         _scoreSummaryUtility = new ScoreSummaryUtility(_mapper);
-        var mockedScoringRequest = MockDataProvider.GetMockedScoringRequest();
         _requestService = MockServiceProvider.GenerateAiRequestService();
         _ceContext = new CEContext(options);
         var valueConversionUow = new Mock<IValueConversionUOW>();
         valueConversionUow
                 .Setup(x => x.ConvertToScoringRequest(It.IsAny<ScoringRequest>(), It.IsAny<string>(),
-                    It.IsAny<string>())).Returns(mockedScoringRequest);
-        _scoringUow = new ScoringUOW(_ceContext, _requestService, _mapper, valueConversionUow.Object, _scoreSummaryUtility);
+                    It.IsAny<string>())).Returns(() =>
+                {
+                    var mockedScoringRequest = MockDataProvider.GetMockedScoringRequest();
+                    var markers = mockedScoringRequest.LatestBiomarkers;
+                    mockedScoringRequest.Biomarkers = new List<Biomarkers>();
+                    return (mockedScoringRequest, markers);
+                } );
+
+        valueConversionUow.Setup(x => x.ConvertToSiValues(It.IsAny<ScoringRequest>())).Returns(() => Task.FromResult(MockDataProvider.GetMockedScoringRequestDto()));
+
+        _valueConversionUow = valueConversionUow.Object;
+    }
+
+    [SetUp]
+    public void Setup()
+    {
+        var options = new DbContextOptionsBuilder<CEContext>()
+            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+            .Options;
+        _ceContext = new CEContext(options);
+        _scoringUow = new ScoringUOW(_ceContext, _requestService, _mapper, _valueConversionUow, _scoreSummaryUtility);
     }
 
     [Test]
@@ -95,9 +114,9 @@ public class ScoringUnitOfWorkTests
         resFromDb.Should().NotBeNull();
         resFromDb.PatientId.Should().Be(request.PatientId);
         resFromDb.UserId.Should().Be(request.UserId);
-        resFromDb.Biomarkers.Should().Be(request.Biomarkers);
+        resFromDb.LatestBiomarkers.Should().Be(request.LatestBiomarkers);
         resFromDb.Id.Should().Be(request.Id);
-        resFromDb.Response.Should().Be(request.Response);
+        resFromDb.LatestResponse.Should().Be(request.LatestResponse);
     }
 
     [Test]
@@ -131,9 +150,9 @@ public class ScoringUnitOfWorkTests
         firstResFromDbByGuid.Should().NotBeNull();
         firstResFromDbByGuid.PatientId.Should().Be(request.PatientId);
         firstResFromDbByGuid.UserId.Should().Be(request.UserId);
-        firstResFromDbByGuid.Biomarkers.Should().Be(request.Biomarkers);
+        firstResFromDbByGuid.LatestBiomarkers.Should().Be(request.LatestBiomarkers);
         firstResFromDbByGuid.Id.Should().Be(request.Id);
-        firstResFromDbByGuid.Response.Should().Be(request.Response);
+        firstResFromDbByGuid.LatestResponse.Should().Be(request.LatestResponse);
     }
 
     [Test]
@@ -143,12 +162,16 @@ public class ScoringUnitOfWorkTests
         var testPatientId = "testpatientid";
 
         var request = MockDataProvider.GetMockedScoringRequest(_userId, testPatientId);
+        request.Biomarkers = null;
         _scoringUow.StoreScoringRequest(request, _userId);
         var request2 = MockDataProvider.GetMockedScoringRequest(_userId, "differentPatientId");
+        request2.Biomarkers = null;
         _scoringUow.StoreScoringRequest(request2, "differentPatientId");
         var request3 = MockDataProvider.GetMockedScoringRequest("differentUserId", testPatientId);
+        request3.Biomarkers = null;
         _scoringUow.StoreScoringRequest(request3, "differentUserId");
         var request4 = MockDataProvider.GetMockedScoringRequest(_userId, testPatientId);
+        request4.Biomarkers = null;
         _scoringUow.StoreScoringRequest(request4, _userId);
 
         //Act
@@ -167,9 +190,9 @@ public class ScoringUnitOfWorkTests
         firstResFromDbByGuid.Should().NotBeNull();
         firstResFromDbByGuid.PatientId.Should().Be(request.PatientId);
         firstResFromDbByGuid.UserId.Should().Be(request.UserId);
-        firstResFromDbByGuid.Biomarkers.Should().Be(request.Biomarkers);
+        firstResFromDbByGuid.LatestBiomarkers.Should().Be(request.LatestBiomarkers);
         firstResFromDbByGuid.Id.Should().Be(request.Id);
-        firstResFromDbByGuid.Response.Should().Be(request.Response);
+        firstResFromDbByGuid.LatestResponse.Should().Be(request.LatestResponse);
     }
 
     [Test]
@@ -183,9 +206,27 @@ public class ScoringUnitOfWorkTests
 
         //Assert
         result.Should().NotBeNull();
-        result.Should().BeOfType<ScoringResponseModel>();
+        result.Should().BeOfType<ScoringResponse>();
         result.classifier_score.Should().NotBeNull();
         result.classifier_sign.Should().NotBeNull();
+    }
+    
+    [Test]
+    public async Task ProcessScoringRequest_ExpectNewScoreWhenCorrecting()
+    {
+        //Arrange
+        var request = MockDataProvider.GetMockedScoringRequestDto();
+
+        //Act
+        var result = await _scoringUow.ProcessScoringRequest(request, _patientId, _userId);
+        request.prior_CAD.Value = true;
+        var newResult = await _scoringUow.ProcessScoringRequest(request, _userId, _patientId, result.RequestId);
+        
+        //Assert
+        newResult.Should().NotBeNull();
+        newResult.Should().BeOfType<ScoringResponse>();
+        newResult.classifier_score.Should().NotBeNull();
+        newResult.classifier_sign.Should().NotBeNull();
     }
 
     [TearDown]

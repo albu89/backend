@@ -13,7 +13,6 @@ namespace CE_API_V2.Utility
             storedUser.Surname = UpdatePropertyIfChanged(updatedUser.Surname, storedUser.Surname);
             storedUser.FirstName = UpdatePropertyIfChanged(updatedUser.FirstName, storedUser.FirstName);
             storedUser.ProfessionalSpecialisation = UpdatePropertyIfChanged(updatedUser.ProfessionalSpecialisation, storedUser.ProfessionalSpecialisation);
-            storedUser.Department = UpdatePropertyIfChanged(updatedUser.Department, storedUser.Department);
             storedUser.PreferredLab = UpdatePropertyIfChanged(updatedUser.PreferredLab, storedUser.PreferredLab);
             storedUser.Address = UpdatePropertyIfChanged(updatedUser.Address, storedUser.Address);
             storedUser.City = UpdatePropertyIfChanged(updatedUser.City, storedUser.City);

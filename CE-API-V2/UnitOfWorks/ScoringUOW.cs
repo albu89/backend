@@ -21,6 +21,7 @@ namespace CE_API_V2.UnitOfWorks
     
         private IGenericRepository<ScoringRequestModel> _scoringRequestRepository;
         private IGenericRepository<ScoringResponseModel> _scoringResponseRepository;
+        private IGenericRepository<Biomarkers> _biomarkersRepository;
     
         public ScoringUOW(CEContext context,
             IAiRequestService requestService,
@@ -55,6 +56,33 @@ namespace CE_API_V2.UnitOfWorks
     
                 return _scoringResponseRepository;
             }
+        } 
+        
+        public IGenericRepository<Biomarkers> BiomarkersRepository
+        {
+            get
+            {
+                if (_biomarkersRepository == null)
+                    _biomarkersRepository = new GenericRepository<Biomarkers>(_context);
+    
+                return _biomarkersRepository;
+            }
+        }
+
+        public Biomarkers StoreBiomarkers(Guid scoringRequestId, Biomarkers biomarkers)
+        {
+            try
+            {
+                biomarkers.RequestId = scoringRequestId;
+                BiomarkersRepository.Insert(biomarkers);
+                _context.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                System.Console.WriteLine(e);
+                throw new NotImplementedException(e.Message);
+            }
+            return biomarkers;
         }
     
         public ScoringRequestModel StoreScoringRequest(ScoringRequestModel scoringRequestModel, string UserId)
@@ -74,9 +102,9 @@ namespace CE_API_V2.UnitOfWorks
             return scoringRequestModel;
         }
     
-        public ScoringRequestModel RetrieveScoringRequest(Guid ScoringRequestId, string userId)
+        public ScoringRequestModel RetrieveScoringRequest(Guid scoringRequestId, string userId)
         {
-            var scoringRequest = ScoringRequestRepository.GetByGuid(ScoringRequestId);
+            var scoringRequest = ScoringRequestRepository.Get(x => x.Id == scoringRequestId, null, "Biomarkers.Response").SingleOrDefault();
     
             if (scoringRequest is null || !scoringRequest.UserId.Equals(userId))
             {
@@ -106,7 +134,7 @@ namespace CE_API_V2.UnitOfWorks
             
             try
             {
-                var scoringRequests = ScoringRequestRepository.Get(x => x.UserId == UserId, null, "Response");
+                var scoringRequests = ScoringRequestRepository.Get(x => x.UserId == UserId, null, "Responses,Biomarkers");
                 scoringHistory = _mapper.Map<List<SimpleScore>>(scoringRequests);
             }
             catch (Exception e)
@@ -125,7 +153,7 @@ namespace CE_API_V2.UnitOfWorks
             try
             {
                 var scoringRequests = ScoringRequestRepository.Get(x => x.UserId.Equals(UserId) &&
-                                                                             x.PatientId.Equals(PatientId), null, "Response").ToList();
+                                                                             x.PatientId.Equals(PatientId), null, "Responses,Biomarkers").ToList();
                 scoringHistory = _mapper.Map<List<SimpleScore>>(scoringRequests);
             }
             catch (Exception e)
@@ -141,7 +169,7 @@ namespace CE_API_V2.UnitOfWorks
             try
             {
                 scoringResponse = ScoringResponseRepository.Get(x => x.Request.UserId.Equals(userId) &&
-                    x.RequestId.Equals(scoringRequestId), null, "Request,Request.Biomarkers").FirstOrDefault() ?? null;
+                    x.RequestId.Equals(scoringRequestId), null, "Request,Request.Biomarkers").MaxBy(x => x.CreatedOn) ?? null;
             }
             catch (Exception e)
             {
@@ -151,32 +179,49 @@ namespace CE_API_V2.UnitOfWorks
             return scoringResponse;
         }
     
-        public async Task<ScoringResponseModel> ProcessScoringRequest(ScoringRequest value, string userId, string patientId)
+        public async Task<ScoringResponse> ProcessScoringRequest(ScoringRequest value, string userId, string patientId, Guid? existingScoringRequest = null)
         {
-            var scoringRequest = _valueConversionUow.ConvertToScoringRequest(value, userId, patientId);
-            if (StoreScoringRequest(scoringRequest, userId) is null)
+            var (scoringRequest, biomarkers) = _valueConversionUow.ConvertToScoringRequest(value, userId, patientId);
+            if (existingScoringRequest is null && StoreScoringRequest(scoringRequest, userId) is null)
             {
                 return null;
             }
+            existingScoringRequest ??= scoringRequest.Id;
+            if (StoreBiomarkers(existingScoringRequest.Value, biomarkers) is null)
+            {
+                return null;
+            }
+
+            if (scoringRequest.Id == Guid.Empty)
+                scoringRequest.Id = existingScoringRequest.Value;
+
+            scoringRequest.AddBiomarkers(biomarkers);
             
             var convertedSiValue = await _valueConversionUow.ConvertToSiValues(value);
 
-            var convertedSiScoringRequest = _valueConversionUow.ConvertToScoringRequest(convertedSiValue, userId, patientId);
+            var (convertedSiScoringRequest, convertedBiomarkers) = _valueConversionUow.ConvertToScoringRequest(convertedSiValue, userId, patientId);
+            convertedSiScoringRequest.AddBiomarkers(convertedBiomarkers);
 
             var scoringResponse = await RequestScore(convertedSiScoringRequest) ?? throw new Exception();
 
-            scoringResponse.Request = scoringRequest;
             scoringResponse.RequestId = scoringRequest.Id;
-
+            scoringResponse.Biomarkers = biomarkers;
+            var fullResponse = GetScoreSummary(scoringResponse, scoringResponse.Biomarkers);
+            fullResponse.Biomarkers = biomarkers;
+            _mapper.Map(fullResponse, scoringResponse);
+            scoringResponse.BiomarkersId = scoringRequest.LatestBiomarkers.Id;
+            
             if(StoreScoringResponse(scoringResponse) is null)
             {
             }
+            scoringResponse.Request = scoringRequest;
             
-            return scoringResponse;
+            return fullResponse;
         }
-        public ScoringResponse GetScoreSummary(ScoringResponseModel recentScore)
+        public ScoringResponse GetScoreSummary(ScoringResponseModel recentScore, Biomarkers biomarkers)
         {
             var scoreSummary = _mapper.Map<ScoringResponseModel, ScoringResponse>(recentScore);
+            scoreSummary.Biomarkers = biomarkers;
             
             return _scoreSummaryUtility.SetAdditionalScoringParams(scoreSummary, CultureInfo.CurrentUICulture.Name);
         }
@@ -188,14 +233,12 @@ namespace CE_API_V2.UnitOfWorks
             bool scoreIsSucessfullyRetrieved = false;
             int retry = 0;
     
-            // TODO: Implement HttpMessageHandler for retries
             while (!scoreIsSucessfullyRetrieved && retry < 3)
             { 
                 requestedScore = await _aiRequestService.RequestScore(scoringRequest);
     
                 if (requestedScore is not null)
                 {
-                    //Todo - check if requestedScore has valid values?
                     scoreIsSucessfullyRetrieved = true;
                 }
                 else
@@ -207,7 +250,7 @@ namespace CE_API_V2.UnitOfWorks
     
             if (!scoreIsSucessfullyRetrieved)
             {
-                throw new Exception(); //Todo
+                throw new Exception();
             }
     
             return requestedScore;
