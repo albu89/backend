@@ -6,6 +6,7 @@ using CE_API_V2.UnitOfWorks.Interfaces;
 using CE_API_V2.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace CE_API_V2.Controllers
 {
@@ -18,7 +19,7 @@ namespace CE_API_V2.Controllers
         private readonly IScoringTemplateService _scoringTemplateService;
         private readonly IUserUOW _userUOW;
         private readonly IUserInformationExtractor _userInformationExtractor;
-
+        
         public SchemasController(IBiomarkersTemplateService biomarkersTemplateService, IScoringTemplateService scoringTemplateService, IUserUOW userUOW, IUserInformationExtractor userInformationExtractor)
         {
             _biomarkersTemplateService = biomarkersTemplateService;
@@ -27,6 +28,11 @@ namespace CE_API_V2.Controllers
             _userInformationExtractor = userInformationExtractor;
         }
 
+        /// <summary>
+        /// Returns a list of BiomarkerSchema objects containing all information needed to build a ScoringRequest page.
+        /// Each BiomarkerSchema contains a list of Units that the system supports for data entry.
+        /// Information is returned in the requested locale if available, otherwise in english.
+        /// </summary>
         [HttpGet("biomarkers")]
         [Produces("application/json", Type = typeof(IEnumerable<BiomarkerSchema>))]
         public async Task<IActionResult> GetInputFormTemplate(string? locale = null)
@@ -45,9 +51,12 @@ namespace CE_API_V2.Controllers
             return schema.Any() ? Ok(schema) : NotFound();
         }
 
-
+        /// <summary>
+        /// Returns a ScoreSummary, representing all fields necessary to be displayed on a ScoringResponse page.
+        /// All fields are returned in the language specified by locale if translations are available, in english otherwise.
+        /// </summary>
         [HttpGet("scoring")]
-        [Produces("application/json", Type = typeof(IEnumerable<ScoringSchema>))]
+        [Produces("application/json", Type = typeof(ScoreSummary))]
         public async Task<IActionResult> GetScoringSchema(string? locale = null)
         {
             var currentUserId = UserHelper.GetUserId(User);

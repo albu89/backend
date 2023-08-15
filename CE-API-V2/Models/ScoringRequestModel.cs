@@ -13,7 +13,7 @@ public class ScoringRequestModel
     public virtual Biomarkers? LatestBiomarkers => Biomarkers?.MaxBy(t => t.CreatedOn) ?? null;
     public virtual IEnumerable<ScoringResponseModel>? Responses { get; set; } = new List<ScoringResponseModel>();
     public virtual ScoringResponseModel LatestResponse => LatestBiomarkers?.Response;
-    public DateTimeOffset CreatedOn { get; }
+    public DateTimeOffset CreatedOn { get; init; }
     public void AddBiomarkers(Biomarkers biomarkers)
     {
         if (Biomarkers.Any(b => b.Id == biomarkers.Id))

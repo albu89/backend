@@ -29,6 +29,9 @@ namespace CE_API_Test.UnitTests.Controllers
         private IMapper _mapper;
         private IUserUOW _userUow;
 
+        private Guid OldGuid = Guid.NewGuid();
+        private Guid NewGuid = Guid.NewGuid();
+
         [SetUp]
         public void SetUp()
         {
@@ -39,7 +42,14 @@ namespace CE_API_Test.UnitTests.Controllers
 
             _mapper = mapperConfig.CreateMapper();
 
-            var configuration = new Mock<IConfiguration>();
+            var testConfig = new Dictionary<string, string?>()
+            {
+                { "EditPeriodInDays", "1" },
+            };
+
+            _configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(testConfig)
+                .Build();
             var requestServiceMock = new Mock<IAiRequestService>();
             var mockedScoringRequest = MockDataProvider.GetMockedScoringRequest();
             var valueConversionUow = new Mock<IValueConversionUOW>();
@@ -65,7 +75,6 @@ namespace CE_API_Test.UnitTests.Controllers
             hashingUowMock.Setup(x => x.HashPatientId(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>())).Returns(It.IsAny<string>);
             _patientHashingUow = hashingUowMock.Object;
             _inputValidationService = new InputValidationService(new CE_API_V2.Validators.ScoringRequestValidator());
-            _configuration = configuration.Object;
             _userUow = userUow.Object;
         }
 
@@ -119,6 +128,44 @@ namespace CE_API_Test.UnitTests.Controllers
             //Assert
             await postTask.Should().ThrowAsync<ValidationException>();
         }
+        
+        [Test]
+        public async Task PutPatientData_GivenGuidWithCreatedOnInTimeframe_ReturnOkResult()
+        {
+            //Arrange
+            var sut = new ScoresController(_scoringUow, _patientHashingUow,  _inputValidationService, _configuration, _userUow);
+            var mockedBiomarkers = MockDataProvider.CreateValidScoringRequestDto();
+
+            //Act
+            var result = await sut.PutPatientData(mockedBiomarkers, locale: null, NewGuid);
+
+            //Assert
+            result.Should().NotBeNull();
+            result.Should().BeOfType(typeof(OkObjectResult));
+
+            var okResult = result as OkObjectResult;
+            okResult?.StatusCode.Should().Be(200);
+            okResult?.Value.Should().BeOfType(typeof(ScoringResponse));
+        }
+        
+        [Test]
+        public async Task PutPatientData_GivenGuidWithCreatedOnOutsideOfTimeFrame()
+        {
+            //Arrange
+            var sut = new ScoresController(_scoringUow, _patientHashingUow,  _inputValidationService, _configuration, _userUow);
+            var mockedBiomarkers = MockDataProvider.CreateValidScoringRequestDto();
+
+            //Act
+            var result = await sut.PutPatientData(mockedBiomarkers, locale: null, OldGuid);
+
+            //Assert
+            result.Should().NotBeNull();
+            result.Should().BeOfType(typeof(BadRequestObjectResult));
+
+            var okResult = result as BadRequestObjectResult;
+            okResult?.StatusCode.Should().Be(400);
+        }
+        
 
         [Test]
         public async Task GetScoringRequest_GivenCorrespondingRequestGuid_ReturnsOkResultWithScoringSummary()
@@ -265,6 +312,12 @@ namespace CE_API_Test.UnitTests.Controllers
                 .Returns(mockedResponseTask);
 
             scoringUowMock.Setup(x => x.GetScoreSummary(It.IsAny<ScoringResponseModel>(), It.IsAny<Biomarkers>())).Returns(new ScoringResponse());
+
+            var oldMock = MockDataProvider.GetMockedScoringRequest(CreatedOn: DateTimeOffset.Now.Subtract(TimeSpan.FromDays(3)));
+            var newMock = MockDataProvider.GetMockedScoringRequest(CreatedOn: DateTimeOffset.Now.Subtract(TimeSpan.FromDays(1)));
+
+            scoringUowMock.Setup(x => x.RetrieveScoringRequest(OldGuid, It.IsAny<string>())).Returns(oldMock);
+            scoringUowMock.Setup(x => x.RetrieveScoringRequest(NewGuid, It.IsAny<string>())).Returns(newMock);
             _scoringUow = scoringUowMock.Object;
         }
     }

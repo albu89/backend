@@ -133,6 +133,9 @@ builder.Services.AddControllers(
         jsonOptions.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
         jsonOptions.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
+
+builder.Services.AddHealthChecks();
+
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(c =>
@@ -165,6 +168,9 @@ builder.Services.AddSwaggerGen(c =>
             new[] { config["ApiScope"] }
         }
     });
+    var filePath = Path.Combine(System.AppContext.BaseDirectory, "CE-API-V2.xml");
+    c.IncludeXmlComments(filePath);
+    c.EnableAnnotations();
 });
 
 builder.Services.AddHttpClient<IAiRequestService, AiRequestService>(client =>
@@ -189,6 +195,9 @@ app.UseSwaggerUI(c =>
     c.OAuthUsePkce();
     c.OAuthScopeSeparator(" ");
 });
+app.UseReDoc();
+
+app.MapHealthChecks("/health");
 
 var allowedHosts = config.GetSection("AllowedHosts").GetChildren().Select(x => x.Value).ToArray();
 

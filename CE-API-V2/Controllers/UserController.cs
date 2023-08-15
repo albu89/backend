@@ -8,12 +8,14 @@ using Azure.Communication.Email;
 using CE_API_V2.Models;
 using CE_API_V2.Utility;
 using CE_API_V2.Models.Mapping;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace CE_API_V2.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public class UserController : ControllerBase
     {
         private readonly IMapper _mapper;
@@ -37,9 +39,11 @@ namespace CE_API_V2.Controllers
             _userHelper = userHelper;
         }
 
+        /// <summary>
+        /// Returns the currently authenticated Users Userprofile
+        /// </summary>
         [HttpGet(Name = "GetCurrentUser")]
         [Produces("application/json", Type = typeof(User))]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult GetCurrentUser()
         {
@@ -53,9 +57,12 @@ namespace CE_API_V2.Controllers
             return currentUser is not null ? Ok(userDto) : NotFound();
         }
 
+        /// <summary>
+        /// Creates a new Userprofile for the currently authenticated User.
+        /// If a Userprofile exists already, it returns the current User.
+        /// </summary>
         [HttpPost(Name = "CreateCurrentUser")]
         [Produces("application/json", Type = typeof(User))]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateUser([FromBody] CreateUser user)
         {
@@ -79,9 +86,12 @@ namespace CE_API_V2.Controllers
             return storedUser is not null ? Ok(_mapper.Map<User>(storedUser)) : BadRequest();
         }
 
+        /// <summary>
+        /// Used to modify values on the currently authenticated users userprofile.
+        /// </summary>
+        /// <param name="user"></param>
         [HttpPatch(Name = "UpdateUser")]
         [Produces("application/json", Type = typeof(User))]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> UpdateCurrentUser([FromBody] CreateUser user)
         {
@@ -95,12 +105,16 @@ namespace CE_API_V2.Controllers
             return Ok(userDto);
         }
 
+        /// <summary>
+        /// Used to request access to the application by unauthenticated users. Sends a notification to Cardio Explorer Administrators.
+        /// Does not grant access to the application automatically.
+        /// </summary>
+        /// <param name="access"></param>
         [HttpPost("request", Name = "RequestApplicationAccess")]
         [AllowAnonymous]
         [Produces("application/json", Type = typeof(OkResult))]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> RequestAccess([FromBody] AccessRequest access)
+        public async Task<IActionResult> RequestAccess([FromBody,  SwaggerParameter("Contains all info needed to contact the requester.")] AccessRequest access)
         {
             if (!_inputValidationService.ValidateAccessRequest(access))
             {
@@ -111,10 +125,13 @@ namespace CE_API_V2.Controllers
 
             return requestStatus.Equals(EmailSendStatus.Succeeded) ? Ok() : BadRequest();
         }
-
+        
+        /// <summary>
+        /// Returns the currently authenticated users Preferences.
+        /// BiomarkerOrder consists of multiple BiomarkerOrderEntries, one per Biomarker and allows setting a preferred Unit and Order for the User.
+        /// </summary>
         [HttpGet("preferences", Name = "GetPreferences")]
         [Produces("application/json", Type = typeof(BiomarkerOrder))]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetPreferences()
         {
@@ -132,12 +149,13 @@ namespace CE_API_V2.Controllers
             }
         }
 
-
-        [HttpPost("preferences", Name = "ModifyPreferences")]
+        /// <summary>
+        /// Creates a new set of preferences for the currently authenticated user.
+        /// </summary>
+        [HttpPost("preferences", Name = "CreatePreferences")]
         [Produces("application/json", Type = typeof(BiomarkerOrder))]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> SetPreferences([FromBody] BiomarkerOrder order)
+        public async Task<IActionResult> SetPreferences([FromBody, SwaggerParameter("Contains the preferred Unit and order per biomarker")] BiomarkerOrder order)
         {
             var idInformation = _userInformationExtractor.GetUserIdInformation(User);
             var user = _userUow.GetUser(idInformation.UserId);
@@ -153,11 +171,14 @@ namespace CE_API_V2.Controllers
             return Ok(orderDto);
         }
 
-        [HttpPatch("preferences", Name = "CreatePreferences")]
+        /// <summary>
+        /// Allows for changing the Order and preferred Units per Biomarker for the currently authenticated user. 
+        /// </summary>
+        /// <param name="order"></param>
+        [HttpPatch("preferences", Name = "ModifyPreferences")]
         [Produces("application/json", Type = typeof(BiomarkerOrder))]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> ModifyPreferences([FromBody] BiomarkerOrder order)
+        public async Task<IActionResult> ModifyPreferences([FromBody,  SwaggerParameter("Contains the preferred Unit and order per biomarker")] BiomarkerOrder order)
         {
             try
             {

@@ -2,21 +2,21 @@
   {
     "Id": 1,
     "ShortText": "No diagnostic testing mandated.",
-    "LongText": "Missing"
+    "LongText": "Choice of the test based on clinical likelihood, patient characteristics and preference, availability, as well as local expertise.\n\nMedical guidelines recommend a conservative approach to management. This typically involves lifestyle modifications and risk factor reduction."
   },
   {
     "Id": 2,
     "ShortText": "Anatomical non-invasive evaluation (e.g., coronary CT angiography (CTA).",
-    "LongText": "Missing"
+    "LongText": "Choice of the test based on clinical likelihood, patient characteristics and preference, availability, as well as local expertise.\n\nAnatomical non-invasive evaluation, by visualizing the coronary artery\nlumen and wall using an intravenous contrast agent, can be performed with coronary CTA, which provides high accuracy for the detection of obstructive coronary stenoses defined by ICA, because both tests are based on anatomy. However, stenoses estimated to be 50-90% by visual inspection are not necessarily functionally significant, i.e. they do not always induce myocardial ischaemia. Therefore, either non-invasive or invasive functional testing is recommended for further evaluation of angiographic stenosis detected by coronary CTA invasive angiography, unless a very high-grade (>90% diameter stenosis) stenosis is detected via invasive angiography. The presence or absence of non-obstructive coronary atherosclerosis on coronary CTA provides prognostic information, and can be used to guide preventive\ntherapy."
   },
   {
     "Id": 3,
     "ShortText": "Testing for ischemia (non-invasive functional imaging preferred).",
-    "LongText": "Missing"
+    "LongText": "Choice of the test based on clinical likelihood, patient characteristics and preference, availability, as well as local expertise.\n\nFunctional non-invasive tests for the diagnosis of obstructive CAD\nare designed to detect myocardial ischaemia through ECG\nchanges, wall motion abnormalities by stress CMR or stress echocardiography,\nor perfusion changes by single-photon emission CT(SPECT), positron emission tomography (PET), myocardial contrast\nechocardiography, or contrast CMR. Ischaemia can be provoked\nby exercise or pharmacological stressors, either by\nincreased myocardial work and oxygen demand, or by heterogeneity\nin myocardial perfusion by vasodilatation."
   },
   {
     "Id": 4,
     "ShortText": "Invasive angiography (with iwFR/FFR).",
-    "LongText": "Missing"
+    "LongText": "Choice of the test based on clinical likelihood, patient characteristics and preference, availability, as well as local expertise.\n\nFunctional non-invasive tests for the diagnosis of obstructive CAD recommended urgently to visualize the coronary arteries and identify any blockages. \n\nThe opening of narrowed arteries (angioplasty) can reduce the risk of a heart attack by restoring normal blood flow to the heart. Angioplasty involves the insertion of a small tube (catheter) into the artery and inflating a tiny balloon to open up the artery."
   }
 ]

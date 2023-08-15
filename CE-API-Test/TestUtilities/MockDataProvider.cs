@@ -78,14 +78,15 @@ namespace CE_API_Test.TestUtilities
             return response;
         }
 
-        internal static ScoringRequestModel GetMockedScoringRequest(string userId = "", string patientId = "")
+        internal static ScoringRequestModel GetMockedScoringRequest(string userId = "", string patientId = "", DateTimeOffset? CreatedOn = null)
         {
             return new ScoringRequestModel
             {
                 Id = Guid.NewGuid(),
                 PatientId = patientId.Equals(string.Empty) ? "PatientId" : patientId,
                 UserId = userId.Equals(string.Empty) ? "UserId" : userId,
-                Biomarkers = GetFakeBiomarkers()
+                Biomarkers = GetFakeBiomarkers(),
+                CreatedOn = CreatedOn ?? DateTimeOffset.Now
             };
         }
         private static IEnumerable<Biomarkers> GetFakeBiomarkers()

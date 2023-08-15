@@ -12,12 +12,14 @@ using CE_API_V2.Models.Exceptions;
 using CE_API_V2.Utility;
 using Microsoft.AspNetCore.Authorization;
 using CE_API_V2.Models;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace CE_API_V2.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
 [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+[ProducesResponseType(StatusCodes.Status403Forbidden)]
 [Authorize]
 public class ScoresController : ControllerBase
 {
@@ -40,11 +42,16 @@ public class ScoresController : ControllerBase
         _userUow = userUow;
     }
 
+    /// <summary>
+    /// Returns a List of SimpleScores, representing previous ScoringRequests.
+    /// Without additional Patient information in the header returns all Requests made by the current user.
+    /// With additional Patient Information filters for all requests made for the specified patient.
+    /// </summary>
     [HttpGet(Name = "GetScoreList")]
     [Produces("application/json", Type = typeof(IEnumerable<SimpleScore>))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(IEnumerable<ValidationFailure>))]
-    public IActionResult GetScoringRequests([FromHeader] string? name = default, [FromHeader] string? lastname = default, [FromHeader] DateTime? dateOfBirth = default)
+    public IActionResult GetScoringRequests([FromHeader, SwaggerParameter("Patients Firstname", Required = false)] string? name = null, [FromHeader, SwaggerParameter("Patients Lastname", Required = false)] string? lastname = null, [FromHeader, SwaggerSchema(Format = "yyyy-MM-dd"), SwaggerParameter("Patients Date of Birth", Required = false)] DateTime? dateOfBirth = null)
     {
         IEnumerable<SimpleScore> requests;
         if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(lastname) || dateOfBirth is null)
@@ -61,10 +68,14 @@ public class ScoresController : ControllerBase
         return requests is null ? BadRequest() : Ok(requests);
     }
 
-
+    /// <summary>
+    /// Returns the full response to a specific ScoringRequest.
+    /// Only returns the response if patient information and UserID of the current User match.
+    /// When specifying a locale the response is translated into the specified language. 
+    /// </summary>
     [HttpGet("{id}", Name = "GetScoreById")]
-    [Produces("application/json", Type = typeof(IEnumerable<ScoringResponse>))]
-    public IActionResult GetScoringRequest([FromHeader] string name, [FromHeader] string lastname, [FromHeader] DateTime dateOfBirth, Guid id, string locale = "en-GB")
+    [Produces("application/json", Type = typeof(ScoringResponse))]
+    public IActionResult GetScoringRequest([FromHeader, SwaggerParameter("Patients Firstname", Required = true)] string name, [FromHeader, SwaggerParameter("Patients Lastname", Required = true)] string lastname, [FromHeader, SwaggerSchema(Format = "yyyy-MM-dd"), SwaggerParameter("Patients Date of Birth", Required = true)] DateTime dateOfBirth, Guid id, [FromQuery, SwaggerParameter("Specifies the locale of the response")] string locale = "en-GB")
     {
         if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(lastname))
         {
@@ -75,7 +86,7 @@ public class ScoresController : ControllerBase
         name = null;
         lastname = null;
         dateOfBirth = new DateTime();
-        
+
 
         var userCulture = new CultureInfo("en-GB");
         try
@@ -100,18 +111,21 @@ public class ScoresController : ControllerBase
 
         var scoreSummary = _scoringUow.GetScoreSummary(scoringResponse, scoringResponse.Biomarkers);
 
+        scoreSummary.CanEdit = CalculateIfUpdatePossible(scoringResponse.Request);
+
         return scoreSummary is null ? BadRequest() : Ok(scoreSummary);
     }
 
     /// <summary>
     ///  Requests a CAD-Score for a specific set of Biomarkers and Patient information.
+    ///  When a locale is provided the response is translated to the specified language.
+    ///  The request is validated and invalid requests are rejected. Validation errors are provided in the language specified.
     /// </summary>
     [HttpPost("request", Name = "RequestScore")]
     [Produces("application/json", Type = typeof(ScoringResponse))]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(IEnumerable<ValidationFailure>))]
     [TypeFilter(typeof(ValidationExceptionFilter))]
-    public async Task<IActionResult> PostPatientData([FromBody] ScoringRequest value, string? locale)
+    public async Task<IActionResult> PostPatientData([FromBody, SwaggerParameter("Biomarkers for a specific Patient", Required = true)] ScoringRequest value, [FromQuery] string? locale)
     {
         if (value == null || string.IsNullOrEmpty(value.FirstName) || string.IsNullOrEmpty(value.LastName) || value.DateOfBirth is null)
         {
@@ -127,7 +141,7 @@ public class ScoresController : ControllerBase
         var userCulture = SetUserCulture(locale);
 
         CultureInfo.CurrentUICulture = userCulture;
-        
+
         var userId = UserHelper.GetUserId(User);
         var currentUser = _userUow.GetUser(userId);
         var validationResult = _inputValidationService.ScoringRequestIsValid(value, currentUser);
@@ -142,9 +156,15 @@ public class ScoresController : ControllerBase
         return requestedScore is null ? BadRequest() : Ok(requestedScore);
     }
 
-    [HttpPut("{scoreId}", Name = "UpdateScore")]
-    [Produces("application/json",Type = typeof(ScoringRequest))]
-    public async Task<IActionResult> PutPatientData([FromBody] ScoringRequest value, string? locale, Guid scoreId)
+    /// <summary>
+    /// Generates a new CAD Score for a set of biomarkers for a specific Patient.
+    /// Is only successful if Patientdata and UserId match and change request is inside the allowed timeframe. (As indicated by property canEdit on ScoringRequest).
+    /// </summary>
+    [HttpPut("{scoreId:guid}", Name = "UpdateScore")]
+    [Produces("application/json", Type = typeof(ScoringRequest))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(IEnumerable<ValidationFailure>))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest), SwaggerResponse(400, "Request is rejected if the Edit period has expired.")]
+    public async Task<IActionResult> PutPatientData([FromBody,  SwaggerParameter("Biomarkers for a specific Patient", Required = true)] ScoringRequest value, string? locale, [FromRoute, SwaggerParameter("Guid of a previous ScoringRequest")]Guid scoreId)
     {
         if (value == null || string.IsNullOrEmpty(value.FirstName) || string.IsNullOrEmpty(value.LastName) || value.DateOfBirth is null)
         {
@@ -171,7 +191,7 @@ public class ScoresController : ControllerBase
         }
 
         if (scoringRequestModel == null || !CalculateIfUpdatePossible(scoringRequestModel))
-            return BadRequest();
+            return BadRequest("The Edit period of the ScoringRequest has expired. Please create a new ScoringRequest.");
         var requestedScore = await _scoringUow.ProcessScoringRequest(value, userId, patientId, scoringRequestModel.Id);
         return requestedScore is null ? BadRequest() : Ok(requestedScore);
 
@@ -185,7 +205,7 @@ public class ScoresController : ControllerBase
     private bool CalculateIfUpdatePossible(ScoringRequestModel scoringRequestModel)
     {
         var days = _configuration.GetValue<int>("EditPeriodInDays");
-        return DateTime.Now.Subtract(scoringRequestModel.CreatedOn.DateTime).Days <= days;
+        return DateTimeOffset.Now.Subtract(scoringRequestModel.CreatedOn).Days <= days;
     }
 
     private CultureInfo SetUserCulture(string? locale)
