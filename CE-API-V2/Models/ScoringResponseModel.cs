@@ -3,9 +3,9 @@
     using CE_API_V2.Models.DTO;
     namespace CE_API_V2.Models
 {
-    /// <summary>
+    /// <remarks>
     /// Class holding the response data which is calculated/transferred by the AI
-    /// </summary>
+    /// </remarks>
     public class ScoringResponseModel
     {
         public Guid Id { get; set; }

@@ -427,7 +427,7 @@ namespace CE_API_Test.TestUtilities
 
         public static string GetHtmlBodyMock() => "New user tried to register their account: email: {{{EmailAddress}}} ({{{FirstName}}} {{{LastName}}}, {{{PhoneNumber}}})<br/><br/> With kind regards<br/> Exploris Health";
 
-        public static ScoreSummary GetScoreSummaryMock()
+        public static ScoreSchema GetScoreSummaryMock()
         {
             return new()
             {
@@ -460,8 +460,6 @@ namespace CE_API_Test.TestUtilities
         {
             return new()
             {
-                classifier_class = 1,
-                classifier_sign = 1,
                 classifier_score = 0.01,
                 RequestId = Guid.NewGuid(),
                 RiskValue = "RiskValue",

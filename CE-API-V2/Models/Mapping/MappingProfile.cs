@@ -115,19 +115,19 @@ namespace CE_API_V2.Models.Mapping
                 .ForMember(dest => dest.RecommendationSummary, opt => opt.Ignore())
                 .ForMember(dest => dest.RecommendationLongText, opt => opt.Ignore());
             
-            CreateMap<ScoringSchema, ScoreSummary>()
+            CreateMap<ScoringSchema, ScoreSchema>()
                 .ForMember(dest => dest.Biomarkers, opt => opt.Ignore())
                 .ForMember(dest => dest.RecommendationCategories, opt => opt.Ignore());
 
-            CreateMap<BiomarkersLocalized, ScoreSummary>()
+            CreateMap<BiomarkersLocalized, ScoreSchema>()
                 .ForMember(dest => dest.Biomarkers, opt => opt.MapFrom(src => src))
                 .ForAllMembers(opts => opts.Ignore());
             
-            CreateMap<IEnumerable<BiomarkerSchema>, ScoreSummary>()
+            CreateMap<IEnumerable<BiomarkerSchema>, ScoreSchema>()
                 .ForMember(dest => dest.Biomarkers, opt => opt.MapFrom(src => src))
                 .ForAllMembers(opts => opts.Ignore());
 
-            CreateMap<IEnumerable<RecommendationCategory>, ScoreSummary>()
+            CreateMap<IEnumerable<RecommendationCategory>, ScoreSchema>()
                 .ForMember(dest => dest.RecommendationCategories, opt => opt.MapFrom(src => src.ToArray()))
                 .ForAllMembers(opts => opts.Ignore());
 
@@ -139,7 +139,6 @@ namespace CE_API_V2.Models.Mapping
                 .ForMember(dest => dest.RequestId, opt => opt.Ignore())
                 .ForMember(dest => dest.Warnings, opt => opt.Ignore())
                 .ForMember(dest => dest.classifier_score, opt => opt.Ignore())
-                .ForMember(dest => dest.classifier_sign, opt => opt.Ignore())
                 .ForMember(dest => dest.Biomarkers, opt => opt.Ignore());
 
             CreateMap<UserModel, User>()

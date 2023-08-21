@@ -208,7 +208,6 @@ public class ScoringUnitOfWorkTests
         result.Should().NotBeNull();
         result.Should().BeOfType<ScoringResponse>();
         result.classifier_score.Should().NotBeNull();
-        result.classifier_sign.Should().NotBeNull();
     }
     
     [Test]
@@ -226,7 +225,6 @@ public class ScoringUnitOfWorkTests
         newResult.Should().NotBeNull();
         newResult.Should().BeOfType<ScoringResponse>();
         newResult.classifier_score.Should().NotBeNull();
-        newResult.classifier_sign.Should().NotBeNull();
     }
 
     [TearDown]

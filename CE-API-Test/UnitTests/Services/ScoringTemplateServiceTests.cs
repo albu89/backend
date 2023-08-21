@@ -50,7 +50,7 @@ public class ScoringTemplateServiceTests
 
         //Assert
         result.Subject.Should().NotBeNull();
-        result.Subject.Should().BeOfType<ScoreSummary>();
+        result.Subject.Should().BeOfType<ScoreSchema>();
 
         result.Subject.ScoreHeader.Should().Be(scoreHeader);
         result.Subject.InfoText.Should().BeEquivalentTo(localizedInfoText);
@@ -75,7 +75,7 @@ public class ScoringTemplateServiceTests
 
         //Assert
         result.Subject.Should().NotBeNull();
-        result.Subject.Should().BeOfType<ScoreSummary>();
+        result.Subject.Should().BeOfType<ScoreSchema>();
 
         result.Subject.ScoreHeader.Should().Be("Score");
         result.Subject.Score.Should().Be("");

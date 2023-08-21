@@ -1,6 +1,6 @@
 ﻿namespace CE_API_V2.Models.DTO
 {
-    public class ScoreSummary 
+    public class ScoreSchema 
     {
         public string? ScoreHeader { get; set; }
         public string? Score { get; set; }

@@ -66,7 +66,7 @@ public class SchemasControllerTests
         result.Should().BeOfType(typeof(OkObjectResult));
 
         var okObjectResult = result as OkObjectResult;
-        okObjectResult.Value.Should().BeOfType<ScoreSummary>();
+        okObjectResult.Value.Should().BeOfType<ScoreSchema>();
         okObjectResult?.StatusCode.Should().Be(200);
     }
 }

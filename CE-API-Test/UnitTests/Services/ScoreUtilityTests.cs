@@ -154,7 +154,7 @@ public class ScoreUtilityTests
         //Assert
         var template = result.Subject;
         template.Should().NotBeNull();
-        template.Should().BeOfType<ScoreSummary>();
+        template.Should().BeOfType<ScoreSchema>();
 
         template.ScoreHeader.Should().Be("Score");
         template.Score.Should().Be("");

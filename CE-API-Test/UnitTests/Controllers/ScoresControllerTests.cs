@@ -69,7 +69,7 @@ namespace CE_API_Test.UnitTests.Controllers
             valueConversionUow
                 .Setup(x => x.ConvertToScoringRequest(It.IsAny<ScoringRequest>(), It.IsAny<string>(),
                     It.IsAny<string>())).Returns((mockedScoringRequest, mockedScoringRequest.LatestBiomarkers));
-            scoringTemplateService.Setup(x => x.GetTemplate(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(new ScoreSummary()));
+            scoringTemplateService.Setup(x => x.GetTemplate(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(new ScoreSchema()));
 
             var hashingUowMock = new Mock<IPatientIdHashingUOW>();
             hashingUowMock.Setup(x => x.HashPatientId(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>())).Returns(It.IsAny<string>);
@@ -135,14 +135,14 @@ namespace CE_API_Test.UnitTests.Controllers
             //Arrange
             var sut = new ScoresController(_scoringUow, _patientHashingUow,  _inputValidationService, _configuration, _userUow);
             var mockedBiomarkers = MockDataProvider.CreateValidScoringRequestDto();
-
+        
             //Act
-            var result = await sut.PutPatientData(mockedBiomarkers, locale: null, NewGuid);
-
+            var result = await sut.PutPatientData(mockedBiomarkers, NewGuid);
+        
             //Assert
             result.Should().NotBeNull();
             result.Should().BeOfType(typeof(OkObjectResult));
-
+        
             var okResult = result as OkObjectResult;
             okResult?.StatusCode.Should().Be(200);
             okResult?.Value.Should().BeOfType(typeof(ScoringResponse));
@@ -156,7 +156,7 @@ namespace CE_API_Test.UnitTests.Controllers
             var mockedBiomarkers = MockDataProvider.CreateValidScoringRequestDto();
 
             //Act
-            var result = await sut.PutPatientData(mockedBiomarkers, locale: null, OldGuid);
+            var result = await sut.PutPatientData(mockedBiomarkers, OldGuid);
 
             //Assert
             result.Should().NotBeNull();
@@ -191,9 +191,7 @@ namespace CE_API_Test.UnitTests.Controllers
                 RequestId = requestId,
                 RiskValue = "MockedRiskValue",
                 Warnings = new string[] { },
-                classifier_class = 0,
                 classifier_score = 0.0,
-                classifier_sign = 0
             };
 
             var scoringUowMock = new Mock<IScoringUOW>();

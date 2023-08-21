@@ -9,6 +9,75 @@
 image: mcr.microsoft.com/dotnet/sdk:7.0
 
 pipelines:
+  branches:
+    develop:
+      - step:
+          name: Build, publish and deploy
+          script:
+                - apt-get update
+                - apt-get install zip -y
+                - export SOLUTION_PATH=./CE-API-V2.sln
+                - REPORTS_PATH=./test-reports/build_${BITBUCKET_BUILD_NUMBER}
+                - dotnet restore ${SOLUTION_PATH}
+                - dotnet build --no-restore --configuration Release ${SOLUTION_PATH}
+                - dotnet test --no-build --configuration Release ${SOLUTION_PATH} -v:n
+                - dotnet publish ${SOLUTION_PATH} --no-restore -c Release -o ./publish
+                - cd publish
+                - zip -r ../publish.zip .
+                - pipe: atlassian/azure-web-apps-deploy:1.1.0
+                  variables:
+                    AZURE_APP_ID: $AZURE_APP_ID
+                    AZURE_PASSWORD: $AZURE_PASSWORD
+                    AZURE_TENANT_ID: $AZURE_TENANT_ID
+                    AZURE_RESOURCE_GROUP: 'cardioexplorer-dev'
+                    AZURE_APP_NAME: 'cardioexplorer-dev-api'
+                    ZIP_FILE: '../publish.zip'
+    staging:
+      - step:
+          name: Build, publish and deploy
+          script:
+                - apt-get update
+                - apt-get install zip -y
+                - export SOLUTION_PATH=./CE-API-V2.sln
+                - REPORTS_PATH=./test-reports/build_${BITBUCKET_BUILD_NUMBER}
+                - dotnet restore ${SOLUTION_PATH}
+                - dotnet build --no-restore --configuration Release ${SOLUTION_PATH}
+                - dotnet test --no-build --configuration Release ${SOLUTION_PATH} -v:n
+                - dotnet publish ${SOLUTION_PATH} --no-restore -c Release -o ./publish
+                - echo $EXAMPLE_VALUE
+                - cd publish
+                - zip -r ../publish.zip .
+                - pipe: atlassian/azure-web-apps-deploy:1.1.0
+                  variables:
+                    AZURE_APP_ID: $AZURE_APP_ID
+                    AZURE_PASSWORD: $AZURE_PASSWORD
+                    AZURE_TENANT_ID: $AZURE_TENANT_ID
+                    AZURE_RESOURCE_GROUP: 'cardioexplorer-staging'
+                    AZURE_APP_NAME: 'cardioexplorer-staging-api'
+                    ZIP_FILE: '../publish.zip'
+    main:
+      - step:
+          name: Build, publish and deploy
+          script:
+                - apt-get update
+                - apt-get install zip -y
+                - export SOLUTION_PATH=./CE-API-V2.sln
+                - REPORTS_PATH=./test-reports/build_${BITBUCKET_BUILD_NUMBER}
+                - dotnet restore ${SOLUTION_PATH}
+                - dotnet build --no-restore --configuration Release ${SOLUTION_PATH}
+                - dotnet test --no-build --configuration Release ${SOLUTION_PATH} -v:n
+                - dotnet publish ${SOLUTION_PATH} --no-restore -c Release -o ./publish
+                - echo $EXAMPLE_VALUE
+                - cd publish
+                - zip -r ../publish.zip .
+                - pipe: atlassian/azure-web-apps-deploy:1.1.0
+                  variables:
+                    AZURE_APP_ID: $AZURE_APP_ID
+                    AZURE_PASSWORD: $AZURE_PASSWORD
+                    AZURE_TENANT_ID: $AZURE_TENANT_ID
+                    AZURE_RESOURCE_GROUP: 'cardioexplorer'
+                    AZURE_APP_NAME: 'cardioexplorer-api'
+                    ZIP_FILE: '../publish.zip'
   pull-requests:
     "**":
       - parallel:

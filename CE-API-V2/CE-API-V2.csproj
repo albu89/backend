@@ -55,6 +55,10 @@
 
     <ItemGroup>
       <None Remove="Templates\RequestAccessEmailBody.html" />
+      <None Include="wwwroot\api-docs\redoc.css">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Remove="publish.zip" />
     </ItemGroup>
 
 </Project>

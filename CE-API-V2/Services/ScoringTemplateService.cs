@@ -25,7 +25,7 @@ public class ScoringTemplateService : IScoringTemplateService
         _userUow = userUow;
     }
 
-    public async Task<ScoreSummary> GetTemplate(string userId, string locale = LocalizationConstants.DefaultLocale)
+    public async Task<ScoreSchema> GetTemplate(string userId, string locale = LocalizationConstants.DefaultLocale)
     {
         var filePath = TryGetLocalizedFilePath(locale);
         using StreamReader reader = new StreamReader(filePath);
@@ -39,7 +39,7 @@ public class ScoringTemplateService : IScoringTemplateService
         var biomarkers = await _biomarkersTemplateService.GetTemplate(locale);
         biomarkers = _userUow.OrderTemplate(biomarkers, userId);
 
-        var scoreSchemaDto = _mapper.Map<ScoreSummary>(deserializedSchema);
+        var scoreSchemaDto = _mapper.Map<ScoreSchema>(deserializedSchema);
         scoreSchemaDto.Biomarkers = biomarkers.ToList();
         scoreSchemaDto.RecommendationCategories = categories;
 

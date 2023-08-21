@@ -39,9 +39,11 @@ namespace CE_API_V2.Controllers
             _userHelper = userHelper;
         }
 
-        /// <summary>
-        /// Returns the currently authenticated Users Userprofile
-        /// </summary>
+        /// <summary>Get current User</summary>
+        /// <remarks>
+        /// Returns the currently authenticated Users Userprofile.
+        /// If no Userprofile exists, Status 404 is returned.
+        /// </remarks>
         [HttpGet(Name = "GetCurrentUser")]
         [Produces("application/json", Type = typeof(User))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -57,13 +59,14 @@ namespace CE_API_V2.Controllers
             return currentUser is not null ? Ok(userDto) : NotFound();
         }
 
-        /// <summary>
+        /// <summary>Create new User</summary>
+        /// <remarks>
         /// Creates a new Userprofile for the currently authenticated User.
         /// If a Userprofile exists already, it returns the current User.
-        /// </summary>
+        /// </remarks>
         [HttpPost(Name = "CreateCurrentUser")]
         [Produces("application/json", Type = typeof(User))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest), SwaggerResponse(400, "Returns BadRequest if the Userprofile could not be created.")]
         public async Task<IActionResult> CreateUser([FromBody] CreateUser user)
         {
             if (!_inputValidationService.ValidateUser(user))
@@ -86,13 +89,14 @@ namespace CE_API_V2.Controllers
             return storedUser is not null ? Ok(_mapper.Map<User>(storedUser)) : BadRequest();
         }
 
-        /// <summary>
+        /// <summary>Update current Users profile</summary>
+        /// <remarks>
         /// Used to modify values on the currently authenticated users userprofile.
-        /// </summary>
+        /// </remarks>
         /// <param name="user"></param>
         [HttpPatch(Name = "UpdateUser")]
         [Produces("application/json", Type = typeof(User))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest), SwaggerResponse(400, "Returns BadRequest if the Userprofile could not be updated.")]
         public async Task<IActionResult> UpdateCurrentUser([FromBody] CreateUser user)
         {
             var userId = _userInformationExtractor.GetUserIdInformation(User).UserId;
@@ -105,15 +109,16 @@ namespace CE_API_V2.Controllers
             return Ok(userDto);
         }
 
-        /// <summary>
+        /// <summary>Request Access to the application</summary>
+        /// <remarks>
         /// Used to request access to the application by unauthenticated users. Sends a notification to Cardio Explorer Administrators.
         /// Does not grant access to the application automatically.
-        /// </summary>
+        /// </remarks>
         /// <param name="access"></param>
         [HttpPost("request", Name = "RequestApplicationAccess")]
         [AllowAnonymous]
         [Produces("application/json", Type = typeof(OkResult))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest), SwaggerResponse(400, "Returns BadRequest if Email-Service is unavailable.")]
         public async Task<IActionResult> RequestAccess([FromBody,  SwaggerParameter("Contains all info needed to contact the requester.")] AccessRequest access)
         {
             if (!_inputValidationService.ValidateAccessRequest(access))
@@ -126,13 +131,15 @@ namespace CE_API_V2.Controllers
             return requestStatus.Equals(EmailSendStatus.Succeeded) ? Ok() : BadRequest();
         }
         
-        /// <summary>
-        /// Returns the currently authenticated users Preferences.
-        /// BiomarkerOrder consists of multiple BiomarkerOrderEntries, one per Biomarker and allows setting a preferred Unit and Order for the User.
-        /// </summary>
+        /// <summary>Get the current users preferences</summary>
+        /// <remarks>
+        /// Returns the currently authenticated users preferences.
+        /// Preferences are the order and preferred unit for each biomarker.
+        /// Each biomarker is provided as a BiomarkerOrderEntry consisting of unit and order number.
+        /// </remarks>
         [HttpGet("preferences", Name = "GetPreferences")]
         [Produces("application/json", Type = typeof(BiomarkerOrder))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest), SwaggerResponse(400, "Returns bad request result if preferences do not exist.")]
         public async Task<IActionResult> GetPreferences()
         {
             try
@@ -149,35 +156,45 @@ namespace CE_API_V2.Controllers
             }
         }
 
-        /// <summary>
+        /// <summary>Create new preferences for current user</summary>
+        /// <remarks>
         /// Creates a new set of preferences for the currently authenticated user.
-        /// </summary>
+        /// </remarks>
         [HttpPost("preferences", Name = "CreatePreferences")]
         [Produces("application/json", Type = typeof(BiomarkerOrder))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest), SwaggerResponse(400, "Returns bad request result if preferences could not be stored.")]
         public async Task<IActionResult> SetPreferences([FromBody, SwaggerParameter("Contains the preferred Unit and order per biomarker")] BiomarkerOrder order)
         {
-            var idInformation = _userInformationExtractor.GetUserIdInformation(User);
-            var user = _userUow.GetUser(idInformation.UserId);
-
-            var orderModelList = ManualMapper.ToBiomarkerOrderModels(order);
-            foreach (var orderEntry in orderModelList)
+            try
             {
-                orderEntry.UserId = user.UserId;
-            }
 
-            await _userUOW.StoreOrEditBiomarkerOrder(orderModelList, user.UserId);
-            var orderDto = ManualMapper.ToBiomarkerOrder(_userUOW.GetBiomarkerOrders(user.UserId));
-            return Ok(orderDto);
+                var idInformation = _userInformationExtractor.GetUserIdInformation(User);
+                var user = _userUow.GetUser(idInformation.UserId);
+
+                var orderModelList = ManualMapper.ToBiomarkerOrderModels(order);
+                foreach (var orderEntry in orderModelList)
+                {
+                    orderEntry.UserId = user.UserId;
+                }
+
+                await _userUOW.StoreOrEditBiomarkerOrder(orderModelList, user.UserId);
+                var orderDto = ManualMapper.ToBiomarkerOrder(_userUOW.GetBiomarkerOrders(user.UserId));
+                return Ok(orderDto);
+            }
+            catch (Exception e)
+            {
+                return BadRequest();
+            }
         }
 
-        /// <summary>
+        /// <summary>Update current users preferences</summary>
+        /// <remarks>
         /// Allows for changing the Order and preferred Units per Biomarker for the currently authenticated user. 
-        /// </summary>
+        /// </remarks>
         /// <param name="order"></param>
         [HttpPatch("preferences", Name = "ModifyPreferences")]
         [Produces("application/json", Type = typeof(BiomarkerOrder))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest), SwaggerResponse(400, "Returns bad request result if preferences could not be stored.")]
         public async Task<IActionResult> ModifyPreferences([FromBody,  SwaggerParameter("Contains the preferred Unit and order per biomarker")] BiomarkerOrder order)
         {
             try

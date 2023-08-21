@@ -25,4 +25,7 @@ Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
+	GlobalSection(RiderSharedRunConfigurations) = postSolution
+		File = .run\ch-ch-api\Deploy to CH-CE-API API.run.xml
+	EndGlobalSection
 EndGlobal

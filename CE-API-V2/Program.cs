@@ -187,15 +187,20 @@ using (var scope = app.Services.CreateScope())
 }
 
 // Configure the HTTP request pipeline.
-app.UseSwagger();
-app.UseSwaggerUI(c =>
-{
-    c.SwaggerEndpoint("/swagger/v1/swagger.yaml", "Cardio Explorer API v1");
-    c.OAuthClientId(config["Azure:AD:ClientId"]);
-    c.OAuthUsePkce();
-    c.OAuthScopeSeparator(" ");
-});
-app.UseReDoc();
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.yaml", "Cardio Explorer API v1");
+        c.OAuthClientId(config["Azure:AD:ClientId"]);
+        c.OAuthUsePkce();
+        c.OAuthScopeSeparator(" ");
+    });
+    app.UseStaticFiles();
+    
+    app.UseReDoc(c =>
+    {
+        c.InjectStylesheet("redoc.css");
+    });
 
 app.MapHealthChecks("/health");
 

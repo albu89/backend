@@ -29,13 +29,17 @@ namespace CE_API_V2.Controllers
         }
 
         /// <summary>
+        /// Get Schema for ScoringRequest page
+        /// </summary>
+        /// <remarks>
         /// Returns a list of BiomarkerSchema objects containing all information needed to build a ScoringRequest page.
         /// Each BiomarkerSchema contains a list of Units that the system supports for data entry.
         /// Information is returned in the requested locale if available, otherwise in english.
-        /// </summary>
+        /// </remarks>
+        /// <param name="locale" example="de-CH">The requested language and region of the requested resource in IETF BCP 47 format.</param>
         [HttpGet("biomarkers")]
-        [Produces("application/json", Type = typeof(IEnumerable<BiomarkerSchema>))]
-        public async Task<IActionResult> GetInputFormTemplate(string? locale = null)
+        [Produces("application/json", Type = typeof(IEnumerable<BiomarkerSchema>)), SwaggerResponse(200, "BiomarkerSchema containing all necessary information for creating a ScoringRequest page.", type: typeof(BiomarkerSchema))]
+        public async Task<IActionResult> GetInputFormTemplate(string? locale = "en-GB")
         {
 
             if (string.IsNullOrEmpty(locale))
@@ -51,13 +55,15 @@ namespace CE_API_V2.Controllers
             return schema.Any() ? Ok(schema) : NotFound();
         }
 
-        /// <summary>
+        ///<summary>Get Schema for ScoringResponse page</summary>
+        /// <remarks>
         /// Returns a ScoreSummary, representing all fields necessary to be displayed on a ScoringResponse page.
         /// All fields are returned in the language specified by locale if translations are available, in english otherwise.
-        /// </summary>
+        /// </remarks>
+        /// <param name="locale" example="de-CH">The requested language and region of the requested resource in IETF BCP 47 format.</param> 
         [HttpGet("scoring")]
-        [Produces("application/json", Type = typeof(ScoreSummary))]
-        public async Task<IActionResult> GetScoringSchema(string? locale = null)
+        [Produces("application/json", Type = typeof(ScoreSchema)), SwaggerResponse(200, "ScoreSchema containing all necessary information for creating a ScoringResponse page.", type: typeof(ScoreSchema))]
+        public async Task<IActionResult> GetScoringSchema(string? locale = "en-GB")
         {
             var currentUserId = UserHelper.GetUserId(User);
             var template = await _scoringTemplateService.GetTemplate(currentUserId, locale);

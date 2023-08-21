@@ -29,9 +29,9 @@ namespace CE_API_V2.UnitOfWorks
             return (requestModel, biomarkers);
         }
 
-        /// <summary>
+        /// <remarks>
         /// Convert Biomarkervalues to SI Values
-        /// </summary>
+        /// </remarks>
         /// <param name="scoringRequest">ScoringRequest object to be converted.</param>
         /// <returns>returns converted Scoring Request object</returns>
         public async Task<ScoringRequest> ConvertToSiValues(ScoringRequest scoringRequest)
