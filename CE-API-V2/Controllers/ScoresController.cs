@@ -45,7 +45,7 @@ public class ScoresController : ControllerBase
     }
 
     /// <summary>
-    /// Get List of previous ScoringRequests
+    /// Get a List of previous ScoringRequests
     /// </summary>
     /// <remarks>
     /// Returns a List of SimpleScores, representing previous ScoringRequests.
@@ -76,14 +76,14 @@ public class ScoresController : ControllerBase
         return requests is null ? BadRequest() : Ok(requests);
     }
 
-    /// <summary>Get full ScoringRequest by ID</summary>
+    /// <summary>Get a full ScoringRequest by ID</summary>
     /// <remarks>
     /// Returns the full response to a specific ScoringRequest.
     /// Only returns the response if patient information and UserID of the current User match.
     /// When specifying a locale the response is translated into the specified language. 
     /// </remarks>
     /// <param name="locale" example="de-CH">The requested language and region of the requested resource in IETF BCP 47 format.</param>
-    /// <param name="name" example="Mats ">The patients first name.</param>
+    /// <param name="name" example="Mats">The patients first name.</param>
     /// <param name="lastname" example="Horn">The patients last name.</param>
     /// <param name="dateOfBirth" example="1990-01-01" format="yyyy-MM-dd">The patients date of birth.</param>
     /// <param name="scoringRequestId" example="82231ed6-97a8-4d43-9821-08db9969e7a2">GUID of the ScoringRequest to be loaded.</param>
@@ -169,7 +169,7 @@ public class ScoresController : ControllerBase
         return requestedScore is null ? BadRequest() : Ok(requestedScore);
     }
 
-    /// <summary>Create new CAD Score for a previous ScoringRequest</summary>
+    /// <summary>Create a new CAD Score for a previous ScoringRequest</summary>
     /// <remarks>
     /// Generates a new CAD Score for a set of biomarkers for a specific Patient.
     /// Is only successful if Patientdata and UserId match and change request is inside the allowed timeframe. (As indicated by property canEdit on ScoringRequest).

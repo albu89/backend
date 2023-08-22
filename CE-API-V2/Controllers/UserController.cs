@@ -109,7 +109,7 @@ namespace CE_API_V2.Controllers
             return Ok(userDto);
         }
 
-        /// <summary>Request Access to the application</summary>
+        /// <summary>Request access to the application</summary>
         /// <remarks>
         /// Used to request access to the application by unauthenticated users. Sends a notification to Cardio Explorer Administrators.
         /// Does not grant access to the application automatically.
@@ -167,7 +167,6 @@ namespace CE_API_V2.Controllers
         {
             try
             {
-
                 var idInformation = _userInformationExtractor.GetUserIdInformation(User);
                 var user = _userUow.GetUser(idInformation.UserId);
 

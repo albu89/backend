@@ -29,7 +29,7 @@ namespace CE_API_V2.Controllers
         }
 
         /// <summary>
-        /// Get Schema for ScoringRequest page
+        /// Get the schema the for ScoringRequest page
         /// </summary>
         /// <remarks>
         /// Returns a list of BiomarkerSchema objects containing all information needed to build a ScoringRequest page.
@@ -55,7 +55,7 @@ namespace CE_API_V2.Controllers
             return schema.Any() ? Ok(schema) : NotFound();
         }
 
-        ///<summary>Get Schema for ScoringResponse page</summary>
+        ///<summary>Get the schema for the ScoringResponse page</summary>
         /// <remarks>
         /// Returns a ScoreSummary, representing all fields necessary to be displayed on a ScoringResponse page.
         /// All fields are returned in the language specified by locale if translations are available, in english otherwise.

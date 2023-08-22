@@ -52,7 +52,7 @@ namespace CE_API_V2.Controllers
         }
         
         /// <summary>
-        /// Get specific User by Id.
+        /// Get specific User by Id
         /// </summary>
         /// <remarks>
         /// Returns a specific users userprofile, selected by the provided UserId.
