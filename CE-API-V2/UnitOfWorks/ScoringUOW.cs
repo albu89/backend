@@ -134,8 +134,12 @@ namespace CE_API_V2.UnitOfWorks
             
             try
             {
-                var scoringRequests = ScoringRequestRepository.Get(x => x.UserId == UserId, null, "Responses,Biomarkers");
+                var scoringRequests = ScoringRequestRepository.Get(x => x.UserId == UserId, null, "Responses,Biomarkers").ToList();
                 scoringHistory = _mapper.Map<List<SimpleScore>>(scoringRequests);
+                foreach (var req in scoringRequests)
+                {
+                    scoringHistory.FirstOrDefault(x => x.RequestId == req.Id).CanEdit = _scoreSummaryUtility.CalculateIfUpdatePossible(req);
+                }
             }
             catch (Exception e)
             {
@@ -155,6 +159,10 @@ namespace CE_API_V2.UnitOfWorks
                 var scoringRequests = ScoringRequestRepository.Get(x => x.UserId.Equals(UserId) &&
                                                                              x.PatientId.Equals(PatientId), null, "Responses,Biomarkers").ToList();
                 scoringHistory = _mapper.Map<List<SimpleScore>>(scoringRequests);
+                foreach (var req in scoringRequests)
+                {
+                    scoringHistory.FirstOrDefault(x => x.RequestId == req.Id).CanEdit = _scoreSummaryUtility.CalculateIfUpdatePossible(req);
+                }
             }
             catch (Exception e)
             {
@@ -206,7 +214,7 @@ namespace CE_API_V2.UnitOfWorks
 
             scoringResponse.RequestId = scoringRequest.Id;
             scoringResponse.Biomarkers = biomarkers;
-            var fullResponse = GetScoreSummary(scoringResponse, scoringResponse.Biomarkers);
+            var fullResponse = GetScoringResponse(scoringResponse, scoringResponse.Biomarkers);
             fullResponse.Biomarkers = biomarkers;
             _mapper.Map(fullResponse, scoringResponse);
             scoringResponse.BiomarkersId = scoringRequest.LatestBiomarkers.Id;
@@ -218,12 +226,31 @@ namespace CE_API_V2.UnitOfWorks
             
             return fullResponse;
         }
-        public ScoringResponse GetScoreSummary(ScoringResponseModel recentScore, Biomarkers biomarkers)
+
+        public async Task<ScoringRequestModel> StoreDraftRequest(ScoringRequest value, string userId, string patientId)
         {
-            var scoreSummary = _mapper.Map<ScoringResponseModel, ScoringResponse>(recentScore);
-            scoreSummary.Biomarkers = biomarkers;
+            var (scoringRequest, biomarkers) = _valueConversionUow.ConvertToScoringRequest(value, userId, patientId);
+            StoreScoringRequest(scoringRequest, userId);
+            StoreBiomarkers(scoringRequest.Id, biomarkers);
+            return scoringRequest;
+        }
+
+        public ScoringResponse GetScoringResponse(ScoringResponseModel recentScore, Biomarkers biomarkers)
+        {
+            ScoringResponse scoringResponse;
+            if (recentScore is null)
+            {
+                scoringResponse = new ScoringResponse
+                {
+                    Biomarkers = biomarkers,
+                    IsDraft = true
+                };
+                return scoringResponse;
+            }
+            scoringResponse = _mapper.Map<ScoringResponseModel, ScoringResponse>(recentScore);
+            scoringResponse.Biomarkers = biomarkers;
             
-            return _scoreSummaryUtility.SetAdditionalScoringParams(scoreSummary, CultureInfo.CurrentUICulture.Name);
+            return _scoreSummaryUtility.SetAdditionalScoringParams(scoringResponse, CultureInfo.CurrentUICulture.Name);
         }
 
         private async Task<ScoringResponseModel?> RequestScore(ScoringRequestModel scoringRequest)

@@ -7,7 +7,6 @@ using CE_API_V2.Models.Mapping;
 using CE_API_V2.Localization.JsonStringFactroy;
 using CE_API_V2.Models;
 using CE_API_V2.Models.Enum;
-using CE_API_V2.UnitOfWorks.Interfaces;
 using FluentValidation.Results;
 
 namespace CE_API_V2.Validators

@@ -75,6 +75,14 @@ namespace CE_API_V2.Services
                 var biomarkerSchemaDto = _mapper.Map<BiomarkerSchema>(item);
                 _mapper.Map(langSpec, biomarkerSchemaDto);
 
+                if (langSpec.DisplayNames is not null)
+                {
+                    foreach (var unit in biomarkerSchemaDto.Units)
+                    {
+                        unit.DisplayNames = langSpec.DisplayNames.Where(x => unit.Enum.Contains(x.Key)).ToDictionary(i => i.Key, i => i.Value);
+                    }
+                }
+
                 biomarkerSchemaList.Add(biomarkerSchemaDto);
             }
             

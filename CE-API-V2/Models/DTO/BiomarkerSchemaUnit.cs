@@ -26,6 +26,8 @@ namespace CE_API_V2.Models.DTO
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public List<string>? Enum { get; set; }
+        
+        public Dictionary<string, string> DisplayNames { get; set; }
 
         public string ClinicalSetting { get; set; }
     }

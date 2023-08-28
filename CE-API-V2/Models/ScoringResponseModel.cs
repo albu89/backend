@@ -1,6 +1,5 @@
 ﻿    using System.ComponentModel.DataAnnotations.Schema;
     using System.Text.Json.Serialization;
-    using CE_API_V2.Models.DTO;
     namespace CE_API_V2.Models
 {
     /// <remarks>

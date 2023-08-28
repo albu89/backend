@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
-using System.Text.Json;
 using AutoMapper;
 using CE_API_V2.Constants;
+using CE_API_V2.Models;
 using CE_API_V2.Models.DTO;
 using CE_API_V2.Services.Interfaces;
 using static CE_API_V2.Models.Enum.PatientDataEnums;
@@ -11,10 +11,12 @@ namespace CE_API_V2.Utility
     public class ScoreSummaryUtility : IScoreSummaryUtility
     {
         private readonly IMapper _mapper;
+        private readonly IConfiguration _configuration;
 
-        public ScoreSummaryUtility(IMapper mapper)
+        public ScoreSummaryUtility(IMapper mapper, IConfiguration configuration)
         {
             _mapper = mapper;
+            _configuration = configuration;
         }
 
         public ScoringResponse SetAdditionalScoringParams(ScoringResponse scoreResponse, string locale = LocalizationConstants.DefaultLocale)
@@ -138,6 +140,18 @@ namespace CE_API_V2.Utility
             }
 
             return matchingObject;
+        }
+        
+        /// <remarks>
+        /// Checks if a ScoringRequest is still in the edit-period
+        /// </remarks>
+        /// <param name="scoringRequestModel"></param>
+        /// <returns></returns>
+        public bool CalculateIfUpdatePossible(ScoringRequestModel scoringRequestModel)
+        {
+            var days = _configuration.GetValue<int>("EditPeriodInDays");
+            var dateValid = DateTimeOffset.Now.Subtract(scoringRequestModel.CreatedOn).Days <= days;
+            return dateValid;
         }
 
         private double ParseLimit(string value) => double.Parse(value, CultureInfo.InvariantCulture);

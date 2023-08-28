@@ -7,4 +7,6 @@ public class SimpleScore
     public float Score { get; set; }
     public string Risk { get; set; }
     public int RiskClass { get; set; }
+    public bool IsDraft { get; set; }
+    public bool CanEdit { get; set; }
 }

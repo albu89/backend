@@ -113,7 +113,6 @@ internal class JsonSerializationHelperTests
         AssertNotNull(scoringRequest.Urea);
         AssertNotNull(scoringRequest.UricAcid);
         AssertNotNull(scoringRequest.Weight);
-        AssertNotNull(scoringRequest.clinical_setting);
         AssertNotNull(scoringRequest.prior_CAD);
         
     }

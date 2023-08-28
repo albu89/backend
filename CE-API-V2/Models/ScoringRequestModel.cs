@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using CE_API_V2.Models.DTO;
 namespace CE_API_V2.Models;
 
 public class ScoringRequestModel

@@ -17,9 +17,6 @@ namespace CE_API_V2.Models.DTO
         #endregion
 
         #region Additional Properties
-        [JsonPropertyName("clinical_setting")]
-        [JsonConverter(typeof(BiomarkerValueJsonConverter<ClinicalSetting>))]
-        public BiomarkerValue<ClinicalSetting> clinical_setting { get; set; }
         
         [JsonPropertyName("prior_CAD")]
         public BiomarkerValue<bool> prior_CAD { get; set; }

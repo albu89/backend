@@ -1,4 +1,3 @@
-using System.Collections;
 using CE_API_V2.Controllers.Filters;
 using CE_API_V2.Hasher;
 using CE_API_V2.Models.DTO;
@@ -7,7 +6,6 @@ using CE_API_V2.UnitOfWorks.Interfaces;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using System.Globalization;
-using System.Security.Claims;
 using System.Web;
 using CE_API_V2.Models.Exceptions;
 using CE_API_V2.Utility;
@@ -30,18 +28,21 @@ public class ScoresController : ControllerBase
     private readonly IPatientIdHashingUOW _hashingUow;
     private readonly IScoringUOW _scoringUow;
     private readonly IUserUOW _userUow;
+    private readonly IScoreSummaryUtility _scoreSummaryUtility;
 
     public ScoresController(IScoringUOW scoringUow,
         IPatientIdHashingUOW patientIdUow,
         IInputValidationService inputValidationService,
         IConfiguration configuration,
-        IUserUOW userUow)
+        IUserUOW userUow,
+        IScoreSummaryUtility scoreSummaryUtility)
     {
         _hashingUow = patientIdUow;
         _scoringUow = scoringUow;
         _inputValidationService = inputValidationService;
         _configuration = configuration;
         _userUow = userUow;
+        _scoreSummaryUtility = scoreSummaryUtility;
     }
 
     /// <summary>
@@ -110,16 +111,22 @@ public class ScoresController : ControllerBase
         SetUserCulture(locale);
 
         var userId = UserHelper.GetUserId(User);
-        var scoringResponse = _scoringUow.RetrieveScoringResponse(scoringRequestId, userId);
-
-        if (scoringResponse is null || scoringResponse?.Request.PatientId != patientId)
+        var request = _scoringUow.RetrieveScoringRequest(scoringRequestId, userId);
+        var latestBiomarkers = request.LatestBiomarkers;
+        if (request is null || request.PatientId != patientId || latestBiomarkers == null)
         {
             return BadRequest();
         }
+        var scoringResponse = latestBiomarkers.Response;
+        if (scoringResponse is null)
+        {
+            var summary = _scoringUow.GetScoringResponse(null, latestBiomarkers);
+            return Ok(summary);
+        }
 
-        var scoreSummary = _scoringUow.GetScoreSummary(scoringResponse, scoringResponse.Biomarkers);
+        var scoreSummary = _scoringUow.GetScoringResponse(scoringResponse, scoringResponse.Biomarkers);
 
-        scoreSummary.CanEdit = CalculateIfUpdatePossible(scoringResponse.Request);
+        scoreSummary.CanEdit = _scoreSummaryUtility.CalculateIfUpdatePossible(scoringResponse.Request);
 
         return scoreSummary is null ? BadRequest() : Ok(scoreSummary);
     }
@@ -136,7 +143,7 @@ public class ScoresController : ControllerBase
     [Produces("application/json", Type = typeof(ScoringResponse))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(IEnumerable<ValidationFailure>)), SwaggerResponse(400, "The request was malformed or contained invalid values.", type: typeof(IEnumerable<ValidationFailure>))]
     [TypeFilter(typeof(ValidationExceptionFilter))]
-    public async Task<IActionResult> PostPatientData(
+    public async Task<IActionResult> PostScoringRequest(
         [FromBody] ScoringRequest scoringRequestValues, 
         [FromQuery] string? locale = "en-GB")
     {
@@ -160,13 +167,42 @@ public class ScoresController : ControllerBase
         var validationResult = _inputValidationService.ScoringRequestIsValid(scoringRequestValues, currentUser);
         if (!validationResult.IsValid)
         {
-            throw new BiomarkersValidationException("Scoringrequest was not valid.", validationResult.Errors, userCulture);
+            throw new BiomarkersValidationException("ScoringRequest was not valid.", validationResult.Errors, userCulture);
         }
 
 
         var requestedScore = await _scoringUow.ProcessScoringRequest(scoringRequestValues, userId, patientId);
 
         return requestedScore is null ? BadRequest() : Ok(requestedScore);
+    }
+
+    /// <summary>
+    ///  Store biomarker values as a draft
+    /// </summary>
+    /// <remarks>
+    /// Stores the provided Biomarkers as a draft to allow for modification in the future. Does not validate the entered biomarkers.
+    /// Is only successful if Patient Information is provided.
+    /// </remarks>
+    /// <param name="value" required="true">Object containing the biomarker values to request a CAD Score.</param>
+    [HttpPost(Name = "SaveDraft")]
+    [Produces("application/json", Type = typeof(Guid))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest), SwaggerResponse(400,"Returns bad request if patient data is invalid or scoring request can not be stored.")]
+    public async Task<IActionResult> PostScoringDraft([FromBody, SwaggerParameter("Biomarkers for a specific Patient", Required = true)] ScoringRequest value)
+    {
+        if (value == null || string.IsNullOrEmpty(value.FirstName) || string.IsNullOrEmpty(value.LastName) || value.DateOfBirth is null)
+        {
+            return BadRequest();
+        }
+
+        var patientId = _hashingUow.HashPatientId(value.FirstName, value.LastName, value.DateOfBirth.Value);
+        value.FirstName = null;
+        value.LastName = null;
+        value.DateOfBirth = null;
+        var userId = UserHelper.GetUserId(User);
+
+        var scoringRequestModel = await _scoringUow.StoreDraftRequest(value, userId, patientId);
+
+        return scoringRequestModel is null ? BadRequest() : Ok(scoringRequestModel.Id);
     }
 
     /// <summary>Create a new CAD Score for a previous ScoringRequest</summary>
@@ -176,12 +212,13 @@ public class ScoresController : ControllerBase
     /// </remarks>
     /// <param name="locale" example="de-CH">The requested language and region of the requested resource in IETF BCP 47 format.</param>
     /// <param name="scoreId" example="ef227546-c153-40c9-e1e7-08db9cbbf28d" required="true">Guid of a previous ScoringRequest</param>
+    /// <param name="value" required="true">Object containing the biomarker values to request a CAD Score.</param>
     [HttpPut("{scoreId:guid}", Name = "UpdateScore")]
     [Produces("application/json", Type = typeof(ScoringRequest))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(IEnumerable<ValidationFailure>))]
     [ProducesResponseType(StatusCodes.Status400BadRequest), SwaggerResponse(400, "Request is rejected if the Edit period has expired.")]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(IEnumerable<ValidationFailure>)), SwaggerResponse(400, "The request was malformed or contained invalid values.", type: typeof(IEnumerable<ValidationFailure>))]
-    public async Task<IActionResult> PutPatientData(
+    public async Task<IActionResult> PutScoringRequest(
         [FromBody] ScoringRequest value, 
         [FromRoute] Guid scoreId, 
         [FromQuery] string? locale = "en-GB")
@@ -209,23 +246,13 @@ public class ScoresController : ControllerBase
             scoringRequestModel = null;
         }
 
-        if (scoringRequestModel == null || !CalculateIfUpdatePossible(scoringRequestModel))
+        if (scoringRequestModel == null || !_scoreSummaryUtility.CalculateIfUpdatePossible(scoringRequestModel))
             return BadRequest("The edit period of the ScoringRequest has expired.");
         var requestedScore = await _scoringUow.ProcessScoringRequest(value, userId, patientId, scoringRequestModel.Id);
         return requestedScore is null ? BadRequest() : Ok(requestedScore);
     }
-
-    /// <remarks>
-    /// Checks if a ScoringRequest is still in the edit-period
-    /// </remarks>
-    /// <param name="scoringRequestModel"></param>
-    /// <returns></returns>
-    private bool CalculateIfUpdatePossible(ScoringRequestModel scoringRequestModel)
-    {
-        var days = _configuration.GetValue<int>("EditPeriodInDays");
-        var dateValid = DateTimeOffset.Now.Subtract(scoringRequestModel.CreatedOn).Days <= days;
-        return dateValid;
-    }
+    
+    
 
     private CultureInfo SetUserCulture(string? locale)
     {

@@ -13,4 +13,5 @@ public class ScoringResponse
     public ScoreSummaryUtility.PrevalenceClass Prevalence { get; set; }
     public Biomarkers? Biomarkers { get; set; }
     public bool CanEdit { get; set; }
+    public bool IsDraft { get; set; }
 }

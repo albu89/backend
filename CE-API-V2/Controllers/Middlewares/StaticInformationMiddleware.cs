@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using CE_API_V2.Constants;
+﻿using CE_API_V2.Constants;
 namespace CE_API_V2.Controllers.Middlewares;
 
 public class StaticInformationMiddleware

@@ -13,6 +13,8 @@ public interface IScoringUOW
 
     public Biomarkers StoreBiomarkers(Guid scoringRequestId, Biomarkers biomarkers);
 
+    public Task<ScoringRequestModel> StoreDraftRequest(ScoringRequest value, string userId, string patientId);
+
     ScoringRequestModel StoreScoringRequest(ScoringRequestModel scoringRequestModel, string UserId);
     
     ScoringRequestModel RetrieveScoringRequest(Guid ScoringRequestId, string userId);
@@ -27,5 +29,5 @@ public interface IScoringUOW
     
     Task<ScoringResponse> ProcessScoringRequest(ScoringRequest scoringRequestModel, string userId, string patientId, Guid? existingScoringRequest = null);
     
-    ScoringResponse GetScoreSummary(ScoringResponseModel recentScore, Biomarkers biomarkers);
+    ScoringResponse GetScoringResponse(ScoringResponseModel recentScore, Biomarkers biomarkers);
 }

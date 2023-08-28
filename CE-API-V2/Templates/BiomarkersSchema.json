@@ -101,7 +101,7 @@
         "name": "",
         "unitType": "SI",
         "type": "string",
-        "enum": [ "non-smoker", "ex-smoker", "smoker" ],
+        "enum": [ "No", "StANc", "Yes" ],
         "clinicalSetting": "None"
       }
     ],
@@ -116,7 +116,7 @@
         "name": "",
         "unitType": "SI",
         "type": "string",
-        "enum": [ "no", "NidDM", "idDM" ],
+        "enum": [ "No", "Niddm", "Iddm" ],
         "clinicalSetting": "None"
       }
     ],
@@ -270,14 +270,14 @@
         "name": "",
         "unitType": "Other",
         "type": "string",
-        "enum": [ "normal", "pathological" ],
+        "enum": [ "Yes", "Screening" ],
         "clinicalSetting": "SecondaryCare"
       },
       {
         "name": "",
         "unitType": "Other",
         "type": "string",
-        "enum": [ "normal", "pathological", "no ECG available" ],
+        "enum": [ "Yes", "Screening", "No" ],
         "clinicalSetting": "PrimaryCare"
       }
     ],

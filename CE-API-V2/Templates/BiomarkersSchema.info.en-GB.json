@@ -12,7 +12,11 @@
   {
     "id": "sex",
     "fieldname": "Biological Sex",
-    "infoText": "Biological sex (female and male)"
+    "infoText": "Biological sex (female and male)",
+    "displayNames": {
+      "Male": "Male",
+      "Female": "Female"
+    }
   },
   {
     "id": "height",
@@ -27,17 +31,33 @@
   {
     "id": "chest_pain",
     "fieldname": "Chest pain",
-    "infoText": "Criteria for the assessment of chest pain\r\n        Triggering of pain: provocable by physical strain or emotional stress - when the triggering factors are stopped, the pain subsides (sistation of the symptoms at rest) - duration of pain is 2 to 20 min (when taking nitroglycerin, the pain subsides quickly)\r\n\r\n        Pain unitType: visceral, manifested as pressure, tightness, burning (not stabbing)\r\n\r\n        Pain location: retrosternal (possibly radiating to arms, upper abdomen, neck)\r\n\r\n        Categorization Cardio Explorer\r\n        Typical angina: 3 criteria apply\r\n\r\n        Possible angina (atypical angina): 2 criteria apply\r\n\r\n        Unspecific chest pain: 0 or 1 criteria apply\r\n\r\n        No chest pain"
+    "infoText": "Criteria for the assessment of chest pain\r\n        Triggering of pain: provocable by physical strain or emotional stress - when the triggering factors are stopped, the pain subsides (sistation of the symptoms at rest) - duration of pain is 2 to 20 min (when taking nitroglycerin, the pain subsides quickly)\r\n\r\n        Pain unitType: visceral, manifested as pressure, tightness, burning (not stabbing)\r\n\r\n        Pain location: retrosternal (possibly radiating to arms, upper abdomen, neck)\r\n\r\n        Categorization Cardio Explorer\r\n        Typical angina: 3 criteria apply\r\n\r\n        Possible angina (atypical angina): 2 criteria apply\r\n\r\n        Unspecific chest pain: 0 or 1 criteria apply\r\n\r\n        No chest pain",
+    "displayNames": {
+      "no": "no",
+      "unspecific": "unspecific",
+      "possible": "possible",
+      "typical": "typical"
+    }
   },
   {
     "id": "nicotine",
     "fieldname": "Nicotine consumption",
-    "infoText": "non-smoker: Person who has never smoked actively on a regular basis and persons who have not smoked regularly for more than 6 months.\r\n\r\nex-smoker: person who has smoked regularly for a minimum period of 6 months, but no longer smokes at the time of recording.\r\n\r\nsmoker: person who currently smokes regularly."
+    "infoText": "non-smoker: Person who has never smoked actively on a regular basis and persons who have not smoked regularly for more than 6 months.\r\n\r\nex-smoker: person who has smoked regularly for a minimum period of 6 months, but no longer smokes at the time of recording.\r\n\r\nsmoker: person who currently smokes regularly.",
+    "displayNames": {
+      "No": "Non-smoker",
+      "StANc": "ex-smoker",
+      "Yes": "smoker"
+    }
   },
   {
     "id": "diabetes",
     "fieldname": "Diabetes",
-    "infoText": "idDM: abbreviation for insulin dependent diabetes mellitus\r\n\r\nNidDM: abbreviation for non insulin dependent diabetes mellitus"
+    "infoText": "idDM: abbreviation for insulin dependent diabetes mellitus\r\n\r\nNidDM: abbreviation for non insulin dependent diabetes mellitus",
+    "displayNames": {
+      "no": "No",
+      "NidDM": "Niddm",
+      "idDM": "Iddm"
+    }
   },
   {
     "id": "statin",
@@ -87,7 +107,12 @@
   {
     "id": "q_wave",
     "fieldname": "Q waves in resting ECG",
-    "infoText": "normal: Q waves of the electorcardiogram are normal.\r\n\r\npathological: Q waves of the electrocardiogram are pathological - indicating a prior myocardial infarction.\r\n\r\nno ECG available: as the pathological Q-wave is severely underrepresented in a population with low prevalence, the resting ECG is not necessary for risk calculation."
+    "infoText": "normal: Q waves of the electorcardiogram are normal.\r\n\r\npathological: Q waves of the electrocardiogram are pathological - indicating a prior myocardial infarction.\r\n\r\nno ECG available: as the pathological Q-wave is severely underrepresented in a population with low prevalence, the resting ECG is not necessary for risk calculation.",
+    "displayNames": {
+      "Yes": "normal",
+      "Screening": "pathological",
+      "No": "no ECG available"
+    }
   },
   {
     "id": "amylase_p",
@@ -118,7 +143,6 @@
     "id": "bilirubin",
     "fieldname": "Bilirubin (total)",
     "infoText": "\t\r\nBilirubin is a red-orange compound that occurs in the normal catabolic pathway that breaks down heme in vertebrates. This catabolism is a necessary process in the body\u0027s clearance of waste products that arise from the destruction of aged or abnormal red blood cells. Serum total bilirubin have a role for prediction of severe coronary artery disease in patients with chronic stable angina."
-
   },
   {
     "id": "urea",

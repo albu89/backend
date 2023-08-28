@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using System.Security.Claims;
 using CE_API_V2.Utility;
+using Microsoft.Extensions.Configuration;
 
 namespace CE_API_Test.UnitTests.Controllers;
 
@@ -20,6 +21,7 @@ public class BiomarkersControllerTests
     private IBiomarkersTemplateService _biomarkersTemplateService;
     private IScoringTemplateService _scoringTemplateService;
     private IUserUOW _userUow;
+    private IConfigurationRoot _configuration;
 
     [OneTimeSetUp]
     public void Setup()
@@ -28,8 +30,18 @@ public class BiomarkersControllerTests
         extractorMock.Setup(x => x.GetUserIdInformation(It.IsAny<ClaimsPrincipal>())).Returns(new CE_API_V2.Models.Records.UserIdsRecord(){UserId = "TestUser", TenantId = "TestTenant"});
         var mapperConfig = new MapperConfiguration(mc => { mc.AddProfile(new MappingProfile()); });
         var mapper = mapperConfig.CreateMapper();
+        
+        
+        var testConfig = new Dictionary<string, string?>()
+        {
+            { "EditPeriodInDays", "1" },
+        };
 
-        var scoreSummaryUtility = new ScoreSummaryUtility(mapper);
+        _configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(testConfig)
+            .Build();
+
+        var scoreSummaryUtility = new ScoreSummaryUtility(mapper, _configuration);
         _biomarkersTemplateService = new BiomarkersTemplateService(mapper);
         
         var userUowMock = new Mock<IUserUOW>();

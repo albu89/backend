@@ -8,6 +8,7 @@ using CE_API_V2.Services.Interfaces;
 using CE_API_V2.UnitOfWorks.Interfaces;
 using CE_API_V2.Utility;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Moq;
 namespace CE_API_Test.UnitTests.Controllers;
 
@@ -19,6 +20,7 @@ public class SchemasControllerTests
     private IScoringTemplateService _scoringTemplateService;
     private IScoreSummaryUtility _scoreSummaryUtility;
     private IUserUOW _userUow;
+    private IConfigurationRoot _configuration;
 
     [OneTimeSetUp]
     public async Task Setup()
@@ -26,7 +28,16 @@ public class SchemasControllerTests
         var mapperConfig = new MapperConfiguration(mc => { mc.AddProfile(new MappingProfile()); });
         var mapper = mapperConfig.CreateMapper();
         _biomarkersTemplateService = new BiomarkersTemplateService(mapper);
-        _scoreSummaryUtility = new ScoreSummaryUtility(mapper);
+        
+        var testConfig = new Dictionary<string, string?>()
+        {
+            { "EditPeriodInDays", "1" },
+        };
+
+        _configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(testConfig)
+            .Build();
+        _scoreSummaryUtility = new ScoreSummaryUtility(mapper, _configuration);
         
 
         var userUow = new Mock<IUserUOW>();

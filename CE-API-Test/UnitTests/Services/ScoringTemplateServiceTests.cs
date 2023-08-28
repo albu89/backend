@@ -6,6 +6,7 @@ using CE_API_V2.Services;
 using CE_API_V2.Services.Interfaces;
 using CE_API_V2.UnitOfWorks.Interfaces;
 using CE_API_V2.Utility;
+using Microsoft.Extensions.Configuration;
 using Moq;
 
 namespace CE_API_Test.UnitTests.Services;
@@ -16,6 +17,7 @@ public class ScoringTemplateServiceTests
     private IScoringTemplateService _scoringTemplateService;
     private IBiomarkersTemplateService _biomarkerServiceTemplateService;
     private IScoreSummaryUtility _scoreSummaryUtility;
+    private IConfigurationRoot _configuration;
 
     [OneTimeSetUp]
     public void OneTimeSetup()
@@ -31,7 +33,17 @@ public class ScoringTemplateServiceTests
         userUowMock.Setup(u => u.GetUser(It.IsAny<string>())).Returns(new UserModel(){ UserId = "123"});
         userUowMock.Setup(u => u.OrderTemplate(It.IsAny<IEnumerable<BiomarkerSchema>>(), It.IsAny<string>())).Returns(biomarkersTemplateService.Object.GetTemplate().GetAwaiter().GetResult());
 
-        _scoreSummaryUtility = new ScoreSummaryUtility(mapper); //No mock needed
+        
+        var testConfig = new Dictionary<string, string?>()
+        {
+            { "EditPeriodInDays", "1" },
+        };
+
+        _configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(testConfig)
+            .Build();
+        
+        _scoreSummaryUtility = new ScoreSummaryUtility(mapper, _configuration); //No mock needed
         _biomarkerServiceTemplateService = biomarkersTemplateService.Object;
         _scoringTemplateService = new ScoringTemplateService(mapper, _biomarkerServiceTemplateService, _scoreSummaryUtility, userUowMock.Object);
     }

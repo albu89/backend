@@ -54,23 +54,30 @@ public class MockedInputPatientDataService
                         valueProperty.SetValue(wrapperInstance, GetRandomValue(valueProperty.PropertyType));
                         property.SetValue(_scoringRequest, wrapperInstance);
                     }
+                    valueProperty = property.PropertyType.GetProperty("UnitType");
+                    if (valueProperty is not null)
+                    {
+                        valueProperty.SetValue(wrapperInstance, "SI"); 
+                        property.SetValue(_scoringRequest, wrapperInstance);
+                    }
                 }
             }
         }
 
         private object GetRandomValue(Type valuePropPropertyType)
         {
-            return valuePropPropertyType.Name switch {
+            return valuePropPropertyType.Name switch
+            {
                 "Boolean" => GetRandomBoolValue(),
                 "Single" => GetNextFloatValue(),
                 "String" => "Mock",
                 _ => Activator.CreateInstance(valuePropPropertyType)!,
             };
-            
+
         }
 
         private bool GetRandomBoolValue() => _random.Next(2) > 1;
 
-        private float GetNextFloatValue() => (float)_random.NextDouble();
+        private float GetNextFloatValue() => (float) _random.NextDouble();
     }
 }
