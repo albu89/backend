@@ -41,7 +41,7 @@ public class ScoreUtilityTests
 
     [Test]
     [TestCase("en-GB", "No diagnostic testing mandated.")]
-    [TestCase("de-DE", "DEDEDE")]
+    [TestCase("de-DE", "Keine diagnostischen Tests vorgeschrieben.")]
     public void SetAdditionalScoringParams_GivenVariousLocales_ExpectedAddedMissingParameters(string locale, string expectedRecommendationSummary)
     {
         //Arrange

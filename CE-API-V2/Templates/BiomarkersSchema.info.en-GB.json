@@ -17,12 +17,12 @@
   {
     "id": "height",
     "fieldname": "Height",
-    "infoText": ""
+    "infoText": "Height of patient in centimeters"
   },
   {
     "id": "weight",
     "fieldname": "Weight",
-    "infoText": ""
+    "infoText": "Weight of patient in kilograms"
   },
   {
     "id": "chest_pain",

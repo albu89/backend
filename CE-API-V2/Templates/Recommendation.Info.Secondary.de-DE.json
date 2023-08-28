@@ -1,22 +1,22 @@
 [
   {
     "Id": 1,
-    "ShortText": "DEDEDE",
-    "LongText": "DEDEDE"
+    "ShortText": "Keine diagnostischen Tests vorgeschrieben.",
+    "LongText": "Auswahl des Tests basierend auf klinischer Wahrscheinlichkeit, Patientenmerkmalen und -präferenzen, Verfügbarkeit sowie lokaler Fachkenntnis.\n\nMedizinische Richtlinien empfehlen einen konservativen Ansatz für die Behandlung. Dies beinhaltet typischerweise Änderungen des Lebensstils und die Reduzierung von Risikofaktoren."
   },
   {
     "Id": 2,
-    "ShortText": "DEDEDE",
-    "LongText": "DEDEDE"
+    "ShortText": "Anatomische nicht-invasive Untersuchung (z. B. Koronar-CT-Angiographie (CTA).",
+    "LongText": "Auswahl des Tests basierend auf klinischer Wahrscheinlichkeit, Patientenmerkmalen und -präferenzen, Verfügbarkeit sowie lokalem Fachwissen.\n\nEine anatomische nicht-invasive Beurteilung durch Visualisierung des Lumens und der Wand der Koronararterie mit einem intravenösen Kontrastmittel kann mit der Koronar-CTA durchgeführt werden, die eine hohe Genauigkeit für die Erkennung obstruktiver Koronarstenosen gemäß ICA bietet, da beide Tests auf der Anatomie basieren . Allerdings sind Stenosen, die bei visueller Untersuchung auf 50–90 % geschätzt werden, nicht unbedingt funktionell bedeutsam, d. h. sie lösen nicht immer eine Myokardischämie aus. Daher wird für die weitere Beurteilung der durch koronare CTA-invasive Angiographie erkannten angiographischen Stenose entweder ein nicht-invasiver oder ein invasiver Funktionstest empfohlen, es sei denn, eine sehr hochgradige Stenose (> 90 % Stenosedurchmesser) wird mittels invasiver Angiographie erkannt. Das Vorhandensein oder Fehlen einer nicht-obstruktiven koronaren Atherosklerose im koronaren CTA liefert prognostische Informationen und kann als Leitfaden für die präventive Therapie verwendet werden."
   },
   {
     "Id": 3,
-    "ShortText": "DEDEDE",
-    "LongText": "DEDEDE"
+    "ShortText": "Testen auf Ischämie (nicht-invasive funktionelle Bildgebung bevorzugt).",
+    "LongText": "Auswahl des Tests basierend auf klinischer Wahrscheinlichkeit, Patientenmerkmalen und -präferenzen, Verfügbarkeit sowie lokalem Fachwissen. Funktionelle nicht-invasive Tests zur Diagnose obstruktiver CAD sind darauf ausgelegt, Myokardischämie durch EKG-Veränderungen, Wandbewegungsanomalien durch Stress-CMR oder Stress-Echokardiographie oder Perfusionsänderungen durch Einzelphotonen-Emissions-CT (SPECT) und Positronen-Emissions-Tomographie (PET) zu erkennen. , Myokard-Kontrast-Echokardiographie oder Kontrast-CMR. Eine Ischämie kann durch körperliche Betätigung oder pharmakologische Stressfaktoren hervorgerufen werden, entweder durch erhöhte Myokardarbeit und erhöhten Sauerstoffbedarf oder durch Heterogenität der Myokardperfusion durch Vasodilatation."
   },
   {
     "Id": 4,
-    "ShortText": "DEDEDE",
-    "LongText": "DEDEDE"
+    "ShortText": "Invasive Angiographie (mit iwFR/FFR).",
+    "LongText": "Auswahl des Tests basierend auf klinischer Wahrscheinlichkeit, Patientenmerkmalen und -präferenzen, Verfügbarkeit sowie lokalem Fachwissen. Funktionelle nicht-invasive Tests zur Diagnose einer obstruktiven koronaren Herzkrankheit werden dringend empfohlen, um die Koronararterien sichtbar zu machen und etwaige Verstopfungen zu erkennen. Die Öffnung verengter Arterien (Angioplastie) kann das Risiko eines Herzinfarkts verringern, indem sie den normalen Blutfluss zum Herzen wiederherstellt. Bei der Angioplastie wird ein kleiner Schlauch (Katheter) in die Arterie eingeführt und ein kleiner Ballon aufgeblasen, um die Arterie zu öffnen."
   }
 ]

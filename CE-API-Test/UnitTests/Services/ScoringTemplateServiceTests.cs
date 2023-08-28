@@ -39,7 +39,7 @@ public class ScoringTemplateServiceTests
     [Test]
     [TestCase("en-GB", "Score", "Choice of the text based on clinical likelihood, patient characteristics and preference, availability, as well as local expertise.")]
     [TestCase("en-FR", "Score", "Choice of the text based on clinical likelihood, patient characteristics and preference, availability, as well as local expertise.")] // default will be used
-    [TestCase("de-DE", "DEDE", "DEDE")]
+    [TestCase("de-DE", "Score", "Auswahl des Textes basierend auf klinischer Wahrscheinlichkeit, Patientenmerkmalen und -präferenzen, Verfügbarkeit sowie lokaler Expertise.")]
     public async Task TestGetTemplate_GivenCorrectLocalization_ExpectedCorrectlyAssembledScoreSummary(string locale, string scoreHeader, string localizedInfoText)
     {
         //Arrange

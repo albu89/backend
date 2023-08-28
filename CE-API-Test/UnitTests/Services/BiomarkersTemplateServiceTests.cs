@@ -22,7 +22,7 @@ public class BiomarkersTemplateServiceTests
     [Test]
     [TestCase("en-GB", "Prior CAD", "Prior CAD refers to a history of coronary artery disease (CAD) in a patient. Prior CAD increases the likelihood of patients with cardiovascular disease.")]
     [TestCase("en-FR", "Prior CAD", "Prior CAD refers to a history of coronary artery disease (CAD) in a patient. Prior CAD increases the likelihood of patients with cardiovascular disease.")] // default will be used
-    [TestCase("de-DE", "Prior CAD", "DEDEDEDEDE")]
+    [TestCase("de-DE", "Vorherige KHK", "„Vorherige koronare Herzkrankheit bezieht sich auf eine Vorgeschichte einer koronaren Herzkrankheit (KHK) bei einem Patienten. Eine Vorherige koronare Herzkrankheit erhöht die Wahrscheinlichkeit, dass Patienten an Herz-Kreislauf-Erkrankungen leiden.")]
     public async Task TestGetTemplate_GivenCorrectLocalization_ExpectedCorrectlyAssembledBiomarkerSchemaDtoList(string languageTag, string localizedFieldName, string localizedInfoText)
     {
         //Arrange

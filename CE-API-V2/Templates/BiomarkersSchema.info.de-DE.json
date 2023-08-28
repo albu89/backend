@@ -1,82 +1,82 @@
 [
   {
     "id": "prior_CAD",
-    "fieldname": "Prior CAD",
-    "infoText": "DEDEDEDEDE"
+    "fieldname": "Vorherige KHK",
+    "infoText": "„Vorherige koronare Herzkrankheit bezieht sich auf eine Vorgeschichte einer koronaren Herzkrankheit (KHK) bei einem Patienten. Eine Vorherige koronare Herzkrankheit erhöht die Wahrscheinlichkeit, dass Patienten an Herz-Kreislauf-Erkrankungen leiden."
   },
   {
     "id": "age",
-    "fieldname": "Age",
-    "infoText": "DEDEDEDEDE"
+    "fieldname": "Alter",
+    "infoText": "Alter des Patienten in Jahren."
   },
   {
     "id": "sex",
-    "fieldname": "Biological Sex",
-    "infoText": "DEDEDEDEDE"
+    "fieldname": "Geschlecht",
+    "infoText": "Biologisches Geschlecht (weiblich und männlich)"
   },
   {
     "id": "height",
     "fieldname": "Größe",
-    "infoText": "DEDEDEDEDE"
+    "infoText": "Größe des Patienten in Centimeter"
   },
   {
     "id": "weight",
     "fieldname": "Gewicht",
-    "infoText": "DEDEDEDEDE"
+    "infoText": "Gewicht des Patienten in Kilogramm"
   },
   {
     "id": "chest_pain",
     "fieldname": "Brustschmerzen",
-    "infoText": "DEDEDEDEDE"
+    "infoText": "Kriterien zur Beurteilung von Brustschmerzen\r\n\n     Schmerzauslösung: provozierbar durch körperliche Belastung oder emotionalen Stress - bei Wegfall der auslösenden Faktoren lässt der Schmerz nach (Anhalten der Beschwerden im Ruhezustand) - Schmerzdauer beträgt 2 bis 20 min (bei Einnahme von Nitroglycerin lässt der Schmerz schnell nach)\r\n\r\n\n        Schmerzeinheit Typ: viszeral, manifestiert sich als Druck, Engegefühl, Brennen (nicht stechend)\r\n\r\n\n       Schmerzlokalisation: retrosternal (möglicherweise mit Ausstrahlung in Arme, Oberbauch, Nacken)\r\n\r\n\n        Kategorisierung Cardio Explorer\r\n\n       Typische Angina pectoris: Es gelten 3 Kriterien\r\n\r\n\n       Mögliche Angina pectoris (atypische Angina pectoris): 2 Kriterien treffen zu\r\n\r\n        Unspezifische Brustschmerzen: 0 oder 1 Kriterium treffen zu\r\n\r\n\n       Keine Schmerzen in der Brust"
   },
   {
     "id": "nicotine",
-    "fieldname": "Nicotine consumption",
-    "infoText": "DEDEDEDEDE"
+    "fieldname": "Nikotin Konsum",
+    "infoText": "Nichtraucher: Person, die nie regelmäßig aktiv geraucht hat und Personen, die seit mehr als 6 Monaten nicht regelmäßig geraucht haben.\r\n\r\n\nEx-Raucher: Person, die seit mindestens 6 Monaten regelmäßig geraucht hat, zum Zeitpunkt der Aufzeichnung jedoch nicht mehr raucht.\r\n\r\n\nRaucher: Person, die derzeit regelmäßig raucht."
   },
   {
     "id": "diabetes",
     "fieldname": "Diabetes",
-    "infoText": "DEDEDEDEDE"
+    "infoText": "idDM: Abkürzung für insulinabhängigen Diabetes mellitus\r\n\r\n NidDM: Abkürzung für nicht insulinabhängigen Diabetes mellitus"
   },
   {
     "id": "statin",
-    "fieldname": "Statins (cholesterol-lowering drugs)",
-    "infoText": "DEDEDEDEDE"
+    "fieldname": "Statine (Cholesterinsenker)",
+    "infoText": "\t\r\nStatine sind Arzneimittel, die als cholesterinsenkende oder lipidsenkende Mittel eingesetzt werden.\r\n\r\nBeispiele: Atorvastatin, Fluvastatin, Pitavastatin, Pravastatin, Rosuvastatin, Simvastatin"
   },
   {
     "id": "tc_agg_inhibitor",
-    "fieldname": "Tc aggregation inhibitor",
-    "infoText": "Platelet inhibitors also platelet function inhibitors or platelet aggregation inhibitors.\r\n\r\nExamples: ASA or with the active ingredient clopidogrel, prasugrel, ticagrelor"
+    "fieldname": "Tc-Aggregationshemmer",
+    "infotext": "Thrombozytenaggregationshemmer auch Thrombozytenfunktionshemmer oder Thrombozytenaggregationshemmer.\r\n\r\nBeispiele: ASS oder mit dem Wirkstoff Clopidogrel, Prasugrel, Ticagrelor "
   },
   {
     "id": "ace_inhibitor",
-    "fieldname": "ACE Inhibitor",
-    "infoText": "RAS inhibitors / ACE inhibitors\r\n\r\nExamples: benazapril, captopril, cilazapril, enalapril, fosinopril, imidapril, lisinopril, moexipril, \r\n\r\nEquivalent treatment (angiotensin II inhibitors): azilsartan, losartan, valsartan, irbesartan, candesartan, eprosartan, olmesartan, telmisartan"
+    "fieldname": "ACE-Hemmer",
+    "infoText": "RAS-Hemmer / ACE-Hemmer\r\n\r\nBeispiele: Benazapril, Captopril, Cilazapril, Enalapril, Fosinopril, Imidapril, Lisinopril, Moexipril, \r\n\r\nÄquivalente Behandlung (Angiotensin-II-Hemmer): Azilsartan, Losartan, Valsartan , Irbesartan, Candesartan, Eprosartan, Olmesartan, Telmisartan"
   },
   {
     "id": "calcium_ant",
-    "fieldname": "Calcium Antagonist",
-    "infoText": "Calcium antagonists \r\n\r\nExamples: dihydropyridines, benzothiazepines, phenylalkylamines"
+    "fieldname": "Kalziumantagonisten",
+    "infoText": "Kalziumantagonisten \r\n\r\nBeispiele: Dihydropyridine, Benzothiazepine, Phenylalkylamine"
   },
   {
     "id": "betablocker",
     "fieldname": "Betablocker",
-    "infoText": "Beta-blocker\r\n\r\nExamples: atenolol, bisoprolol, celiprolol, esmolol, metoprolol, nebivolol"
+    "infoText": "Betablocker\r\n\r\nBeispiele: Atenolol, Bisoprolol, Celiprolol, Esmolol, Metoprolol, Nebivolol"
   },
   {
     "id": "diuretic",
-    "fieldname": "Diuretics",
-    "infoText": "Diuretics  \r\n\r\nExamples: amiloride, triamterene, furosemide, piretanide, torasemide, acetazolamide, bemetizide, bendroflumethiazide, clopamide, chlortalidone, hydrochlorothiazide, indapamide, canrenone, eplerenone."
+    "fieldname": "Diuretika",
+    "infoText": "Diuretika \r\n\r\nBeispiele: Amilorid, Triamteren, Furosemid, Piretanid, Torasemid, Acetazolamid, Bemetizid, Bendroflumethiazid, Clopamid, Chlortalidon, Hydrochlorothiazid, Indapamid, Canrenon, Eplerenon."
   },
   {
     "id": "nitrate",
-    "fieldname": "Organic Nitrate",
-    "infoText": "Organic nitrates\r\n\r\nExamples: Nitroglycerin (\u003d glycerol trinitrate, GTN), isosorbide dinitrate"
+    "fieldname": "Organische Nitrate",
+    "infoText": "Organische Nitrate\r\n\r\nBeispiele: Nitroglycerin (= Glyceryltrinitrat, GTN), Isosorbiddinitrat"
   },
   {
     "id": "systolic_bp",
-    "fieldname": "Systolic blood pressure",
+    "fieldname": "Systolischer Blutdruck",
     "infoText": ""
   },
   {
@@ -86,82 +86,82 @@
   },
   {
     "id": "q_wave",
-    "fieldname": "Q waves in resting ECG",
-    "infoText": "normal: Q waves of the electorcardiogram are normal.\r\n\r\npathological: Q waves of the electrocardiogram are pathological - indicating a prior myocardial infarction.\r\n\r\nno ECG available: as the pathological Q-wave is severely underrepresented in a population with low prevalence, the resting ECG is not necessary for risk calculation."
+    "fieldname": "Q-Wellen im Ruhe-EKG",
+    "infoText": "normal: Q-Wellen des Elektrokardiogramms sind normal.\r\n\r\npathologisch: Q-Wellen des Elektrokardiogramms sind pathologisch – was auf einen früheren Myokardinfarkt hinweist.\r\n\r\nkein EKG verfügbar: Da die pathologische Q-Welle in einer Population mit geringer Prävalenz stark unterrepräsentiert ist, ist das Ruhe-EKG für die Risikoberechnung nicht notwendig."
   },
   {
     "id": "amylase_p",
-    "fieldname": "Pancreatic amylase",
-    "infoText": "Amylase is an enzyme, or special protein, that helps in the digestion of carbohydrates. Tests for amylase in blood are mainly used to diagnose problems with pancreas, including pancreatitis. It is also used to monitor chronic (long-term) pancreatitis.\r\n\r\nAcute pancreatitis can be associated with electrical changes mimicking acute coronary syndrome with normal coronary arteries."
+    "fieldname": "Pankreas-Amylase",
+    "infoText": "Amylase ist ein Enzym oder spezielles Protein, das bei der Verdauung von Kohlenhydraten hilft. Tests auf Amylase im Blut werden hauptsächlich zur Diagnose von Problemen mit der Bauchspeicheldrüse, einschließlich Pankreatitis, verwendet. Sie werden auch zur Überwachung chronischer (langfristiger) Pankreatitis.\r\n\r\nEine akute Pankreatitis kann mit elektrischen Veränderungen einhergehen, die einem akuten Koronarsyndrom mit normalen Koronararterien ähneln."
   },
   {
     "id": "alkaline",
-    "fieldname": "Alkaline phosphatase",
-    "infoText": "Alkaline phosphatases are a group of isoenzymes, located on the outer layer of the cell membrane; they catalyze the hydrolysis of organic phosphate esters present in the extracellular space.  High levels of ALP may indicate liver disease or certain bone disorders, but an ALP test alone cannot diagnose a condition.\r\n\r\nHigh serum alkaline phosphatase (ALP) levels are associated with vascular calcification, atherosclerotic disease, and an increased risk of cardiovascular events."
+    "fieldname": "Alkalische Phosphatasen",
+    "infoText": "Alkalische Phosphatasen sind eine Gruppe von Isoenzymen, die sich auf der äußeren Schicht der Zellmembran befinden; sie katalysieren die Hydrolyse organischer Phosphatester im extrazellulären Raum. Hohe ALP-Werte können auf eine Lebererkrankung oder bestimmte Knochenerkrankungen hinweisen, aber ein ALP-Test allein kann einen Zustand nicht diagnostizieren.\r\n\r\nHohe Werte der alkalischen Phosphatase (ALP) im Serum sind mit Gefäßverkalkung, atherosklerotischen Erkrankungen und einem erhöhten Risiko für kardiovaskuläre Ereignisse verbunden."
   },
   {
     "id": "hs_troponin_t",
     "fieldname": "hs Troponin T",
-    "infoText": "Troponin T, High Sensitivity (hs-TnT) is an independent prognostic marker that aids in the diagnosis of acute myocardial infarction (\u003e14 ng/L)."
+    "infoText": "Troponin T, High Sensitivity (hs-TnT) ist ein unabhängiger Prognosemarker, der bei der Diagnose eines akuten Myokardinfarkts (>14 ng/L) hilft."
   },
   {
     "id": "alat",
     "fieldname": "ALAT",
-    "infoText": "Alanine aminotransferase (ALAT) is a transaminase enzyme. It is also called alanine transaminase (ALT). ALAT plays a crucial role in amino acid metabolism and gluconeogenesis. Serum ALAT activity is a reliable marker of liver disease and general health."
+    "infoText": "Alanin-Aminotransferase (ALAT) ist ein Transaminase-Enzym. Es wird auch Alanin-Transaminase (ALT) genannt. ALAT spielt eine entscheidende Rolle im Aminosäurestoffwechsel und der Gluconeogenese. Die Serum-ALAT-Aktivität ist ein zuverlässiger Marker für Lebererkrankungen und den allgemeinen Gesundheitszustand ."
   },
   {
     "id": "glucose",
-    "fieldname": "Glucose",
-    "infoText": "Glucose is a simple sugar with the molecular formula C6H12O6. In energy metabolism, glucose is the most important source of energy in all organisms. Blood sugar is a simple, common, safe blood test that can diagnose prediabetes, diabetes and gestational diabetes."
+    "fieldname": "Glukose",
+    "infoText": "Glukose ist ein Einfachzucker mit der Summenformel C6H12O6. Im Energiestoffwechsel ist Glukose die wichtigste Energiequelle in allen Organismen. Der Blutzucker ist ein einfacher, gängiger und sicherer Bluttest, der Prädiabetes, Diabetes und Schwangerschaftsdiabetes diagnostizieren kann."
   },
   {
     "id": "bilirubin",
-    "fieldname": "Bilirubin (total)",
-    "infoText": "\t\r\nBilirubin is a red-orange compound that occurs in the normal catabolic pathway that breaks down heme in vertebrates. This catabolism is a necessary process in the body\u0027s clearance of waste products that arise from the destruction of aged or abnormal red blood cells. Serum total bilirubin have a role for prediction of severe coronary artery disease in patients with chronic stable angina."
+    "fieldname": "Bilirubin (gesamt)",
+    "infoText": "Bilirubin ist eine rot-orange Verbindung, die im normalen katabolen Stoffwechselweg vorkommt, der bei Wirbeltieren Häm abbaut. Dieser Katabolismus ist ein notwendiger Prozess bei der körpereigenen Beseitigung von Abfallprodukten, die durch die Zerstörung gealterter oder abnormaler roter Blutkörperchen entstehen. Das Gesamtbilirubin im Serum spielt bei der Vorhersage einer schweren koronaren Herzkrankheit bei Patienten mit chronisch stabiler Angina pectoris eine Rolle."
   },
   {
     "id": "urea",
-    "fieldname": "Urea",
-    "infoText": "Urea, also known as carbamide, is an organic compound with chemical formula CO(NH₂)₂. High Blood Urea Nitrogen and high Serum Creatinine levels are risk factors for coronary artery disease."
+    "fieldname": "Harnstoff",
+    "infoText": "Harnstoff, auch Carbamid genannt, ist eine organische Verbindung mit der chemischen Formel CO(NH₂)₂. Hohe Blut-Harnstoff-Stickstoff- und hohe Serum-Kreatinin-Werte sind Risikofaktoren für eine koronare Herzkrankheit."
   },
   {
     "id": "uric_acid",
-    "fieldname": "Uric acid",
-    "infoText": "Uric acid is a heterocyclic compound of carbon, nitrogen, oxygen, and hydrogen with the formula C₅H₄N₄O₃. It forms ions and salts known as urates and acid urates, such as ammonium acid urate. Uric acid is a product of the metabolic breakdown of purine nucleotides, and it is a normal component of urine."
+    "fieldname": "Harnsäure",
+    "infoText": "Harnsäure ist eine heterozyklische Verbindung aus Kohlenstoff, Stickstoff, Sauerstoff und Wasserstoff mit der Formel C₅H₄N₄O₃. Es bildet Ionen und Salze, die als Urate und saure Urate bekannt sind, beispielsweise Ammoniumsäureurat. Harnsäure ist ein Produkt des metabolischen Abbaus von Purinnukleotiden und ein normaler Bestandteil des Urins."
   },
   {
     "id": "cholesterol",
-    "fieldname": "Cholesterol (total)",
-    "infoText": "Cholesterol is any of a class of certain organic molecules called lipids. It is a sterol (or modified steroid), a unitType of lipid. Cholesterol also serves as a precursor for the biosynthesis of steroid hormones, bile acid, and vitamin D. Raised total cholesterol is a strong risk factor for coronary heart disease, with evidence of a small, but significantly stronger, effect in men compared to women."
+    "fieldname": "Cholesterin (gesamt)",
+    "infoText": "Cholesterin gehört zu einer Klasse bestimmter organischer Moleküle, die Lipide genannt werden. Es ist ein Sterol (oder modifiziertes Steroid), eine Art Lipid. Cholesterin dient auch als Vorstufe für die Biosynthese von Steroidhormonen, Gallensäure und Vitamin D. Ein erhöhter Gesamtcholesterinspiegel ist ein starker Risikofaktor für koronare Herzerkrankungen, wobei es bei Männern im Vergleich zu Frauen einen kleinen, aber deutlich stärkeren Effekt gibt."
   },
   {
     "id": "hdl",
-    "fieldname": "HDL cholesterol",
-    "infoText": "HDL (high-density lipoprotein) cholesterol, sometimes called “good” cholesterol, absorbs cholesterol in the blood and carries it back to the liver. Increased LDL and decreased HDL cholesterol levels are associated with an increase in CAD."
+    "fieldname": "HDL-Cholesterin",
+    "infoText": "HDL-Cholesterin (High Density Lipoprotein), manchmal auch „gutes“ Cholesterin genannt, absorbiert Cholesterin im Blut und transportiert es zurück zur Leber. Erhöhte LDL- und verringerte HDL-Cholesterinwerte sind mit einem Anstieg der KHK verbunden."
   },
   {
     "id": "ldl",
-    "fieldname": "LDL cholesterol",
-    "infoText": "\t\r\nLow-density lipoprotein is one of the five major groups of lipoprotein that transport all fat molecules around the body in extracellular water. Increased LDL and decreased HDL cholesterol levels are associated with an increase in CAD."
+    "fieldname": "LDL-Cholesterin",
+    "infoText": "\t\r\nLDL-Cholesterin (Low-Density-Lipoprotein) ist eine der fünf Hauptgruppen von Lipoproteinen, die alle Fettmoleküle im extrazellulären Wasser durch den Körper transportieren. Erhöhte LDL- und verringerte HDL-Cholesterinspiegel sind mit einem Anstieg der KHK verbunden."
   },
   {
     "id": "protein",
-    "fieldname": "Protein (total)",
-    "infoText": "The total protein test measures the total amount of two classes of proteins found in the fluid portion of your blood. These are albumin and globulin. Albumin helps prevent fluid from leaking out of blood vessels. It also carries chemicals in your blood."
+    "fieldname": "Protein (gesamt)",
+    "infoText": "Der Gesamtproteintest misst die Gesamtmenge von zwei Proteinklassen, die im flüssigen Teil Ihres Blutes vorkommen. Dies sind Albumin und Globulin. Albumin verhindert, dass Flüssigkeit aus den Blutgefäßen austritt. Es transportiert auch Chemikalien in Ihr Blut."
   },
   {
     "id": "albumin",
     "fieldname": "Albumin",
-    "infoText": "Albumin is a protein made by the liver. A serum albumin test measures the amount of this protein in the clear liquid portion of the blood."
+    "infoText": "Albumin ist ein Protein, das von der Leber hergestellt wird. Ein Serumalbumintest misst die Menge dieses Proteins im klaren flüssigen Teil des Blutes."
   },
   {
     "id": "leukocyte",
-    "fieldname": "Leukocyte",
-    "infoText": "White blood cells, also called leukocytes or leucocytes, are the cells of the immune system that are involved in protecting the body against both infectious disease and foreign invaders. Numerous epidemiologic and clinical studies have shown leukocytosis to be an independent predictor of future cardiovascular events."
+    "fieldname": "Leukozyten",
+    "infoText": "Weiße Blutkörperchen, auch Leukozyten genannt, sind die Zellen des Immunsystems, die den Körper sowohl vor Infektionskrankheiten als auch vor fremden Eindringlingen schützen. Zahlreiche epidemiologische und klinische Studien haben gezeigt, dass Leukozytose ein unabhängiger Prädiktor für zukünftige kardiovaskuläre Ereignisse ist."
   },
   {
     "id": "mchc",
     "fieldname": "MCHC",
-    "infoText": "MCHC stands for mean corpuscular hemoglobin concentration. The mean corpuscular hemoglobin concentration is a measure of the concentration of hemoglobin in a given volume of packed red blood cell. It is calculated by dividing the hemoglobin by the haematocrit. Total white blood cells counts were related with the severity of coronary artery disease, and higher white blood cells counts increased the risk of cardiovascular diseases."
+    "infoText": "MCHC steht für die mittlere korpuskuläre Hämoglobinkonzentration. Die mittlere korpuskuläre Hämoglobinkonzentration ist ein Maß für die Hämoglobinkonzentration in einem bestimmten Volumen gepackter roter Blutkörperchen. Er wird berechnet, indem man das Hämoglobin durch den Hämatokrit dividiert. Die Gesamtzahl der weißen Blutkörperchen stand mit der Schwere der koronaren Herzkrankheit in Zusammenhang, und eine höhere Anzahl weißer Blutkörperchen erhöhte das Risiko für Herz-Kreislauf-Erkrankungen."
   }
 ]
