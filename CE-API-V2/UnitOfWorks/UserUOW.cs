@@ -1,4 +1,5 @@
-﻿using CE_API_V2.Data.Repositories.Interfaces;
+﻿using System.Runtime.InteropServices;
+using CE_API_V2.Data.Repositories.Interfaces;
 using CE_API_V2.Data;
 using CE_API_V2.Data.Repositories;
 using CE_API_V2.Models;
@@ -7,6 +8,8 @@ using CE_API_V2.Services.Interfaces;
 using CE_API_V2.UnitOfWorks.Interfaces;
 using Azure.Communication.Email;
 using CE_API_V2.Data.Extensions;
+using CE_API_V2.Models.Enum;
+using CE_API_V2.Models.Records;
 using CE_API_V2.Utility;
 
 namespace CE_API_V2.UnitOfWorks
@@ -147,9 +150,18 @@ namespace CE_API_V2.UnitOfWorks
             return storedUser;
         }
 
-        public UserModel GetUser(string userId)
+        public UserModel? GetUser(string userId, UserIdsRecord userInfo)
         {
             var user = UserRepository.GetById(userId);
+
+            var isSystemAdmin = userInfo.Role is UserRole.SystemAdmin;
+            var isTenantAdmin = userInfo.Role is UserRole.Admin && userInfo.TenantId == user.TenantID;
+            var isSelf = userInfo.UserId == user?.UserId;
+
+            if (!isSelf && !isTenantAdmin && !isSystemAdmin)
+            {
+                return null;
+            }
 
             return user;
         }
@@ -157,15 +169,34 @@ namespace CE_API_V2.UnitOfWorks
         public async Task<EmailSendStatus> ProcessAccessRequest(AccessRequest access)
             => await _communicationService.SendAccessRequest(access);
 
+        public async Task<EmailSendStatus> ProcessInactiveUserCreation(UserModel user)
+            => await _communicationService.SendActivationRequest(user);
+
         public IEnumerable<BiomarkerOrderModel> GetBiomarkerOrders(string userId)
         {
             return BiomarkerOrderRepository.Get(x => x.UserId == userId);
         }
 
-        public async Task<UserModel> UpdateUser(string userId, UserModel updatedUser)
+        public async Task<UserModel> UpdateUser(string userId, UserModel updatedUser, UserIdsRecord userInfo)
         {
             var storedUser = _userRepository.GetById(userId) ?? throw new KeyNotFoundException();
+
+            // Modification is allowed if:
+            // User modifies themselves
+            // User is privileged and modifies a User of their own tenant
+            var modifiesSelf = storedUser.UserId == userInfo.UserId;
+            var isTenantAdmin = userInfo.Role is UserRole.Admin && storedUser.TenantID == userInfo.TenantId;
+            var isSystemAdmin = userInfo.Role is UserRole.SystemAdmin;
+            if (!modifiesSelf && !isTenantAdmin && !isSystemAdmin)
+            {
+                throw new Exception("You are not allowed to modify this user.");
+            }
+            
             var updatedUserModel = UserModelUpdater.UpdateUserModel(updatedUser, storedUser, out _);
+            if (userInfo.Role is (UserRole.Admin or UserRole.SystemAdmin))
+            {
+                updatedUserModel = UserModelUpdater.UpdatePrivilegedData(updatedUser, storedUser, out _);
+            }
 
             try
             {
@@ -178,6 +209,25 @@ namespace CE_API_V2.UnitOfWorks
             }
 
             return UserRepository.GetById(storedUser.UserId);
+        }
+        /// <summary>
+        /// Returns all users belonging to the same administrative group as the provided user
+        /// </summary>
+        /// <param name="userInfo"></param>
+        /// <returns></returns>
+        public IEnumerable<UserModel> GetUsersForAdmin(UserIdsRecord userInfo)
+        {
+            if (userInfo.Role is not (UserRole.Admin or UserRole.SystemAdmin))
+            {
+                return Enumerable.Empty<UserModel>();
+            }
+
+            if (userInfo.Role is UserRole.SystemAdmin)
+            {
+                return _userRepository.Get();
+            }
+            
+            return _userRepository.Get(u => u.TenantID == userInfo.TenantId);
         }
     }
 }

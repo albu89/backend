@@ -9,6 +9,7 @@ using CE_API_V2.UnitOfWorks.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using System.Security.Claims;
+using CE_API_V2.Models.Records;
 using CE_API_V2.Utility;
 using Microsoft.Extensions.Configuration;
 
@@ -45,7 +46,7 @@ public class BiomarkersControllerTests
         _biomarkersTemplateService = new BiomarkersTemplateService(mapper);
         
         var userUowMock = new Mock<IUserUOW>();
-        userUowMock.Setup(u => u.GetUser(It.IsAny<string>())).Returns(new UserModel(){ UserId = "123"});
+        userUowMock.Setup(u => u.GetUser(It.IsAny<string>(), It.IsAny<UserIdsRecord>())).Returns(new UserModel(){ UserId = "123"});
         userUowMock.Setup(u => u.OrderTemplate(It.IsAny<IEnumerable<BiomarkerSchema>>(), It.IsAny<string>())).Returns(_biomarkersTemplateService.GetTemplate().GetAwaiter().GetResult());
         _userUow = userUowMock.Object;
         _scoringTemplateService = new ScoringTemplateService(mapper, _biomarkersTemplateService, scoreSummaryUtility, _userUow);

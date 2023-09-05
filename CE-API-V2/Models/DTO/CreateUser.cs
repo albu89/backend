@@ -28,4 +28,6 @@ public class CreateUser
     public string UnitLabValues { get; set; }
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public PatientDataEnums.ClinicalSetting ClinicalSetting { get; set; }
+    
+    public bool IsActive { get; set; }
 }

@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Diagnostics;
+using AutoMapper;
 using CE_API_V2.Models.DTO;
 using CE_API_V2.UnitOfWorks.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -8,6 +9,7 @@ using Azure.Communication.Email;
 using CE_API_V2.Models;
 using CE_API_V2.Utility;
 using CE_API_V2.Models.Mapping;
+using CE_API_V2.Utility.CustomAnnotations;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace CE_API_V2.Controllers
@@ -15,7 +17,9 @@ namespace CE_API_V2.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
+    [UserActive]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden), SwaggerResponse(403, "Rejects request if user has no active account.")]
     public class UserController : ControllerBase
     {
         private readonly IMapper _mapper;
@@ -23,12 +27,14 @@ namespace CE_API_V2.Controllers
         private readonly IInputValidationService _inputValidationService;
         private readonly IUserUOW _userUow;
         private readonly IUserInformationExtractor _userInformationExtractor;
+        private readonly IAdministrativeEntitiesUOW _administrativeEntitiesUow;
         private readonly UserHelper _userHelper;
 
         public UserController(IMapper mapper,
             IUserUOW userUOW,
             IInputValidationService inputValidationService,
             IUserInformationExtractor userInformationExtractor,
+            IAdministrativeEntitiesUOW administrativeEntitiesUow,
             UserHelper userHelper)
         {
             _mapper = mapper;
@@ -36,6 +42,7 @@ namespace CE_API_V2.Controllers
             _inputValidationService = inputValidationService;
             _userUow = userUOW;
             _userInformationExtractor = userInformationExtractor;
+            _administrativeEntitiesUow = administrativeEntitiesUow;
             _userHelper = userHelper;
         }
 
@@ -43,16 +50,18 @@ namespace CE_API_V2.Controllers
         /// <remarks>
         /// Returns the currently authenticated Users Userprofile.
         /// If no Userprofile exists, Status 404 is returned.
+        /// If the Userprofile is inactive, Status 403 is returned.
         /// </remarks>
         [HttpGet(Name = "GetCurrentUser")]
         [Produces("application/json", Type = typeof(User))]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult GetCurrentUser()
         {
             var idInformation = _userInformationExtractor.GetUserIdInformation(User);
             var userId = idInformation.UserId;
 
-            var currentUser = _userUow.GetUser(userId);
+            var currentUser = _userUow.GetUser(userId, idInformation);
 
             var userDto = _mapper.Map<User>(currentUser);
 
@@ -65,6 +74,7 @@ namespace CE_API_V2.Controllers
         /// If a Userprofile exists already, it returns the current User.
         /// </remarks>
         [HttpPost(Name = "CreateCurrentUser")]
+        [AllowInActiveUser]
         [Produces("application/json", Type = typeof(User))]
         [ProducesResponseType(StatusCodes.Status400BadRequest), SwaggerResponse(400, "Returns BadRequest if the Userprofile could not be created.")]
         public async Task<IActionResult> CreateUser([FromBody] CreateUser user)
@@ -83,8 +93,13 @@ namespace CE_API_V2.Controllers
             }
 
             var userModel = _userHelper.MapToUserModel(user, idInformation);
-
+            userModel = _userHelper.SetActiveStatus(userModel);
             var storedUser = await _userUow.StoreUser(userModel);
+
+            if (!userModel.IsActive)
+            {
+                await _userUow.ProcessInactiveUserCreation(userModel);
+            }
 
             return storedUser is not null ? Ok(_mapper.Map<User>(storedUser)) : BadRequest();
         }
@@ -93,16 +108,18 @@ namespace CE_API_V2.Controllers
         /// <remarks>
         /// Used to modify values on the currently authenticated users userprofile.
         /// </remarks>
+        /// If the Userprofile is inactive, Status 403 is returned.
         /// <param name="user"></param>
         [HttpPatch(Name = "UpdateUser")]
         [Produces("application/json", Type = typeof(User))]
         [ProducesResponseType(StatusCodes.Status400BadRequest), SwaggerResponse(400, "Returns BadRequest if the Userprofile could not be updated.")]
         public async Task<IActionResult> UpdateCurrentUser([FromBody] CreateUser user)
         {
-            var userId = _userInformationExtractor.GetUserIdInformation(User).UserId;
+                var userInfo = _userInformationExtractor.GetUserIdInformation(User);
+                var userId = userInfo.UserId;
             UserModel? mappedUser = _mapper.Map<UserModel>(user);
 
-            var updatedUser = await _userUow.UpdateUser(userId, mappedUser);
+            var updatedUser = await _userUow.UpdateUser(userId, mappedUser, userInfo);
 
             var userDto = _mapper.Map<User>(updatedUser);
 
@@ -117,9 +134,10 @@ namespace CE_API_V2.Controllers
         /// <param name="access"></param>
         [HttpPost("request", Name = "RequestApplicationAccess")]
         [AllowAnonymous]
+        [AllowInActiveUser]
         [Produces("application/json", Type = typeof(OkResult))]
         [ProducesResponseType(StatusCodes.Status400BadRequest), SwaggerResponse(400, "Returns BadRequest if Email-Service is unavailable.")]
-        public async Task<IActionResult> RequestAccess([FromBody,  SwaggerParameter("Contains all info needed to contact the requester.")] AccessRequest access)
+        public async Task<IActionResult> RequestAccess([FromBody, SwaggerParameter("Contains all info needed to contact the requester.")] AccessRequest access)
         {
             if (!_inputValidationService.ValidateAccessRequest(access))
             {
@@ -130,12 +148,13 @@ namespace CE_API_V2.Controllers
 
             return requestStatus.Equals(EmailSendStatus.Succeeded) ? Ok() : BadRequest();
         }
-        
+
         /// <summary>Get the current users preferences</summary>
         /// <remarks>
         /// Returns the currently authenticated users preferences.
         /// Preferences are the order and preferred unit for each biomarker.
         /// Each biomarker is provided as a BiomarkerOrderEntry consisting of unit and order number.
+        /// If the Userprofile is inactive, Status 403 is returned.
         /// </remarks>
         [HttpGet("preferences", Name = "GetPreferences")]
         [Produces("application/json", Type = typeof(BiomarkerOrder))]
@@ -145,7 +164,7 @@ namespace CE_API_V2.Controllers
             try
             {
                 var idInformation = _userInformationExtractor.GetUserIdInformation(User);
-                var user = _userUow.GetUser(idInformation.UserId);
+                var user = _userUow.GetUser(idInformation.UserId, idInformation);
                 var biomarkerOrders = ManualMapper.ToBiomarkerOrder(_userUOW.GetBiomarkerOrders(user.UserId));
 
                 return Ok(biomarkerOrders);
@@ -159,6 +178,7 @@ namespace CE_API_V2.Controllers
         /// <summary>Create new preferences for current user</summary>
         /// <remarks>
         /// Creates a new set of preferences for the currently authenticated user.
+        /// If the Userprofile is inactive, Status 403 is returned.
         /// </remarks>
         [HttpPost("preferences", Name = "CreatePreferences")]
         [Produces("application/json", Type = typeof(BiomarkerOrder))]
@@ -168,7 +188,7 @@ namespace CE_API_V2.Controllers
             try
             {
                 var idInformation = _userInformationExtractor.GetUserIdInformation(User);
-                var user = _userUow.GetUser(idInformation.UserId);
+                var user = _userUow.GetUser(idInformation.UserId, idInformation);
 
                 var orderModelList = ManualMapper.ToBiomarkerOrderModels(order);
                 foreach (var orderEntry in orderModelList)
@@ -189,17 +209,18 @@ namespace CE_API_V2.Controllers
         /// <summary>Update current users preferences</summary>
         /// <remarks>
         /// Allows for changing the Order and preferred Units per Biomarker for the currently authenticated user. 
+        /// If the Userprofile is inactive, Status 403 is returned.
         /// </remarks>
         /// <param name="order"></param>
         [HttpPatch("preferences", Name = "ModifyPreferences")]
         [Produces("application/json", Type = typeof(BiomarkerOrder))]
         [ProducesResponseType(StatusCodes.Status400BadRequest), SwaggerResponse(400, "Returns bad request result if preferences could not be stored.")]
-        public async Task<IActionResult> ModifyPreferences([FromBody,  SwaggerParameter("Contains the preferred Unit and order per biomarker")] BiomarkerOrder order)
+        public async Task<IActionResult> ModifyPreferences([FromBody, SwaggerParameter("Contains the preferred Unit and order per biomarker")] BiomarkerOrder order)
         {
             try
             {
                 var idInformation = _userInformationExtractor.GetUserIdInformation(User);
-                var user = _userUow.GetUser(idInformation.UserId);
+                var user = _userUow.GetUser(idInformation.UserId, idInformation);
 
                 var orderModelList = ManualMapper.ToBiomarkerOrderModels(order);
                 foreach (var orderEntry in orderModelList)

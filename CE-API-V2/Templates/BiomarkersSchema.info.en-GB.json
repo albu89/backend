@@ -54,9 +54,9 @@
     "fieldname": "Diabetes",
     "infoText": "idDM: abbreviation for insulin dependent diabetes mellitus\r\n\r\nNidDM: abbreviation for non insulin dependent diabetes mellitus",
     "displayNames": {
-      "no": "No",
-      "NidDM": "Niddm",
-      "idDM": "Iddm"
+      "No": "No",
+      "Niddm": "NidDM",
+      "Iddm": "IdDM"
     }
   },
   {

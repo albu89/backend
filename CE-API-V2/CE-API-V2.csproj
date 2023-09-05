@@ -43,6 +43,9 @@
         <Content Include="..\.dockerignore">
             <Link>.dockerignore</Link>
         </Content>
+        <Content Include="Templates\ActivateUserEmailBody.html">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
         <Content Include="Templates\RequestAccessEmailBody.html">
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
@@ -54,6 +57,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <None Remove="Templates\ActivateUserEmailBody.html" />
       <None Remove="Templates\RequestAccessEmailBody.html" />
       <None Include="wwwroot\api-docs\redoc.css">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

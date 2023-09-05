@@ -1,4 +1,5 @@
-﻿using CE_API_V2.Constants;
+﻿using System.Text;
+using CE_API_V2.Constants;
 namespace CE_API_V2.Controllers.Middlewares;
 
 public class StaticInformationMiddleware
@@ -14,7 +15,6 @@ public class StaticInformationMiddleware
     {
 
         context.Response.Headers.Add("x-api-version", ApiVersion.CommitId);
-        
         // Call the next delegate/middleware in the pipeline.
         await _next(context);
     }

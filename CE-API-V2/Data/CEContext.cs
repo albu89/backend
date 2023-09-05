@@ -11,6 +11,8 @@ namespace CE_API_V2.Data
         public DbSet<Biomarkers> Biomarkers { get; set; }
         public DbSet<BiomarkerOrderModel> BiomarkerOrders { get; set; }
         public DbSet<UserModel> Users { get; set; }
+        public DbSet<CountryModel> Countries { get; set; }
+        public DbSet<OrganizationModel> Organizations { get; set; }
 
         public CEContext() { }
 
@@ -79,6 +81,16 @@ namespace CE_API_V2.Data
             modelBuilder.Entity<UserModel>()
                 .Property(u => u.CreatedOn)
                 .HasDefaultValueSql("getdate()");
+
+            modelBuilder.Entity<UserModel>()
+                .Property(u => u.IsActive)
+                .HasDefaultValue(false);
+            
+            modelBuilder.Entity<CountryModel>()
+                .HasKey(c => c.Id);
+
+            modelBuilder.Entity<OrganizationModel>()
+                .HasKey(o => o.Id);
         }
     }
 }

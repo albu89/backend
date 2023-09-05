@@ -9,10 +9,12 @@ namespace CE_API_V2.Utility;
 public class UserHelper
 {
     private readonly IMapper _mapper;
+    private readonly IConfiguration _configuration;
 
-    public UserHelper(IMapper mapper)
+    public UserHelper(IMapper mapper, IConfiguration configuration)
     {
         _mapper = mapper;
+        _configuration = configuration;
     }
 
     public UserModel MapToUserModel(CreateUser user, UserIdsRecord userInformation)
@@ -25,11 +27,18 @@ public class UserHelper
         return userModel;
     }
     
-    
     public static string GetUserId(ClaimsPrincipal user)
     {
         var userId = user?.Claims?.Any() == true ? user.FindFirstValue(ClaimTypes.NameIdentifier) : "anonymous";
         userId ??= "anonymous";
         return userId;
+    }
+
+    public UserModel SetActiveStatus(UserModel user)
+    {
+        var defaultTenantId = _configuration.GetValue<string>("Azure:AD:TenantId");
+        user.IsActive = user.TenantID == defaultTenantId;
+
+        return user;
     }
 }

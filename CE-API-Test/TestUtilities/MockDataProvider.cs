@@ -422,7 +422,9 @@ namespace CE_API_Test.TestUtilities
             };
         }
 
-        public static string GetHtmlBodyMock() => "New user tried to register their account: email: {{{EmailAddress}}} ({{{FirstName}}} {{{LastName}}}, {{{PhoneNumber}}})<br/><br/> With kind regards<br/> Exploris Health";
+        public static string GetRequestHtmlBodyMock() => "New user tried to register their account: email: {{{EmailAddress}}} ({{{FirstName}}} {{{LastName}}}, {{{PhoneNumber}}})<br/><br/> With kind regards<br/> Exploris Health";
+       
+        public static string GetActivateUserHtmlBodyMock() => "New user has registered their account: email: {{{Id}}} ({{{FirstName}}} {{{LastName}}})<br/><br/> With kind regards<br/> Exploris Health";
 
         public static ScoreSchema GetScoreSummaryMock()
         {
@@ -514,5 +516,33 @@ namespace CE_API_Test.TestUtilities
             return ManualMapper.ToBiomarkerOrderModels(GetMockedOrder());
             
         }
+
+        public static CreateCountry GetMockedCountry() => new()
+        {
+            Name = "Country",
+            ContactEmail = "ContactEmail",
+        };
+        
+        public static CountryModel GetMockedCountryModel() => new()
+        {
+            Name = "Country",
+            ContactEmail = "ContactEmail",
+            Id = Guid.NewGuid()
+        };
+
+        public static CreateOrganization GetMockedCreateOrganization() => new()
+        {
+            Name = "Organization",
+            ContactEmail = "ContactEmail",
+            TenantId = Guid.NewGuid()
+        };
+        
+        public static OrganizationModel GetMockedOrganizationModel() => new()
+        {
+            Name = "Organization",
+            ContactEmail = "ContactEmail",
+            Id = Guid.NewGuid(),
+            TenantId = Guid.NewGuid()
+        };
     }
 }

@@ -2,6 +2,7 @@
 using CE_API_V2.Models;
 using CE_API_V2.Models.DTO;
 using CE_API_V2.Models.Mapping;
+using CE_API_V2.Models.Records;
 using CE_API_V2.Services;
 using CE_API_V2.Services.Interfaces;
 using CE_API_V2.UnitOfWorks.Interfaces;
@@ -30,7 +31,7 @@ public class ScoringTemplateServiceTests
         var mapper = mapperConfig.CreateMapper();
         
         var userUowMock = new Mock<IUserUOW>();
-        userUowMock.Setup(u => u.GetUser(It.IsAny<string>())).Returns(new UserModel(){ UserId = "123"});
+        userUowMock.Setup(u => u.GetUser(It.IsAny<string>(), It.IsAny<UserIdsRecord>())).Returns(new UserModel(){ UserId = "123"});
         userUowMock.Setup(u => u.OrderTemplate(It.IsAny<IEnumerable<BiomarkerSchema>>(), It.IsAny<string>())).Returns(biomarkersTemplateService.Object.GetTemplate().GetAwaiter().GetResult());
 
         
