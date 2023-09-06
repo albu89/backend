@@ -3,6 +3,7 @@ using CE_API_Test.TestUtilities;
 using CE_API_V2.Controllers;
 using CE_API_V2.Models.DTO;
 using CE_API_V2.Models.Mapping;
+using CE_API_V2.Models.Records;
 using CE_API_V2.Services;
 using CE_API_V2.Services.Interfaces;
 using CE_API_V2.UnitOfWorks.Interfaces;
@@ -42,7 +43,7 @@ public class SchemasControllerTests
 
         var userUow = new Mock<IUserUOW>();
         userUow.Setup(x => x.GetBiomarkerOrders(It.IsAny<string>())).Returns(MockDataProvider.GetMockedOrderModels());
-        userUow.Setup(x => x.GetUser(It.IsAny<string>())).Returns(MockDataProvider.GetMockedUser);
+        userUow.Setup(x => x.GetUser(It.IsAny<string>(), It.IsAny<UserIdsRecord>())).Returns(MockDataProvider.GetMockedUser);
         var template = await _biomarkersTemplateService.GetTemplate();
         _scoringTemplateService = new ScoringTemplateService(mapper, _biomarkersTemplateService, _scoreSummaryUtility, userUow.Object);
         userUow.Setup(x => x.OrderTemplate(It.IsAny<IEnumerable<BiomarkerSchema>>(), It.IsAny<string>())).Returns(template);

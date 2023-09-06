@@ -22,14 +22,18 @@ using CE_API_V2.Localization.JsonStringFactroy;
 using Microsoft.Extensions.Localization;
 using CE_API_V2.Utility.Auth;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
+var env = builder.Environment.EnvironmentName;
 
+var jsonName = $"appsettings.{env}.json";
 
 // Add services to the container.
 var config = new ConfigurationBuilder()
     .SetBasePath(Directory.GetCurrentDirectory())
-    .AddJsonFile("appsettings.json")
+    .AddJsonFile($"appsettings.json")
+    .AddJsonFile(jsonName, optional: true, reloadOnChange: true)
     .AddEnvironmentVariables()
     .AddUserSecrets<Program>()
     .Build();
@@ -82,6 +86,9 @@ builder.Services.AddScoped<IEmailBuilder, EmailBuilder>();
 builder.Services.AddScoped<IEmailClientService, EmailClientService>();
 builder.Services.AddScoped<IScoringTemplateService, ScoringTemplateService>();
 builder.Services.AddScoped<IScoreSummaryUtility, ScoreSummaryUtility>();
+builder.Services.AddScoped<IAdministrativeEntitiesUOW, AdministrativeEntitiesUOW>();
+builder.Services.AddScoped<IResponsibilityDeterminer, ResponsibilityDeterminer>();
+builder.Services.AddScoped<IEmailValidator, EmailValidator>();
 
 #endregion
 
@@ -96,8 +103,19 @@ builder.Services.AddSingleton<ScoringRequestValidator>();
 
 builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
 
+var allowedTenantsSection = config.GetSection("AllowedTenants");
+var allowedTenants = allowedTenantsSection.GetChildren().Select(x => x.Value);
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddMicrosoftIdentityWebApi(azureAdSection);
+    .AddMicrosoftIdentityWebApi(opt =>
+    {
+       config.Bind("Azure:AD", opt);
+       opt.TokenValidationParameters = new TokenValidationParameters
+       {
+           ValidIssuers = allowedTenants,
+           ValidateIssuer = true
+       };
+    }, opt => config.Bind("Azure:AD", opt));
+
 
 var countryCode = builder.Configuration.GetValue<string>("Country") ?? "CH";
 

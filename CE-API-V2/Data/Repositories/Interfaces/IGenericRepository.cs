@@ -12,4 +12,5 @@ public interface IGenericRepository<T>
         string includeProperties = "");
 
     T Update(T entityToUpdate);
+    T Delete(T entityToUpdate);
 }

@@ -68,4 +68,11 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
         _context.Entry(entityToUpdate).State = EntityState.Modified;
         return attached.Entity;
     }
+
+    public virtual T Delete(T entityToDelete)
+    {
+        var attached = dbSet.Attach(entityToDelete);
+        _context.Entry(entityToDelete).State = EntityState.Deleted;
+        return attached.Entity;
+    }
 }

@@ -37,5 +37,6 @@ namespace CE_API_V2.Models
         //public string BioMarkerOrder { get; set; } // Todo - ist das hier auch benötigt? 
         public PatientDataEnums.ClinicalSetting ClinicalSetting { get; set; }
         public IEnumerable<ScoringRequestModel> ScoringRequestModels { get; set; }
+        public bool IsActive { get; set; }
     }
 }

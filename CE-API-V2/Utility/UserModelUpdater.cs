@@ -27,6 +27,15 @@ namespace CE_API_V2.Utility
             return storedUser;
         }
 
+        public static UserModel UpdatePrivilegedData(UserModel updatedUser, UserModel storedUser, out List<string> errors)
+        {
+            errors = new List<string>();
+
+            storedUser.IsActive = UpdatePropertyIfChanged(updatedUser.IsActive, storedUser.IsActive);
+            storedUser.ClinicalSetting = UpdatePropertyIfChanged(updatedUser.ClinicalSetting, storedUser.ClinicalSetting);
+
+            return storedUser;
+        }
         private static T UpdatePropertyIfChanged<T>(T sourceValue, T destinationValue) => sourceValue is not null && !sourceValue.Equals(destinationValue) ? sourceValue : destinationValue;
 
     }

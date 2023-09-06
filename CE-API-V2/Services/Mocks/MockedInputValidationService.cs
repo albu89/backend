@@ -11,4 +11,5 @@ public class MockedInputValidationService : IInputValidationService
     public bool ValidateUser(CreateUser user) => true;
     public bool BiomarkersAreValid(ScoringRequest value) => true;
     public bool ValidateAccessRequest(AccessRequest user) => true;
+    public bool ValidateOrganization(CreateOrganization organization) => true;
 }

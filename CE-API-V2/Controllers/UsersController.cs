@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Net;
+using AutoMapper;
 using CE_API_V2.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using CE_API_V2.Models.DTO;
@@ -6,6 +7,7 @@ using CE_API_V2.UnitOfWorks.Interfaces;
 using CE_API_V2.Utility;
 using Microsoft.AspNetCore.Authorization;
 using CE_API_V2.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace CE_API_V2.Controllers
@@ -21,6 +23,7 @@ namespace CE_API_V2.Controllers
         private readonly IUserUOW _userUow;
         private readonly IUserInformationExtractor _userInformationExtractor;
         private readonly IMapper _mapper;
+    
         private readonly UserHelper _userHelper;
         
         public UsersController(IInputValidationService inputValidationService, 
@@ -48,7 +51,10 @@ namespace CE_API_V2.Controllers
         [Produces("application/json", Type = typeof(IEnumerable<User>)), SwaggerResponse(200, "List of users", typeof(IEnumerable<User>))]
         public async Task<IActionResult> GetAllUsers()
         {
-            return Ok(new List<User>());
+           var userInfo = _userInformationExtractor.GetUserIdInformation(User);
+           var userModels = _userUow.GetUsersForAdmin(userInfo);
+           var users = _mapper.Map<IEnumerable<User>>(userModels);
+            return Ok(users);
         }
         
         /// <summary>
@@ -62,9 +68,16 @@ namespace CE_API_V2.Controllers
         /// <returns></returns>
         [HttpGet("{id}", Name = "GetById")]
         [Produces("application/json", Type = typeof(User)), SwaggerResponse(200, "Returns a UserProfile")]
+        [ProducesErrorResponseType(typeof(BadRequest)), SwaggerResponse(400, "Returned when either ScoringRequest does not exist, was created by a different user or patient information does not match.")]
         public async Task<IActionResult> GetUserById(string id)
         {
-            return Ok();
+           var userInfo = _userInformationExtractor.GetUserIdInformation(User);
+           var user = _userUow.GetUser(id, userInfo);
+
+           if (user is null || user.TenantID != userInfo.TenantId)
+               return BadRequest("Access denied.");
+           
+            return Ok(_mapper.Map<User>(user));
         }
         
         /// <summary>
@@ -84,14 +97,24 @@ namespace CE_API_V2.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Update an existing User
+        /// </summary>
+        /// <remarks>
+        /// Takes in a User and updates their userprofile
+        /// </remarks>
+        /// <param name="user"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpPatch("{id}", Name = "UpdateUserById")]
         [Produces("application/json", Type = typeof(User)), SwaggerResponse(200, "Returns a UserProfile")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> UpdateUserById([FromBody] CreateUser user, string id)
         {
+            var userInfo = _userInformationExtractor.GetUserIdInformation(User);
             var mappedUser = _mapper.Map<UserModel>(user);
 
-            var updatedUser = await _userUow.UpdateUser(id, mappedUser);
+            var updatedUser = await _userUow.UpdateUser(id, mappedUser, userInfo);
 
             var userDto = _mapper.Map<User>(updatedUser);
 

@@ -159,6 +159,18 @@ namespace CE_API_V2.Models.Mapping
             CreateMap<RecommendationCategoryLocalizedPart, RecommendationCategory>()
                 .ForMember(dest => dest.LongText, opt => opt.MapFrom(src => src.LongText))
                 .ForMember(dest => dest.ShortText, opt => opt.MapFrom(src => src.ShortText));
+
+            CreateMap<CreateCountry, CountryModel>();
+            CreateMap<CountryModel, CountryModel>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
+            CreateMap<CountryModel, CreateCountry>();
+            CreateMap<CountryModel, Country>();
+
+            CreateMap<CreateOrganization, OrganizationModel>();
+            CreateMap<OrganizationModel, OrganizationModel>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
+            CreateMap<OrganizationModel, Organization>();
+            CreateMap<OrganizationModel, CreateOrganization>();
         }
     }
     public class ValueToUnderlyingTypeConverter<T> : ITypeConverter<BiomarkerValue<T>, T>

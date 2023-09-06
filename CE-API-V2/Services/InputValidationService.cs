@@ -30,5 +30,15 @@ namespace CE_API_V2.Services
         {
             return true;
         }
+
+        public bool ValidateOrganization(CreateOrganization organisation)
+        {
+            return true;
+        }
+        
+        public bool ValidateCountry(CreateCountry createCountry)
+        {
+            return true;
+        }
     }
 }

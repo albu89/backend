@@ -31,4 +31,5 @@ public class User
     public UserRole Role { get; set; }
     [JsonIgnore]
     public IEnumerable<BiomarkerOrder> BiomarkerOrders {get; set; }
+    public bool IsActive { get; set; }
 }

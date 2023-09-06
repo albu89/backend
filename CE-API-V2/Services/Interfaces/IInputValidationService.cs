@@ -8,4 +8,5 @@ public interface IInputValidationService
     public ValidationResult ScoringRequestIsValid(ScoringRequest request, UserModel currentUser);
     public bool ValidateUser(CreateUser user);
     public bool ValidateAccessRequest(AccessRequest user);
+    public bool ValidateOrganization(CreateOrganization organization);
 }

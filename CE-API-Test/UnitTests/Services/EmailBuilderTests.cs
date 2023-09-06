@@ -12,6 +12,7 @@ namespace CE_API_Test.UnitTests.Services
     {
         private IEmailTemplateProvider _emailTemplateProvider;
         private IConfiguration _configuration;
+        private IResponsibilityDeterminer _responsibilityDeterminer;
 
         [SetUp]
         public void SetUp()
@@ -20,31 +21,57 @@ namespace CE_API_Test.UnitTests.Services
             {
                 { "AzureCommunicationService:Endpoint", "https://ce-v2-communication-services.communication.azure.com/" },
                 { "AzureCommunicationService:MailFrom", "DoNotReply@70cd7cba-30aa-4feb-9e09-06c33c97bfb5.azurecomm.net" },
-                { "AzureCommunicationService:RequestMailSubject", "CardioExplorer: new user" }
+                { "AzureCommunicationService:RequestMailSubject", "CardioExplorer: new user" },
+                { "AzureCommunicationService:ActivateUserMailSubject", "CardioExplorer: new user" }
             };
 
             _configuration = new ConfigurationBuilder()
                 .AddInMemoryCollection(testConfig)
                 .Build();
+
             var emailTemplateProvider = new Mock<IEmailTemplateProvider>();
-            var htmlBodyMock = MockDataProvider.GetHtmlBodyMock();
-
-            emailTemplateProvider.Setup(x => x.GetRequestBodyTemplate()).Returns(htmlBodyMock);
-
+            var htmlRequestBodyMock = MockDataProvider.GetRequestHtmlBodyMock();
+            var htmlActivateUserBodyMock = MockDataProvider.GetActivateUserHtmlBodyMock();
+            emailTemplateProvider.Setup(x => x.GetRequestBodyTemplate()).Returns(htmlRequestBodyMock);
+            emailTemplateProvider.Setup(x => x.GetActivateUserBodyTemplate()).Returns(htmlActivateUserBodyMock);
             _emailTemplateProvider = emailTemplateProvider.Object;
+
+            var responsibilityDeterminer = new Mock<IResponsibilityDeterminer>();
+            _responsibilityDeterminer = responsibilityDeterminer.Object;
         }
 
         [Test]
-        public async Task ProcessAccessRequest_GivenAccessDto_ExpectedProcessedRequest()
+        public async Task GetRequestAccessEmailConfiguration_GivenAccessDto_ExpectedProcessedRequest()
         {
             //Arrange
             var accessRequestDto = MockDataProvider.GetMockedAccessRequestDto();
-            var sut = new EmailBuilder(_emailTemplateProvider, _configuration);
+            var sut = new EmailBuilder(_emailTemplateProvider, _configuration, _responsibilityDeterminer);
             var expectedEmailBody =
                 $"New user tried to register their account: email: {accessRequestDto.EmailAddress} ({accessRequestDto.FirstName} {accessRequestDto.Surname}, {accessRequestDto.PhoneNumber})<br/><br/> With kind regards<br/> Exploris Health";
 
             //Act 
-            var result = sut.GetEmailConfiguration(accessRequestDto);
+            var result = sut.GetRequestAccessEmailConfiguration(accessRequestDto);
+
+            //Assert
+            result.Should().NotBeNull();
+            result.Should().BeOfType<EMailConfiguration>();
+            result.Subject.Should().Be("CardioExplorer: new user");
+            result.HtmlContent.Should().Be(expectedEmailBody);
+            result.Sender.Should().Be("DoNotReply@70cd7cba-30aa-4feb-9e09-06c33c97bfb5.azurecomm.net");
+        }
+
+        
+        [Test]
+        public async Task GetActivateUserEmailConfiguration_GivenAccessDto_ExpectedProcessedRequest()
+        {
+            //Arrange
+            var userModel = MockDataProvider.GetMockedUser();
+            var sut = new EmailBuilder(_emailTemplateProvider, _configuration, _responsibilityDeterminer);
+            var expectedEmailBody =
+                $"New user has registered their account: email: {userModel.UserId} ({userModel.FirstName} {userModel.Surname})<br/><br/> With kind regards<br/> Exploris Health";
+
+            //Act 
+            var result = sut.GetActivateUserEmailConfiguration(userModel);
 
             //Assert
             result.Should().NotBeNull();

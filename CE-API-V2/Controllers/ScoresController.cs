@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 using CE_API_V2.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Swashbuckle.AspNetCore.Annotations;
+using CE_API_V2.Utility.CustomAnnotations;
 
 namespace CE_API_V2.Controllers;
 
@@ -21,6 +22,7 @@ namespace CE_API_V2.Controllers;
 [ProducesResponseType(StatusCodes.Status401Unauthorized), SwaggerResponse(401, "The user is not authorized.")]
 [ProducesResponseType(StatusCodes.Status403Forbidden), SwaggerResponse(403, "The user is not allowed to access this instance of the api.")]
 [Authorize]
+[UserActive]
 public class ScoresController : ControllerBase
 {
     private readonly IInputValidationService _inputValidationService;
@@ -29,13 +31,15 @@ public class ScoresController : ControllerBase
     private readonly IScoringUOW _scoringUow;
     private readonly IUserUOW _userUow;
     private readonly IScoreSummaryUtility _scoreSummaryUtility;
+    private readonly IUserInformationExtractor _userInformationExtractor;
 
     public ScoresController(IScoringUOW scoringUow,
         IPatientIdHashingUOW patientIdUow,
         IInputValidationService inputValidationService,
         IConfiguration configuration,
         IUserUOW userUow,
-        IScoreSummaryUtility scoreSummaryUtility)
+        IScoreSummaryUtility scoreSummaryUtility,
+        IUserInformationExtractor userInformationExtractor)
     {
         _hashingUow = patientIdUow;
         _scoringUow = scoringUow;
@@ -43,6 +47,7 @@ public class ScoresController : ControllerBase
         _configuration = configuration;
         _userUow = userUow;
         _scoreSummaryUtility = scoreSummaryUtility;
+        _userInformationExtractor = userInformationExtractor;
     }
 
     /// <summary>
@@ -162,8 +167,8 @@ public class ScoresController : ControllerBase
 
         CultureInfo.CurrentUICulture = userCulture;
 
-        var userId = UserHelper.GetUserId(User);
-        var currentUser = _userUow.GetUser(userId);
+        var userInfo = _userInformationExtractor.GetUserIdInformation(User);
+        var currentUser = _userUow.GetUser(userInfo.UserId, userInfo);
         var validationResult = _inputValidationService.ScoringRequestIsValid(scoringRequestValues, currentUser);
         if (!validationResult.IsValid)
         {
@@ -171,7 +176,7 @@ public class ScoresController : ControllerBase
         }
 
 
-        var requestedScore = await _scoringUow.ProcessScoringRequest(scoringRequestValues, userId, patientId);
+        var requestedScore = await _scoringUow.ProcessScoringRequest(scoringRequestValues, userInfo.UserId, patientId);
 
         return requestedScore is null ? BadRequest() : Ok(requestedScore);
     }
