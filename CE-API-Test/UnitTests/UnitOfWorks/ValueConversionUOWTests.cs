@@ -8,7 +8,7 @@ using CE_API_V2.Services.Interfaces;
 using CE_API_V2.UnitOfWorks;
 using Microsoft.Extensions.Configuration;
 
-namespace CE_API_Test.UnitTests.UnitsOfWork
+namespace CE_API_Test.UnitTests.UnitOfWorks
 {
     [TestFixture]
     public class ValueConversionUOWTests
@@ -28,7 +28,7 @@ namespace CE_API_Test.UnitTests.UnitsOfWork
             _config = new ConfigurationBuilder()
                 .AddInMemoryCollection(testConfig)
                 .Build();
-            
+
             var mapperConfig = new MapperConfiguration(mc =>
             {
                 mc.AddProfile(new MappingProfile());
@@ -43,11 +43,11 @@ namespace CE_API_Test.UnitTests.UnitsOfWork
         public void ConvertToScoringRequest_GivenCorrectParameters_ExpectedObjectWithCorrectUserIdAndPatientId()
         {
             //Arrange
-            var patientIdHashingUow = new PatientIdHashingUOW(_config);   
+            var patientIdHashingUow = new PatientIdHashingUOW(_config);
             var scoringRequestDto = MockDataProvider.CreateValidScoringRequestDto();
             var userId = "anonymous";
             var patientId = patientIdHashingUow.HashPatientId("mock", "mock", DateTime.Now);
-            
+
 
             var sut = new ValueConversionUOW(_mapper, _templateService);
 
@@ -67,20 +67,20 @@ namespace CE_API_Test.UnitTests.UnitsOfWork
             //Arrange
             var patientIdHashingUow = new PatientIdHashingUOW(_config);
             var scoringRequestDto = MockDataProvider.CreateValidScoringRequestDto();
-            
+
             // Set to specific value
             scoringRequestDto.Protein.Value = 5.0f;
             scoringRequestDto.Protein.UnitType = "Conventional";
-            
+
             scoringRequestDto.Alat.Value = 58.0f;
             scoringRequestDto.Alat.UnitType = "Conventional";
-            
+
             scoringRequestDto.Weight.Value = 50;
             scoringRequestDto.Weight.UnitType = "Conventional";
-            
+
             scoringRequestDto.UricAcid.Value = 150;
             scoringRequestDto.UricAcid.UnitType = "Conventional";
-            
+
             var userId = "anonymous";
             var patientId = patientIdHashingUow.HashPatientId("mock", "mock", DateTime.Now);
 
@@ -90,7 +90,7 @@ namespace CE_API_Test.UnitTests.UnitsOfWork
             });
             var mapper = mapperConfig.CreateMapper();
             var sut = new ValueConversionUOW(mapper, _templateService);
-         
+
             //Act
             await sut.ConvertToSiValues(scoringRequestDto);
             var (result, biomarkers) = sut.ConvertToScoringRequest(scoringRequestDto, userId, patientId);
@@ -99,18 +99,18 @@ namespace CE_API_Test.UnitTests.UnitsOfWork
             //Assert
             result.Should().NotBeNull();
             result.Should().BeOfType(typeof(ScoringRequestModel));
-            
+
             // conversion-factor = 10; 10 * 5.0f = 50f
             result.LatestBiomarkers.Protein.Should().Be(50f);
             result.PatientId.Should().Be(patientId);
             result.UserId.Should().Be(userId);
-            
+
             // conversion-factor = 1; 1 * 58f = 58f
             result.LatestBiomarkers.Alat.Should().Be(58f);
-            
+
             // conversion-factor = 1; 1 * 50 = 50
             result.LatestBiomarkers.Weight.Should().Be(50);
-            
+
             // conversion-factor = 58.823; 58.823 * 150f = 8,823.45f
             result.LatestBiomarkers.Uricacid.Should().Be(8_823.45f);
         }
