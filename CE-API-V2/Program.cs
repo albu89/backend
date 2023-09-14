@@ -123,6 +123,7 @@ builder.Services.AddSingleton<IAuthorizationHandler, CountryRequirementHandler>(
 
 var countryPolicy = new AuthorizationPolicyBuilder()
     .AddRequirements(new CountryRequirement(countryCode)).Build();
+;
 
 builder.Services.AddAuthorization(options =>
 {
