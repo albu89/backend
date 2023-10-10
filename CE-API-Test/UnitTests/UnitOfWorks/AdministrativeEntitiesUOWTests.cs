@@ -10,7 +10,6 @@ using CE_API_V2.Models.DTO;
 using CE_API_Test.TestUtilities;
 using CE_API_V2.Models.Records;
 using Azure.Communication.Email;
-using CE_API_V2.Controllers;
 using CE_API_V2.Models.Enum;
 
 namespace CE_API_Test.UnitTests.UnitOfWorks

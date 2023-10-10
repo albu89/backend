@@ -3,43 +3,56 @@ using CE_API_V2.Data;
 using CE_API_V2.Controllers.Middlewares;
 using CE_API_V2.Host;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
-var builder = WebApplication.CreateBuilder(args);
-var env = builder.Environment.EnvironmentName;
 
-var jsonName = $"appsettings.{env}.json";
+
+try
+{
+    var builder = WebApplication.CreateBuilder(args);
+    var env = builder.Environment.EnvironmentName;
+    var jsonName = $"appsettings.{env}.json";
 
 // Add services to the container.
-var config = new ConfigurationBuilder()
-    .SetBasePath(Directory.GetCurrentDirectory())
-    .AddJsonFile($"appsettings.json")
-    .AddJsonFile(jsonName, optional: true, reloadOnChange: true)
-    .AddEnvironmentVariables()
-    .AddUserSecrets<Program>()
-    .Build();
+    var config = new ConfigurationBuilder()
+        .SetBasePath(Directory.GetCurrentDirectory())
+        .AddJsonFile($"appsettings.json")
+        .AddJsonFile(jsonName, optional: true, reloadOnChange: true)
+        .AddEnvironmentVariables()
+        .AddUserSecrets<Program>()
+        .Build();
+    
+    Log.Logger = new LoggerConfiguration()
+        .ReadFrom.Configuration(config)
+        .Enrich.FromLogContext()
+        .WriteTo.Map("aadUserName", "default", (aadUserName, wt) => wt.File($"{aadUserName}.log"))
+        .WriteTo.Console()
+        .CreateLogger();
 
-if (builder.Environment.IsProduction())
-{
-    var keyVaultEndpoint = config["Azure:KeyVaultEndpoint"];
-
-    if (!string.IsNullOrEmpty(keyVaultEndpoint))
+    Log.Information($"Starting web application environment: {env}");
+    if (builder.Environment.IsProduction())
     {
-        builder.Configuration.AddAzureKeyVault(new Uri(keyVaultEndpoint), new DefaultAzureCredential()).Build();
+        var keyVaultEndpoint = config["Azure:KeyVaultEndpoint"];
+
+        if (!string.IsNullOrEmpty(keyVaultEndpoint))
+        {
+            builder.Configuration.AddAzureKeyVault(new Uri(keyVaultEndpoint), new DefaultAzureCredential()).Build();
+        }
     }
-}
 
-ConfigurationUtilities.SetupCardioExplorerServices(config, builder.Services);
+    ConfigurationUtilities.SetupCardioExplorerServices(config, builder.Services);
 
-var app = builder.Build();
+    builder.Host.UseSerilog();
+    var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
-{
-    var dbContext = scope.ServiceProvider.GetRequiredService<CEContext>();
-    if (dbContext.Database.IsRelational())
-    { 
-        dbContext.Database.Migrate();
+    using (var scope = app.Services.CreateScope())
+    {
+        var dbContext = scope.ServiceProvider.GetRequiredService<CEContext>();
+        if (dbContext.Database.IsRelational())
+        { 
+            dbContext.Database.Migrate();
+        }
     }
-}
 
 // Configure the HTTP request pipeline.
     app.UseSwagger();
@@ -57,25 +70,35 @@ using (var scope = app.Services.CreateScope())
         c.InjectStylesheet("redoc.css");
     });
 
-app.MapHealthChecks("/health");
+    app.MapHealthChecks("/health");
 
-var allowedHosts = config.GetSection("AllowedHosts").GetChildren().Select(x => x.Value).ToArray();
+    var allowedHosts = config.GetSection("AllowedHosts").GetChildren().Select(x => x.Value).ToArray();
 
-app.UseCors(options =>
+    app.UseCors(options =>
+    {
+        options.WithOrigins(allowedHosts);
+        options.AllowAnyHeader();
+        options.AllowAnyMethod();
+        options.AllowCredentials();
+        options.WithExposedHeaders("x-api-version");
+    });
+
+    app.UseMiddleware<StaticInformationMiddleware>();
+    app.UseMiddleware<LogContextMiddleware>();
+
+    app.UseHttpsRedirection();
+
+    app.MapControllers();
+
+    app.UseRateLimiter();
+
+    app.Run();
+}
+catch (Exception ex)
 {
-    options.WithOrigins(allowedHosts);
-    options.AllowAnyHeader();
-    options.AllowAnyMethod();
-    options.AllowCredentials();
-    options.WithExposedHeaders("x-api-version");
-});
-
-app.UseMiddleware<StaticInformationMiddleware>();
-
-app.UseHttpsRedirection();
-
-app.MapControllers();
-
-app.UseRateLimiter();
-
-app.Run();
+    Log.Fatal(ex, "Application terminated unexpectedly");
+}
+finally
+{
+    Log.CloseAndFlush();
+}

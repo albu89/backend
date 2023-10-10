@@ -30,6 +30,11 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Microsoft.Identity.Web" Version="2.11.1" />
+        <PackageReference Include="serilog" Version="3.0.1" />
+        <PackageReference Include="serilog.aspnetcore" Version="7.0.0" />
+        <PackageReference Include="serilog.sinks.console" Version="4.1.0" />
+        <PackageReference Include="serilog.sinks.file" Version="5.0.0" />
+        <PackageReference Include="serilog.sinks.map" Version="1.0.2" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
         <Folder Include="Migrations\" />
         <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.5.0" />

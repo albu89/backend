@@ -12,6 +12,7 @@ using System.Security.Claims;
 using CE_API_V2.Models.Records;
 using Azure.Communication.Email;
 using CE_API_V2.Utility;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 
 namespace CE_API_Test.UnitTests.Controllers

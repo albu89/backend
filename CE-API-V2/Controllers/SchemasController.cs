@@ -1,13 +1,15 @@
 ﻿using CE_API_V2.Constants;
 using CE_API_V2.Models.DTO;
+using CE_API_V2.Services;
 using CE_API_V2.Services.Interfaces;
 using CE_API_V2.UnitOfWorks.Interfaces;
 using CE_API_V2.Utility;
 using CE_API_V2.Utility.CustomAnnotations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.RateLimiting;
 using Swashbuckle.AspNetCore.Annotations;
+using Serilog;
+using Serilog.Context;
 
 namespace CE_API_V2.Controllers
 {
@@ -45,8 +47,7 @@ namespace CE_API_V2.Controllers
         [Produces("application/json", Type = typeof(IEnumerable<BiomarkerSchema>)), SwaggerResponse(200, "BiomarkerSchema containing all necessary information for creating a ScoringRequest page.", type: typeof(BiomarkerSchema))]
         public async Task<IActionResult> GetInputFormTemplate(string? locale = "en-GB")
         {
-
-            if (string.IsNullOrEmpty(locale))
+            if (string.IsNullOrEmpty(locale)) 
             {
                 locale = LocalizationConstants.DefaultLocale;
             }

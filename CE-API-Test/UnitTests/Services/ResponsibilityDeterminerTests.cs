@@ -1,7 +1,5 @@
-﻿using CE_API_V2.Models;
-using CE_API_Test.TestUtilities;
+﻿using CE_API_Test.TestUtilities;
 using CE_API_V2.Services;
-using Microsoft.Extensions.Configuration;
 
 namespace CE_API_Test.UnitTests.Services
 {

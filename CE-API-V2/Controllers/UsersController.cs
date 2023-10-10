@@ -1,5 +1,4 @@
-﻿using System.Net;
-using AutoMapper;
+﻿using AutoMapper;
 using CE_API_V2.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using CE_API_V2.Models.DTO;

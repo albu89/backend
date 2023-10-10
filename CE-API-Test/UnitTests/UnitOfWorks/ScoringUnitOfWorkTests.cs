@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using CE_API_Test.TestUtilities;
 using CE_API_V2.Data;
-using CE_API_V2.Models;
 using CE_API_V2.Models.DTO;
 using CE_API_V2.Models.Mapping;
 using CE_API_V2.Services;
@@ -11,7 +10,6 @@ using CE_API_V2.UnitOfWorks.Interfaces;
 using CE_API_V2.Utility;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Moq;
 
 namespace CE_API_Test.UnitTests.UnitOfWorks;
 
