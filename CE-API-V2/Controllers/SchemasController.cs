@@ -6,6 +6,7 @@ using CE_API_V2.Utility;
 using CE_API_V2.Utility.CustomAnnotations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace CE_API_V2.Controllers

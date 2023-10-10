@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 using CE_API_V2.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Swashbuckle.AspNetCore.Annotations;
+using Microsoft.AspNetCore.RateLimiting;
 using CE_API_V2.Utility.CustomAnnotations;
 
 namespace CE_API_V2.Controllers;
@@ -145,8 +146,10 @@ public class ScoresController : ControllerBase
     /// <param name="locale" example="de-CH">The requested language and region of the requested resource in IETF BCP 47 format.</param>
     /// <param name="scoringRequestValues" required="true">Object containing the biomarker values to request a CAD Score.</param>
     [HttpPost("request", Name = "RequestScore")]
+    [EnableRateLimiting("RequestLimitPerMinute")]
     [Produces("application/json", Type = typeof(ScoringResponse))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(IEnumerable<ValidationFailure>)), SwaggerResponse(400, "The request was malformed or contained invalid values.", type: typeof(IEnumerable<ValidationFailure>))]
+    [ProducesResponseType(StatusCodes.Status429TooManyRequests, Type = typeof(IEnumerable<ValidationFailure>)), SwaggerResponse(429, "Too many requests.", type: typeof(IEnumerable<ValidationFailure>))]
     [TypeFilter(typeof(ValidationExceptionFilter))]
     public async Task<IActionResult> PostScoringRequest(
         [FromBody] ScoringRequest scoringRequestValues, 
@@ -177,7 +180,7 @@ public class ScoresController : ControllerBase
 
 
         var requestedScore = await _scoringUow.ProcessScoringRequest(scoringRequestValues, userInfo.UserId, patientId);
-
+        
         return requestedScore is null ? BadRequest() : Ok(requestedScore);
     }
 

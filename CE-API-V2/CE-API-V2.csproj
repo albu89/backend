@@ -55,6 +55,9 @@
         <Compile Remove="Dto\ScoringRequestDto.cs" />
         <Compile Remove="Models\DTO\BiomarkersTemplateDTO.cs" />
     </ItemGroup>
+    <ItemGroup>
+        <InternalsVisibleTo Include="CE-API-Test" />
+    </ItemGroup>
 
     <ItemGroup>
       <None Remove="Templates\ActivateUserEmailBody.html" />

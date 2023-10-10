@@ -9,6 +9,7 @@ using Azure.Communication.Email;
 using CE_API_V2.Models;
 using CE_API_V2.Utility;
 using CE_API_V2.Models.Mapping;
+using Microsoft.AspNetCore.RateLimiting;
 using CE_API_V2.Utility.CustomAnnotations;
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -137,6 +138,7 @@ namespace CE_API_V2.Controllers
         [AllowInActiveUser]
         [Produces("application/json", Type = typeof(OkResult))]
         [ProducesResponseType(StatusCodes.Status400BadRequest), SwaggerResponse(400, "Returns BadRequest if Email-Service is unavailable.")]
+        [EnableRateLimiting("RequestLimitPerMinute")]
         public async Task<IActionResult> RequestAccess([FromBody, SwaggerParameter("Contains all info needed to contact the requester.")] AccessRequest access)
         {
             if (!_inputValidationService.ValidateAccessRequest(access))
