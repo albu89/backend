@@ -1,0 +1,54 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "ASP_ID": {
+            "value": "ASP-CEv2-949f"
+        },
+        "asp_resource_group": {
+            "value": "/subscriptions/3113a745-9d38-4873-9fbe-2a30f92c86b8/resourceGroups/CE-v2/providers/Microsoft.Web/serverfarms/"
+        },
+        "app_name": {
+            "value": "ch-cardioexplorer-api"
+        },
+        "db_server_name": {
+            "value": "cardioexplorer-server-ch"
+        },
+        "sites_ce_location_full": {
+            "value": "Switzerland North"
+        },
+        "sql_server_password": {
+            "value": "UzUkDig3ys"
+        },
+        "ASPNETCORE_ENVIRONMENT": {
+            "value": "PRODUCTION"
+        },
+        "AZURE_CLIENT_ID": {
+            "value": "7e8be7c1-728f-4dce-af96-c3105974e2ee"
+        },
+        "AZURE_CLIENT_SECRET": {
+            "value": ""
+        },
+        "AZURE_TENANT_ID": {
+            "value": "d8a83447-d1d0-41e3-a7cc-6be16c052845"
+        },
+        "AzureCommunicationService__Endpoint": {
+            "value": "https://ce-v2-communication-services.switzerland.communication.azure.com/"
+        },
+        "AzureCommunicationService__KeyCredential": {
+            "value": "lmSaW7+lur9FRhCDcFEM9FvtgWG+FZ26NIpYd/0QBHlwJehYqOYXSXHbRLrBxwNJvz9h9wkM8cNMzFVH1fKFTg=="
+        },
+        "CEAD_AUTHENTICATION_SECRET": {
+            "value": ""
+        },
+        "Country": {
+            "value": "CH"
+        },
+        "Salt": {
+            "value": "A52nXZRHDce6j5Dbx5kkw2iSN3uGojA"
+        },
+        "ui-url": {
+            "value": "https://cardioexplorer.azurewebsites.net"
+        }
+    }
+}

@@ -1,0 +1,619 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "app_name": {
+            "defaultValue": "cardioexplorer-api",
+            "type": "String"
+        },
+        "db_server_name": {
+            "defaultValue": "ch-ce-v2-server",
+            "type": "String"
+        },
+        "ui-url": {
+            "defaultValue": "https://cardioexplorer.azurewebsites.net",
+            "type": "string"
+        },
+        "ASP_ID": {
+            "defaultValue": "ASP-CEv2-949f",
+            "type": "String"
+        },
+        "asp_resource_group": {
+            "defaultValue": "/subscriptions/3113a745-9d38-4873-9fbe-2a30f92c86b8/resourceGroups/CE-V2/providers/Microsoft.Web/serverfarms/",
+            "type": "string"
+        },
+        "app_location_displayname": {
+            "defaultValue": "Switzerland North",
+            "type": "string"
+        },
+        "sql_server_password": {
+            "type": "securestring"
+        },
+        "ASPNETCORE_ENVIRONMENT": {
+            "defaultValue": "DEVELOPMENT",
+            "type": "string"
+        },
+        "AZURE_CLIENT_ID": {
+            "defaultValue": "7e8be7c1-728f-4dce-af96-c3105974e2ee",
+            "type": "string"
+        },
+        "AZURE_CLIENT_SECRET": {
+            "defaultValue": "",
+            "type": "securestring"
+        },
+        "AZURE_TENANT_ID": {
+            "defaultValue": "d8a83447-d1d0-41e3-a7cc-6be16c052845",
+            "type": "string"
+        },
+        "Main_AAD_Tenant": {
+            "defaultValue": "https://sts.windows.net/d8a83447-d1d0-41e3-a7cc-6be16c052845/",
+            "type": "string"
+        },
+        "AzureCommunicationService__Endpoint": {
+            "defaultValue": "https://ce-v2-communication-services.switzerland.communication.azure.com/",
+            "type": "string"
+        },
+        "AzureCommunicationService__KeyCredential": {
+            "defaultValue": "lmSaW7+lur9FRhCDcFEM9FvtgWG+FZ26NIpYd/0QBHlwJehYqOYXSXHbRLrBxwNJvz9h9wkM8cNMzFVH1fKFTg==",
+            "type": "string"
+        },
+        "CEAD_AUTHENTICATION_SECRET": {
+            "defaultValue": "",
+            "type": "securestring"
+        },
+        "Country": {
+            "defaultValue": "ch",
+            "type": "string"
+        },
+        "Salt": {
+            "defaultValue": "A52nXZRHDce6j5Dbx5kkw2iSN3uGojA",
+            "type": "string"
+        },
+        "FallbackContactEmail": {
+            "defaultValue": "info@explorishealth.com",
+            "type": "string"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Sql/servers",
+            "apiVersion": "2022-11-01-preview",
+            "name": "[parameters('db_server_name')]",
+            "location": "[parameters('app_location_displayname')]",
+            "kind": "v12.0",
+            "identity": {
+                "type": "SystemAssigned"
+            },
+            "properties": {
+                "administratorLogin": "CloudSA882d52ce",
+                "administratorLoginPassword": "[parameters('sql_server_password')]",
+                "version": "12.0",
+                "minimalTlsVersion": "1.2",
+                "publicNetworkAccess": "Enabled",
+                "administrators": {
+                    "administratorType": "ActiveDirectory",
+                    "principalType": "User",
+                    "login": "philipp.Schlegel@EXXETA.com",
+                    "sid": "c583e3f3-1dd5-4ce0-a222-cca635b79798",
+                    "tenantId": "a926146a-6964-48ae-a0e2-3639b2ecec2e",
+                    "azureADOnlyAuthentication": false
+                },
+                "restrictOutboundNetworkAccess": "Disabled"
+            }
+        },
+         {
+            "type": "Microsoft.Sql/servers/administrators",
+            "apiVersion": "2022-11-01-preview",
+            "name": "[concat(parameters('db_server_name'), '/ActiveDirectory')]",
+            "dependsOn": ["[resourceId('Microsoft.Sql/servers', parameters('db_server_name'))]"],
+            "properties": {
+                "administratorType": "ActiveDirectory",
+                "login": "caroline.gyoergy@explorishealth.com",
+                "sid": "c583e3f3-1dd5-4ce0-a222-cca635b79798",
+                "tenantId": "a926146a-6964-48ae-a0e2-3639b2ecec2e"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/advancedThreatProtectionSettings",
+            "apiVersion": "2022-11-01-preview",
+            "name": "[concat(parameters('db_server_name'), '/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('db_server_name'))]"
+            ],
+            "properties": {
+                "state": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/auditingPolicies",
+            "apiVersion": "2014-04-01",
+            "name": "[concat(parameters('db_server_name'), '/Default')]",
+            "location": "[parameters('app_location_displayname')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('db_server_name'))]"
+            ],
+            "properties": {
+                "auditingState": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/auditingSettings",
+            "apiVersion": "2022-11-01-preview",
+            "name": "[concat(parameters('db_server_name'), '/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('db_server_name'))]"
+            ],
+            "properties": {
+                "retentionDays": 0,
+                "auditActionsAndGroups": [],
+                "isStorageSecondaryKeyInUse": false,
+                "isAzureMonitorTargetEnabled": false,
+                "isManagedIdentityInUse": false,
+                "state": "Disabled",
+                "storageAccountSubscriptionId": "00000000-0000-0000-0000-000000000000"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/azureADOnlyAuthentications",
+            "apiVersion": "2022-11-01-preview",
+            "name": "[concat(parameters('db_server_name'), '/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('db_server_name'))]"
+            ],
+            "properties": {
+                "azureADOnlyAuthentication": false
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/connectionPolicies",
+            "apiVersion": "2022-11-01-preview",
+            "name": "[concat(parameters('db_server_name'), '/default')]",
+            "location": "[parameters('app_location_displayname')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('db_server_name'))]"
+            ],
+            "properties": {
+                "connectionType": "Default"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases",
+            "apiVersion": "2022-11-01-preview",
+            "name": "[concat(parameters('db_server_name'), '/cardioexplorerv2')]",
+            "location": "[parameters('app_location_displayname')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('db_server_name'))]"
+            ],
+            "sku": {
+                "name": "GP_S_Gen5",
+                "tier": "GeneralPurpose",
+                "family": "Gen5",
+                "capacity": 1
+            },
+            "kind": "v12.0,user,vcore,serverless",
+            "properties": {
+                "collation": "SQL_Latin1_General_CP1_CI_AS",
+                "maxSizeBytes": 34359738368,
+                "catalogCollation": "SQL_Latin1_General_CP1_CI_AS",
+                "zoneRedundant": false,
+                "readScale": "Disabled",
+                "autoPauseDelay": 60,
+                "requestedBackupStorageRedundancy": "Local",
+                "minCapacity": 0.5,
+                "maintenanceConfigurationId": "/subscriptions/3113a745-9d38-4873-9fbe-2a30f92c86b8/providers/Microsoft.Maintenance/publicMaintenanceConfigurations/SQL_Default",
+                "isLedgerOn": false,
+                "availabilityZone": "NoPreference"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/devOpsAuditingSettings",
+            "apiVersion": "2022-11-01-preview",
+            "name": "[concat(parameters('db_server_name'), '/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('db_server_name'))]"
+            ],
+            "properties": {
+                "isAzureMonitorTargetEnabled": false,
+                "isManagedIdentityInUse": false,
+                "state": "Disabled",
+                "storageAccountSubscriptionId": "00000000-0000-0000-0000-000000000000"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/encryptionProtector",
+            "apiVersion": "2022-11-01-preview",
+            "name": "[concat(parameters('db_server_name'), '/current')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('db_server_name'))]"
+            ],
+            "kind": "servicemanaged",
+            "properties": {
+                "serverKeyName": "ServiceManaged",
+                "serverKeyType": "ServiceManaged",
+                "autoRotationEnabled": false
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/extendedAuditingSettings",
+            "apiVersion": "2022-11-01-preview",
+            "name": "[concat(parameters('db_server_name'), '/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('db_server_name'))]"
+            ],
+            "properties": {
+                "retentionDays": 0,
+                "auditActionsAndGroups": [],
+                "isStorageSecondaryKeyInUse": false,
+                "isAzureMonitorTargetEnabled": false,
+                "isManagedIdentityInUse": false,
+                "state": "Disabled",
+                "storageAccountSubscriptionId": "00000000-0000-0000-0000-000000000000"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/securityAlertPolicies",
+            "apiVersion": "2022-11-01-preview",
+            "name": "[concat(parameters('db_server_name'), '/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('db_server_name'))]"
+            ],
+            "properties": {
+                "state": "Disabled",
+                "disabledAlerts": [
+                    ""
+                ],
+                "emailAddresses": [
+                    ""
+                ],
+                "emailAccountAdmins": false,
+                "retentionDays": 0
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/sqlVulnerabilityAssessments",
+            "apiVersion": "2022-11-01-preview",
+            "name": "[concat(parameters('db_server_name'), '/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('db_server_name'))]"
+            ],
+            "properties": {
+                "state": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/advancedThreatProtectionSettings",
+            "apiVersion": "2022-11-01-preview",
+            "name": "[concat(parameters('db_server_name'), '/cardioexplorerv2/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('db_server_name'), 'cardioexplorerv2')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('db_server_name'))]"
+            ],
+            "properties": {
+                "state": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/auditingPolicies",
+            "apiVersion": "2014-04-01",
+            "name": "[concat(parameters('db_server_name'), '/cardioexplorerv2/Default')]",
+            "location": "[parameters('app_location_displayname')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('db_server_name'), 'cardioexplorerv2')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('db_server_name'))]"
+            ],
+            "properties": {
+                "auditingState": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/auditingSettings",
+            "apiVersion": "2022-11-01-preview",
+            "name": "[concat(parameters('db_server_name'), '/cardioexplorerv2/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('db_server_name'), 'cardioexplorerv2')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('db_server_name'))]"
+            ],
+            "properties": {
+                "retentionDays": 0,
+                "isAzureMonitorTargetEnabled": false,
+                "state": "Disabled",
+                "storageAccountSubscriptionId": "00000000-0000-0000-0000-000000000000"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies",
+            "apiVersion": "2022-11-01-preview",
+            "name": "[concat(parameters('db_server_name'), '/cardioexplorerv2/default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('db_server_name'), 'cardioexplorerv2')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('db_server_name'))]"
+            ],
+            "properties": {
+                "retentionDays": 7,
+                "diffBackupIntervalInHours": 12
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/extendedAuditingSettings",
+            "apiVersion": "2022-11-01-preview",
+            "name": "[concat(parameters('db_server_name'), '/cardioexplorerv2/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('db_server_name'), 'cardioexplorerv2')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('db_server_name'))]"
+            ],
+            "properties": {
+                "retentionDays": 0,
+                "isAzureMonitorTargetEnabled": false,
+                "state": "Disabled",
+                "storageAccountSubscriptionId": "00000000-0000-0000-0000-000000000000"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/geoBackupPolicies",
+            "apiVersion": "2022-11-01-preview",
+            "name": "[concat(parameters('db_server_name'), '/cardioexplorerv2/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('db_server_name'), 'cardioexplorerv2')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('db_server_name'))]"
+            ],
+            "properties": {
+                "state": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/securityAlertPolicies",
+            "apiVersion": "2022-11-01-preview",
+            "name": "[concat(parameters('db_server_name'), '/cardioexplorerv2/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('db_server_name'), 'cardioexplorerv2')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('db_server_name'))]"
+            ],
+            "properties": {
+                "state": "Disabled",
+                "disabledAlerts": [
+                    ""
+                ],
+                "emailAddresses": [
+                    ""
+                ],
+                "emailAccountAdmins": false,
+                "retentionDays": 0
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/transparentDataEncryption",
+            "apiVersion": "2022-11-01-preview",
+            "name": "[concat(parameters('db_server_name'), '/cardioexplorerv2/Current')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('db_server_name'), 'cardioexplorerv2')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('db_server_name'))]"
+            ],
+            "properties": {
+                "state": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/vulnerabilityAssessments",
+            "apiVersion": "2022-11-01-preview",
+            "name": "[concat(parameters('db_server_name'), '/cardioexplorerv2/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('db_server_name'), 'cardioexplorerv2')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('db_server_name'))]"
+            ],
+            "properties": {
+                "recurringScans": {
+                    "isEnabled": false,
+                    "emailSubscriptionAdmins": true
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites",
+            "apiVersion": "2022-09-01",
+            "name": "[parameters('app_name')]",
+            "location": "[parameters('app_location_displayname')]",
+            "kind": "app,linux",
+            "identity": {
+                "type": "SystemAssigned"
+            },
+            "properties": {
+                "enabled": true,
+                "hostNameSslStates": [
+                    {
+                        "name": "[concat(parameters('app_name'), '.azurewebsites.net')]",
+                        "sslState": "Disabled",
+                        "hostType": "Standard"
+                    },
+                    {
+                        "name": "[concat(parameters('app_name'), '.scm.azurewebsites.net')]",
+                        "sslState": "Disabled",
+                        "hostType": "Repository"
+                    }
+                ],
+                "serverFarmId": "[concat(parameters('asp_resource_group'), parameters('ASP_ID'))]",
+                "reserved": true,
+                "isXenon": false,
+                "hyperV": false,
+                "vnetRouteAllEnabled": true,
+                "vnetImagePullEnabled": false,
+                "vnetContentShareEnabled": false,
+                "siteConfig": {
+                    "numberOfWorkers": 1,
+                    "linuxFxVersion": "DOTNETCORE|7.0",
+                    "acrUseManagedIdentityCreds": false,
+                    "alwaysOn": false,
+                    "http20Enabled": false,
+                    "functionAppScaleLimit": 0,
+                    "minimumElasticInstanceCount": 0,
+                    "connectionStrings": [
+                        {
+                            "connectionString": "[concat('Server=tcp:', parameters('db_server_name'), '.database.windows.net,1433;Initial Catalog=cardioexplorerv2;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;User ID=CloudSA882d52ce;Password=', parameters('sql_server_password'),';')]",
+                            "name": "DefaultConnectionString"
+                        }
+                    ]
+                },
+                "scmSiteAlsoStopped": false,
+                "clientAffinityEnabled": false,
+                "clientCertEnabled": false,
+                "clientCertMode": "Required",
+                "hostNamesDisabled": false,
+                "customDomainVerificationId": "FBCDCC0F0BEE6EB3FF8F5A5C82B525A8AC7613D10D3FB9E53746631E46DD8272",
+                "containerSize": 0,
+                "dailyMemoryTimeQuota": 0,
+                "httpsOnly": true,
+                "redundancyMode": "None",
+                "storageAccountRequired": false,
+                "keyVaultReferenceIdentity": "SystemAssigned"
+            },
+            "resources": [
+                {
+                    "type": "config",
+                    "apiVersion": "2022-09-01",
+                    "name": "appSettings",
+                    "dependsOn": [ "[parameters('app_name')]" ],
+                    "properties": {
+                        "ASPNETCORE_ENVIRONMENT": "[parameters('ASPNETCORE_ENVIRONMENT')]",
+                        "AZURE_CLIENT_ID": "[parameters('AZURE_CLIENT_ID')]",
+                        "AZURE_CLIENT_SECRET": "[parameters('AZURE_CLIENT_SECRET')]",
+                        "AZURE_TENANT_ID": "[parameters('AZURE_TENANT_ID')]",
+                        "AzureCommunicationService__Endpoint": "[parameters('AzureCommunicationService__Endpoint')]",
+                        "AzureCommunicationService__KeyCredential": "[parameters('AzureCommunicationService__KeyCredential')]",
+                        "CEAD_AUTHENTICATION_SECRET": "[parameters('CEAD_AUTHENTICATION_SECRET')]",
+                        "Country": "[parameters('Country')]",
+                        "Salt": "[parameters('Salt')]",
+                        "AllowedTenants__0": "[parameters('Main_AAD_Tenant')]",
+                        "EditPeriodInDays": 60,
+                        "ExplorisContactEMail": "[parameters('FallbackContactEmail')]"
+                    }
+                }
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/basicPublishingCredentialsPolicies",
+            "apiVersion": "2022-09-01",
+            "name": "[concat(parameters('app_name'), '/ftp')]",
+            "location": "[parameters('app_location_displayname')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('app_name'))]"
+            ],
+            "properties": {
+                "allow": true
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/basicPublishingCredentialsPolicies",
+            "apiVersion": "2022-09-01",
+            "name": "[concat(parameters('app_name'), '/scm')]",
+            "location": "[parameters('app_location_displayname')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('app_name'))]"
+            ],
+            "properties": {
+                "allow": true
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/config",
+            "apiVersion": "2022-09-01",
+            "name": "[concat(parameters('app_name'), '/web')]",
+            "location": "[parameters('app_location_displayname')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('app_name'))]"
+            ],
+            "properties": {
+                "numberOfWorkers": 1,
+                "defaultDocuments": [
+                    "Default.htm",
+                    "Default.html",
+                    "Default.asp",
+                    "index.htm",
+                    "index.html",
+                    "iisstart.htm",
+                    "default.aspx",
+                    "index.php",
+                    "hostingstart.html"
+                ],
+                "netFrameworkVersion": "v4.0",
+                "linuxFxVersion": "DOTNETCORE|7.0",
+                "requestTracingEnabled": false,
+                "remoteDebuggingEnabled": false,
+                "remoteDebuggingVersion": "VS2019",
+                "httpLoggingEnabled": true,
+                "acrUseManagedIdentityCreds": false,
+                "logsDirectorySizeLimit": 100,
+                "detailedErrorLoggingEnabled": false,
+                "publishingUsername": "$ch-ce-api",
+                "scmType": "None",
+                "use32BitWorkerProcess": true,
+                "webSocketsEnabled": false,
+                "alwaysOn": false,
+                "appCommandLine": "dotnet CE-API-V2.dll",
+                "managedPipelineMode": "Integrated",
+                "virtualApplications": [
+                    {
+                        "virtualPath": "/",
+                        "physicalPath": "site\\wwwroot",
+                        "preloadEnabled": false
+                    }
+                ],
+                "loadBalancing": "LeastRequests",
+                "experiments": {
+                    "rampUpRules": []
+                },
+                "autoHealEnabled": false,
+                "vnetRouteAllEnabled": true,
+                "vnetPrivatePortsCount": 0,
+                "cors": {
+                    "allowedOrigins": [
+                        "[parameters('ui-url')]"
+                    ],
+                    "supportCredentials": true
+                },
+                "localMySqlEnabled": false,
+                "managedServiceIdentityId": 10476,
+                "ipSecurityRestrictions": [
+                    {
+                        "ipAddress": "Any",
+                        "action": "Allow",
+                        "priority": 2147483647,
+                        "name": "Allow all",
+                        "description": "Allow all access"
+                    }
+                ],
+                "scmIpSecurityRestrictions": [
+                    {
+                        "ipAddress": "Any",
+                        "action": "Allow",
+                        "priority": 2147483647,
+                        "name": "Allow all",
+                        "description": "Allow all access"
+                    }
+                ],
+                "scmIpSecurityRestrictionsUseMain": false,
+                "http20Enabled": false,
+                "minTlsVersion": "1.2",
+                "scmMinTlsVersion": "1.2",
+                "ftpsState": "FtpsOnly",
+                "preWarmedInstanceCount": 0,
+                "elasticWebAppScaleLimit": 0,
+                "functionsRuntimeScaleMonitoringEnabled": false,
+                "minimumElasticInstanceCount": 0,
+                "azureStorageAccounts": {}
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/hostNameBindings",
+            "apiVersion": "2022-09-01",
+            "name": "[concat(parameters('app_name'), '/', parameters('app_name'), '.azurewebsites.net')]",
+            "location": "[parameters('app_location_displayname')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('app_name'))]"
+            ],
+            "properties": {
+                "siteName": "ch-ce-api",
+                "hostNameType": "Verified"
+            }
+        }
+    ]
+}

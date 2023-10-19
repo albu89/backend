@@ -1,0 +1,18 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "ASP_ID": {
+            "value": "ASP-CEv2-949f"
+        },
+        "asp_resource_group": {
+            "value": "/subscriptions/3113a745-9d38-4873-9fbe-2a30f92c86b8/resourceGroups/CE-v2/providers/Microsoft.Web/serverfarms/"
+        },
+        "app_name": {
+            "value": "cardioexplorer"
+        },
+        "app_location": {
+            "value": "Switzerland North"
+        }
+    }
+}

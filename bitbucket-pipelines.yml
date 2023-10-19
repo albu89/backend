@@ -12,7 +12,7 @@ pipelines:
   branches:
     develop:
       - step:
-          name: Build, publish and deploy
+          name: Build and publish
           script:
                 - apt-get update
                 - apt-get install zip -y
@@ -24,6 +24,12 @@ pipelines:
                 - dotnet publish ${SOLUTION_PATH} --no-restore -c Release -o ./publish
                 - cd publish
                 - zip -r ../publish.zip .
+          artifacts:
+                - publish.zip
+      - step:
+          name: Deploy to develop
+          deployment: Develop
+          script:
                 - pipe: atlassian/azure-web-apps-deploy:1.1.0
                   variables:
                     AZURE_APP_ID: $AZURE_APP_ID
@@ -31,10 +37,10 @@ pipelines:
                     AZURE_TENANT_ID: $AZURE_TENANT_ID
                     AZURE_RESOURCE_GROUP: 'cardioexplorer-dev'
                     AZURE_APP_NAME: 'cardioexplorer-dev-api'
-                    ZIP_FILE: '../publish.zip'
+                    ZIP_FILE: 'publish.zip'
     staging:
       - step:
-          name: Build, publish and deploy
+          name: Build and publish
           script:
                 - apt-get update
                 - apt-get install zip -y
@@ -44,9 +50,14 @@ pipelines:
                 - dotnet build --no-restore --configuration Release ${SOLUTION_PATH}
                 - dotnet test --no-build --configuration Release ${SOLUTION_PATH} -v:n
                 - dotnet publish ${SOLUTION_PATH} --no-restore -c Release -o ./publish
-                - echo $EXAMPLE_VALUE
                 - cd publish
                 - zip -r ../publish.zip .
+          artifacts:
+                - publish.zip
+      - step:
+          name: Deploy to staging
+          deployment: Staging
+          script:
                 - pipe: atlassian/azure-web-apps-deploy:1.1.0
                   variables:
                     AZURE_APP_ID: $AZURE_APP_ID
@@ -54,10 +65,43 @@ pipelines:
                     AZURE_TENANT_ID: $AZURE_TENANT_ID
                     AZURE_RESOURCE_GROUP: 'cardioexplorer-staging'
                     AZURE_APP_NAME: 'cardioexplorer-staging-api'
-                    ZIP_FILE: '../publish.zip'
+                    ZIP_FILE: 'publish.zip'
     main:
       - step:
+          name: Build and publish
+          script:
+                - apt-get update
+                - apt-get install zip -y
+                - export SOLUTION_PATH=./CE-API-V2.sln
+                - REPORTS_PATH=./test-reports/build_${BITBUCKET_BUILD_NUMBER}
+                - dotnet restore ${SOLUTION_PATH}
+                - dotnet build --no-restore --configuration Release ${SOLUTION_PATH}
+                - dotnet test --no-build --configuration Release ${SOLUTION_PATH} -v:n
+                - dotnet publish ${SOLUTION_PATH} --no-restore -c Release -o ./publish
+                - cd publish
+                - zip -r ../publish.zip .
+          artifacts:
+                - publish.zip
+      - step:
+          name: Deploy to staging
+          deployment: Production
+          script:
+                - pipe: atlassian/azure-web-apps-deploy:1.1.0
+                  variables:
+                    AZURE_APP_ID: $AZURE_APP_ID
+                    AZURE_PASSWORD: $AZURE_PASSWORD
+                    AZURE_TENANT_ID: $AZURE_TENANT_ID
+                    AZURE_RESOURCE_GROUP: 'cardioexplorer'
+                    AZURE_APP_NAME: 'cardioexplorer-api'
+                    ZIP_FILE: 'publish.zip'
+  custom:
+    deploy-to-prod:
+      - variables:
+          - name: ResourceGroup
+          - name: AppName
+      - step:
           name: Build, publish and deploy
+          deployment: Production
           script:
                 - apt-get update
                 - apt-get install zip -y
@@ -75,8 +119,8 @@ pipelines:
                     AZURE_APP_ID: $AZURE_APP_ID
                     AZURE_PASSWORD: $AZURE_PASSWORD
                     AZURE_TENANT_ID: $AZURE_TENANT_ID
-                    AZURE_RESOURCE_GROUP: 'cardioexplorer'
-                    AZURE_APP_NAME: 'cardioexplorer-api'
+                    AZURE_RESOURCE_GROUP: $ResourceGroup
+                    AZURE_APP_NAME: $AppName
                     ZIP_FILE: '../publish.zip'
   pull-requests:
     "**":
