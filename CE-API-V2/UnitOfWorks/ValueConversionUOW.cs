@@ -37,7 +37,7 @@ namespace CE_API_V2.UnitOfWorks
         public async Task<ScoringRequest> ConvertToSiValues(ScoringRequest scoringRequest)
         {
             var props = scoringRequest.GetType().GetProperties();
-            var template = (await _templateService.GetTemplate()).ToList();
+            var template = await _templateService.GetTemplate();
             
 
             foreach (var prop in props)
@@ -64,10 +64,14 @@ namespace CE_API_V2.UnitOfWorks
             }
             return scoringRequest;
         }
-        private static float FindConversionFactor<T>(BiomarkerValue<T> propWithUnit, PropertyInfo prop, List<BiomarkerSchema> template)
+        private static float FindConversionFactor<T>(BiomarkerValue<T> propWithUnit, PropertyInfo prop, CadRequestSchema template)
             where T : INumber<T>
         {
-            var unitsForProperty = ValidationHelpers.GetAllUnitsForProperty(prop.Name, template).FirstOrDefault(x => x.UnitType == propWithUnit.UnitType);
+            if (!Enum.TryParse<UnitType>(propWithUnit.UnitType, out var parsed))
+            {
+                return 1;
+            }
+            var unitsForProperty = ValidationHelpers.GetAllUnitsForProperty(prop.Name, template).FirstOrDefault(x => x.UnitType == parsed);
          
             if (propWithUnit.UnitType == "SI")
                 return default;

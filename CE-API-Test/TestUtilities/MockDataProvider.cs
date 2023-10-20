@@ -451,7 +451,7 @@ namespace CE_API_Test.TestUtilities
                 RecommendationTableHeader = "",
                 RecommendationScoreRangeHeader = "",
                 RecommendationCategories = new List<RecommendationCategory> { new() },
-                Biomarkers = new List<BiomarkerSchema> { new() },
+                Biomarkers = new CadRequestSchema(),
             };
         }
 

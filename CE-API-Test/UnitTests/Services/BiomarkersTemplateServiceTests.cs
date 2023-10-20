@@ -22,7 +22,7 @@ public class BiomarkersTemplateServiceTests
     [Test]
     [TestCase("en-GB", "Prior CAD", "Prior CAD refers to a history of coronary artery disease (CAD) in a patient. Prior CAD increases the likelihood of patients with cardiovascular disease.")]
     [TestCase("en-FR", "Prior CAD", "Prior CAD refers to a history of coronary artery disease (CAD) in a patient. Prior CAD increases the likelihood of patients with cardiovascular disease.")] // default will be used
-    [TestCase("de-DE", "Vorherige KHK", "„Vorherige koronare Herzkrankheit bezieht sich auf eine Vorgeschichte einer koronaren Herzkrankheit (KHK) bei einem Patienten. Eine Vorherige koronare Herzkrankheit erhöht die Wahrscheinlichkeit, dass Patienten an Herz-Kreislauf-Erkrankungen leiden.")]
+    [TestCase("de-DE", "Vorherige KHK", "Vorherige koronare Herzkrankheit bezieht sich auf eine Vorgeschichte einer koronaren Herzkrankheit (KHK) bei einem Patienten. Eine Vorherige koronare Herzkrankheit erhöht die Wahrscheinlichkeit, dass Patienten an Herz-Kreislauf-Erkrankungen leiden.")]
     public async Task TestGetTemplate_GivenCorrectLocalization_ExpectedCorrectlyAssembledBiomarkerSchemaDtoList(string languageTag, string localizedFieldName, string localizedInfoText)
     {
         //Arrange
@@ -32,21 +32,21 @@ public class BiomarkersTemplateServiceTests
         var result = await getTemplateTask.Should().NotThrowAsync();
 
         //Assert
-        result.Subject.Should().BeOfType<List<BiomarkerSchema>>();
+        result.Subject.Should().BeOfType<CadRequestSchema>();
         result.Subject.Should().NotBeNull();
-        result.Subject.Count().Should().Be(33);
-        result.Subject.Any(x => string.IsNullOrEmpty(x.Id)).Should().BeFalse();
-        result.Subject.Any(x => x.Units is null).Should().BeFalse();
-        result.Subject.Any(x => x.Units.Length == 0).Should().BeFalse();
-        result.Subject.All(x => string.IsNullOrEmpty(x.Category)).Should().BeFalse("we expect at least one Item to have a category");
-        result.Subject.All(x => string.IsNullOrEmpty(x.InfoText)).Should().BeFalse("we expect at least one Item to have an InfoText");
+        result.Subject.AllMarkers.Count().Should().Be(33);
+        result.Subject.AllMarkers.Any(x => string.IsNullOrEmpty(x.Id)).Should().BeFalse();
+        result.Subject.LabResults.Any(x => x.Units is null).Should().BeFalse();
+        result.Subject.LabResults.Any(x => x.Units.Length == 0).Should().BeFalse();
+        result.Subject.AllMarkers.All(x => string.IsNullOrEmpty(x.Category)).Should().BeFalse("we expect at least one Item to have a category");
+        result.Subject.AllMarkers.All(x => string.IsNullOrEmpty(x.InfoText)).Should().BeFalse("we expect at least one Item to have an InfoText");
 
-        result.Subject.Any(x => string.IsNullOrEmpty(x.Fieldname)).Should().BeFalse();
-        var elementToTest = result.Subject.FirstOrDefault(x => x.Id == "prior_CAD");
-        elementToTest.Fieldname.Should().Be(localizedFieldName);
-        result.Subject.All(x => string.IsNullOrEmpty(x.InfoText)).Should().BeFalse();
+        result.Subject.AllMarkers.Any(x => string.IsNullOrEmpty(x.DisplayName)).Should().BeFalse();
+        var elementToTest = result.Subject.MedicalHistory.FirstOrDefault(x => x.Id == "prior_CAD");
+        elementToTest.DisplayName.Should().Be(localizedFieldName);
+        result.Subject.AllMarkers.All(x => string.IsNullOrEmpty(x.InfoText)).Should().BeFalse();
         elementToTest.InfoText.Should().Be(localizedInfoText);
-        elementToTest.Units.Should().NotBeNullOrEmpty();
+        elementToTest.Unit.Should().NotBeNull();
         elementToTest.Category.Should().NotBeNullOrEmpty();
         elementToTest.Id.Should().NotBeNullOrEmpty();
     }    
@@ -66,19 +66,19 @@ public class BiomarkersTemplateServiceTests
         var result = await getTemplateTask.Should().NotThrowAsync();
 
         //Assert
-        result.Subject.Should().BeOfType<List<BiomarkerSchema>>();
+        result.Subject.Should().BeOfType<CadRequestSchema>();
         result.Subject.Should().NotBeNull();
-        result.Subject.Count().Should().Be(33);
-        result.Subject.Any(x => string.IsNullOrEmpty(x.Id)).Should().BeFalse();
-        result.Subject.Any(x => x.Units is null).Should().BeFalse();
-        result.Subject.Any(x => x.Units.Length == 0).Should().BeFalse();
-        result.Subject.All(x => string.IsNullOrEmpty(x.Category)).Should().BeFalse("we expect at least one Item to have a category");
-        result.Subject.All(x => string.IsNullOrEmpty(x.InfoText)).Should().BeFalse("we expect at least one Item to have an InfoText");
+        result.Subject.AllMarkers.Count().Should().Be(33);
+        result.Subject.AllMarkers.Any(x => string.IsNullOrEmpty(x.Id)).Should().BeFalse();
+        result.Subject.LabResults.Any(x => x.Units is null).Should().BeFalse();
+        result.Subject.LabResults.Any(x => x.Units.Length == 0).Should().BeFalse();
+        result.Subject.AllMarkers.All(x => string.IsNullOrEmpty(x.Category)).Should().BeFalse("we expect at least one Item to have a category");
+        result.Subject.AllMarkers.All(x => string.IsNullOrEmpty(x.InfoText)).Should().BeFalse("we expect at least one Item to have an InfoText");
 
-        result.Subject.Any(x => string.IsNullOrEmpty(x.Fieldname)).Should().BeFalse();
-        var elementToTest = result.Subject.FirstOrDefault(x => x.Id == "prior_CAD");
-        elementToTest.Fieldname.Should().Be(expectedFieldName);
-        result.Subject.All(x => string.IsNullOrEmpty(x.InfoText)).Should().BeFalse();
+        result.Subject.AllMarkers.Any(x => string.IsNullOrEmpty(x.DisplayName)).Should().BeFalse();
+        var elementToTest = result.Subject.AllMarkers.FirstOrDefault(x => x.Id == "prior_CAD");
+        elementToTest.DisplayName.Should().Be(expectedFieldName);
+        result.Subject.AllMarkers.All(x => string.IsNullOrEmpty(x.InfoText)).Should().BeFalse();
         elementToTest.InfoText.Should().Be(expectedInfoText);
     }
 }

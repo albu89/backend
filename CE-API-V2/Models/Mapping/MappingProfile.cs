@@ -87,18 +87,6 @@ namespace CE_API_V2.Models.Mapping
             CreateMap(typeof(BiomarkerValue<PatientDataEnums.RestingEcg>), typeof(PatientDataEnums.RestingEcg))
                 .ConvertUsing(typeof(ValueToUnderlyingTypeConverter<PatientDataEnums.RestingEcg>));
             ;
-
-            CreateMap<BiomarkersGeneral, BiomarkerSchema>()
-                .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.Category))
-                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dest => dest.OrderNumber, opt => opt.MapFrom(src => src.OrderNumber))
-                .ForMember(dest => dest.PreferredUnit, opt => opt.MapFrom(src => src.PreferredUnit))
-                .ForMember(dest => dest.Units, opt => opt.MapFrom(src => src.Units));
-
-            CreateMap<BiomarkersLocalized, BiomarkerSchema>()
-                .ForMember(dest => dest.InfoText, opt => opt.MapFrom(src => src.InfoText))
-                .ForMember(dest => dest.Fieldname, opt => opt.MapFrom(src => src.Fieldname));
-
             CreateMap<ScoringResponse, ScoringResponseModel>()
                 .ForMember(dest => dest.Score, opt => opt.MapFrom(src => src.classifier_score))
                 .ForMember(dest => dest.Recommendation, opt => opt.MapFrom(src => src.RecommendationSummary))
@@ -123,7 +111,7 @@ namespace CE_API_V2.Models.Mapping
                 .ForMember(dest => dest.Biomarkers, opt => opt.MapFrom(src => src))
                 .ForAllMembers(opts => opts.Ignore());
             
-            CreateMap<IEnumerable<BiomarkerSchema>, ScoreSchema>()
+            CreateMap<CadRequestSchema, ScoreSchema>()
                 .ForMember(dest => dest.Biomarkers, opt => opt.MapFrom(src => src))
                 .ForAllMembers(opts => opts.Ignore());
 

@@ -49,7 +49,7 @@ public class BiomarkersControllerTests
         
         var userUowMock = new Mock<IUserUOW>();
         userUowMock.Setup(u => u.GetUser(It.IsAny<string>(), It.IsAny<UserIdsRecord>())).Returns(new UserModel(){ UserId = "123"});
-        userUowMock.Setup(u => u.OrderTemplate(It.IsAny<IEnumerable<BiomarkerSchema>>(), It.IsAny<string>())).Returns(_biomarkersTemplateService.GetTemplate().GetAwaiter().GetResult());
+        userUowMock.Setup(u => u.OrderTemplate(It.IsAny<CadRequestSchema>(), It.IsAny<string>())).Returns(_biomarkersTemplateService.GetTemplate().GetAwaiter().GetResult());
         _userUow = userUowMock.Object;
         _scoringTemplateService = new ScoringTemplateService(mapper, _biomarkersTemplateService, scoreSummaryUtility, _userUow);
         _biomarkersController = new SchemasController(_biomarkersTemplateService, _scoringTemplateService, _userUow, extractorMock.Object);
@@ -63,8 +63,8 @@ public class BiomarkersControllerTests
         result.Subject.Should().BeOfType<OkObjectResult>();
         var template = ((OkObjectResult) result.Subject).Value;
         template.Should().NotBeNull();
-        template.Should().BeOfType<List<BiomarkerSchema>>();
-        var biomarkersTemplate = (IEnumerable<BiomarkerSchema>) template!;
-        biomarkersTemplate.Count().Should().Be(33);
+        template.Should().BeOfType<CadRequestSchema>();
+        var biomarkersTemplate = (CadRequestSchema) template!;
+        biomarkersTemplate.AllMarkers.Count().Should().Be(33);
     }
 }

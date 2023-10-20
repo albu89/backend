@@ -101,7 +101,7 @@ namespace CE_API_V2.Controllers
                 await _userUow.ProcessInactiveUserCreation(userModel);
             }
 
-            return storedUser is not null ? Ok(_mapper.Map<User>(storedUser)) : BadRequest();
+            return storedUser is not null ? Ok(_mapper.Map<User>(storedUser)) : StatusCode(500, "");
         }
 
         /// <summary>Update current Users profile</summary>

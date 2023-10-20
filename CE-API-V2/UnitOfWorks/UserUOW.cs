@@ -38,32 +38,51 @@ namespace CE_API_V2.UnitOfWorks
                 return biomarkerOrderRepository;
             }
         }
-
-        public IEnumerable<BiomarkerSchema> OrderTemplate(IEnumerable<BiomarkerSchema> biomarkersSchemas, string userId)
+        
+        /// <summary>
+        /// Order the schema of CAD Scoring Requests
+        /// </summary>
+        /// <remarks>
+        /// Loads a users order and preferred units if provided, default ordering otherwise. Orders the MedicalHistory and LabResults in place.
+        /// </remarks>
+        /// <param name="biomarkersSchemas"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public CadRequestSchema OrderTemplate(CadRequestSchema biomarkersSchemas, string userId = "")
         {
-            List<BiomarkerOrderModel> orders = BiomarkerOrderRepository.Get(e => e.UserId == userId).OrderBy(x => x.OrderNumber).ToList();
-
-            var sortedList = new List<BiomarkerSchema>();
-            foreach (var entry in orders)
+            // If userId is provided, load users ordering
+            if (!string.IsNullOrEmpty(userId))
             {
-                var schemaEntry = biomarkersSchemas.First(x => x.Id == entry.BiomarkerId);
-                schemaEntry.OrderNumber = entry.OrderNumber;
-                schemaEntry.PreferredUnit = entry.PreferredUnit;
-                sortedList.Add(schemaEntry);
+                List<BiomarkerOrderModel> orders = BiomarkerOrderRepository.Get(e => e.UserId == userId).OrderBy(x => x.OrderNumber).ToList();
+            
+                // Set indices of MedicalHistory
+                foreach (var entry in biomarkersSchemas.MedicalHistory)
+                {
+                    var orderEntry = orders.FirstOrDefault(x => x.BiomarkerId == entry.Id);
+                    if (orderEntry is null)
+                    {
+                        continue;
+                    }
+                    entry.OrderIndex = orderEntry.OrderNumber;
+                }
+            
+                // Set indices of LabResults
+                foreach (var entry in biomarkersSchemas.LabResults)
+                {
+                    var orderEntry = orders.FirstOrDefault(x => x.BiomarkerId == entry.Id);
+                    if (orderEntry is null)
+                    {
+                        continue;
+                    }
+                    entry.OrderIndex = orderEntry.OrderNumber;
+                    entry.PreferredUnit = orderEntry.PreferredUnit;
+                }    
             }
 
-            var exceptList = biomarkersSchemas.Except(sortedList).OrderBy(x => x.OrderNumber).ToList();
-            sortedList.AddRange(exceptList);
-
-            var orderNumber = 0;
-
-            foreach (var entry in sortedList)
-            {
-                entry.OrderNumber = orderNumber;
-                orderNumber++;
-            }
-
-            return biomarkersSchemas.OrderBy(x => x.OrderNumber);
+            biomarkersSchemas.MedicalHistory = biomarkersSchemas.MedicalHistory.OrderBy(x => x.OrderIndex).ToArray();
+            biomarkersSchemas.LabResults = biomarkersSchemas.LabResults.OrderBy(x => x.OrderIndex).ToArray();
+            
+            return biomarkersSchemas;
         }
 
         public async Task StoreBiomarkerOrder(IEnumerable<BiomarkerOrderModel> biomarkerOrder)

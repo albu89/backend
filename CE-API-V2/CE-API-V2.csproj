@@ -54,6 +54,7 @@
         <Content Include="Templates\RequestAccessEmailBody.html">
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
+        <Content Remove="Templates\BiomarkersSchemaNew.json" />
     </ItemGroup>
 
     <ItemGroup>

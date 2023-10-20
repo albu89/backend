@@ -40,7 +40,7 @@ public class ScoringTemplateService : IScoringTemplateService
         biomarkers = _userUow.OrderTemplate(biomarkers, userId);
 
         var scoreSchemaDto = _mapper.Map<ScoreSchema>(deserializedSchema);
-        scoreSchemaDto.Biomarkers = biomarkers.ToList();
+        scoreSchemaDto.Biomarkers = biomarkers;
         scoreSchemaDto.RecommendationCategories = categories;
 
         return scoreSchemaDto;

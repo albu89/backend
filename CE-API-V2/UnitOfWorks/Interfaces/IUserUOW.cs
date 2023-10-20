@@ -12,7 +12,7 @@ namespace CE_API_V2.UnitOfWorks.Interfaces
         public Task StoreOrEditBiomarkerOrder(IEnumerable<BiomarkerOrderModel> biomarkerOrder, string userId);
         public void StoreBiomarkerOrderEntry(BiomarkerOrderModel biomarkerOrder);
         public void EditBiomarkerOrderEntry(BiomarkerOrderModel biomarkerOrder);
-        public IEnumerable<BiomarkerSchema> OrderTemplate(IEnumerable<BiomarkerSchema> biomarkersSchema, string userId);
+        public CadRequestSchema OrderTemplate(CadRequestSchema biomarkersSchemas, string userId);
         public UserModel? GetUser(string userId, UserIdsRecord userInfo);
         IEnumerable<BiomarkerOrderModel> GetBiomarkerOrders(string userId);
         public IGenericRepository<UserModel> UserRepository { get; }

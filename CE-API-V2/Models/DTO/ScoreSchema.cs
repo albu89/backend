@@ -25,7 +25,7 @@
         public string? RecommendationScoreRangeHeader { get; set; }
         public IEnumerable<RecommendationCategory>? RecommendationCategories { get; set; }
 
-        public IEnumerable<BiomarkerSchema>? Biomarkers { get; set; }
+        public CadRequestSchema? Biomarkers { get; set; }
     }
 }
 

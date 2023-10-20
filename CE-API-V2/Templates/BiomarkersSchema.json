@@ -1,677 +1,775 @@
-[
-  {
-    "id": "prior_CAD",
-    "category": "Anamnesis",
-    "units": [
-      {
-        "name": "",
+{
+  "medicalHistory": [
+    {
+      "unit": {
         "unitType": "SI",
-        "type": "Boolean",
-        "values": [ "no", "yes" ],
-        "clinicalSetting": "PrimaryCare"
-      }
-    ],
-    "orderNumber": 0,
-    "preferredUnit": "SI"
-  },
-  {
-    "id": "age",
-    "category": "Anamnesis",
-    "units": [
-      {
-        "name": "years",
+        "shorthand": "",
         "conversionFactor": 1,
+        "options": [
+          {
+            "value": "true",
+            "sideEffectId": null,
+            "sideEffectValue": null
+          },
+          {
+            "value": "false",
+            "sideEffectId": null,
+            "sideEffectValue": null
+          }
+        ]
+      },
+      "id": "prior_CAD",
+      "orderIndex": 0,
+      "category": "Anamnesis",
+      "type": "boolean"
+    },
+    {
+      "unit": {
         "unitType": "SI",
-        "type": "integer",
+        "shorthand": "years",
+        "conversionFactor": 1,
         "minimum": 17,
         "maximum": 100,
-        "clinicalSetting": "None"
-      }
-    ],
-    "orderNumber": 1,
-    "preferredUnit": "SI"
-  },
-  {
-    "id": "sex",
-    "category": "Anamnesis",
-    "units": [
-      {
-        "name": "",
+        "options": null
+      },
+      "id": "age",
+      "orderIndex": 1,
+      "category": "Anamnesis",
+      "type": "integer"
+    },
+    {
+      "unit": {
         "unitType": "SI",
-        "type": "string",
-        "enum": [ "Male", "Female" ],
-        "clinicalSetting": "None"
-      }
-    ],
-    "orderNumber": 4,
-    "preferredUnit": "SI"
-  },
-  {
-    "id": "height",
-    "category": "Anamnesis",
-    "units": [
-      {
-        "name": "cm",
-        "unitType": "SI",
-        "type": "integer",
+        "shorthand": "cm",
+        "conversionFactor": 1,
         "minimum": 145,
         "maximum": 300,
-        "clinicalSetting": "None"
-      }
-    ],
-    "orderNumber": 2,
-    "preferredUnit": "SI"
-  },
-  {
-    "id": "weight",
-    "category": "Anamnesis",
-    "units": [
-      {
-        "name": "kg",
+        "options": null
+      },
+      "id": "height",
+      "orderIndex": 2,
+      "category": "Anamnesis",
+      "type": "integer"
+    },
+    {
+      "unit": {
         "unitType": "SI",
-        "type": "integer",
+        "shorthand": "kg",
+        "conversionFactor": 1,
         "minimum": 30,
         "maximum": 300,
-        "clinicalSetting": "None"
-      }
-    ],
-    "orderNumber": 3,
-    "preferredUnit": "SI"
-  },
-  {
-    "id": "chest_pain",
-    "category": "Anamnesis",
-    "units": [
-      {
-        "name": "",
+        "options": null
+      },
+      "id": "weight",
+      "orderIndex": 3,
+      "category": "Anamnesis",
+      "type": "integer"
+    },
+    {
+      "unit": {
         "unitType": "SI",
-        "type": "string",
-        "enum": [ "no", "unspecific", "possible", "typical" ],
-        "clinicalSetting": "None"
-      }
-    ],
-    "orderNumber": 5,
-    "preferredUnit": "SI"
-  },
-  {
-    "id": "nicotine",
-    "category": "Anamnesis",
-    "units": [
-      {
-        "name": "",
-        "unitType": "SI",
-        "type": "string",
-        "enum": [ "No", "StANc", "Yes" ],
-        "clinicalSetting": "None"
-      }
-    ],
-    "orderNumber": 6,
-    "preferredUnit": "SI"
-  },
-  {
-    "id": "diabetes",
-    "category": "Medication",
-    "units": [
-      {
-        "name": "",
-        "unitType": "SI",
-        "type": "string",
-        "enum": [ "No", "Niddm", "Iddm" ],
-        "clinicalSetting": "None"
-      }
-    ],
-    "orderNumber": 7,
-    "preferredUnit": "SI"
-  },
-  {
-    "id": "statin",
-    "category": "Medication",
-    "units": [
-      {
-        "name": "",
-        "unitType": "SI",
-        "type": "Boolean",
-        "values": [ "no", "yes" ],
-        "clinicalSetting": "None"
-      }
-    ],
-    "orderNumber": 8,
-    "preferredUnit": "SI"
-  },
-  {
-    "id": "tc_agg_inhibitor",
-    "category": "Medication",
-    "units": [
-      {
-        "name": "",
-        "unitType": "SI",
-        "type": "Boolean",
-        "values": [ "no", "yes" ],
-        "clinicalSetting": "None"
-      }
-    ],
-    "orderNumber": 9,
-    "preferredUnit": "SI"
-  },
-  {
-    "id": "ace_inhibitor",
-    "category": "Medication",
-    "units": [
-      {
-        "name": "",
-        "unitType": "SI",
-        "type": "Boolean",
-        "values": [ "no", "yes" ],
-        "clinicalSetting": "None"
-      }
-    ],
-    "orderNumber": 10,
-    "preferredUnit": "SI"
-  },
-  {
-    "id": "calcium_ant",
-    "category": "Medication",
-    "units": [
-      {
-        "name": "",
-        "unitType": "SI",
-        "type": "Boolean",
-        "values": [ "no", "yes" ],
-        "clinicalSetting": "None"
-      }
-    ],
-    "orderNumber": 11,
-    "preferredUnit": "SI"
-  },
-  {
-    "id": "betablocker",
-    "category": "Medication",
-    "units": [
-      {
-        "name": "",
-        "unitType": "SI",
-        "type": "Boolean",
-        "values": [ "no", "yes" ],
-        "clinicalSetting": "None"
-      }
-    ],
-    "orderNumber": 12,
-    "preferredUnit": "SI"
-  },
-  {
-    "id": "diuretic",
-    "category": "Medication",
-    "units": [
-      {
-        "name": "",
-        "unitType": "SI",
-        "type": "Boolean",
-        "values": [ "no", "yes" ],
-        "clinicalSetting": "None"
-      }
-    ],
-    "orderNumber": 13,
-    "preferredUnit": "SI"
-  },
-  {
-    "id": "nitrate",
-    "category": "Medication",
-    "units": [
-      {
-        "name": "",
-        "unitType": "SI",
-        "type": "Boolean",
-        "values": [ "no", "yes" ],
-        "clinicalSetting": "None"
-      }
-    ],
-    "orderNumber": 14,
-    "preferredUnit": "SI"
-  },
-  {
-    "id": "systolic_bp",
-    "category": "Clinical findings",
-    "units": [
-      {
-        "name": "mmHg",
+        "shorthand": "",
         "conversionFactor": 1,
+        "options": [
+          {
+            "value": "Male",
+            "sideEffectId": "",
+            "sideEffectValue": ""
+          },
+          {
+            "value": "Female",
+            "sideEffectId": "",
+            "sideEffectValue": ""
+          }
+        ]
+      },
+      "id": "sex",
+      "orderIndex": 4,
+      "category": "Anamnesis",
+      "type": "options"
+    },
+    {
+      "unit": {
         "unitType": "SI",
-        "type": "integer",
+        "shorthand": "",
+        "conversionFactor": 1,
+        "options": [
+          {
+            "value": "no",
+            "sideEffectId": "",
+            "sideEffectValue": ""
+          },
+          {
+            "value": "unspecific",
+            "sideEffectId": "",
+            "sideEffectValue": ""
+          },
+          {
+            "value": "possible",
+            "sideEffectId": "",
+            "sideEffectValue": ""
+          },
+          {
+            "value": "typical",
+            "sideEffectId": "",
+            "sideEffectValue": ""
+          }
+        ]
+      },
+      "id": "chest_pain",
+      "orderIndex": 5,
+      "category": "Anamnesis",
+      "type": "options"
+    },
+    {
+      "unit": {
+        "unitType": "SI",
+        "shorthand": "",
+        "conversionFactor": 1,
+        "options": [
+          {
+            "value": "No",
+            "sideEffectId": "",
+            "sideEffectValue": ""
+          },
+          {
+            "value": "StANc",
+            "sideEffectId": "",
+            "sideEffectValue": ""
+          },
+          {
+            "value": "Yes",
+            "sideEffectId": "",
+            "sideEffectValue": ""
+          }
+        ]
+      },
+      "id": "nicotine",
+      "orderIndex": 6,
+      "category": "Anamnesis",
+      "type": "options"
+    },
+    {
+      "unit": {
+        "unitType": "SI",
+        "shorthand": "",
+        "conversionFactor": 1,
+        "options": [
+          {
+            "value": "No",
+            "sideEffectId": "",
+            "sideEffectValue": ""
+          },
+          {
+            "value": "Niddm",
+            "sideEffectId": "",
+            "sideEffectValue": ""
+          },
+          {
+            "value": "Iddm",
+            "sideEffectId": "",
+            "sideEffectValue": ""
+          }
+        ]
+      },
+      "id": "diabetes",
+      "orderIndex": 7,
+      "category": "Medication",
+      "type": "options"
+    },
+    {
+      "unit": {
+        "unitType": "SI",
+        "shorthand": "",
+        "conversionFactor": 1,
+        "options": [
+          {
+            "value": "true",
+            "sideEffectId": null,
+            "sideEffectValue": null
+          },
+          {
+            "value": "false",
+            "sideEffectId": null,
+            "sideEffectValue": null
+          }
+        ]
+      },
+      "id": "statin",
+      "orderIndex": 8,
+      "category": "Medication",
+      "type": "boolean"
+    },
+    {
+      "unit": {
+        "unitType": "SI",
+        "shorthand": "",
+        "conversionFactor": 1,
+        "options": [
+          {
+            "value": "true",
+            "sideEffectId": null,
+            "sideEffectValue": null
+          },
+          {
+            "value": "false",
+            "sideEffectId": null,
+            "sideEffectValue": null
+          }
+        ]
+      },
+      "id": "tc_agg_inhibitor",
+      "orderIndex": 9,
+      "category": "Medication",
+      "type": "boolean"
+    },
+    {
+      "unit": {
+        "unitType": "SI",
+        "shorthand": "",
+        "conversionFactor": 1,
+        "options": [
+          {
+            "value": "true",
+            "sideEffectId": null,
+            "sideEffectValue": null
+          },
+          {
+            "value": "false",
+            "sideEffectId": null,
+            "sideEffectValue": null
+          }
+        ]
+      },
+      "id": "ace_inhibitor",
+      "orderIndex": 10,
+      "category": "Medication",
+      "type": "boolean"
+    },
+    {
+      "unit": {
+        "unitType": "SI",
+        "shorthand": "",
+        "conversionFactor": 1,
+        "options": [
+          {
+            "value": "true",
+            "sideEffectId": null,
+            "sideEffectValue": null
+          },
+          {
+            "value": "false",
+            "sideEffectId": null,
+            "sideEffectValue": null
+          }
+        ]
+      },
+      "id": "calcium_ant",
+      "orderIndex": 11,
+      "category": "Medication",
+      "type": "boolean"
+    },
+    {
+      "unit": {
+        "unitType": "SI",
+        "shorthand": "",
+        "conversionFactor": 1,
+        "options": [
+          {
+            "value": "true",
+            "sideEffectId": null,
+            "sideEffectValue": null
+          },
+          {
+            "value": "false",
+            "sideEffectId": null,
+            "sideEffectValue": null
+          }
+        ]
+      },
+      "id": "betablocker",
+      "orderIndex": 12,
+      "category": "Medication",
+      "type": "boolean"
+    },
+    {
+      "unit": {
+        "unitType": "SI",
+        "shorthand": "",
+        "conversionFactor": 1,
+        "options": [
+          {
+            "value": "true",
+            "sideEffectId": null,
+            "sideEffectValue": null
+          },
+          {
+            "value": "false",
+            "sideEffectId": null,
+            "sideEffectValue": null
+          }
+        ]
+      },
+      "id": "diuretic",
+      "orderIndex": 13,
+      "category": "Medication",
+      "type": "boolean"
+    },
+    {
+      "unit": {
+        "unitType": "SI",
+        "shorthand": "",
+        "conversionFactor": 1,
+        "options": [
+          {
+            "value": "true",
+            "sideEffectId": null,
+            "sideEffectValue": null
+          },
+          {
+            "value": "false",
+            "sideEffectId": null,
+            "sideEffectValue": null
+          }
+        ]
+      },
+      "id": "nitrate",
+      "orderIndex": 14,
+      "category": "Medication",
+      "type": "boolean"
+    },
+    {
+      "unit": {
+        "unitType": "SI",
+        "shorthand": "mmHg",
+        "conversionFactor": 1,
         "minimum": 50,
         "maximum": 500,
-        "clinicalSetting": "None"
-      }
-    ],
-    "orderNumber": 15,
-    "preferredUnit": "SI"
-  },
-  {
-    "id": "diastolic_bp",
-    "category": "Clinical findings",
-    "units": [
-      {
-        "name": "mmHg",
-        "conversionFactor": 1,
+        "options": null
+      },
+      "id": "systolic_bp",
+      "orderIndex": 15,
+      "category": "Clinical findings",
+      "type": "integer"
+    },
+    {
+      "unit": {
         "unitType": "SI",
-        "type": "integer",
+        "shorthand": "mmHg",
+        "conversionFactor": 1,
         "minimum": 30,
         "maximum": 300,
-        "clinicalSetting": "None"
-      }
-    ],
-    "orderNumber": 16,
-    "preferredUnit": "SI"
-  },
-  {
-    "id": "q_wave",
-    "category": "Clinical findings",
-    "units": [
-      {
-        "name": "",
-        "unitType": "Other",
-        "type": "string",
-        "enum": [ "Yes", "Screening" ],
-        "clinicalSetting": "SecondaryCare"
+        "options": null
       },
-      {
-        "name": "",
-        "unitType": "Other",
-        "type": "string",
-        "enum": [ "Yes", "Screening", "No" ],
-        "clinicalSetting": "PrimaryCare"
-      }
-    ],
-    "orderNumber": 17,
-    "preferredUnit": "Other"
-  },
-  {
-    "id": "amylase_p",
-    "category": "Enzymes",
-    "units": [
-      {
-        "name": "U/L",
-        "conversionFactor": 1,
+      "id": "diastolic_bp",
+      "orderIndex": 16,
+      "category": "Clinical findings",
+      "type": "integer"
+    },
+    {
+      "unit": {
         "unitType": "SI",
-        "type": "float",
-        "minimum": 1,
-        "maximum": 2200,
-        "clinicalSetting": "None"
+        "shorthand": "",
+        "conversionFactor": 1,
+        "options": [
+          {
+            "value": "yes",
+            "sideEffectId": "",
+            "sideEffectValue": ""
+          },
+          {
+            "value": "screening",
+            "sideEffectId": "",
+            "sideEffectValue": ""
+          },
+          {
+            "value": "no",
+            "sideEffectId": "prior_CAD",
+            "sideEffectValue": "true"
+          }
+        ]
       },
-      {
-        "name": "U/L",
-        "conversionFactor": 1,
-        "unitType": "Conventional",
-        "type": "float",
-        "minimum": 1,
-        "maximum": 2200,
-        "clinicalSetting": "None"
-      }
-    ],
-    "orderNumber": 18,
-    "preferredUnit": "SI"
-  },
-  {
-    "id": "alkaline",
-    "category": "Enzymes",
-    "units": [
-      {
-        "name": "U/L",
-        "conversionFactor": 1,
-        "unitType": "SI",
-        "type": "float",
-        "minimum": 5,
-        "maximum": 5500,
-        "clinicalSetting": "None"
-      },
-      {
-        "name": "U/L",
-        "conversionFactor": 1,
-        "unitType": "Conventional",
-        "type": "float",
-        "minimum": 5,
-        "maximum": 5500,
-        "clinicalSetting": "None"
-      }
-    ],
-    "orderNumber": 19,
-    "preferredUnit": "SI"
-  },
-  {
-    "id": "hs_troponin_t",
-    "category": "Enzymes",
-    "units": [
-      {
-        "name": "ng/L",
-        "conversionFactor": 1,
-        "unitType": "SI",
-        "type": "float",
-        "minimum": 0.01,
-        "maximum": 100.0,
-        "clinicalSetting": "None"
-      },
-      {
-        "name": "pg/ml",
-        "conversionFactor": 1,
-        "unitType": "Conventional",
-        "type": "float",
-        "minimum": 0.01,
-        "maximum": 100.0,
-        "clinicalSetting": "None"
-      }
-    ],
-    "orderNumber": 20,
-    "preferredUnit": "SI"
-  },
-  {
-    "id": "alat",
-    "category": "Enzymes",
-    "units": [
-      {
-        "name": "U/L",
-        "conversionFactor": 1,
-        "unitType": "SI",
-        "type": "float",
-        "minimum": 5,
-        "maximum": 1200,
-        "clinicalSetting": "None"
-      },
-      {
-        "name": "U/L",
-        "conversionFactor": 1,
-        "unitType": "Conventional",
-        "type": "float",
-        "minimum": 5,
-        "maximum": 1200,
-        "clinicalSetting": "None"
-      }
-    ],
-    "orderNumber": 21,
-    "preferredUnit": "SI"
-  },
-  {
-    "id": "glucose",
-    "category": "Blood Sugar",
-    "units": [
-      {
-        "name": "mmol/L",
-        "conversionFactor": 1,
-        "unitType": "SI",
-        "type": "float",
-        "minimum": 0.25,
-        "maximum": 45.0,
-        "clinicalSetting": "None"
-      },
-      {
-        "name": "mg/dl",
-        "conversionFactor": 0.05551,
-        "unitType": "Conventional",
-        "type": "float",
-        "minimum": 4.50,
-        "maximum": 810.66,
-        "clinicalSetting": "None"
-      }
-    ],
-    "orderNumber": 22,
-    "preferredUnit": "SI"
-  },
-  {
-    "id": "bilirubin",
-    "category": "Metabolite",
-    "units": [
-      {
-        "name": "µmol/L",
-        "conversionFactor": 1,
-        "unitType": "SI",
-        "type": "float",
-        "minimum": 1.7,
-        "maximum": 430.0,
-        "clinicalSetting": "None"
-      },
-      {
-        "name": "mg/dl",
-        "conversionFactor": 17.1,
-        "unitType": "Conventional",
-        "type": "float",
-        "minimum": 0.01,
-        "maximum": 25.15,
-        "clinicalSetting": "None"
-      }
-    ],
-    "orderNumber": 23,
-    "preferredUnit": "SI"
-  },
-  {
-    "id": "urea",
-    "category": "Metabolite",
-    "units": [
-      {
-        "name": "mmol/L",
-        "conversionFactor": 1,
-        "unitType": "SI",
-        "type": "float",
-        "minimum": 0.25,
-        "maximum": 45.0,
-        "clinicalSetting": "None"
-      },
-      {
-        "name": "mg/dl",
-        "conversionFactor": 0.1665,
-        "unitType": "Conventional",
-        "type": "float",
-        "minimum": 1.50,
-        "maximum": 270.27,
-        "clinicalSetting": "None"
-      }
-    ],
-    "orderNumber": 24,
-    "preferredUnit": "SI"
-  },
-  {
-    "id": "uric_acid",
-    "category": "Metabolite",
-    "units": [
-      {
-        "name": "µmol/L",
-        "conversionFactor": 1,
-        "unitType": "SI",
-        "type": "float",
-        "minimum": 10.0,
-        "maximum": 2200.0,
-        "clinicalSetting": "None"
-      },
-      {
-        "name": "mg/dl",
-        "conversionFactor": 58.823,
-        "unitType": "Conventional",
-        "type": "float",
-        "minimum": 0.17,
-        "maximum": 37.40,
-        "clinicalSetting": "None"
-      }
-    ],
-    "orderNumber": 25,
-    "preferredUnit": "SI"
-  },
-  {
-    "id": "cholesterol",
-    "category": "Lipids",
-    "units": [
-      {
-        "name": "mmol/L",
-        "conversionFactor": 1,
-        "unitType": "SI",
-        "type": "float",
-        "minimum": 0.1,
-        "maximum": 100.0,
-        "clinicalSetting": "None"
-      },
-      {
-        "name": "mg/dl",
-        "conversionFactor": 0.02586,
-        "unitType": "Conventional",
-        "type": "float",
-        "minimum": 3.87,
-        "maximum": 3866.98,
-        "clinicalSetting": "None"
-      }
-    ],
-    "orderNumber": 26,
-    "preferredUnit": "SI"
-  },
-  {
-    "id": "hdl",
-    "category": "Lipids",
-    "units": [
-      {
-        "name": "mmol/L",
-        "conversionFactor": 1,
-        "unitType": "SI",
-        "type": "float",
-        "minimum": 0.1,
-        "maximum": 100.0,
-        "clinicalSetting": "None"
-      },
-      {
-        "name": "mg/dl",
-        "conversionFactor": 0.02586,
-        "unitType": "Conventional",
-        "type": "float",
-        "minimum": 3.87,
-        "maximum": 3866.98,
-        "clinicalSetting": "None"
-      }
-    ],
-    "orderNumber": 27,
-    "preferredUnit": "SI"
-  },
-  {
-    "id": "ldl",
-    "category": "Lipids",
-    "units": [
-      {
-        "name": "mmol/L",
-        "conversionFactor": 1,
-        "unitType": "SI",
-        "type": "float",
-        "minimum": 0.03,
-        "maximum": 21.0,
-        "clinicalSetting": "None"
-      },
-      {
-        "name": "mg/dl",
-        "conversionFactor": 0.02586,
-        "unitType": "Conventional",
-        "type": "float",
-        "minimum": 1.16,
-        "maximum": 812.06,
-        "clinicalSetting": "None"
-      }
-    ],
-    "orderNumber": 28,
-    "preferredUnit": "SI"
-  },
-  {
-    "id": "protein",
-    "category": "Protein",
-    "units": [
-      {
-        "name": "g/L",
-        "conversionFactor": 1,
-        "unitType": "SI",
-        "type": "float",
-        "minimum": 5.0,
-        "maximum": 185.0,
-        "clinicalSetting": "None"
-      },
-      {
-        "name": "g/dL",
-        "conversionFactor": 10,
-        "unitType": "Conventional",
-        "type": "float",
-        "minimum": 0.5,
-        "maximum": 18.5,
-        "clinicalSetting": "None"
-      }
-    ],
-    "orderNumber": 29,
-    "preferredUnit": "SI"
-  },
-  {
-    "id": "albumin",
-    "category": "Protein",
-    "units": [
-      {
-        "name": "g/L",
-        "conversionFactor": 1,
-        "unitType": "SI",
-        "type": "float",
-        "minimum": 5.0,
-        "maximum": 500.0,
-        "clinicalSetting": "None"
-      },
-      {
-        "name": "g/dL",
-        "conversionFactor": 10,
-        "unitType": "Conventional",
-        "type": "float",
-        "minimum": 0.5,
-        "maximum": 50.0,
-        "clinicalSetting": "None"
-      }
-    ],
-    "orderNumber": 30,
-    "preferredUnit": "SI"
-  },
-  {
-    "id": "leukocyte",
-    "category": "Hematology",
-    "units": [
-      {
-        "name": "G/L",
-        "conversionFactor": 1,
-        "unitType": "SI",
-        "type": "float",
-        "minimum": 0.03,
-        "maximum": 440.0,
-        "clinicalSetting": "None"
-      },
-      {
-        "name": "1000/µl",
-        "conversionFactor": 1,
-        "unitType": "Conventional",
-        "type": "float",
-        "minimum": 0.03,
-        "maximum": 440.0,
-        "clinicalSetting": "None"
-      }
-    ],
-    "orderNumber": 31,
-    "preferredUnit": "SI"
-  },
-  {
-    "id": "mchc",
-    "category": "Hematology",
-    "units": [
-      {
-        "name": "g/L",
-        "conversionFactor": 1,
-        "unitType": "SI",
-        "type": "float",
-        "minimum": 0.0,
-        "maximum": 1000.0,
-        "clinicalSetting": "None"
-      },
-      {
-        "name": "g/dL",
-        "conversionFactor": 10,
-        "unitType": "Conventional",
-        "type": "float",
-        "minimum": 0.0,
-        "maximum": 100.0,
-        "clinicalSetting": "None"
-      }
-    ],
-    "orderNumber": 32,
-    "preferredUnit": "SI"
-  }
-]
+      "id": "q_wave",
+      "orderIndex": 17,
+      "category": "Clinical findings",
+      "type": "options"
+    }
+  ],
+  "labResults": [
+    {
+      "units": [
+        {
+          "unitType": "SI",
+          "shorthand": "U/L",
+          "conversionFactor": 1,
+          "minimum": 1,
+          "maximum": 2200,
+          "options": null
+        },
+        {
+          "unitType": "Conventional",
+          "shorthand": "U/L",
+          "conversionFactor": 1,
+          "minimum": 1,
+          "maximum": 2200,
+          "options": null
+        }
+      ],
+      "preferredUnit": "SI",
+      "id": "amylase_p",
+      "orderIndex": 18,
+      "category": "Enzymes",
+      "type": "float"
+    },
+    {
+      "units": [
+        {
+          "unitType": "SI",
+          "shorthand": "U/L",
+          "conversionFactor": 1,
+          "minimum": 5,
+          "maximum": 5500,
+          "options": null
+        },
+        {
+          "unitType": "Conventional",
+          "shorthand": "U/L",
+          "conversionFactor": 1,
+          "minimum": 5,
+          "maximum": 5500,
+          "options": null
+        }
+      ],
+      "preferredUnit": "SI",
+      "id": "alkaline",
+      "orderIndex": 19,
+      "category": "Enzymes",
+      "type": "float"
+    },
+    {
+      "units": [
+        {
+          "unitType": "SI",
+          "shorthand": "ng/L",
+          "conversionFactor": 1,
+          "minimum": 0.01,
+          "maximum": 100,
+          "options": null
+        },
+        {
+          "unitType": "Conventional",
+          "shorthand": "pg/ml",
+          "conversionFactor": 1,
+          "minimum": 0.01,
+          "maximum": 100,
+          "options": null
+        }
+      ],
+      "preferredUnit": "SI",
+      "id": "hs_troponin_t",
+      "orderIndex": 20,
+      "category": "Enzymes",
+      "type": "float"
+    },
+    {
+      "units": [
+        {
+          "unitType": "SI",
+          "shorthand": "U/L",
+          "conversionFactor": 1,
+          "minimum": 5,
+          "maximum": 1200,
+          "options": null
+        },
+        {
+          "unitType": "Conventional",
+          "shorthand": "U/L",
+          "conversionFactor": 1,
+          "minimum": 5,
+          "maximum": 1200,
+          "options": null
+        }
+      ],
+      "preferredUnit": "SI",
+      "id": "alat",
+      "orderIndex": 21,
+      "category": "Enzymes",
+      "type": "float"
+    },
+    {
+      "units": [
+        {
+          "unitType": "SI",
+          "shorthand": "mmol/L",
+          "conversionFactor": 1,
+          "minimum": 0.25,
+          "maximum": 45,
+          "options": null
+        },
+        {
+          "unitType": "Conventional",
+          "shorthand": "mg/dl",
+          "conversionFactor": 0.05551,
+          "minimum": 4.5,
+          "maximum": 810.66,
+          "options": null
+        }
+      ],
+      "preferredUnit": "SI",
+      "id": "glucose",
+      "orderIndex": 22,
+      "category": "Blood Sugar",
+      "type": "float"
+    },
+    {
+      "units": [
+        {
+          "unitType": "SI",
+          "shorthand": "µmol/L",
+          "conversionFactor": 1,
+          "minimum": 1.7,
+          "maximum": 430,
+          "options": null
+        },
+        {
+          "unitType": "Conventional",
+          "shorthand": "mg/dl",
+          "conversionFactor": 17.1,
+          "minimum": 0.01,
+          "maximum": 25.15,
+          "options": null
+        }
+      ],
+      "preferredUnit": "SI",
+      "id": "bilirubin",
+      "orderIndex": 23,
+      "category": "Metabolite",
+      "type": "float"
+    },
+    {
+      "units": [
+        {
+          "unitType": "SI",
+          "shorthand": "mmol/L",
+          "conversionFactor": 1,
+          "minimum": 0.25,
+          "maximum": 45,
+          "options": null
+        },
+        {
+          "unitType": "Conventional",
+          "shorthand": "mg/dl",
+          "conversionFactor": 0.1665,
+          "minimum": 1.5,
+          "maximum": 270.27,
+          "options": null
+        }
+      ],
+      "preferredUnit": "SI",
+      "id": "urea",
+      "orderIndex": 24,
+      "category": "Metabolite",
+      "type": "float"
+    },
+    {
+      "units": [
+        {
+          "unitType": "SI",
+          "shorthand": "µmol/L",
+          "conversionFactor": 1,
+          "minimum": 10,
+          "maximum": 2200,
+          "options": null
+        },
+        {
+          "unitType": "Conventional",
+          "shorthand": "mg/dl",
+          "conversionFactor": 58.823,
+          "minimum": 0.17,
+          "maximum": 37.4,
+          "options": null
+        }
+      ],
+      "preferredUnit": "SI",
+      "id": "uric_acid",
+      "orderIndex": 25,
+      "category": "Metabolite",
+      "type": "float"
+    },
+    {
+      "units": [
+        {
+          "unitType": "SI",
+          "shorthand": "mmol/L",
+          "conversionFactor": 1,
+          "minimum": 0.1,
+          "maximum": 100,
+          "options": null
+        },
+        {
+          "unitType": "Conventional",
+          "shorthand": "mg/dl",
+          "conversionFactor": 0.02586,
+          "minimum": 3.87,
+          "maximum": 3866.98,
+          "options": null
+        }
+      ],
+      "preferredUnit": "SI",
+      "id": "cholesterol",
+      "orderIndex": 26,
+      "category": "Lipids",
+      "type": "float"
+    },
+    {
+      "units": [
+        {
+          "unitType": "SI",
+          "shorthand": "mmol/L",
+          "conversionFactor": 1,
+          "minimum": 0.1,
+          "maximum": 100,
+          "options": null
+        },
+        {
+          "unitType": "Conventional",
+          "shorthand": "mg/dl",
+          "conversionFactor": 0.02586,
+          "minimum": 3.87,
+          "maximum": 3866.98,
+          "options": null
+        }
+      ],
+      "preferredUnit": "SI",
+      "id": "hdl",
+      "orderIndex": 27,
+      "category": "Lipids",
+      "type": "float"
+    },
+    {
+      "units": [
+        {
+          "unitType": "SI",
+          "shorthand": "mmol/L",
+          "conversionFactor": 1,
+          "minimum": 0.03,
+          "maximum": 21,
+          "options": null
+        },
+        {
+          "unitType": "Conventional",
+          "shorthand": "mg/dl",
+          "conversionFactor": 0.02586,
+          "minimum": 1.16,
+          "maximum": 812.06,
+          "options": null
+        }
+      ],
+      "preferredUnit": "SI",
+      "id": "ldl",
+      "orderIndex": 28,
+      "category": "Lipids",
+      "type": "float"
+    },
+    {
+      "units": [
+        {
+          "unitType": "SI",
+          "shorthand": "g/L",
+          "conversionFactor": 1,
+          "minimum": 5,
+          "maximum": 185,
+          "options": null
+        },
+        {
+          "unitType": "Conventional",
+          "shorthand": "g/dL",
+          "conversionFactor": 10,
+          "minimum": 0.5,
+          "maximum": 18.5,
+          "options": null
+        }
+      ],
+      "preferredUnit": "SI",
+      "id": "protein",
+      "orderIndex": 29,
+      "category": "Protein",
+      "type": "float"
+    },
+    {
+      "units": [
+        {
+          "unitType": "SI",
+          "shorthand": "g/L",
+          "conversionFactor": 1,
+          "minimum": 5,
+          "maximum": 500,
+          "options": null
+        },
+        {
+          "unitType": "Conventional",
+          "shorthand": "g/dL",
+          "conversionFactor": 10,
+          "minimum": 0.5,
+          "maximum": 50,
+          "options": null
+        }
+      ],
+      "preferredUnit": "SI",
+      "id": "albumin",
+      "orderIndex": 30,
+      "category": "Protein",
+      "type": "float"
+    },
+    {
+      "units": [
+        {
+          "unitType": "SI",
+          "shorthand": "G/L",
+          "conversionFactor": 1,
+          "minimum": 0.03,
+          "maximum": 440,
+          "options": null
+        },
+        {
+          "unitType": "Conventional",
+          "shorthand": "1000/µl",
+          "conversionFactor": 1,
+          "minimum": 0.03,
+          "maximum": 440,
+          "options": null
+        }
+      ],
+      "preferredUnit": "SI",
+      "id": "leukocyte",
+      "orderIndex": 31,
+      "category": "Hematology",
+      "type": "float"
+    },
+    {
+      "units": [
+        {
+          "unitType": "SI",
+          "shorthand": "g/L",
+          "conversionFactor": 1,
+          "minimum": 0,
+          "maximum": 1000,
+          "options": null
+        },
+        {
+          "unitType": "Conventional",
+          "shorthand": "g/dL",
+          "conversionFactor": 10,
+          "minimum": 0,
+          "maximum": 100,
+          "options": null
+        }
+      ],
+      "preferredUnit": "SI",
+      "id": "mchc",
+      "orderIndex": 32,
+      "category": "Hematology",
+      "type": "float"
+    }
+  ]
+}

@@ -46,7 +46,7 @@ public class SchemasControllerTests
         userUow.Setup(x => x.GetUser(It.IsAny<string>(), It.IsAny<UserIdsRecord>())).Returns(MockDataProvider.GetMockedUser);
         var template = await _biomarkersTemplateService.GetTemplate();
         _scoringTemplateService = new ScoringTemplateService(mapper, _biomarkersTemplateService, _scoreSummaryUtility, userUow.Object);
-        userUow.Setup(x => x.OrderTemplate(It.IsAny<IEnumerable<BiomarkerSchema>>(), It.IsAny<string>())).Returns(template);
+        userUow.Setup(x => x.OrderTemplate(It.IsAny<CadRequestSchema>(), It.IsAny<string>())).Returns(template);
         _userUow = userUow.Object;
         
         _schemasController = new SchemasController(_biomarkersTemplateService, _scoringTemplateService, _userUow, new UserInformationExtractor());
@@ -60,9 +60,9 @@ public class SchemasControllerTests
         result.Subject.Should().BeOfType<OkObjectResult>();
         var template = ((OkObjectResult) result.Subject).Value;
         template.Should().NotBeNull();
-        template.Should().BeOfType<List<BiomarkerSchema>>();
-        var biomarkersTemplate = (IEnumerable<BiomarkerSchema>) template;
-        biomarkersTemplate.Count().Should().Be(33);
+        template.Should().BeOfType<CadRequestSchema>();
+        var biomarkersTemplate = (CadRequestSchema) template;
+        biomarkersTemplate.AllMarkers.Count().Should().Be(33);
     }
 
     [Test]
