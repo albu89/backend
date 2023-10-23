@@ -26,7 +26,7 @@ namespace CE_API_Test.TestUtilities
             return JsonSerializer.Serialize(scoringRequestDtoMock);
         }
 
-        internal static ScoringRequest CreateScoringRequestDto()
+        internal static ScoringRequest CreateScoringRequest()
         {
             return new ScoringRequest()
             {
@@ -88,6 +88,7 @@ namespace CE_API_Test.TestUtilities
                 CreatedOn = CreatedOn ?? DateTimeOffset.Now
             };
         }
+
         private static IEnumerable<Biomarkers> GetFakeBiomarkers()
         {
             var biomarkerList = new List<Biomarkers>
@@ -328,7 +329,7 @@ namespace CE_API_Test.TestUtilities
             };
         }
 
-        public static User GetMockedUserDto()
+        public static User GetMockedUser()
         {
             return new User()
             {
@@ -346,12 +347,12 @@ namespace CE_API_Test.TestUtilities
                 Salutation = "Mock",
                 Surname = "Mock",
                 TelephoneNumber = "Mock",
-                UnitLabValues = "Mock",
+                UnitLabValues = "Mock", 
                 Role = UserRole.User
             };
         }
         
-        public static UserModel GetMockedUser()
+        public static UserModel GetMockedUserModel()
         {
             return new UserModel()
             {
@@ -383,7 +384,7 @@ namespace CE_API_Test.TestUtilities
         };
         }
         
-        public static CreateUser GetMockedCreateUserDto()
+        public static CreateUser GetMockedCreateUser()
         {
             return new CreateUser()
             {
