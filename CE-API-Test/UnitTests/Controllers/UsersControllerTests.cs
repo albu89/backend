@@ -129,7 +129,7 @@ namespace CE_API_Test.UnitTests.Controllers
             //Arrange
             var sut = new UsersController(_inputValidationService, _userUOW, _userInformationExtractor, _mapper, _userHelper);
             var userId = MockDataProvider.GetMockedUser().UserId;
-            var updatedUser = MockDataProvider.GetMockedCreateUserDto();
+            var updatedUser = MockDataProvider.GetMockedUpdateUserDto();
 
             //Act
             var currentUser = await sut.UpdateUserById(updatedUser, userId);

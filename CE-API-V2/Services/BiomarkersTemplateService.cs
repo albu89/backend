@@ -10,7 +10,7 @@ namespace CE_API_V2.Services
 {
     public class BiomarkersTemplateService : IBiomarkersTemplateService
     {
-        
+
         private const string GeneralBiomarkerSchemaFile = "BiomarkersSchema";
         private const string GeneralBiomarkerSchemaInfoFile = "BiomarkersSchema.info";
         private const string GeneralBiomarkersSchemaFileEnding = ".json";
@@ -21,23 +21,23 @@ namespace CE_API_V2.Services
         {
             _mapper = mapper;
         }
-        
+
         public async Task<CadRequestSchema> GetTemplate(string locale = LocalizationConstants.DefaultLocale)
         {
             return await GetTemplateFromUrl(locale, Path.Combine(LocalizationConstants.TemplatesSubpath, Concat(GeneralBiomarkerSchemaFile, GeneralBiomarkersSchemaFileEnding)));
         }
-        
+
         private async Task<CadRequestSchema> GetTemplateFromUrl(string locale, string filePath)
         {
 
             var generalBiomarkerSchema = await DeserializeSchema<CadRequestSchema>(filePath);
 
-            var localizedSchemaFilePath = TryGetLocalizedFilePathNew(locale);
+            var localizedSchemaFilePath = TryGetLocalizedFilePath(locale);
             var localizedBiomarkerSchema = await DeserializeSchema<BiomarkersLocalizedNew>(localizedSchemaFilePath);
 
             return CombineSchemas(generalBiomarkerSchema, localizedBiomarkerSchema);
         }
-        
+
         public async Task<Dictionary<string, CadRequestSchema>> GetAllTemplates()
         {
             var result = new Dictionary<string, CadRequestSchema>();
@@ -66,7 +66,7 @@ namespace CE_API_V2.Services
 
             return deserialized;
         }
-        
+
         private CadRequestSchema CombineSchemas(CadRequestSchema generalBiomarkerSchema, BiomarkersLocalizedNew localizedBiomarkerSchema)
         {
             // Map translations for MedicalHistory-Entries
@@ -103,33 +103,17 @@ namespace CE_API_V2.Services
                 entry.InfoText = localizedEntry.InfoText;
                 entry.Category = !IsNullOrEmpty(localizedEntry.Category) ? localizedEntry.Category : entry.Category;
             }
-            
+
             return generalBiomarkerSchema;
         }
 
         private static string TryGetLocalizedFilePath(string locale)
         {
-            var path = Path.Combine(LocalizationConstants.TemplatesSubpath, Concat("BiomarkersSchema.info.",locale, ".json"));
+            var path = Path.Combine(LocalizationConstants.TemplatesSubpath, Concat("BiomarkersSchema.info.", locale, ".json"));
 
             if (File.Exists(path))
                 return path;
-            
-            path = Path.Combine(LocalizationConstants.TemplatesSubpath, Concat("BiomarkersSchema.info.", LocalizationConstants.DefaultLocale, ".json"));
-            if (!File.Exists(path))
-            {
-                throw new FileNotFoundException($"The requested file was not found. Requested File: {path}");
-            }
 
-            return path;
-        }
-        
-        private static string TryGetLocalizedFilePathNew(string locale)
-        {
-            var path = Path.Combine(LocalizationConstants.TemplatesSubpath, Concat("BiomarkersSchema.info.",locale, ".json"));
-
-            if (File.Exists(path))
-                return path;
-            
             path = Path.Combine(LocalizationConstants.TemplatesSubpath, Concat("BiomarkersSchema.info.", LocalizationConstants.DefaultLocale, ".json"));
             if (!File.Exists(path))
             {
@@ -139,10 +123,11 @@ namespace CE_API_V2.Services
             return path;
         }
     }
+
     internal class LocalizationMissingException : Exception
     {
-        public LocalizationMissingException(string localizedEntryId) : base(FormatForBiomarker(localizedEntryId)) {}
-        public LocalizationMissingException(string localizedEntryId, string property) : base(FormatForBiomarkerProperty(localizedEntryId, property)) {}
+        public LocalizationMissingException(string localizedEntryId) : base(FormatForBiomarker(localizedEntryId)) { }
+        public LocalizationMissingException(string localizedEntryId, string property) : base(FormatForBiomarkerProperty(localizedEntryId, property)) { }
 
         static string FormatForBiomarker(string localizedEntryId)
         {

@@ -2,8 +2,7 @@
 using CE_API_V2.Models.Enum;
 
 namespace CE_API_V2.Models.DTO;
-
-public class CreateUser
+public class UpdateUser
 {
     //Person related
     public string Salutation { get; set; }
@@ -11,7 +10,6 @@ public class CreateUser
     public string Surname { get; set; }
     public string FirstName { get; set; }
     public string ProfessionalSpecialisation { get; set; }
-    public string Department { get; set; }
     public string PreferredLab { get; set; } // for Cardio Explorer test analysis
 
     //Contact details
@@ -26,8 +24,13 @@ public class CreateUser
     //Settings
     public string Language { get; set; }
     public string UnitLabValues { get; set; }
+    public bool IsActive { get; set; }
+}
+
+public class CreateUser : UpdateUser
+{
+    public string Department { get; set; }
+
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public PatientDataEnums.ClinicalSetting ClinicalSetting { get; set; }
-    
-    public bool IsActive { get; set; }
 }

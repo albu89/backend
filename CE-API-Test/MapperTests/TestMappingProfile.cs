@@ -86,4 +86,34 @@ public class TestMappingProfile
         user.UnitLabValues.Should().Be("Mock");
         user.ClinicalSetting.Should().Be(ClinicalSetting.SecondaryCare);
     }
+    
+    [Test]
+    public void UpdateUserDtoToUser()
+    {
+        //Arrange
+        var userDto = MockDataProvider.GetMockedUpdateUserDto();
+
+        //Act
+        var user = _mapper.Map<UserModel>(userDto);
+
+        //Assert
+        user.Should().NotBeNull();
+        user.UserId.Should().Be(string.Empty);
+        user.TenantID.Should().Be(string.Empty);
+        user.Address.Should().Be("Mock");
+        user.Salutation.Should().Be("Mock");
+        user.Surname.Should().Be("Mock");
+        user.FirstName.Should().Be("Mock");
+        user.ProfessionalSpecialisation.Should().Be("Mock");
+        user.PreferredLab.Should().Be("Mock");
+        user.Address.Should().Be("Mock");
+        user.City.Should().Be("Mock");
+        user.CountryCode.Should().Be("Mock");
+        user.Country.Should().Be("Mock");
+        user.TelephoneNumber.Should().Be("Mock");
+        user.Language.Should().Be("Mock");
+        user.UnitLabValues.Should().Be("Mock");
+        user.Department.Should().BeNullOrEmpty();
+        user.ClinicalSetting.Should().Be(ClinicalSetting.PrimaryCare);
+    }
 }

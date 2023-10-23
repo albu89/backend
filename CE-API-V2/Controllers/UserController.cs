@@ -113,10 +113,10 @@ namespace CE_API_V2.Controllers
         [HttpPatch(Name = "UpdateUser")]
         [Produces("application/json", Type = typeof(User))]
         [ProducesResponseType(StatusCodes.Status400BadRequest), SwaggerResponse(400, "Returns BadRequest if the Userprofile could not be updated.")]
-        public async Task<IActionResult> UpdateCurrentUser([FromBody] CreateUser user)
+        public async Task<IActionResult> UpdateCurrentUser([FromBody] UpdateUser user)
         {
-                var userInfo = _userInformationExtractor.GetUserIdInformation(User);
-                var userId = userInfo.UserId;
+            var userInfo = _userInformationExtractor.GetUserIdInformation(User);
+            var userId = userInfo.UserId;
             UserModel? mappedUser = _mapper.Map<UserModel>(user);
 
             var updatedUser = await _userUow.UpdateUser(userId, mappedUser, userInfo);

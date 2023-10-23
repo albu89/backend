@@ -60,6 +60,10 @@ namespace CE_API_V2.Models.Mapping
             CreateMap<CreateUser, UserModel>()
                 .ForMember(dest => dest.UserId, opt => opt.MapFrom(_ => string.Empty))
                 .ForMember(dest => dest.TenantID, opt => opt.MapFrom(_ => string.Empty));
+            
+            CreateMap<UpdateUser, UserModel>()
+                .ForMember(dest => dest.UserId, opt => opt.MapFrom(_ => string.Empty))
+                .ForMember(dest => dest.TenantID, opt => opt.MapFrom(_ => string.Empty));
 
             CreateMap<UserModel, User>();
 

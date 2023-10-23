@@ -194,7 +194,7 @@ namespace CE_API_Test.UnitTests.Controllers
             var mockedUser = MockDataProvider.GetMockedUser();
             var userId = mockedUser.UserId;
 
-            var patchDocument = MockDataProvider.GetMockedCreateUserDto();
+            var patchDocument = MockDataProvider.GetMockedUpdateUserDto();
 
             //Act
             var currentUser = await sut.UpdateUserById(patchDocument, userId);
@@ -212,7 +212,7 @@ namespace CE_API_Test.UnitTests.Controllers
         {
             //Arrange
             var sut = new UserController(_mapper, _userUOW, _inputValidationService, _userInformationExtractor, _administrativeEntitiesUow, _userHelper);
-            var mockedUserDto = MockDataProvider.GetMockedCreateUserDto();
+            var mockedUserDto = MockDataProvider.GetMockedUpdateUserDto();
 
             //Act
             var currentUser = await sut.UpdateCurrentUser(mockedUserDto);
