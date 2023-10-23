@@ -8,6 +8,7 @@ using CE_API_V2.Utility;
 
 namespace CE_API_Test.MapperTests;
 
+[TestFixture]
 public class MappingProfileTests
 {
     private IMapper _mapper;

@@ -4,6 +4,7 @@ using CE_API_V2.Models.Mapping;
 
 namespace CE_API_Test.MapperTests;
 
+[TestFixture]
 public class ManualMapperTests
 { 
     [Test]
