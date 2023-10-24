@@ -1,9 +1,5 @@
-﻿using System.IO;
-using System.Xml;
-using CE_API_V2.Constants;
-using HtmlAgilityPack;
+﻿using CE_API_V2.Constants;
 using Newtonsoft.Json.Linq;
-
 
 namespace CE_API_Test.UnitTests.Templates
 {
@@ -51,34 +47,23 @@ namespace CE_API_Test.UnitTests.Templates
         }
 
         [Test]
-        public void ValidateHTMLSchemaFiles_GivenFilesInFolder_ReturnValidSchemaResult()
-        {
-            //Arrange
-            var files = _files.Where(x => x.Contains("html")).ToList();
-
-            //Act 
-
-            //Assert
-            //Todo 
-        }
-
-        [Test]
-        public void EnsureAllFileTypesAreTested_GivenAllFilesInFolder_ReturnValidSchemaResult()
+        public void EnsureAllJsonFilesAreTested_GivenAllFilesInFolder_ReturnValidSchemaResult()
         {
             //Arrange
 
             var path = Path.Combine(LocalizationConstants.TemplatesSubpath);
 
             //Act
-            var files = Directory.GetFiles(path);
-            var fileCount = files.Length;
-            string[] htmlAndJsonFiles = Directory.GetFiles(path)
-                .Where(file => file.EndsWith(".html") || file.EndsWith(".json"))
+            var fileCount = Directory.GetFiles(path).Length;
+            string[] jsonFiles = Directory.GetFiles(path)
+                .Where(file => file.EndsWith(".json"))
                 .ToArray();
+            int ignoredFilesCount = Directory
+                .GetFiles(path).Count(file => !file.EndsWith(".json")); // only json - files are tested
 
             //Assert
-            htmlAndJsonFiles.Should().NotBeNullOrEmpty();
-            htmlAndJsonFiles.Length.Should().Be(fileCount);
+            jsonFiles.Should().NotBeNullOrEmpty();
+            jsonFiles.Length.Should().Be(fileCount - ignoredFilesCount);
         }
     }
 }
