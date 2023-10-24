@@ -174,46 +174,6 @@ public class MappingProfileTests
     }
 
     [Test]
-    public void BiomarkersGeneralToBiomarkerSchema()
-    {
-        //Arrange
-        var biomarkersGeneral = GetBiomarkersGeneral();
-
-        //Act
-        var biomarkerSchema = _mapper.Map<BiomarkerSchema>(biomarkersGeneral);
-
-        //Assert
-        biomarkerSchema.Should().NotBeNull();
-        biomarkerSchema.Id.Should().BeEquivalentTo(biomarkersGeneral.Id);
-        biomarkerSchema.Category.Should().BeEquivalentTo(biomarkersGeneral.Category);
-        biomarkerSchema.OrderNumber.Should().Be(biomarkersGeneral.OrderNumber);
-        biomarkerSchema.Units.Should().BeEquivalentTo(biomarkersGeneral.Units);
-        biomarkerSchema.PreferredUnit.Should().BeEquivalentTo(biomarkersGeneral.PreferredUnit);
-        biomarkerSchema.Fieldname.Should().BeNullOrEmpty(); // is ignored in mapping profile
-        biomarkerSchema.InfoText.Should().BeNullOrEmpty(); // is ignored in mapping profile
-    }
-
-    [Test]
-    public void BiomarkersLocalizedToBiomarkerSchema()
-    {
-        //Arrange
-        var biomarkersLocalized = GetBiomarkersLocalized();
-
-        //Act
-        var biomarkerSchema = _mapper.Map<BiomarkerSchema>(biomarkersLocalized);
-
-        //Assert
-        biomarkerSchema.Should().NotBeNull();
-        biomarkerSchema.Id.Should().Be(biomarkersLocalized.Id);
-        biomarkerSchema.Fieldname.Should().BeEquivalentTo(biomarkersLocalized.Fieldname);
-        biomarkerSchema.InfoText.Should().BeEquivalentTo(biomarkersLocalized.InfoText);
-        biomarkerSchema.Category.Should().BeNullOrEmpty(); // is ignored in mapping profile
-        biomarkerSchema.OrderNumber.Should().Be(0); // is ignored in mapping profile - default value
-        biomarkerSchema.Units.Should().BeNullOrEmpty(); // is ignored in mapping profile
-        biomarkerSchema.PreferredUnit.Should().BeNullOrEmpty(); // is ignored in mapping profile
-    }
-
-    [Test]
     public void ScoringResponseToScoringResponseModel()
     {
         //Arrange
@@ -594,18 +554,6 @@ public class MappingProfileTests
         {
             new() { OrderNumber = 1, BiomarkerId = "first", PreferredUnit = "unit", User = null, UserId = "id" },
             new() { OrderNumber = 2, BiomarkerId = "second", PreferredUnit = "unit", User = null, UserId = "id" }
-        };
-    }
-
-    private BiomarkersGeneral GetBiomarkersGeneral()
-    {
-        return new()
-        {
-            Id = Guid.NewGuid().ToString(),
-            Category = "1",
-            OrderNumber = 2,
-            PreferredUnit = "unit",
-            Units = new BiomarkerSchemaUnit[] { },
         };
     }
 

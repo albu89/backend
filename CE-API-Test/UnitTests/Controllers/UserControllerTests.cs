@@ -12,7 +12,6 @@ using System.Security.Claims;
 using CE_API_V2.Models.Records;
 using Azure.Communication.Email;
 using CE_API_V2.Utility;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 
 namespace CE_API_Test.UnitTests.Controllers
@@ -67,7 +66,7 @@ namespace CE_API_Test.UnitTests.Controllers
                 UserId = "MockedUserId",
             };
 
-            var resultUser = MockDataProvider.GetMockedUser();
+            var resultUser = MockDataProvider.GetMockedUserModel();
             inputValidationServiceMock.Setup(x => x.ValidateUser(It.IsAny<CreateUser>())).Returns(true);
             inputValidationServiceMock.Setup(x => x.ValidateAccessRequest(It.IsAny<AccessRequest>())).Returns(true);
             userUOWMock.Setup(x => x.StoreUser(It.IsAny<UserModel>()))
@@ -118,7 +117,7 @@ namespace CE_API_Test.UnitTests.Controllers
         public async Task CreatedUser_GivenMockedUserDto_ReturnOkResult()
         {
             //Arrange
-            CreateUser user = MockDataProvider.GetMockedCreateUserDto();
+            CreateUser user = MockDataProvider.GetMockedCreateUser();
             var sut = new UserController(_mapper, _userUOW, _inputValidationService, _userInformationExtractor, _administrativeEntitiesUow, _userHelper);
 
             //Act
@@ -173,7 +172,8 @@ namespace CE_API_Test.UnitTests.Controllers
         {
             //Arrange
             var sut = new UserController(_mapper, _userUOW, _inputValidationService, _userInformationExtractor, _administrativeEntitiesUow, _userHelper);
-            var expectedReturnedDto = MockDataProvider.GetMockedUserDto();
+            var expectedReturnedDto = MockDataProvider.GetMockedUser();
+           
             //Act
             var currentUser = sut.GetCurrentUser();
 
@@ -190,7 +190,7 @@ namespace CE_API_Test.UnitTests.Controllers
         {
             //Arrange
             var sut = new UsersController(_inputValidationService, _userUOW, _userInformationExtractor, _mapper, _userHelper);
-            var expectedRetrunedDto = MockDataProvider.GetMockedUserDto();
+            var expectedRetrunedDto = MockDataProvider.GetMockedUser();
             var mockedUser = MockDataProvider.GetMockedUser();
             var userId = mockedUser.UserId;
 

@@ -2,6 +2,7 @@
 using CE_API_V2.Data;
 using CE_API_V2.Models;
 using System.Net;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace CE_API_Test.Integrationtests
 {

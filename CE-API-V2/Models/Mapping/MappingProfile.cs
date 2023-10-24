@@ -110,18 +110,6 @@ namespace CE_API_V2.Models.Mapping
                 .ForMember(dest => dest.Biomarkers, opt => opt.Ignore())
                 .ForMember(dest => dest.RecommendationCategories, opt => opt.Ignore());
 
-            CreateMap<BiomarkersLocalized, ScoreSchema>()
-                .ForMember(dest => dest.Biomarkers, opt => opt.MapFrom(src => src))
-                .ForAllMembers(opts => opts.Ignore());
-            
-            CreateMap<CadRequestSchema, ScoreSchema>()
-                .ForMember(dest => dest.Biomarkers, opt => opt.MapFrom(src => src))
-                .ForAllMembers(opts => opts.Ignore());
-
-            CreateMap<IEnumerable<RecommendationCategory>, ScoreSchema>()
-                .ForMember(dest => dest.RecommendationCategories, opt => opt.MapFrom(src => src.ToArray()))
-                .ForAllMembers(opts => opts.Ignore());
-
             CreateMap<RecommendationCategory, ScoringResponse>()
                 .ForMember(dest => dest.RecommendationSummary, opt => opt.MapFrom(src => src.ShortText))
                 .ForMember(dest => dest.RecommendationLongText, opt => opt.MapFrom(src => src.LongText))

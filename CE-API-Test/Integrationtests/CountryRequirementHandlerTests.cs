@@ -1,12 +1,8 @@
 ﻿using CE_API_Test.TestUtilities;
 using CE_API_V2.Data;
 using CE_API_V2.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace CE_API_Test.Integrationtests
 {
@@ -47,6 +43,16 @@ namespace CE_API_Test.Integrationtests
             {
                 ContextSeeder.InsertUser(dbContext, userModel);
             }
+        }
+
+        private UserModel CreateUserModel(bool isActive)
+        {
+            var user = MockDataProvider.GetMockedUserModel();
+            user.UserId = "UserId";
+            user.IsActive = isActive;
+            user.BiomarkerOrders = null;
+
+            return user;
         }
     }
 }

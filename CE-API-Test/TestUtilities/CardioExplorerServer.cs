@@ -2,7 +2,6 @@
 using CE_API_Test.TestUtilities.Test;
 using CE_API_V2.Data;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -43,15 +42,10 @@ internal class CardioExplorerServer : WebApplicationFactory<Program>
             services.Configure<TestAuthHandlerOptions>(options =>
             {
                 options.Country = _country ?? "CH";
-                options.DefaultUserId = "Default";
         });
 
             services.AddAuthentication(TestAuthHandler.AuthenticationScheme)
                 .AddScheme<TestAuthHandlerOptions, TestAuthHandler>(TestAuthHandler.AuthenticationScheme, options => { });
-            
-            services.AddControllers()
-                .PartManager.ApplicationParts.Add(new AssemblyPart(typeof(TestController).Assembly));
-
         }); 
         builder.UseEnvironment("Development");
     }

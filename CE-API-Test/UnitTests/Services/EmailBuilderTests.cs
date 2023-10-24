@@ -65,7 +65,7 @@ namespace CE_API_Test.UnitTests.Services
         public async Task GetActivateUserEmailConfiguration_GivenAccessDto_ExpectedProcessedRequest()
         {
             //Arrange
-            var userModel = MockDataProvider.GetMockedUser();
+            var userModel = MockDataProvider.GetMockedUserModel();
             var sut = new EmailBuilder(_emailTemplateProvider, _configuration, _responsibilityDeterminer);
             var expectedEmailBody =
                 $"New user has registered their account: email: {userModel.UserId} ({userModel.FirstName} {userModel.Surname})<br/><br/> With kind regards<br/> Exploris Health";
