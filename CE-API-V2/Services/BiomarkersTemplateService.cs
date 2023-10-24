@@ -4,12 +4,13 @@ using System.Text.RegularExpressions;
 using CE_API_V2.Services.Interfaces;
 using AutoMapper;
 using CE_API_V2.Constants;
+using static System.String;
 
 namespace CE_API_V2.Services
 {
     public class BiomarkersTemplateService : IBiomarkersTemplateService
     {
-        
+
         private const string GeneralBiomarkerSchemaFile = "BiomarkersSchema";
         private const string GeneralBiomarkerSchemaInfoFile = "BiomarkersSchema.info";
         private const string GeneralBiomarkersSchemaFileEnding = ".json";
@@ -20,25 +21,27 @@ namespace CE_API_V2.Services
         {
             _mapper = mapper;
         }
-        
-        public async Task<IEnumerable<BiomarkerSchema>> GetTemplate(string locale = LocalizationConstants.DefaultLocale)
+
+        public async Task<CadRequestSchema> GetTemplate(string locale = LocalizationConstants.DefaultLocale)
         {
-            return await GetTemplateFromUrl(locale, Path.Combine(LocalizationConstants.TemplatesSubpath, string.Concat(GeneralBiomarkerSchemaFile, GeneralBiomarkersSchemaFileEnding)));
+            return await GetTemplateFromUrl(locale, Path.Combine(LocalizationConstants.TemplatesSubpath, Concat(GeneralBiomarkerSchemaFile, GeneralBiomarkersSchemaFileEnding)));
         }
-        private async Task<IEnumerable<BiomarkerSchema>> GetTemplateFromUrl(string locale, string filePath)
+
+        private async Task<CadRequestSchema> GetTemplateFromUrl(string locale, string filePath)
         {
 
-            var generalBiomarkerSchema = await DeserializeSchema<List<BiomarkersGeneral>>(filePath);
+            var generalBiomarkerSchema = await DeserializeSchema<CadRequestSchema>(filePath);
 
             var localizedSchemaFilePath = TryGetLocalizedFilePath(locale);
-            var localizedBiomarkerSchema = await DeserializeSchema<List<BiomarkersLocalized>>(localizedSchemaFilePath);
+            var localizedBiomarkerSchema = await DeserializeSchema<BiomarkersLocalizedNew>(localizedSchemaFilePath);
 
             return CombineSchemas(generalBiomarkerSchema, localizedBiomarkerSchema);
         }
-        public async Task<Dictionary<string, IEnumerable<BiomarkerSchema>>> GetAllTemplates()
+
+        public async Task<Dictionary<string, CadRequestSchema>> GetAllTemplates()
         {
-            var result = new Dictionary<string, IEnumerable<BiomarkerSchema>>();
-            var defaultTemplatePath = Path.Combine(LocalizationConstants.TemplatesSubpath, string.Concat(GeneralBiomarkerSchemaFile, GeneralBiomarkersSchemaFileEnding));
+            var result = new Dictionary<string, CadRequestSchema>();
+            var defaultTemplatePath = Path.Combine(LocalizationConstants.TemplatesSubpath, Concat(GeneralBiomarkerSchemaFile, GeneralBiomarkersSchemaFileEnding));
             var allFiles = Directory.GetFiles(LocalizationConstants.TemplatesSubpath).Where(x => x.Contains(GeneralBiomarkerSchemaInfoFile));
             foreach (var file in allFiles)
             {
@@ -64,45 +67,75 @@ namespace CE_API_V2.Services
             return deserialized;
         }
 
-        private List<BiomarkerSchema> CombineSchemas(List<BiomarkersGeneral> generalBiomarkerSchema, List<BiomarkersLocalized> localizedBiomarkerSchema)
+        private CadRequestSchema CombineSchemas(CadRequestSchema generalBiomarkerSchema, BiomarkersLocalizedNew localizedBiomarkerSchema)
         {
-
-            var biomarkerSchemaList  = new List<BiomarkerSchema>();
-
-            foreach (var item in generalBiomarkerSchema)
+            // Map translations for MedicalHistory-Entries
+            foreach (var entry in generalBiomarkerSchema.MedicalHistory)
             {
-                var langSpec = localizedBiomarkerSchema.Find(x => x.Id.Equals(item.Id));
-                var biomarkerSchemaDto = _mapper.Map<BiomarkerSchema>(item);
-                _mapper.Map(langSpec, biomarkerSchemaDto);
-
-                if (langSpec.DisplayNames is not null)
+                var localizedEntry = localizedBiomarkerSchema.MedicalHistory.FirstOrDefault(x => x.Id == entry.Id);
+                if (localizedEntry is null)
                 {
-                    foreach (var unit in biomarkerSchemaDto.Units)
-                    {
-                        unit.DisplayNames = langSpec.DisplayNames.Where(x => unit.Enum.Contains(x.Key)).ToDictionary(i => i.Key, i => i.Value);
-                    }
+                    throw new LocalizationMissingException(localizedEntry.Id);
                 }
-
-                biomarkerSchemaList.Add(biomarkerSchemaDto);
+                entry.DisplayName = localizedEntry.DisplayName;
+                entry.InfoText = localizedEntry.InfoText;
+                entry.Category = !IsNullOrEmpty(localizedEntry.Category) ? localizedEntry.Category : entry.Category;
+                if (localizedEntry.Unit?.Options is null || entry.Unit?.Options is null)
+                {
+                    continue;
+                }
+                var localizedOptions = localizedEntry.Unit.Options;
+                foreach (var option in entry.Unit.Options)
+                {
+                    option.DisplayName = localizedOptions.FirstOrDefault(o => string.Equals(o.Value, option.Value, StringComparison.InvariantCultureIgnoreCase))?.DisplayName ?? option.Value;
+                }
             }
-            
-            return biomarkerSchemaList;
+
+            // Map translations 
+            foreach (var entry in generalBiomarkerSchema.LabResults)
+            {
+                var localizedEntry = localizedBiomarkerSchema.LabResults.FirstOrDefault(x => x.Id == entry.Id);
+                if (localizedEntry is null)
+                {
+                    throw new LocalizationMissingException(localizedEntry.Id);
+                }
+                entry.DisplayName = localizedEntry.DisplayName;
+                entry.InfoText = localizedEntry.InfoText;
+                entry.Category = !IsNullOrEmpty(localizedEntry.Category) ? localizedEntry.Category : entry.Category;
+            }
+
+            return generalBiomarkerSchema;
         }
 
         private static string TryGetLocalizedFilePath(string locale)
         {
-            var path = Path.Combine(LocalizationConstants.TemplatesSubpath, string.Concat("BiomarkersSchema.info.",locale, ".json"));
+            var path = Path.Combine(LocalizationConstants.TemplatesSubpath, Concat("BiomarkersSchema.info.", locale, ".json"));
 
             if (File.Exists(path))
                 return path;
-            
-            path = Path.Combine(LocalizationConstants.TemplatesSubpath, string.Concat("BiomarkersSchema.info.", LocalizationConstants.DefaultLocale, ".json"));
+
+            path = Path.Combine(LocalizationConstants.TemplatesSubpath, Concat("BiomarkersSchema.info.", LocalizationConstants.DefaultLocale, ".json"));
             if (!File.Exists(path))
             {
                 throw new FileNotFoundException($"The requested file was not found. Requested File: {path}");
             }
 
             return path;
+        }
+    }
+
+    internal class LocalizationMissingException : Exception
+    {
+        public LocalizationMissingException(string localizedEntryId) : base(FormatForBiomarker(localizedEntryId)) { }
+        public LocalizationMissingException(string localizedEntryId, string property) : base(FormatForBiomarkerProperty(localizedEntryId, property)) { }
+
+        static string FormatForBiomarker(string localizedEntryId)
+        {
+            return $"Biomarker {localizedEntryId} is missing a translation.";
+        }
+        static string FormatForBiomarkerProperty(string localizedEntryId, string property)
+        {
+            return $"Biomarker-property {localizedEntryId}.{property} is missing a translation.";
         }
     }
 }

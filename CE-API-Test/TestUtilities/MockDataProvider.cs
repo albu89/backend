@@ -383,6 +383,26 @@ namespace CE_API_Test.TestUtilities
                 }
         };
         }
+
+        public static UpdateUser GetMockedUpdateUserDto()
+        {
+            return new UpdateUser()
+            {
+                Address = "Mock",
+                City = "Mock",
+                Country = "Mock",
+                CountryCode = "Mock",
+                EMailAddress = "Mock",
+                FirstName = "Mock",
+                Language = "Mock",
+                PreferredLab = "Mock",
+                ProfessionalSpecialisation = "Mock",
+                Salutation = "Mock",
+                Surname = "Mock",
+                TelephoneNumber = "Mock",
+                UnitLabValues = "Mock",
+            };
+        }
         
         public static CreateUser GetMockedCreateUser()
         {
@@ -452,7 +472,7 @@ namespace CE_API_Test.TestUtilities
                 RecommendationTableHeader = "",
                 RecommendationScoreRangeHeader = "",
                 RecommendationCategories = new List<RecommendationCategory> { new() },
-                Biomarkers = new List<BiomarkerSchema> { new() },
+                Biomarkers = new CadRequestSchema(),
             };
         }
 

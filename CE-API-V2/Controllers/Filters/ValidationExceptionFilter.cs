@@ -1,4 +1,5 @@
-﻿using CE_API_V2.Models.Exceptions;
+﻿using CE_API_V2.Models.DTO;
+using CE_API_V2.Models.Exceptions;
 using CE_API_V2.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -22,7 +23,8 @@ public class ValidationExceptionFilter : IExceptionFilter
             {
                 var property = error.FormattedMessagePlaceholderValues["PropertyName"]?.ToString() ?? string.Empty;
                 var propertyTrimmed = property.Replace("{", "")?.Replace("}", "");
-                var formattedMessage = error.ErrorMessage.Replace(property, template.FirstOrDefault(x => x.Id == propertyTrimmed)?.Fieldname);
+                var fieldName = template.LabResults.Concat<BiomarkerBase>(template.MedicalHistory).FirstOrDefault(x => x.Id == propertyTrimmed)?.DisplayName;
+                var formattedMessage = error.ErrorMessage.Replace(property, fieldName);
                 error.ErrorMessage = formattedMessage;
             }
             context.Result = new BadRequestObjectResult(valEx.Errors);

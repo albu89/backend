@@ -6,7 +6,6 @@ using CE_API_V2.Models.Mapping;
 using CE_API_V2.UnitOfWorks.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using CE_API_Test.TestUtilities;
 using CE_API_V2.Services.Interfaces;
 using System.Security.Claims;
 using CE_API_V2.Models.Records;

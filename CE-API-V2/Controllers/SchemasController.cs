@@ -1,5 +1,6 @@
 ﻿using CE_API_V2.Constants;
 using CE_API_V2.Models.DTO;
+using CE_API_V2.Services;
 using CE_API_V2.Services.Interfaces;
 using CE_API_V2.UnitOfWorks.Interfaces;
 using CE_API_V2.Utility;
@@ -7,6 +8,8 @@ using CE_API_V2.Utility.CustomAnnotations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using Serilog;
+using Serilog.Context;
 
 namespace CE_API_V2.Controllers
 {
@@ -40,22 +43,28 @@ namespace CE_API_V2.Controllers
         /// If the Userprofile is inactive, Status 403 is returned.
         /// </remarks>
         /// <param name="locale" example="de-CH">The requested language and region of the requested resource in IETF BCP 47 format.</param>
+        /// <param name="defaultOrder">Specifies if the schema shall be returned in default order. Defaults to false.</param>
         [HttpGet("biomarkers")]
-        [Produces("application/json", Type = typeof(IEnumerable<BiomarkerSchema>)), SwaggerResponse(200, "BiomarkerSchema containing all necessary information for creating a ScoringRequest page.", type: typeof(BiomarkerSchema))]
-        public async Task<IActionResult> GetInputFormTemplate(string? locale = "en-GB")
+        [Produces("application/json", Type = typeof(CadRequestSchema)), SwaggerResponse(200, "BiomarkerSchema containing all necessary information for creating a ScoringRequest page.", type: typeof(CadRequestSchema))]
+        public async Task<IActionResult> GetInputFormTemplate(string? locale = "en-GB", bool defaultOrder = false)
         {
-
-            if (string.IsNullOrEmpty(locale))
+            if (string.IsNullOrEmpty(locale)) 
             {
                 locale = LocalizationConstants.DefaultLocale;
             }
             var template = await _biomarkersTemplateService.GetTemplate(locale);
+            template.Categories = new BiomarkerCategories()
+            {
+                MedicalHistory = template.MedicalHistory.Select(x => x.Category).Distinct().ToArray(),
+                LabResults = template.LabResults.Select(x => x.Category).Distinct().ToArray()
+            };
+            
             var idInformation = _userInformationExtractor.GetUserIdInformation(User);
             var user = _userUOW.GetUser(idInformation.UserId, idInformation);
-            var userId = user.UserId?.ToString();
-            IEnumerable<BiomarkerSchema> schema = _userUOW.OrderTemplate(template, userId);
+            var userId = defaultOrder ? string.Empty : user.UserId;
+            var schema = _userUOW.OrderTemplate(template, userId);
 
-            return schema.Any() ? Ok(schema) : NotFound();
+            return schema != null ? Ok(schema) : NotFound();
         }
 
         ///<summary>Get the schema for the ScoringResponse page</summary>

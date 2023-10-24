@@ -1,5 +1,4 @@
-﻿using System.Net;
-using AutoMapper;
+﻿using AutoMapper;
 using CE_API_V2.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using CE_API_V2.Models.DTO;
@@ -109,7 +108,7 @@ namespace CE_API_V2.Controllers
         [HttpPatch("{id}", Name = "UpdateUserById")]
         [Produces("application/json", Type = typeof(User)), SwaggerResponse(200, "Returns a UserProfile")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> UpdateUserById([FromBody] CreateUser user, string id)
+        public async Task<IActionResult> UpdateUserById([FromBody] UpdateUser user, string id)
         {
             var userInfo = _userInformationExtractor.GetUserIdInformation(User);
             var mappedUser = _mapper.Map<UserModel>(user);

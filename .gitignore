@@ -47,3 +47,4 @@ CE-API-V2/CE-API-V2/obj/rider.project.restore.info
 **/AzureSql/data/
 **/AzureSql/log/
 **/AzureSql/mssql/
+**/*.log

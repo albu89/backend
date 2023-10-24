@@ -26,7 +26,7 @@ public class ScoreUtilityTests
     [OneTimeSetUp]
     public void OneTimeSetup()
     {
-        var biomarkersTemplateMock = new List<BiomarkerSchema> { new() } as IEnumerable<BiomarkerSchema>;
+        var biomarkersTemplateMock = new CadRequestSchema();
         var biomarkersTemplateService = new Mock<IBiomarkersTemplateService>();
         biomarkersTemplateService.Setup(x => x.GetTemplate(It.IsAny<string>())).Returns(Task.FromResult(biomarkersTemplateMock));
 
@@ -35,7 +35,7 @@ public class ScoreUtilityTests
 
         var userUowMock = new Mock<IUserUOW>();
         userUowMock.Setup(u => u.GetUser(It.IsAny<string>(), It.IsAny<UserIdsRecord>())).Returns(new UserModel() { UserId = "123" });
-        userUowMock.Setup(u => u.OrderTemplate(It.IsAny<IEnumerable<BiomarkerSchema>>(), It.IsAny<string>())).Returns(biomarkersTemplateService.Object.GetTemplate("").GetAwaiter().GetResult());
+        userUowMock.Setup(u => u.OrderTemplate(It.IsAny<CadRequestSchema>(), It.IsAny<string>())).Returns(biomarkersTemplateService.Object.GetTemplate("").GetAwaiter().GetResult());
 
         
         var testConfig = new Dictionary<string, string?>()

@@ -36,7 +36,7 @@ namespace CE_API_V2.Models.DTO
         
         [JsonConverter(typeof(BiomarkerValueJsonConverter<ChestPain>))]
         [JsonPropertyName("chest_pain")]
-        public BiomarkerValue<ChestPain> ChestPain { get; set; } // Todo = chest pain?
+        public BiomarkerValue<ChestPain> ChestPain { get; set; } 
 
         [JsonConverter(typeof(BiomarkerValueJsonConverter<NicotineConsumption>))]
         [JsonPropertyName("nicotine")]
@@ -72,7 +72,7 @@ namespace CE_API_V2.Models.DTO
 
         [JsonConverter(typeof(BiomarkerValueJsonConverter<RestingEcg>))]
         [JsonPropertyName("q_wave")]
-        public BiomarkerValue<RestingEcg> RestingECG { get; set; } //Todo -> unterscheide primary und secondary care -> primary care
+        public BiomarkerValue<RestingEcg> RestingECG { get; set; }
         #endregion
 
         #region Enzymes

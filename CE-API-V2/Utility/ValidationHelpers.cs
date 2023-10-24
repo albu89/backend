@@ -24,28 +24,31 @@ public static class ValidationHelpers
         return prop;
     }
 
-    private static BiomarkerSchemaUnit? GetCorrespondingUnit(IEnumerable<BiomarkerSchema> template, string requestUnitType, string propertyName)
+    private static BiomarkerSchemaUnit? GetCorrespondingUnit(CadRequestSchema template, string requestUnitType, string propertyName)
     {
-
         if (requestUnitType == null)
             throw new ArgumentNullException(nameof(requestUnitType));
-        var unitToTest = template.FirstOrDefault(x => x.Id == GetJsonPropertyKeyName(propertyName, typeof(ScoringRequest)))?
-            .Units?.FirstOrDefault(x => x.UnitType == requestUnitType);
+        if (!Enum.TryParse<UnitType>(requestUnitType, out var parsedUnit))
+            parsedUnit = UnitType.SI;
+        
+        var unitToTest = template.LabResults.FirstOrDefault(x => x.Id == GetJsonPropertyKeyName(propertyName, typeof(ScoringRequest)))?
+            .Units?.FirstOrDefault(x => x.UnitType == parsedUnit) ?? template.MedicalHistory.FirstOrDefault(x => x.Id == GetJsonPropertyKeyName(propertyName, typeof(ScoringRequest)))?.Unit;
         return unitToTest;
     }
-    public static float GetMaxValue(string propertyName, string unitType, IEnumerable<BiomarkerSchema> template)
+    public static float GetMaxValue(string propertyName, string unitType, CadRequestSchema template)
     {
         return GetCorrespondingUnit(template, unitType, propertyName)?.Maximum ?? 0;
     }
-    public static float GetMinValue(string propertyName, string unitType, IEnumerable<BiomarkerSchema> template)
+    public static float GetMinValue(string propertyName, string unitType, CadRequestSchema template)
     {
         return GetCorrespondingUnit(template, unitType, propertyName)?.Minimum ?? 0;
     }
 
-    public static IEnumerable<BiomarkerSchemaUnit> GetAllUnitsForProperty(string propertyName, IEnumerable<BiomarkerSchema> template)
+    public static IEnumerable<BiomarkerSchemaUnit> GetAllUnitsForProperty(string propertyName, CadRequestSchema template)
     {
-        var units = template.FirstOrDefault(x => x.Id == GetJsonPropertyKeyName(propertyName, typeof(ScoringRequest)))?
-            .Units;
+        var units = template.LabResults.FirstOrDefault(x => x.Id == GetJsonPropertyKeyName(propertyName, typeof(ScoringRequest)))?
+            .Units ?? new [] { template.MedicalHistory.FirstOrDefault(x => x.Id == GetJsonPropertyKeyName(propertyName, typeof(ScoringRequest))).Unit };
+
         return units;
     }
 }

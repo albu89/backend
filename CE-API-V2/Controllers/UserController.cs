@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using AutoMapper;
+﻿using AutoMapper;
 using CE_API_V2.Models.DTO;
 using CE_API_V2.UnitOfWorks.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -9,6 +8,7 @@ using Azure.Communication.Email;
 using CE_API_V2.Models;
 using CE_API_V2.Utility;
 using CE_API_V2.Models.Mapping;
+using Microsoft.AspNetCore.RateLimiting;
 using CE_API_V2.Utility.CustomAnnotations;
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -101,7 +101,7 @@ namespace CE_API_V2.Controllers
                 await _userUow.ProcessInactiveUserCreation(userModel);
             }
 
-            return storedUser is not null ? Ok(_mapper.Map<User>(storedUser)) : BadRequest();
+            return storedUser is not null ? Ok(_mapper.Map<User>(storedUser)) : StatusCode(500, "");
         }
 
         /// <summary>Update current Users profile</summary>
@@ -113,10 +113,10 @@ namespace CE_API_V2.Controllers
         [HttpPatch(Name = "UpdateUser")]
         [Produces("application/json", Type = typeof(User))]
         [ProducesResponseType(StatusCodes.Status400BadRequest), SwaggerResponse(400, "Returns BadRequest if the Userprofile could not be updated.")]
-        public async Task<IActionResult> UpdateCurrentUser([FromBody] CreateUser user)
+        public async Task<IActionResult> UpdateCurrentUser([FromBody] UpdateUser user)
         {
-                var userInfo = _userInformationExtractor.GetUserIdInformation(User);
-                var userId = userInfo.UserId;
+            var userInfo = _userInformationExtractor.GetUserIdInformation(User);
+            var userId = userInfo.UserId;
             UserModel? mappedUser = _mapper.Map<UserModel>(user);
 
             var updatedUser = await _userUow.UpdateUser(userId, mappedUser, userInfo);
@@ -137,6 +137,7 @@ namespace CE_API_V2.Controllers
         [AllowInActiveUser]
         [Produces("application/json", Type = typeof(OkResult))]
         [ProducesResponseType(StatusCodes.Status400BadRequest), SwaggerResponse(400, "Returns BadRequest if Email-Service is unavailable.")]
+        [EnableRateLimiting("RequestLimitPerMinute")]
         public async Task<IActionResult> RequestAccess([FromBody, SwaggerParameter("Contains all info needed to contact the requester.")] AccessRequest access)
         {
             if (!_inputValidationService.ValidateAccessRequest(access))

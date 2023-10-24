@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 using CE_API_V2.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Swashbuckle.AspNetCore.Annotations;
+using Microsoft.AspNetCore.RateLimiting;
 using CE_API_V2.Utility.CustomAnnotations;
 
 namespace CE_API_V2.Controllers;
@@ -32,6 +33,7 @@ public class ScoresController : ControllerBase
     private readonly IUserUOW _userUow;
     private readonly IScoreSummaryUtility _scoreSummaryUtility;
     private readonly IUserInformationExtractor _userInformationExtractor;
+    private readonly ILogger<ScoresController> _logger;
 
     public ScoresController(IScoringUOW scoringUow,
         IPatientIdHashingUOW patientIdUow,
@@ -39,7 +41,8 @@ public class ScoresController : ControllerBase
         IConfiguration configuration,
         IUserUOW userUow,
         IScoreSummaryUtility scoreSummaryUtility,
-        IUserInformationExtractor userInformationExtractor)
+        IUserInformationExtractor userInformationExtractor,
+        ILogger<ScoresController> logger)
     {
         _hashingUow = patientIdUow;
         _scoringUow = scoringUow;
@@ -48,6 +51,7 @@ public class ScoresController : ControllerBase
         _userUow = userUow;
         _scoreSummaryUtility = scoreSummaryUtility;
         _userInformationExtractor = userInformationExtractor;
+        _logger = logger;
     }
 
     /// <summary>
@@ -145,8 +149,10 @@ public class ScoresController : ControllerBase
     /// <param name="locale" example="de-CH">The requested language and region of the requested resource in IETF BCP 47 format.</param>
     /// <param name="scoringRequestValues" required="true">Object containing the biomarker values to request a CAD Score.</param>
     [HttpPost("request", Name = "RequestScore")]
+    [EnableRateLimiting("RequestLimitPerMinute")]
     [Produces("application/json", Type = typeof(ScoringResponse))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(IEnumerable<ValidationFailure>)), SwaggerResponse(400, "The request was malformed or contained invalid values.", type: typeof(IEnumerable<ValidationFailure>))]
+    [ProducesResponseType(StatusCodes.Status429TooManyRequests, Type = typeof(IEnumerable<ValidationFailure>)), SwaggerResponse(429, "Too many requests.", type: typeof(IEnumerable<ValidationFailure>))]
     [TypeFilter(typeof(ValidationExceptionFilter))]
     public async Task<IActionResult> PostScoringRequest(
         [FromBody] ScoringRequest scoringRequestValues, 
@@ -154,6 +160,7 @@ public class ScoresController : ControllerBase
     {
         if (scoringRequestValues == null || string.IsNullOrEmpty(scoringRequestValues.FirstName) || string.IsNullOrEmpty(scoringRequestValues.LastName) || scoringRequestValues.DateOfBirth is null)
         {
+            _logger.LogWarning("Tried to request score for invalid patient data.");
             return BadRequest();
         }
 
@@ -172,12 +179,12 @@ public class ScoresController : ControllerBase
         var validationResult = _inputValidationService.ScoringRequestIsValid(scoringRequestValues, currentUser);
         if (!validationResult.IsValid)
         {
+            _logger.LogWarning("Requested invalid scoring request.");
             throw new BiomarkersValidationException("ScoringRequest was not valid.", validationResult.Errors, userCulture);
         }
 
-
         var requestedScore = await _scoringUow.ProcessScoringRequest(scoringRequestValues, userInfo.UserId, patientId);
-
+        
         return requestedScore is null ? BadRequest() : Ok(requestedScore);
     }
 
@@ -196,6 +203,7 @@ public class ScoresController : ControllerBase
     {
         if (value == null || string.IsNullOrEmpty(value.FirstName) || string.IsNullOrEmpty(value.LastName) || value.DateOfBirth is null)
         {
+            _logger.LogWarning("Tried to save draft score for invalid patient data.");
             return BadRequest();
         }
 
@@ -230,6 +238,7 @@ public class ScoresController : ControllerBase
     {
         if (value == null || string.IsNullOrEmpty(value.FirstName) || string.IsNullOrEmpty(value.LastName) || value.DateOfBirth is null)
         {
+            _logger.LogWarning("Tried to save update score for invalid patient data.");
             return BadRequest();
         }
 
@@ -248,11 +257,15 @@ public class ScoresController : ControllerBase
         }
         catch (Exception e)
         {
+            _logger.LogCritical("Retrieving scoring request failed with message: {EMessage}", e.Message);
             scoringRequestModel = null;
         }
 
         if (scoringRequestModel == null || !_scoreSummaryUtility.CalculateIfUpdatePossible(scoringRequestModel))
+        {
+            _logger.LogWarning($"The user tried to edit a score outside of its edit period. Id: {scoreId}");
             return BadRequest("The edit period of the ScoringRequest has expired.");
+        }
         var requestedScore = await _scoringUow.ProcessScoringRequest(value, userId, patientId, scoringRequestModel.Id);
         return requestedScore is null ? BadRequest() : Ok(requestedScore);
     }

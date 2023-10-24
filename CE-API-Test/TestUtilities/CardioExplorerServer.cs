@@ -44,7 +44,7 @@ internal class CardioExplorerServer : WebApplicationFactory<Program>
             {
                 options.Country = _country ?? "CH";
                 options.DefaultUserId = "Default";
-            });
+        });
 
             services.AddAuthentication(TestAuthHandler.AuthenticationScheme)
                 .AddScheme<TestAuthHandlerOptions, TestAuthHandler>(TestAuthHandler.AuthenticationScheme, options => { });
