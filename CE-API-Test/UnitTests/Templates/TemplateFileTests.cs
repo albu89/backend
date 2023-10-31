@@ -7,12 +7,13 @@ namespace CE_API_Test.UnitTests.Templates
     internal class TemplateFileTests
     {
         private string[] _files;
+        private string _path;
 
         [SetUp]
         public void Setup()
         {
-            var path = Path.Combine(LocalizationConstants.TemplatesSubpath);
-            _files = Directory.GetFiles(path);
+            _path = Path.Combine(LocalizationConstants.TemplatesSubpath);
+            _files = Directory.GetFiles(_path);
         }
 
         [Test]
@@ -54,12 +55,11 @@ namespace CE_API_Test.UnitTests.Templates
             var path = Path.Combine(LocalizationConstants.TemplatesSubpath);
 
             //Act
-            var fileCount = Directory.GetFiles(path).Length;
-            string[] jsonFiles = Directory.GetFiles(path)
+            var fileCount = _files.Length;
+            var jsonFiles = _files
                 .Where(file => file.EndsWith(".json"))
                 .ToArray();
-            int ignoredFilesCount = Directory
-                .GetFiles(path).Count(file => !file.EndsWith(".json")); // only json - files are tested
+            int ignoredFilesCount = _files.Count(file => !file.EndsWith(".json")); // only json - files are tested
 
             //Assert
             jsonFiles.Should().NotBeNullOrEmpty();
