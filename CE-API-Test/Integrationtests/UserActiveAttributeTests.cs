@@ -20,7 +20,7 @@ namespace CE_API_Test.Integrationtests
             var client = app.CreateClient();
 
             var user = CreateUserModel(isActive);
-            PrepareDbContext(app, user);
+            DBContextUtility.PrepareDbContext(app, user);
 
             //Act
             var response = await client.GetAsync("/api/user");
@@ -40,7 +40,7 @@ namespace CE_API_Test.Integrationtests
             var client = app.CreateClient();
 
             var user = CreateUserModel(isActive);
-            PrepareDbContext(app, user);
+            DBContextUtility.PrepareDbContext(app, user);
 
             //Act
             var response = await client.PostAsync("/api/user", null);
@@ -57,22 +57,6 @@ namespace CE_API_Test.Integrationtests
             user.BiomarkerOrders = null;
 
             return user;
-        }
-
-        private void PrepareDbContext(CardioExplorerServer app, UserModel userModel)
-        {
-            using var scope = app.Services.CreateScope();
-            var serviceProvider = scope.ServiceProvider;
-            var dbContext = serviceProvider.GetRequiredService<CEContext>();
-
-            if (dbContext.Users.Any())
-            {
-                ContextSeeder.UpdateUser(dbContext, userModel);
-            }
-            else
-            {
-                ContextSeeder.InsertUser(dbContext, userModel);
-            }
         }
     }
 }

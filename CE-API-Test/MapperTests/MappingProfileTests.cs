@@ -170,7 +170,6 @@ public class MappingProfileTests
         user.ClinicalSetting.Should().Be(userModel.ClinicalSetting);
         user.Role.Should().Be(userModel.Role);
         user.IsActive.Should().Be(userModel.IsActive);
-        //user.BiomarkerOrders.Should().BeEquivalentTo(userModel.BiomarkerOrders); // is ignored in mapping profile
     }
 
     [Test]
@@ -222,10 +221,6 @@ public class MappingProfileTests
         scoringResponse.Prevalence.Should().Be(ScoreSummaryUtility.PrevalenceClass.Primary);
         scoringResponse.CanEdit.Should().Be(false); //default 
         scoringResponse.IsDraft.Should().Be(false); //default 
-        //scoringResponse.Warnings  // is ignored in mapping profile
-        //scoringResponse.RecommendationSummary // is ignored in mapping profile
-        //scoringResponse.RecommendationLongText // is ignored in mapping profile
-        //scoringResponse.RiskValue // is ignored in mapping profile
     }
 
     [Test]
@@ -239,7 +234,6 @@ public class MappingProfileTests
 
         //Assert
         countryModel.Should().NotBeNull();
-        //mappedClass.Id.Should().NotBe(originalClass.Id); // Id is not mapped
         countryModel.Name.Should().BeEquivalentTo(createCountry.Name);
         countryModel.ContactEmail.Should().BeEquivalentTo(createCountry.ContactEmail);
     }
@@ -493,9 +487,6 @@ public class MappingProfileTests
         userModel.TenantID.Should().BeNull();
         userModel.CreatedOn.Should().BeBefore(DateTimeOffset.Now);
         userModel.ScoringRequestModels.Should().BeNull();
-        //mappedClass.BiomarkerOrders.Should().BeEquivalentTo(user.BiomarkerOrders); // is ignored in mapping profile
-        //mappedClass.Role.Should().Be(user.Role); // is ignored in mapping profile
-        //mappedClass.ClinicalSetting.Should().Be(user.ClinicalSetting); // is ignored in mapping profile
     }
 
     private ScoringRequestModel GetScoringRequestModelMock()
@@ -507,9 +498,7 @@ public class MappingProfileTests
             User = MockDataProvider.GetMockedUserModel(),
             PatientId = "MockPatientId",
             Biomarkers = GetBiomarkerList(),
-            //LatestBiomarkers = null // has a setter 
             Responses = GetMockedResponses(),
-            //LatestResponse = null // has a setter 
             CreatedOn = DateTimeOffset.Now,
         };
     }
@@ -670,16 +659,6 @@ public class MappingProfileTests
             Footnote = "MockFootnote",
             IntendedUseHeader = "MockIntendedUseHeader",
             IntendedUse = "MockIntendedUse",
-        };
-    }
-
-    private BiomarkersLocalized GetBiomarkersLocalized()
-    {
-        return new()
-        {
-            Id = Guid.NewGuid().ToString(),
-            Fieldname = "MockFieldname",
-            DisplayNames = new Dictionary<string, string>() { { "mockfield1", "mockfield2" } }
         };
     }
 }
