@@ -11,7 +11,7 @@ namespace CE_API_V2.Utility.Auth
             var country = context.User.FindFirst(c => c.Type == "ctry")?.Value ?? "??";
             var userRole = context.User.FindFirst(c => c.Type == ClaimTypes.Role)?.Value ?? UserRole.User.ToString();
 
-            if (userRole.ToLowerInvariant() == "CE." + UserRole.SystemAdmin.ToString().ToLowerInvariant())
+            if (userRole.ToLowerInvariant() == ("CE." + UserRole.SystemAdmin).ToLowerInvariant())
             {
                 context.Succeed(requirement);
                 return Task.CompletedTask;
