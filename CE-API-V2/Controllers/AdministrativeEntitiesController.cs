@@ -49,14 +49,14 @@ namespace CE_API_V2.Controllers
         [HttpGet("countries", Name = "GetCountries")]
         [AllowAnonymous]
         [Produces("application/json", Type = typeof(IEnumerable<Country>))]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult GetCountries()
         {
             var countryModelList = _administrativeEntitiesUow.GetCountries();
 
             var countries = _mapper.Map<IEnumerable<Country>>(countryModelList);
-            return countries.Any() ? Ok(countries) : NotFound();
+            return countries.Any() ? Ok(countries) : NoContent();
         }
 
         /// <summary>Get organizations</summary>
@@ -68,14 +68,14 @@ namespace CE_API_V2.Controllers
         [HttpGet("organizations", Name = "GetOrganizations")]
         [AllowAnonymous]
         [Produces("application/json", Type = typeof(IEnumerable<Organization>))]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult GetOrganizations()
         {
             var organizationModelList = _administrativeEntitiesUow.GetOrganizations();
             var organizations = _mapper.Map<IEnumerable<Organization>>(organizationModelList);
 
-            return organizations.Any() ? Ok(organizations) : NotFound();
+            return organizations.Any() ? Ok(organizations) : NoContent();
         }
 
         /// <summary>Add country</summary>
@@ -87,6 +87,7 @@ namespace CE_API_V2.Controllers
         /// <returns>The added country.</returns>
         [HttpPost("country", Name = "CreateCountry")]
         [Produces("application/json", Type = typeof(CountryModel))]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult AddCountry([FromBody] CreateCountry createCountry)
         {
@@ -96,9 +97,9 @@ namespace CE_API_V2.Controllers
                 var storedCountryModel = _administrativeEntitiesUow.AddCountry(convertedCountry);
                 var storedCountry = _mapper.Map<CreateCountry>(storedCountryModel);
 
-                return storedCountry is not null ? Ok(storedCountry) : BadRequest();
+                return storedCountry is not null ? Ok(storedCountry) : NoContent();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return BadRequest("Organization already exists.");
             }
@@ -112,13 +113,14 @@ namespace CE_API_V2.Controllers
         /// </remarks>
         /// <returns>The added organization.</returns>
         [HttpPost("organization", Name = "CreateOrganization")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult AddOrganization([FromBody] CreateOrganization organization)
         {
             if (!_inputValidationService.ValidateOrganization(organization))
             {
-                return BadRequest();
+                return BadRequest("The organisation could not be validated.");
             }
 
             var convertedOrganization = _mapper.Map<OrganizationModel>(organization);
@@ -127,9 +129,9 @@ namespace CE_API_V2.Controllers
                 var addedOrganizationModel = _administrativeEntitiesUow.AddOrganizations(convertedOrganization);
                 var addedOrganization = _mapper.Map<Organization>(addedOrganizationModel);
 
-                return addedOrganization is not null ? Ok(addedOrganization) : BadRequest();
+                return addedOrganization is not null ? Ok(addedOrganization) : NoContent();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return BadRequest("Organization already exists.");
             }
@@ -144,7 +146,7 @@ namespace CE_API_V2.Controllers
         /// <returns>The updated country.</returns>
         [HttpPatch("country/{id}", Name = "UpdateCountry")]
         [Produces("application/json", Type = typeof(CountryModel))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public IActionResult UpdateCountry(Guid id, CreateCountry updatedCreateCountry)
         {
             var updatedModel = _mapper.Map<CountryModel>(updatedCreateCountry);
@@ -152,7 +154,7 @@ namespace CE_API_V2.Controllers
             var result = _administrativeEntitiesUow.UpdateCountry(updatedModel);
             var country = _mapper.Map<CreateCountry>(result);
 
-            return country is not null ? Ok(country) : BadRequest();
+            return country is not null ? Ok(country) : NoContent();
         }
 
         /// <summary>Update organization</summary>
@@ -164,20 +166,21 @@ namespace CE_API_V2.Controllers
         /// <returns>The updated organization.</returns>
         [HttpPatch("organization/{id}", Name = "UpdateOrganization")]
         [Produces("application/json", Type = typeof(Organization))]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public IActionResult UpdateOrganization(Guid id, CreateOrganization updatedOrganization)
         {
             if (!_inputValidationService.ValidateOrganization(updatedOrganization))
             {
-                return BadRequest();
+                return BadRequest("The organisation could not be validated.");
             }
             var convertedOrganizationModel = _mapper.Map<OrganizationModel>(updatedOrganization);
             convertedOrganizationModel.Id = id;
             var updatedOrganizationModel = _administrativeEntitiesUow.UpdateOrganization(convertedOrganizationModel);
             var updatedResult = _mapper.Map<Organization>(updatedOrganizationModel);
 
-            return updatedResult is not null ? Ok(updatedResult) : BadRequest();
+            return updatedResult is not null ? Ok(updatedResult) : NoContent();
         }
 
         /// <summary>Delete country by id</summary>
@@ -189,13 +192,13 @@ namespace CE_API_V2.Controllers
         /// <returns>The updated organization.</returns>
         [HttpDelete("country", Name = "DeleteCountry")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public IActionResult DeleteCountryById(Guid id)
         {
             var deletedCountry = _administrativeEntitiesUow.DeleteCountry(id);
 
-            return deletedCountry is not null ? Ok() : BadRequest();
+            return deletedCountry is not null ? Ok() : NoContent();
         }
 
         /// <summary>
@@ -209,13 +212,13 @@ namespace CE_API_V2.Controllers
         /// <returns>The updated organization.</returns>
         [HttpDelete("organization", Name = "DeleteOrganization")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public IActionResult DeleteOrganizationById(Guid id)
         {
             var deletedOrganizationModel = _administrativeEntitiesUow.DeleteOrganization(id);
 
-            return deletedOrganizationModel is not null ? Ok() : BadRequest();
+            return deletedOrganizationModel is not null ? Ok() : NoContent();
         }
     }
 }

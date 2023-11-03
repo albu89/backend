@@ -50,9 +50,9 @@ namespace CE_API_V2.Controllers
         [Produces("application/json", Type = typeof(IEnumerable<User>)), SwaggerResponse(200, "List of users", typeof(IEnumerable<User>))]
         public async Task<IActionResult> GetAllUsers()
         {
-           var userInfo = _userInformationExtractor.GetUserIdInformation(User);
-           var userModels = _userUow.GetUsersForAdmin(userInfo);
-           var users = _mapper.Map<IEnumerable<User>>(userModels);
+            var userInfo = _userInformationExtractor.GetUserIdInformation(User);
+            var userModels = _userUow.GetUsersForAdmin(userInfo);
+            var users = _mapper.Map<IEnumerable<User>>(userModels);
             return Ok(users);
         }
         
@@ -70,11 +70,11 @@ namespace CE_API_V2.Controllers
         [ProducesErrorResponseType(typeof(BadRequest)), SwaggerResponse(400, "Returned when either ScoringRequest does not exist, was created by a different user or patient information does not match.")]
         public async Task<IActionResult> GetUserById(string id)
         {
-           var userInfo = _userInformationExtractor.GetUserIdInformation(User);
-           var user = _userUow.GetUser(id, userInfo);
+            var userInfo = _userInformationExtractor.GetUserIdInformation(User);
+            var user = _userUow.GetUser(id, userInfo);
 
-           if (user is null || user.TenantID != userInfo.TenantId)
-               return BadRequest("Access denied.");
+            if (user is null || user.TenantID != userInfo.TenantId)
+                return BadRequest("Access denied.");
            
             return Ok(_mapper.Map<User>(user));
         }

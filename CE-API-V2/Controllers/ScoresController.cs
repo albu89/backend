@@ -65,7 +65,9 @@ public class ScoresController : ControllerBase
     /// <param name="name" example="Paula">The patients first name</param>
     /// <param name="name" example="Thoma">The patients last name</param>
     [HttpGet(Name = "GetScoreList")]
-    [Produces("application/json", Type = typeof(IEnumerable<SimpleScore>)), SwaggerResponse(200, "List of Scores containing id, timestamp of creation, score and risk class.", type: typeof(IEnumerable<SimpleScore>))]
+    [Produces("application/json", Type = typeof(IEnumerable<SimpleScore>)), 
+                                         SwaggerResponse(200, "List of Scores containing id, timestamp of creation, score and risk class.", 
+                                         type: typeof(IEnumerable<SimpleScore>))]
     public IActionResult GetScoringRequests(
         [FromHeader, SwaggerParameter("Patients Firstname", Required = false)] string? name = null, 
         [FromHeader, SwaggerParameter("Patients Lastname", Required = false)] string? lastname = null, 
@@ -77,13 +79,13 @@ public class ScoresController : ControllerBase
             var userId = UserHelper.GetUserId(User);
             requests = _scoringUow.RetrieveScoringHistoryForUser(userId);
 
-            return requests is null ? BadRequest() : Ok(requests);
+            return requests is null ? BadRequest("No request found for the current User.") : Ok(requests);
         }
         var patientId = _hashingUow.HashPatientId(HttpUtility.UrlDecode(name), HttpUtility.UrlDecode(lastname), dateOfBirth.Value);
 
         requests = GetScoringRequestList(patientId);
 
-        return requests is null ? BadRequest() : Ok(requests);
+        return requests is null ? BadRequest("No request found for the given parameters.") : Ok(requests);
     }
 
     /// <summary>Get a full ScoringRequest by ID</summary>
@@ -109,7 +111,7 @@ public class ScoresController : ControllerBase
     {
         if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(lastname))
         {
-            return BadRequest();
+            return BadRequest("Invalid first and/or last name.");
         }
 
         var patientId = _hashingUow.HashPatientId(HttpUtility.UrlDecode(name), HttpUtility.UrlDecode(lastname), dateOfBirth);
@@ -122,9 +124,17 @@ public class ScoresController : ControllerBase
         var userId = UserHelper.GetUserId(User);
         var request = _scoringUow.RetrieveScoringRequest(scoringRequestId, userId);
         var latestBiomarkers = request.LatestBiomarkers;
-        if (request is null || request.PatientId != patientId || latestBiomarkers == null)
+        if (request is null)
         {
-            return BadRequest();
+            return BadRequest($"No scoring request could be found with this {scoringRequestId}.");
+        }
+        else if (request.PatientId != patientId)
+        {
+            return BadRequest("The patient data does not match that of the request.");
+        }
+        else if (latestBiomarkers == null)
+        {
+            return BadRequest("The ScoreRequest does not contain any biomarkers.");
         }
         var scoringResponse = latestBiomarkers.Response;
         if (scoringResponse is null)
@@ -137,7 +147,7 @@ public class ScoresController : ControllerBase
 
         scoreSummary.CanEdit = _scoreSummaryUtility.CalculateIfUpdatePossible(scoringResponse.Request);
 
-        return scoreSummary is null ? BadRequest() : Ok(scoreSummary);
+        return scoreSummary is null ? BadRequest("No scoring request was found.") : Ok(scoreSummary);
     }
 
     /// <summary>Generate a CAD Score for a set of Biomarkers</summary>
@@ -161,7 +171,7 @@ public class ScoresController : ControllerBase
         if (scoringRequestValues == null || string.IsNullOrEmpty(scoringRequestValues.FirstName) || string.IsNullOrEmpty(scoringRequestValues.LastName) || scoringRequestValues.DateOfBirth is null)
         {
             _logger.LogWarning("Tried to request score for invalid patient data.");
-            return BadRequest();
+            return BadRequest("Invalid patient data.");
         }
 
         var patientId = _hashingUow.HashPatientId(scoringRequestValues.FirstName, scoringRequestValues.LastName, scoringRequestValues.DateOfBirth.Value);
@@ -185,7 +195,7 @@ public class ScoresController : ControllerBase
 
         var requestedScore = await _scoringUow.ProcessScoringRequest(scoringRequestValues, userInfo.UserId, patientId);
         
-        return requestedScore is null ? BadRequest() : Ok(requestedScore);
+        return requestedScore is null ? BadRequest("Could not process the scoring request.") : Ok(requestedScore);
     }
 
     /// <summary>
@@ -204,7 +214,7 @@ public class ScoresController : ControllerBase
         if (value == null || string.IsNullOrEmpty(value.FirstName) || string.IsNullOrEmpty(value.LastName) || value.DateOfBirth is null)
         {
             _logger.LogWarning("Tried to save draft score for invalid patient data.");
-            return BadRequest();
+            return BadRequest("Invalid patient data.");
         }
 
         var patientId = _hashingUow.HashPatientId(value.FirstName, value.LastName, value.DateOfBirth.Value);
@@ -215,7 +225,7 @@ public class ScoresController : ControllerBase
 
         var scoringRequestModel = await _scoringUow.StoreDraftRequest(value, userId, patientId);
 
-        return scoringRequestModel is null ? BadRequest() : Ok(scoringRequestModel.Id);
+        return scoringRequestModel is null ? BadRequest("Couldnt not store the scoring request.") : Ok(scoringRequestModel.Id);
     }
 
     /// <summary>Create a new CAD Score for a previous ScoringRequest</summary>
@@ -239,7 +249,7 @@ public class ScoresController : ControllerBase
         if (value == null || string.IsNullOrEmpty(value.FirstName) || string.IsNullOrEmpty(value.LastName) || value.DateOfBirth is null)
         {
             _logger.LogWarning("Tried to save update score for invalid patient data.");
-            return BadRequest();
+            return BadRequest("Invalid patient data.");
         }
 
         var patientId = _hashingUow.HashPatientId(value.FirstName, value.LastName, value.DateOfBirth.Value);
@@ -267,7 +277,7 @@ public class ScoresController : ControllerBase
             return BadRequest("The edit period of the ScoringRequest has expired.");
         }
         var requestedScore = await _scoringUow.ProcessScoringRequest(value, userId, patientId, scoringRequestModel.Id);
-        return requestedScore is null ? BadRequest() : Ok(requestedScore);
+        return requestedScore is null ? BadRequest("Could not process the scoring request.") : Ok(requestedScore);
     }
     
     

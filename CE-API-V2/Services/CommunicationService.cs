@@ -77,9 +77,13 @@ public class CommunicationService : ICommunicationService
 
             return statusMonitor.Status;
         }
-        catch (RequestFailedException ex)
+        catch (RequestFailedException)
         {
-            throw new NotImplementedException();
+            throw new RequestFailedException("Request failed while sending the email.");
+        }
+        catch(Exception) 
+        {
+            throw new Exception("Something went wrong while sending the email.");
         }
     }
 }

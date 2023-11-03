@@ -27,9 +27,9 @@ namespace CE_API_V2.Hasher
 
                 return hash;
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                throw new NotImplementedException();
+                throw new NotImplementedException("Patient Id could not be hashed.");
             }
         }
 
@@ -61,9 +61,9 @@ namespace CE_API_V2.Hasher
 
                 return !err;
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                throw new NotImplementedException();
+                throw new NotImplementedException("Patiend Id could not be validated");
             }
         }
     }

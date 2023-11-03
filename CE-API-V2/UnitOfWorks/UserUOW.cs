@@ -141,7 +141,7 @@ namespace CE_API_V2.UnitOfWorks
             catch (Exception e)
             {
                 System.Console.WriteLine(e);
-                throw new NotImplementedException();
+                throw new NotImplementedException("Something went wrong while editing the biomarker ordering.");
             }
         }
 
@@ -160,7 +160,7 @@ namespace CE_API_V2.UnitOfWorks
             }
             catch (Exception)
             {
-                throw new NotImplementedException();
+                throw new NotImplementedException("Something went wrong while storing the user data.");
             }
 
             storedUser = UserRepository.GetById(userModel.UserId);
@@ -223,7 +223,7 @@ namespace CE_API_V2.UnitOfWorks
             }
             catch (Exception)
             {
-                throw new NotImplementedException();
+                throw new NotImplementedException("Something went wrong while updating the user data.");
             }
 
             return UserRepository.GetById(storedUser.UserId);
