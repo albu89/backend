@@ -77,7 +77,7 @@ namespace CE_API_Test.UnitTests.Controllers
                 UserId = "MockedUserId",
             };
 
-            var resultUser = MockDataProvider.GetMockedUser();
+            var resultUser = MockDataProvider.GetMockedUserModel();
             inputValidationServiceMock.Setup(x => x.ValidateUser(It.IsAny<CreateUser>())).Returns(true);
             inputValidationServiceMock.Setup(x => x.ValidateAccessRequest(It.IsAny<AccessRequest>())).Returns(true);
             userUOWMock.Setup(x => x.StoreUser(It.IsAny<UserModel>()))

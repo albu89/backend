@@ -344,7 +344,7 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
         public void GetUser_GivenId_ExpectedReturnedUser()
         {
             //Arrange
-            var mockedUser = MockDataProvider.GetMockedUser();
+            var mockedUser = MockDataProvider.GetMockedUserModel();
             var mockIds = MockDataProvider.GetUserIdInformationRecord();
             var userId = mockIds.UserId + 5674;
             mockedUser.UserId = userId;
@@ -369,7 +369,7 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
         public async Task UpdateUser_GivenUserAndId_ExpectedReturnedUpdatedUser()
         {
             //Arrange
-            var originalUser = MockDataProvider.GetMockedUser();
+            var originalUser = MockDataProvider.GetMockedUserModel();
 
             var newFirstName = "ChangedFirstName";
             var newSurname = "ChangedSurName";
@@ -395,9 +395,10 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
             _context.Users.Add(originalUser);
             _context.SaveChanges();
 
-            var updatedUser = MockDataProvider.GetMockedUser();
+            var updatedUser = MockDataProvider.GetMockedUserModel();
             updatedUser.FirstName = newFirstName;
             updatedUser.Surname = newSurname;
+            
             updatedUser.BiomarkerOrders = newBiomarkerOrder;
             var sut = new UserUOW(_context, _communicationService);
 

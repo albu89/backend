@@ -11,6 +11,7 @@ using CE_API_V2.Utility;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Moq;
+
 namespace CE_API_Test.UnitTests.Controllers;
 
 [TestFixture]
@@ -43,7 +44,7 @@ public class SchemasControllerTests
 
         var userUow = new Mock<IUserUOW>();
         userUow.Setup(x => x.GetBiomarkerOrders(It.IsAny<string>())).Returns(MockDataProvider.GetMockedOrderModels());
-        userUow.Setup(x => x.GetUser(It.IsAny<string>(), It.IsAny<UserIdsRecord>())).Returns(MockDataProvider.GetMockedUser);
+        userUow.Setup(x => x.GetUser(It.IsAny<string>(), It.IsAny<UserIdsRecord>())).Returns(MockDataProvider.GetMockedUserModel);
         var template = await _biomarkersTemplateService.GetTemplate();
         _scoringTemplateService = new ScoringTemplateService(mapper, _biomarkersTemplateService, _scoreSummaryUtility, userUow.Object);
         userUow.Setup(x => x.OrderTemplate(It.IsAny<CadRequestSchema>(), It.IsAny<string>())).Returns(template);

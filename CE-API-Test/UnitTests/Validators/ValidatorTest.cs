@@ -6,6 +6,7 @@ using CE_API_V2.Models.Enum;
 using CE_API_V2.Validators;
 using FluentValidation;
 using FluentValidation.TestHelper;
+
 namespace CE_API_Test.UnitTests.Validators;
 
 public class ValidatorTest
@@ -17,7 +18,7 @@ public class ValidatorTest
     public void OneTimeSetup()
     {
         _validator = new ScoringRequestValidator();
-        _testUser = MockDataProvider.GetMockedUser();
+        _testUser = MockDataProvider.GetMockedUserModel();
         _testUser.ClinicalSetting = PatientDataEnums.ClinicalSetting.PrimaryCare;
     }
     

@@ -14,8 +14,7 @@ namespace CE_API_V2.Models.Mapping
                 .ForMember(dest => dest.RequestTimeStamp, opt => opt.MapFrom(src => src.LatestBiomarkers.CreatedOn))
                 .ForMember(dest => dest.RiskClass, opt => opt.MapFrom(src => src.LatestResponse.RiskClass))
                 .ForMember(dest => dest.Risk, opt => opt.MapFrom(src => src.LatestResponse.Risk))
-                .ForMember(dest => dest.IsDraft, opt => opt.MapFrom(src => src.LatestBiomarkers.Response == null))
-                ;
+                .ForMember(dest => dest.IsDraft, opt => opt.MapFrom(src => src.LatestBiomarkers.Response == null));
 
             CreateMap<ScoringRequest, ScoringRequestModel>();
 
@@ -111,18 +110,6 @@ namespace CE_API_V2.Models.Mapping
                 .ForMember(dest => dest.Biomarkers, opt => opt.Ignore())
                 .ForMember(dest => dest.RecommendationCategories, opt => opt.Ignore());
 
-            CreateMap<BiomarkersLocalized, ScoreSchema>()
-                .ForMember(dest => dest.Biomarkers, opt => opt.MapFrom(src => src))
-                .ForAllMembers(opts => opts.Ignore());
-            
-            CreateMap<CadRequestSchema, ScoreSchema>()
-                .ForMember(dest => dest.Biomarkers, opt => opt.MapFrom(src => src))
-                .ForAllMembers(opts => opts.Ignore());
-
-            CreateMap<IEnumerable<RecommendationCategory>, ScoreSchema>()
-                .ForMember(dest => dest.RecommendationCategories, opt => opt.MapFrom(src => src.ToArray()))
-                .ForAllMembers(opts => opts.Ignore());
-
             CreateMap<RecommendationCategory, ScoringResponse>()
                 .ForMember(dest => dest.RecommendationSummary, opt => opt.MapFrom(src => src.ShortText))
                 .ForMember(dest => dest.RecommendationLongText, opt => opt.MapFrom(src => src.LongText))
@@ -132,6 +119,8 @@ namespace CE_API_V2.Models.Mapping
                 .ForMember(dest => dest.Warnings, opt => opt.Ignore())
                 .ForMember(dest => dest.classifier_score, opt => opt.Ignore())
                 .ForMember(dest => dest.Biomarkers, opt => opt.Ignore());
+            
+            CreateMap<UserModel, User>();
 
             CreateMap<UserModel, User>()
                 .ForMember(dest => dest.BiomarkerOrders, opt => opt.Ignore());
@@ -153,18 +142,24 @@ namespace CE_API_V2.Models.Mapping
                 .ForMember(dest => dest.ShortText, opt => opt.MapFrom(src => src.ShortText));
 
             CreateMap<CreateCountry, CountryModel>();
+
+            //Todo - is this actually used?
             CreateMap<CountryModel, CountryModel>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
+
             CreateMap<CountryModel, CreateCountry>();
+
             CreateMap<CountryModel, Country>();
 
             CreateMap<CreateOrganization, OrganizationModel>();
+
             CreateMap<OrganizationModel, OrganizationModel>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
             CreateMap<OrganizationModel, Organization>();
             CreateMap<OrganizationModel, CreateOrganization>();
         }
     }
+
     public class ValueToUnderlyingTypeConverter<T> : ITypeConverter<BiomarkerValue<T>, T>
     {
         public T Convert(BiomarkerValue<T> source, T destination, ResolutionContext context)

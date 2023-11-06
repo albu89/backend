@@ -18,7 +18,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
-using Serilog;
 using Moq;
 
 namespace CE_API_Test.UnitTests.Controllers
@@ -67,7 +66,7 @@ namespace CE_API_Test.UnitTests.Controllers
             var scoringTemplateService = new Mock<IScoringTemplateService>();
             var userUow = new Mock<IUserUOW>();
 
-            userUow.Setup(u => u.GetUser(It.IsAny<string>(), It.IsAny<UserIdsRecord>())).Returns(MockDataProvider.GetMockedUser);
+            userUow.Setup(u => u.GetUser(It.IsAny<string>(), It.IsAny<UserIdsRecord>())).Returns(MockDataProvider.GetMockedUserModel);
 
             var mockedResponseTask = Task.FromResult(MockDataProvider.GetScoringResponseSummaryMock());
             var mockedRequestTask = Task.FromResult(MockDataProvider.GetMockedScoringRequest());

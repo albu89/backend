@@ -122,7 +122,7 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
         {
             //Arrange
             var sut = new UserUOW(_context, _communicationService);
-            var user = MockDataProvider.GetMockedUser();
+            var user = MockDataProvider.GetMockedUserModel();
             var userIdInfoRecord = MockDataProvider.GetUserIdInformationRecord();
 
             user.UserId = userIdInfoRecord.UserId;
@@ -156,7 +156,7 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
         public void GetUser_GivenId_ExpectedReturnedUser()
         {
             //Arrange
-            var mockedUser = MockDataProvider.GetMockedUser();
+            var mockedUser = MockDataProvider.GetMockedUserModel();
             var mockIds = MockDataProvider.GetUserIdInformationRecord();
             var userId = mockIds.UserId + 5674;
             mockedUser.UserId = userId;
@@ -182,7 +182,7 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
         public async Task UpdateUser_GivenUserAndId_ExpectedReturnedUpdatedUser()
         {
             //Arrange
-            var originalUser = MockDataProvider.GetMockedUser();
+            var originalUser = MockDataProvider.GetMockedUserModel();
 
             var newFirstName = "ChangedFirstName";
             var newSurname = "ChangedSurName";
@@ -207,7 +207,7 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
             _context.Users.Add(originalUser);
             _context.SaveChanges();
 
-            var updatedUser = MockDataProvider.GetMockedUser();
+            var updatedUser = MockDataProvider.GetMockedUserModel();
             updatedUser.FirstName = newFirstName;
             updatedUser.Surname = newSurname;
             updatedUser.BiomarkerOrders = newBiomarkerOrder;
@@ -233,7 +233,7 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
         public async Task UpdateUser_GivenTenantAdmin_UpdatesIsActiveAndClinicalSetting()
         {
             //Arrange
-            var originalUser = MockDataProvider.GetMockedUser();
+            var originalUser = MockDataProvider.GetMockedUserModel();
 
             originalUser.ClinicalSetting = PatientDataEnums.ClinicalSetting.PrimaryCare;
             originalUser.IsActive = false;
@@ -241,7 +241,7 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
             _context.Users.Add(originalUser);
             _context.SaveChanges();
 
-            var updatedUser = MockDataProvider.GetMockedUser();
+            var updatedUser = MockDataProvider.GetMockedUserModel();
             updatedUser.ClinicalSetting = PatientDataEnums.ClinicalSetting.SecondaryCare;
             updatedUser.IsActive = true;
             var sut = new UserUOW(_context, _communicationService);
@@ -265,7 +265,7 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
         public async Task UpdateUser_GivenWrongTenantAdmin_NotUpdateIsActiveAndClinicalSetting()
         {
             //Arrange
-            var originalUser = MockDataProvider.GetMockedUser();
+            var originalUser = MockDataProvider.GetMockedUserModel();
 
             originalUser.ClinicalSetting = PatientDataEnums.ClinicalSetting.PrimaryCare;
             originalUser.IsActive = false;
@@ -273,7 +273,7 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
             _context.Users.Add(originalUser);
             _context.SaveChanges();
 
-            var updatedUser = MockDataProvider.GetMockedUser();
+            var updatedUser = MockDataProvider.GetMockedUserModel();
             updatedUser.ClinicalSetting = PatientDataEnums.ClinicalSetting.SecondaryCare;
             updatedUser.IsActive = true;
             var sut = new UserUOW(_context, _communicationService);
@@ -292,7 +292,7 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
         public async Task UpdateUser_GivenSystemAdmin_UpdatesIsActiveAndClinicalSetting()
         {
             //Arrange
-            var originalUser = MockDataProvider.GetMockedUser();
+            var originalUser = MockDataProvider.GetMockedUserModel();
 
             originalUser.ClinicalSetting = PatientDataEnums.ClinicalSetting.PrimaryCare;
             originalUser.IsActive = false;
@@ -300,7 +300,7 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
             _context.Users.Add(originalUser);
             _context.SaveChanges();
 
-            var updatedUser = MockDataProvider.GetMockedUser();
+            var updatedUser = MockDataProvider.GetMockedUserModel();
             updatedUser.ClinicalSetting = PatientDataEnums.ClinicalSetting.SecondaryCare;
             updatedUser.IsActive = true;
             var sut = new UserUOW(_context, _communicationService);
@@ -327,7 +327,7 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
             var tenantId1 = "Tenant1";
             var tenantId2 = "Tenant2";
             
-            var originalUser = MockDataProvider.GetMockedUser();
+            var originalUser = MockDataProvider.GetMockedUserModel();
             originalUser.UserId = tenantId1 + "User";
             originalUser.TenantID = tenantId1;
             originalUser.BiomarkerOrders = null;
@@ -366,16 +366,18 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
             var tenantId1 = "Tenant1";
             var tenantId2 = "Tenant2";
             
-            var originalUser = MockDataProvider.GetMockedUser();
+            var originalUser = MockDataProvider.GetMockedUserModel();
             originalUser.UserId = tenantId1 + "User";
             originalUser.TenantID = tenantId1;
             originalUser.BiomarkerOrders = null;
             _context.Users.Add(originalUser);
             await _context.SaveChangesAsync();
+
             originalUser.UserId = tenantId2 + "User";
             originalUser.TenantID = tenantId2;
             _context.Users.Add(originalUser);
             await _context.SaveChangesAsync();
+
             originalUser.UserId = tenantId2 + "User2";
             originalUser.TenantID = tenantId2;
             _context.Users.Add(originalUser);
