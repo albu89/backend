@@ -72,12 +72,12 @@
         "conversionFactor": 1,
         "options": [
           {
-            "value": "Male",
+            "value": "male",
             "sideEffectId": "",
             "sideEffectValue": ""
           },
           {
-            "value": "Female",
+            "value": "female",
             "sideEffectId": "",
             "sideEffectValue": ""
           }
@@ -105,7 +105,7 @@
             "sideEffectValue": ""
           },
           {
-            "value": "possible",
+            "value": "atypical",
             "sideEffectId": "",
             "sideEffectValue": ""
           },
@@ -128,17 +128,17 @@
         "conversionFactor": 1,
         "options": [
           {
-            "value": "No",
+            "value": "non-smoker",
             "sideEffectId": "",
             "sideEffectValue": ""
           },
           {
-            "value": "StANc",
+            "value": "ex-smoker",
             "sideEffectId": "",
             "sideEffectValue": ""
           },
           {
-            "value": "Yes",
+            "value": "smoker",
             "sideEffectId": "",
             "sideEffectValue": ""
           }
@@ -156,17 +156,17 @@
         "conversionFactor": 1,
         "options": [
           {
-            "value": "No",
+            "value": "no",
             "sideEffectId": "",
             "sideEffectValue": ""
           },
           {
-            "value": "Niddm",
+            "value": "NIDDM",
             "sideEffectId": "",
             "sideEffectValue": ""
           },
           {
-            "value": "Iddm",
+            "value": "IDDM",
             "sideEffectId": "",
             "sideEffectValue": ""
           }
@@ -373,17 +373,17 @@
         "conversionFactor": 1,
         "options": [
           {
-            "value": "yes",
+            "value": " normal",
             "sideEffectId": "",
             "sideEffectValue": ""
           },
           {
-            "value": "screening",
+            "value": "pathological",
             "sideEffectId": "",
             "sideEffectValue": ""
           },
           {
-            "value": "no",
+            "value": "noECGavailable",
             "sideEffectId": "prior_CAD",
             "sideEffectValue": "true"
           }
