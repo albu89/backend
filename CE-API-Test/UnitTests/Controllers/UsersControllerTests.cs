@@ -63,7 +63,7 @@ namespace CE_API_Test.UnitTests.Controllers
             _mockUserUow.Setup(u => u.EditBiomarkerOrderEntry(It.Is<BiomarkerOrderModel>(x => x.BiomarkerId == ""))).Throws(new Exception("Oh no"));
             _mockUserUow.Setup(u => u.StoreBiomarkerOrderEntry(It.Is<BiomarkerOrderModel>(x => x.BiomarkerId == "Age")));
             _mockUserUow.Setup(u => u.StoreBiomarkerOrderEntry(It.Is<BiomarkerOrderModel>(x => x.BiomarkerId == ""))).Throws(new Exception("Oh no"));
-            _mockUserUow.Setup(u => u.GetUser(It.IsAny<string>(), It.IsAny<UserIdsRecord>())).Returns(new UserModel() { UserId = $"{_userId}" });
+            _mockUserUow.Setup(u => u.GetUser(It.IsAny<string>(), It.IsAny<UserIdsRecord>())).Returns(new UserModel() { UserId = $"{_userId}", IsActive = true});
             _userUOW = _mockUserUow.Object;
 
 
@@ -127,7 +127,7 @@ namespace CE_API_Test.UnitTests.Controllers
         public async Task UpdateUserById_GivenUpdatedUserAndId_ReturnOkResult()
         {
             //Arrange
-            var sut = new UsersController(_inputValidationService, _userUOW, _userInformationExtractor, _mapper, _userHelper);
+            var sut = new UsersController(_userUOW, _userInformationExtractor, _mapper, _userHelper);
             var userId = MockDataProvider.GetMockedUser().UserId;
             var updatedUser = MockDataProvider.GetMockedUpdateUserDto();
 

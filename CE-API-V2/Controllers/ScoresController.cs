@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Swashbuckle.AspNetCore.Annotations;
 using Microsoft.AspNetCore.RateLimiting;
 using CE_API_V2.Utility.CustomAnnotations;
+using CE_API_V2.UnitOfWorks;
 
 namespace CE_API_V2.Controllers;
 
@@ -34,6 +35,7 @@ public class ScoresController : ControllerBase
     private readonly IScoreSummaryUtility _scoreSummaryUtility;
     private readonly IUserInformationExtractor _userInformationExtractor;
     private readonly ILogger<ScoresController> _logger;
+    private readonly UserHelper _userHelper;
 
     public ScoresController(IScoringUOW scoringUow,
         IPatientIdHashingUOW patientIdUow,
@@ -42,7 +44,8 @@ public class ScoresController : ControllerBase
         IUserUOW userUow,
         IScoreSummaryUtility scoreSummaryUtility,
         IUserInformationExtractor userInformationExtractor,
-        ILogger<ScoresController> logger)
+        ILogger<ScoresController> logger,
+        UserHelper userHelper)
     {
         _hashingUow = patientIdUow;
         _scoringUow = scoringUow;
@@ -51,6 +54,7 @@ public class ScoresController : ControllerBase
         _userUow = userUow;
         _scoreSummaryUtility = scoreSummaryUtility;
         _userInformationExtractor = userInformationExtractor;
+        _userHelper = userHelper;
         _logger = logger;
     }
 
@@ -65,6 +69,7 @@ public class ScoresController : ControllerBase
     /// <param name="name" example="Paula">The patients first name</param>
     /// <param name="name" example="Thoma">The patients last name</param>
     [HttpGet(Name = "GetScoreList")]
+    [UserActive]
     [Produces("application/json", Type = typeof(IEnumerable<SimpleScore>)), SwaggerResponse(200, "List of Scores containing id, timestamp of creation, score and risk class.", type: typeof(IEnumerable<SimpleScore>))]
     public IActionResult GetScoringRequests(
         [FromHeader, SwaggerParameter("Patients Firstname", Required = false)] string? name = null, 
@@ -98,6 +103,7 @@ public class ScoresController : ControllerBase
     /// <param name="dateOfBirth" example="1990-01-01" format="yyyy-MM-dd">The patients date of birth.</param>
     /// <param name="scoringRequestId" example="82231ed6-97a8-4d43-9821-08db9969e7a2">GUID of the ScoringRequest to be loaded.</param>
     [HttpGet("{scoringRequestId}", Name = "GetScoreById")]
+    [UserActive]
     [Produces("application/json", Type = typeof(ScoringResponse)), SwaggerResponse(200, "ScoringResponse object contains all CAD Score values and information for interpreting its values.")]
     [ProducesErrorResponseType(typeof(BadRequest)), SwaggerResponse(400, "Returned when either ScoringRequest does not exist, was created by a different user or patient information does not match.")]
     public IActionResult GetScoringRequest(
@@ -149,6 +155,7 @@ public class ScoresController : ControllerBase
     /// <param name="locale" example="de-CH">The requested language and region of the requested resource in IETF BCP 47 format.</param>
     /// <param name="scoringRequestValues" required="true">Object containing the biomarker values to request a CAD Score.</param>
     [HttpPost("request", Name = "RequestScore")]
+    [UserActive]
     [EnableRateLimiting("RequestLimitPerMinute")]
     [Produces("application/json", Type = typeof(ScoringResponse))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(IEnumerable<ValidationFailure>)), SwaggerResponse(400, "The request was malformed or contained invalid values.", type: typeof(IEnumerable<ValidationFailure>))]
@@ -158,7 +165,10 @@ public class ScoresController : ControllerBase
         [FromBody] ScoringRequest scoringRequestValues, 
         [FromQuery] string? locale = "en-GB")
     {
-        if (scoringRequestValues == null || string.IsNullOrEmpty(scoringRequestValues.FirstName) || string.IsNullOrEmpty(scoringRequestValues.LastName) || scoringRequestValues.DateOfBirth is null)
+        if (scoringRequestValues == null 
+                                 || string.IsNullOrEmpty(scoringRequestValues.FirstName) 
+                                 || string.IsNullOrEmpty(scoringRequestValues.LastName) 
+                                 || scoringRequestValues.DateOfBirth is null)
         {
             _logger.LogWarning("Tried to request score for invalid patient data.");
             return BadRequest();
@@ -197,11 +207,15 @@ public class ScoresController : ControllerBase
     /// </remarks>
     /// <param name="value" required="true">Object containing the biomarker values to request a CAD Score.</param>
     [HttpPost(Name = "SaveDraft")]
+    [UserActive]
     [Produces("application/json", Type = typeof(Guid))]
     [ProducesResponseType(StatusCodes.Status400BadRequest), SwaggerResponse(400,"Returns bad request if patient data is invalid or scoring request can not be stored.")]
     public async Task<IActionResult> PostScoringDraft([FromBody, SwaggerParameter("Biomarkers for a specific Patient", Required = true)] ScoringRequest value)
     {
-        if (value == null || string.IsNullOrEmpty(value.FirstName) || string.IsNullOrEmpty(value.LastName) || value.DateOfBirth is null)
+        if (value == null 
+                  || string.IsNullOrEmpty(value.FirstName) 
+                  || string.IsNullOrEmpty(value.LastName) 
+                  || value.DateOfBirth is null)
         {
             _logger.LogWarning("Tried to save draft score for invalid patient data.");
             return BadRequest();
@@ -227,6 +241,7 @@ public class ScoresController : ControllerBase
     /// <param name="scoreId" example="ef227546-c153-40c9-e1e7-08db9cbbf28d" required="true">Guid of a previous ScoringRequest</param>
     /// <param name="value" required="true">Object containing the biomarker values to request a CAD Score.</param>
     [HttpPut("{scoreId:guid}", Name = "UpdateScore")]
+    [UserActive]
     [Produces("application/json", Type = typeof(ScoringRequest))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(IEnumerable<ValidationFailure>))]
     [ProducesResponseType(StatusCodes.Status400BadRequest), SwaggerResponse(400, "Request is rejected if the Edit period has expired.")]
@@ -236,7 +251,10 @@ public class ScoresController : ControllerBase
         [FromRoute] Guid scoreId, 
         [FromQuery] string? locale = "en-GB")
     {
-        if (value == null || string.IsNullOrEmpty(value.FirstName) || string.IsNullOrEmpty(value.LastName) || value.DateOfBirth is null)
+        if (value == null 
+                  || string.IsNullOrEmpty(value.FirstName) 
+                  || string.IsNullOrEmpty(value.LastName) 
+                  || value.DateOfBirth is null)
         {
             _logger.LogWarning("Tried to save update score for invalid patient data.");
             return BadRequest();

@@ -12,6 +12,8 @@ using CE_API_Test.TestUtilities;
 using CE_API_V2.Models.Records;
 using Azure.Communication.Email;
 using CE_API_V2.Models.Enum;
+using CE_API_V2.Data.Repositories.Interfaces;
+using System.Linq.Expressions;
 
 namespace CE_API_Test.UnitTests.UnitOfWorks
 {
@@ -22,8 +24,9 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
         private CEContext _context;
         private DbSet<BiomarkerOrderModel> _dbSet;
         private IUserUOW _userUOW;
+        private IOrganisationUOW _orgaUOW;
+        private IGenericRepository<UserModel> _userRepo;
         private ICommunicationService _communicationService;
-
         private static readonly BiomarkerOrderModel insertBiomarkerOrder = new() { BiomarkerId = "age", UserId = "TestUser", OrderNumber = 1, PreferredUnit = "SI" };
         private static readonly BiomarkerOrderModel updateBiomarkerOrder = new() { BiomarkerId = "age", UserId = "TestUser", OrderNumber = 2, PreferredUnit = "SI" };
 
@@ -51,10 +54,11 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
             var communicationService = new Mock<ICommunicationService>();
             communicationService.Setup(x
                 => x.SendAccessRequest(It.IsAny<AccessRequest>())).Returns(Task.FromResult(EmailSendStatus.Succeeded));
+            _orgaUOW = new Mock<IOrganisationUOW>().Object;
+            _userRepo = new Mock<IGenericRepository<UserModel>>().Object;
 
             _communicationService = communicationService.Object;
-            _userUOW = new UserUOW(_context, _communicationService);
-           
+            _userUOW = new UserUOW(_context, _communicationService, _orgaUOW);
         }
 
         #endregion
@@ -77,9 +81,7 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
             });
         }
 
-
         #endregion
-
 
         #region EditBiomarkerOrder
 
@@ -102,9 +104,7 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
             });
         }
 
-
         #endregion
-
 
         #region TearDown
 
@@ -116,12 +116,68 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
 
         #endregion
 
+        [Test]
+        public async Task IsActive_State_NotModifiable()
+        {
+            var organisationModel = new OrganizationModel() { TenantId = "MockedTenantId", Userquota = 2 };
+            var mockedOrgaUOW = new Mock<IOrganisationUOW>();
+            mockedOrgaUOW.Setup(x => x.GetOrganisationWithTenantID("MockedTenantId")).Returns(organisationModel);
+            var orgaUOW = mockedOrgaUOW.Object;
+
+            var userList = new List<UserModel>()
+            {
+                MockDataProvider.GetMockedUserModel(),
+                MockDataProvider.GetMockedUserModel()
+        };
+            var userIdInfoRecord = MockDataProvider.GetUserIdInformationRecord();
+
+            var userRepo = new Mock<IGenericRepository<UserModel>>() { CallBase = true };
+            userRepo.Setup(x => x.Get(It.IsAny<Expression<Func<UserModel, bool>>>(), null, ""))
+                .Returns(userList);
+
+            var useruow = new Mock<UserUOW>(_context, _communicationService, orgaUOW) { CallBase = true };
+
+            var sut = useruow.Object;
+            sut.UserRepository = userRepo.Object;
+
+            var result = sut.CheckIfIsActiveStateIsModifiable(userIdInfoRecord);
+
+            result.Should().BeFalse();
+        }
+
+        [Test]
+        public async Task IsActive_State_Modifiable()
+        {
+            var organisationModel = new CE_API_V2.Models.OrganizationModel() { TenantId = "MockedTenantId", Userquota = 2 };
+            var mockedOrgaUOW = new Mock<IOrganisationUOW>();
+            mockedOrgaUOW.Setup(x => x.GetOrganisationWithTenantID("MockedTenantId")).Returns(organisationModel);
+            var orgaUOW = mockedOrgaUOW.Object;
+
+            var userList = new List<UserModel>()
+            {
+                MockDataProvider.GetMockedUserModel()
+        };
+            var userIdInfoRecord = MockDataProvider.GetUserIdInformationRecord();
+
+            var userRepo = new Mock<IGenericRepository<UserModel>>() { CallBase = true };
+            userRepo.Setup(x => x.Get(It.IsAny<Expression<Func<UserModel, bool>>>(), null, ""))
+                .Returns(userList);
+
+            var useruow = new Mock<UserUOW>(_context, _communicationService, orgaUOW) { CallBase = true };
+
+            var sut = useruow.Object;
+            sut.UserRepository = userRepo.Object;
+
+            var result = sut.CheckIfIsActiveStateIsModifiable(userIdInfoRecord);
+
+            result.Should().BeTrue();
+        }
 
         [Test]
         public async Task CreateUser_GivenValidUser_ReturnOkResult()
         {
             //Arrange
-            var sut = new UserUOW(_context, _communicationService);
+            var sut = new UserUOW(_context, _communicationService, _orgaUOW);
             var user = MockDataProvider.GetMockedUserModel();
             var userIdInfoRecord = MockDataProvider.GetUserIdInformationRecord();
 
@@ -141,7 +197,7 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
         public async Task AccessRequest_GivenValidData_ReturnOkResult()
         {
             //Arrange
-            var sut = new UserUOW(_context, _communicationService);
+            var sut = new UserUOW(_context, _communicationService, _orgaUOW);
             var accessDto = MockDataProvider.GetMockedAccessRequestDto();
 
             //Act
@@ -167,7 +223,7 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
 
             var userInfo = new UserIdsRecord() { UserId = userId, TenantId = "A", Role = UserRole.User };
 
-            var sut = new UserUOW(_context, _communicationService);
+            var sut = new UserUOW(_context, _communicationService, _orgaUOW);
 
             //Act
             var returnedUser = sut.GetUser(userId, userInfo);
@@ -211,7 +267,7 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
             updatedUser.FirstName = newFirstName;
             updatedUser.Surname = newSurname;
             updatedUser.BiomarkerOrders = newBiomarkerOrder;
-            var sut = new UserUOW(_context, _communicationService);
+            var sut = new UserUOW(_context, _communicationService, _orgaUOW);
 
             var userInfo = new UserIdsRecord() { UserId = updatedUser.UserId, Role = UserRole.User };
 
@@ -244,7 +300,7 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
             var updatedUser = MockDataProvider.GetMockedUserModel();
             updatedUser.ClinicalSetting = PatientDataEnums.ClinicalSetting.SecondaryCare;
             updatedUser.IsActive = true;
-            var sut = new UserUOW(_context, _communicationService);
+            var sut = new UserUOW(_context, _communicationService, _orgaUOW);
             
             var userInfo = new UserIdsRecord() { UserId = updatedUser.UserId + 1, Role = UserRole.Admin, TenantId = updatedUser.TenantID};
 
@@ -276,7 +332,7 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
             var updatedUser = MockDataProvider.GetMockedUserModel();
             updatedUser.ClinicalSetting = PatientDataEnums.ClinicalSetting.SecondaryCare;
             updatedUser.IsActive = true;
-            var sut = new UserUOW(_context, _communicationService);
+            var sut = new UserUOW(_context, _communicationService, _orgaUOW);
             
             var userInfo = new UserIdsRecord() { UserId = updatedUser.UserId + 1, Role = UserRole.Admin, TenantId = updatedUser.TenantID + "A"};
 
@@ -303,7 +359,7 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
             var updatedUser = MockDataProvider.GetMockedUserModel();
             updatedUser.ClinicalSetting = PatientDataEnums.ClinicalSetting.SecondaryCare;
             updatedUser.IsActive = true;
-            var sut = new UserUOW(_context, _communicationService);
+            var sut = new UserUOW(_context, _communicationService, _orgaUOW);
             
             // User with wrong TenantId but SystemAdmin
             var userInfo = new UserIdsRecord() { UserId = updatedUser.UserId + 1, Role = UserRole.SystemAdmin, TenantId = updatedUser.TenantID + "A"};
@@ -342,7 +398,7 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
             _context.Users.Add(originalUser);
             await _context.SaveChangesAsync();
             
-            var sut = new UserUOW(_context, _communicationService);
+            var sut = new UserUOW(_context, _communicationService, _orgaUOW);
 
             var userInfo = new UserIdsRecord()
             {
@@ -383,7 +439,7 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
             _context.Users.Add(originalUser);
             await _context.SaveChangesAsync();
             
-            var sut = new UserUOW(_context, _communicationService);
+            var sut = new UserUOW(_context, _communicationService, _orgaUOW);
 
             var userInfo = new UserIdsRecord()
             {

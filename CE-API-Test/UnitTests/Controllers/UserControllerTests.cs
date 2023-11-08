@@ -50,7 +50,7 @@ namespace CE_API_Test.UnitTests.Controllers
 
             var inMemSettings = new Dictionary<string, string>
             {
-                { "AiSubpath", "/api/AiMock?" }
+                { "AiSubpath", Resources.TestResources.AiSubpath }
             };
 
             var configuration = new ConfigurationBuilder().AddInMemoryCollection(inMemSettings!).Build();
@@ -67,6 +67,7 @@ namespace CE_API_Test.UnitTests.Controllers
             };
 
             var resultUser = MockDataProvider.GetMockedUserModel();
+            resultUser.UserId = _userId.ToString();
             inputValidationServiceMock.Setup(x => x.ValidateUser(It.IsAny<CreateUser>())).Returns(true);
             inputValidationServiceMock.Setup(x => x.ValidateAccessRequest(It.IsAny<AccessRequest>())).Returns(true);
             userUOWMock.Setup(x => x.StoreUser(It.IsAny<UserModel>()))
@@ -75,6 +76,10 @@ namespace CE_API_Test.UnitTests.Controllers
             userUOWMock.Setup(x => x.GetUser(userIdRecord.UserId, It.IsAny<UserIdsRecord>())).Returns(resultUser);
             userUOWMock.Setup(x => x.UpdateUser(It.IsAny<string>(), It.IsAny<UserModel>(), It.IsAny<UserIdsRecord>()))
                 .Returns(Task.FromResult(new UserModel()));
+            userUOWMock.Setup(u => u.EditBiomarkerOrderEntry(It.Is<BiomarkerOrderModel>(x => x.BiomarkerId == "Age")));
+            userUOWMock.Setup(u => u.EditBiomarkerOrderEntry(It.Is<BiomarkerOrderModel>(x => x.BiomarkerId == ""))).Throws(new Exception("Oh no"));
+            userUOWMock.Setup(u => u.CheckIfIsActiveStateIsModifiable(It.IsAny<UserIdsRecord>())).Returns(true);
+
             userInfoExtractorMock.Setup(x => x.GetUserIdInformation(It.IsAny<ClaimsPrincipal>())).Returns(userIdRecord);
             
             _administrativeEntitiesUow = administrativeEntitiesUOWMock.Object;
@@ -189,7 +194,7 @@ namespace CE_API_Test.UnitTests.Controllers
         public async Task UpdateUserById_GivenPatchDocumentAndId_ReturnOkResult()
         {
             //Arrange
-            var sut = new UsersController(_inputValidationService, _userUOW, _userInformationExtractor, _mapper, _userHelper);
+            var sut = new UsersController(_userUOW, _userInformationExtractor, _mapper, _userHelper);
             var expectedRetrunedDto = MockDataProvider.GetMockedUser();
             var mockedUser = MockDataProvider.GetMockedUser();
             var userId = mockedUser.UserId;

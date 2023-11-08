@@ -571,7 +571,7 @@ public class MappingProfileTests
         {
             ContactEmail = "MockContactEmail",
             Name = "mockedName",
-            TenantId = Guid.NewGuid()
+            TenantId = Guid.NewGuid().ToString()
         };
     }
 
@@ -590,7 +590,7 @@ public class MappingProfileTests
         return new()
         {
             Id = Guid.NewGuid(),
-            TenantId = Guid.NewGuid(),
+            TenantId = Guid.NewGuid().ToString(),
             ContactEmail = "MockContactEmail",
             Name = "mockedName"
         };

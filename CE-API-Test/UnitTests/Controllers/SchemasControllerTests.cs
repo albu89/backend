@@ -20,6 +20,7 @@ public class SchemasControllerTests
     private SchemasController _schemasController;
     private IBiomarkersTemplateService _biomarkersTemplateService;
     private IScoringTemplateService _scoringTemplateService;
+    private UserHelper _userHelper;
     private IScoreSummaryUtility _scoreSummaryUtility;
     private IUserUOW _userUow;
     private IConfigurationRoot _configuration;
@@ -39,6 +40,16 @@ public class SchemasControllerTests
         _configuration = new ConfigurationBuilder()
             .AddInMemoryCollection(testConfig)
             .Build();
+
+        var inMemSettings = new Dictionary<string, string>
+            {
+                { "AiSubpath", Resources.TestResources.AiSubpath }
+            };
+
+        var configuration1 = new ConfigurationBuilder().AddInMemoryCollection(inMemSettings!).Build();
+
+        _userHelper = new UserHelper(mapper, configuration1);
+
         _scoreSummaryUtility = new ScoreSummaryUtility(mapper, _configuration);
         
 
@@ -50,7 +61,7 @@ public class SchemasControllerTests
         userUow.Setup(x => x.OrderTemplate(It.IsAny<CadRequestSchema>(), It.IsAny<string>())).Returns(template);
         _userUow = userUow.Object;
         
-        _schemasController = new SchemasController(_biomarkersTemplateService, _scoringTemplateService, _userUow, new UserInformationExtractor());
+        _schemasController = new SchemasController(_biomarkersTemplateService, _scoringTemplateService, _userUow, new UserInformationExtractor(), _userHelper);
     }
 
     [Test]

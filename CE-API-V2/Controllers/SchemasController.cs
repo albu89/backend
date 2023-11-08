@@ -2,6 +2,7 @@
 using CE_API_V2.Models.DTO;
 using CE_API_V2.Services;
 using CE_API_V2.Services.Interfaces;
+using CE_API_V2.UnitOfWorks;
 using CE_API_V2.UnitOfWorks.Interfaces;
 using CE_API_V2.Utility;
 using CE_API_V2.Utility.CustomAnnotations;
@@ -24,13 +25,19 @@ namespace CE_API_V2.Controllers
         private readonly IScoringTemplateService _scoringTemplateService;
         private readonly IUserUOW _userUOW;
         private readonly IUserInformationExtractor _userInformationExtractor;
+        private readonly UserHelper _userHelper;
 
-        public SchemasController(IBiomarkersTemplateService biomarkersTemplateService, IScoringTemplateService scoringTemplateService, IUserUOW userUOW, IUserInformationExtractor userInformationExtractor)
+        public SchemasController(IBiomarkersTemplateService biomarkersTemplateService, 
+                                 IScoringTemplateService scoringTemplateService, 
+                                 IUserUOW userUOW, 
+                                 IUserInformationExtractor userInformationExtractor,
+                                 UserHelper userHelper)
         {
             _biomarkersTemplateService = biomarkersTemplateService;
             _scoringTemplateService = scoringTemplateService;
             _userUOW = userUOW;
             _userInformationExtractor = userInformationExtractor;
+            _userHelper = userHelper;
         }
 
         /// <summary>
@@ -48,7 +55,7 @@ namespace CE_API_V2.Controllers
         [Produces("application/json", Type = typeof(CadRequestSchema)), SwaggerResponse(200, "BiomarkerSchema containing all necessary information for creating a ScoringRequest page.", type: typeof(CadRequestSchema))]
         public async Task<IActionResult> GetInputFormTemplate(string? locale = "en-GB", bool defaultOrder = false)
         {
-            if (string.IsNullOrEmpty(locale)) 
+            if (string.IsNullOrEmpty(locale))
             {
                 locale = LocalizationConstants.DefaultLocale;
             }
@@ -75,6 +82,7 @@ namespace CE_API_V2.Controllers
         /// </remarks>
         /// <param name="locale" example="de-CH">The requested language and region of the requested resource in IETF BCP 47 format.</param> 
         [HttpGet("scoring")]
+        [UserActive]
         [Produces("application/json", Type = typeof(ScoreSchema)), SwaggerResponse(200, "ScoreSchema containing all necessary information for creating a ScoringResponse page.", type: typeof(ScoreSchema))]
         public async Task<IActionResult> GetScoringSchema(string? locale = "en-GB")
         {

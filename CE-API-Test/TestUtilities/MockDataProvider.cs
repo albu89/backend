@@ -381,7 +381,9 @@ namespace CE_API_Test.TestUtilities
                     new() { OrderNumber = 1, BiomarkerId = "first", PreferredUnit = "unit", User = null, UserId = "id" },
                     new() { OrderNumber = 2, BiomarkerId = "second", PreferredUnit = "unit", User = null, UserId = "id" }
                 }
-        };
+                ,
+                IsActive = true,
+            };
         }
 
         public static UpdateUser GetMockedUpdateUserDto()
@@ -423,6 +425,7 @@ namespace CE_API_Test.TestUtilities
                 Surname = "Mock",
                 TelephoneNumber = "Mock",
                 UnitLabValues = "Mock",
+                IsActive = true,
             };
         }
 
@@ -555,7 +558,7 @@ namespace CE_API_Test.TestUtilities
         {
             Name = "Organization",
             ContactEmail = "ContactEmail",
-            TenantId = Guid.NewGuid()
+            TenantId = Guid.NewGuid().ToString()
         };
         
         public static OrganizationModel GetMockedOrganizationModel() => new()
@@ -563,7 +566,7 @@ namespace CE_API_Test.TestUtilities
             Name = "Organization",
             ContactEmail = "ContactEmail",
             Id = Guid.NewGuid(),
-            TenantId = Guid.NewGuid()
+            TenantId = Guid.NewGuid().ToString()
         };
     }
 }

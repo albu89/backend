@@ -8,6 +8,6 @@ public class Organization
 public class CreateOrganization 
 {
     public string Name { get; set; }
-    public Guid TenantId { get; set; }
+    public string TenantId { get; set; }
     public string ContactEmail { get; set; }
 }

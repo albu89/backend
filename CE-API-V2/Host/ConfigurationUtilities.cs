@@ -56,6 +56,7 @@ public static class ConfigurationUtilities
         services.AddScoped<IBiomarkersTemplateService, BiomarkersTemplateService>();
         services.AddScoped<IValidator<ScoringRequest>, ScoringRequestValidator>();
         services.AddScoped<IPatientIdHashingUOW, PatientIdHashingUOW>();
+        services.AddScoped<IOrganisationUOW, OrganisationUOW>();
         services.AddScoped<IScoringUOW, ScoringUOW>();
         services.AddScoped<IValueConversionUOW, ValueConversionUOW>();
         services.AddScoped<IUserUOW, UserUOW>();

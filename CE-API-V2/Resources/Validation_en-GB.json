@@ -1,4 +1,5 @@
 ﻿{
   "ErrorUnitDoesNotExist": "The given unit type does not exist.",
-  "EcgNoWhenPriorCadOrSecondaryCare": "Value 'No' is not allowed for 'q_wave' when PriorCAD is true or prevalence is set to Secondary Care."
+  "EcgNoWhenPriorCadOrSecondaryCare": "Value 'No' is not allowed for 'q_wave' when PriorCAD is true or prevalence is set to Secondary Care.",
+  "ActiveStateCantGetModified": "The maximum number of active users in the organization has been reached. Therefore, the user cannot be activated."
 }

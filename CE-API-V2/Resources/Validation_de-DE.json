@@ -1,4 +1,5 @@
 ﻿{
   "ErrorUnitDoesNotExist": "Die angegebene Einheit existiert nicht.",
-  "EcgNoWhenPriorCadOrSecondaryCare": "Wert 'Nein' ist nicht erlaubt für 'q_wave' wenn PriorCAD true ist oder Prävalenz auf Secondary Care gesetzt ist."
+  "EcgNoWhenPriorCadOrSecondaryCare": "Wert 'Nein' ist nicht erlaubt für 'q_wave' wenn PriorCAD true ist oder Prävalenz auf Secondary Care gesetzt ist.",
+  "ActiveStateCantGetModified": "Die maximale Anzahl aktiver Benutzer in der Organisation ist erreicht. Daher kann der Benutzer nicht aktiviert werden."
 }

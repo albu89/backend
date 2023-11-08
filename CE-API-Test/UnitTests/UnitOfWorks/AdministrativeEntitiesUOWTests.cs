@@ -236,7 +236,7 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
             {
                 ContactEmail = "ContactEmail",
                 Name = "Organization2",
-                TenantId = Guid.NewGuid(),
+                TenantId = Guid.NewGuid().ToString(),
                 Id = Guid.NewGuid(),
             };
 
@@ -324,6 +324,7 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
                 ContactEmail = "ContactEmail",
                 Name = "organization2",
                 Id = Guid.NewGuid(),
+                TenantId = "tenantId"
             };
 
             _context.Organizations.Add(organization);
@@ -355,7 +356,7 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
 
             var userInfo = new UserIdsRecord() { Role = UserRole.User, UserId = mockedUser.UserId, TenantId = mockedUser.TenantID };
 
-            var sut = new UserUOW(_context, _communicationService);
+            var sut = new UserUOW(_context, _communicationService, null);
 
             //Act
             var returnedUser = sut.GetUser(userId, userInfo);
@@ -400,7 +401,7 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
             updatedUser.Surname = newSurname;
             
             updatedUser.BiomarkerOrders = newBiomarkerOrder;
-            var sut = new UserUOW(_context, _communicationService);
+            var sut = new UserUOW(_context, _communicationService, null);
 
             var adminInfo = new UserIdsRecord() { UserId = "Admin1", TenantId = originalUser.TenantID, Role = UserRole.Admin };
 

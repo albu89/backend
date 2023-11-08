@@ -9,6 +9,14 @@ using Moq;
 using CE_API_V2.Services.Interfaces;
 using System.Security.Claims;
 using CE_API_V2.Models.Records;
+using CE_API_V2.Services;
+using CE_API_V2.UnitOfWorks;
+using Azure.Communication.Email;
+using CE_API_Test.TestUtilities;
+using CE_API_V2.Data;
+using Microsoft.EntityFrameworkCore;
+using CE_API_V2.Utility;
+using Microsoft.Extensions.Configuration;
 
 namespace CE_API_Test.UnitTests.Controllers
 {
@@ -21,6 +29,11 @@ namespace CE_API_Test.UnitTests.Controllers
         private IInputValidationService _inputValidationService;
         private IUserInformationExtractor _userInformationExtractor;
         private IAdministrativeEntitiesUOW _administrativeEntitiesUow;
+        private ICommunicationService _communicationService;
+        private IUserUOW _userUOW;
+        private DbContextOptions<CEContext> _dbContextOptions;
+        private CEContext _context;
+        private UserHelper _userHelper;
 
         [SetUp]
         public void SetUp()
@@ -31,8 +44,16 @@ namespace CE_API_Test.UnitTests.Controllers
             });
             _mapper = config.CreateMapper();
 
+            var inMemSettings = new Dictionary<string, string>
+            {
+                { "AiSubpath", Resources.TestResources.AiSubpath }
+            };
+
+            var configuration = new ConfigurationBuilder().AddInMemoryCollection(inMemSettings!).Build();
+
             var inputValidationServiceMock = new Mock<IInputValidationService>();
             var userInfoExtractorMock = new Mock<IUserInformationExtractor>();
+            var userUOW = new Mock<IUserUOW>();
             var userIdRecord = new UserIdsRecord()
             {
                 TenantId = "MockedTenantId",
@@ -43,7 +64,10 @@ namespace CE_API_Test.UnitTests.Controllers
             inputValidationServiceMock.Setup(x => x.ValidateAccessRequest(It.IsAny<AccessRequest>())).Returns(true);
             inputValidationServiceMock.Setup(x => x.ValidateOrganization(It.IsAny<CreateOrganization>())).Returns(true);
             userInfoExtractorMock.Setup(x => x.GetUserIdInformation(It.IsAny<ClaimsPrincipal>())).Returns(userIdRecord);
-            
+            userUOW.Setup(u => u.GetUser(It.IsAny<string>(), It.IsAny<UserIdsRecord>())).Returns(MockDataProvider.GetMockedUserModel);
+
+            _userUOW = userUOW.Object;
+            _userHelper = new UserHelper(_mapper, configuration);
             _administrativeEntitiesUow = GetAdministrativeEntitiesUowMock();
             _inputValidationService = inputValidationServiceMock.Object;
             _userInformationExtractor = userInfoExtractorMock.Object;
@@ -71,7 +95,7 @@ namespace CE_API_Test.UnitTests.Controllers
                 Name = "Organization1",
                 ContactEmail = "ContactEmail1",
                 Id = Guid.NewGuid(),
-                TenantId = Guid.NewGuid(),
+                TenantId = Guid.NewGuid().ToString(),
             };
 
             var mockedOrganizationModel2 = new OrganizationModel()
@@ -79,7 +103,7 @@ namespace CE_API_Test.UnitTests.Controllers
                 Name = "Organization2",
                 ContactEmail = "ContactEmail2",
                 Id = Guid.NewGuid(),
-                TenantId = Guid.NewGuid(),
+                TenantId = Guid.NewGuid().ToString(),
             };
 
             var administrativeEntitiesUOWMock = new Mock<IAdministrativeEntitiesUOW>();
@@ -111,7 +135,11 @@ namespace CE_API_Test.UnitTests.Controllers
         public async Task GetCountries_ReturnListOfCountries()
         {
             //Arrange
-            var sut = new AdministrativeEntitiesController(_mapper, _inputValidationService, _administrativeEntitiesUow, _userInformationExtractor);
+            var sut = new AdministrativeEntitiesController(_mapper,
+                                                           _inputValidationService,
+                                                           _administrativeEntitiesUow,
+                                                           _userInformationExtractor,
+                                                           _userUOW, _userHelper);
 
             //Act
             var result = sut.GetCountries();
@@ -129,7 +157,11 @@ namespace CE_API_Test.UnitTests.Controllers
         public async Task GetOrganizations_ReturnListOfOrganizations()
         {
             //Arrange
-            var sut = new AdministrativeEntitiesController(_mapper, _inputValidationService, _administrativeEntitiesUow, _userInformationExtractor);
+            var sut = new AdministrativeEntitiesController(_mapper, 
+                                                           _inputValidationService, 
+                                                           _administrativeEntitiesUow, 
+                                                           _userInformationExtractor, 
+                                                           _userUOW, _userHelper);
 
             //Act
             var result = sut.GetOrganizations();
@@ -147,7 +179,12 @@ namespace CE_API_Test.UnitTests.Controllers
         public async Task AddCountry_GivenCountry_ReturnsOkResultWithStoredCountry()
         {
             //Arrange
-            var sut = new AdministrativeEntitiesController(_mapper, _inputValidationService, _administrativeEntitiesUow, _userInformationExtractor);
+            var sut = new AdministrativeEntitiesController(_mapper,
+                                                           _inputValidationService,
+                                                           _administrativeEntitiesUow,
+                                                           _userInformationExtractor,
+                                                           _userUOW, 
+                                                           _userHelper);
 
             //Act
             var result = sut.AddCountry(new CreateCountry());
@@ -164,8 +201,11 @@ namespace CE_API_Test.UnitTests.Controllers
         public async Task AddOrganization_GivenOrganization_ReturnsOkResultWithStoredOrganization()
         {
             //Arrange
-            var sut = new AdministrativeEntitiesController(_mapper, _inputValidationService, _administrativeEntitiesUow, _userInformationExtractor);
-
+            var sut = new AdministrativeEntitiesController(_mapper,
+                                                           _inputValidationService,
+                                                           _administrativeEntitiesUow,
+                                                           _userInformationExtractor,
+                                                           _userUOW, _userHelper);
             //Act
             var result = sut.AddOrganization(new CreateOrganization());
 
@@ -181,7 +221,11 @@ namespace CE_API_Test.UnitTests.Controllers
         public async Task UpdateCountry_GivenUpdatedCountry_ReturnsOkResultWithUpdatedCountry()
         {
             //Arrange
-            var sut = new AdministrativeEntitiesController(_mapper, _inputValidationService, _administrativeEntitiesUow, _userInformationExtractor);
+            var sut = new AdministrativeEntitiesController(_mapper,
+                                                           _inputValidationService,
+                                                           _administrativeEntitiesUow,
+                                                           _userInformationExtractor,
+                                                           _userUOW, _userHelper);
 
             //Act
             var result = sut.UpdateCountry(Guid.NewGuid(), new CreateCountry());
@@ -198,7 +242,11 @@ namespace CE_API_Test.UnitTests.Controllers
         public async Task UpdateOrganization_GivenUpdatedOrganization_ReturnsOkResultWithUpdatedOrganization()
         {
             //Arrange
-            var sut = new AdministrativeEntitiesController(_mapper, _inputValidationService, _administrativeEntitiesUow, _userInformationExtractor);
+            var sut = new AdministrativeEntitiesController(_mapper,
+                                                           _inputValidationService,
+                                                           _administrativeEntitiesUow,
+                                                           _userInformationExtractor,
+                                                           _userUOW, _userHelper);
 
             //Act
             var result = sut.UpdateOrganization(Guid.NewGuid(), new CreateOrganization());
@@ -215,8 +263,11 @@ namespace CE_API_Test.UnitTests.Controllers
         public async Task DeleteOrganization_GivenIdOfOrganization_ReturnsOkResult()
         {
             //Arrange
-            var sut = new AdministrativeEntitiesController(_mapper, _inputValidationService, _administrativeEntitiesUow, _userInformationExtractor);
-
+            var sut = new AdministrativeEntitiesController(_mapper,
+                                                           _inputValidationService,
+                                                           _administrativeEntitiesUow,
+                                                           _userInformationExtractor,
+                                                           _userUOW, _userHelper);
             //Act
             var result = sut.DeleteOrganizationById(new Guid());
 
@@ -231,8 +282,11 @@ namespace CE_API_Test.UnitTests.Controllers
         public async Task DeleteCountry_GivenIdOfCountry_ReturnsOkResult()
         {
             //Arrange
-            var sut = new AdministrativeEntitiesController(_mapper, _inputValidationService, _administrativeEntitiesUow, _userInformationExtractor);
-
+            var sut = new AdministrativeEntitiesController(_mapper,
+                                                           _inputValidationService,
+                                                           _administrativeEntitiesUow,
+                                                           _userInformationExtractor,
+                                                           _userUOW, _userHelper);
             //Act
             var result = sut.DeleteCountryById(new Guid());
 

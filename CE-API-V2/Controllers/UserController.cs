@@ -11,6 +11,8 @@ using CE_API_V2.Models.Mapping;
 using Microsoft.AspNetCore.RateLimiting;
 using CE_API_V2.Utility.CustomAnnotations;
 using Swashbuckle.AspNetCore.Annotations;
+using CE_API_V2.Localization.JsonStringFactroy;
+using Microsoft.Extensions.Localization;
 
 namespace CE_API_V2.Controllers
 {
@@ -23,12 +25,13 @@ namespace CE_API_V2.Controllers
     public class UserController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private readonly IUserUOW _userUOW;
         private readonly IInputValidationService _inputValidationService;
-        private readonly IUserUOW _userUow;
+        private readonly IUserUOW _userUOW;
         private readonly IUserInformationExtractor _userInformationExtractor;
         private readonly IAdministrativeEntitiesUOW _administrativeEntitiesUow;
         private readonly UserHelper _userHelper;
+        private readonly JsonStringLocalizerFactory _factory;
+        private readonly IStringLocalizer _loc;
 
         public UserController(IMapper mapper,
             IUserUOW userUOW,
@@ -40,10 +43,11 @@ namespace CE_API_V2.Controllers
             _mapper = mapper;
             _userUOW = userUOW;
             _inputValidationService = inputValidationService;
-            _userUow = userUOW;
             _userInformationExtractor = userInformationExtractor;
             _administrativeEntitiesUow = administrativeEntitiesUow;
             _userHelper = userHelper;
+            _factory = new JsonStringLocalizerFactory();
+            _loc = _factory.Create(this.GetType());
         }
 
         /// <summary>Get current User</summary>
@@ -53,6 +57,7 @@ namespace CE_API_V2.Controllers
         /// If the Userprofile is inactive, Status 403 is returned.
         /// </remarks>
         [HttpGet(Name = "GetCurrentUser")]
+        [UserActive]
         [Produces("application/json", Type = typeof(User))]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -61,7 +66,7 @@ namespace CE_API_V2.Controllers
             var idInformation = _userInformationExtractor.GetUserIdInformation(User);
             var userId = idInformation.UserId;
 
-            var currentUser = _userUow.GetUser(userId, idInformation);
+            var currentUser = _userUOW.GetUser(userId, idInformation);
 
             var userDto = _mapper.Map<User>(currentUser);
 
@@ -93,12 +98,17 @@ namespace CE_API_V2.Controllers
             }
 
             var userModel = _userHelper.MapToUserModel(user, idInformation);
-            userModel = _userHelper.SetActiveStatus(userModel);
-            var storedUser = await _userUow.StoreUser(userModel);
+
+            if (_userUOW.CheckIfIsActiveStateIsModifiable(idInformation) || _userHelper.HasUserDefaultTenantID(userModel)) 
+                userModel.IsActive = true;
+            else
+                return BadRequest($"{_loc["Validation.ActiveStateCantGetModified"]}");
+            
+            var storedUser = await _userUOW.StoreUser(userModel);
 
             if (!userModel.IsActive)
             {
-                await _userUow.ProcessInactiveUserCreation(userModel);
+                await _userUOW.ProcessInactiveUserCreation(userModel);
             }
 
             return storedUser is not null ? Ok(_mapper.Map<User>(storedUser)) : StatusCode(500, "");
@@ -111,6 +121,7 @@ namespace CE_API_V2.Controllers
         /// If the Userprofile is inactive, Status 403 is returned.
         /// <param name="user"></param>
         [HttpPatch(Name = "UpdateUser")]
+        [UserActive]
         [Produces("application/json", Type = typeof(User))]
         [ProducesResponseType(StatusCodes.Status400BadRequest), SwaggerResponse(400, "Returns BadRequest if the Userprofile could not be updated.")]
         public async Task<IActionResult> UpdateCurrentUser([FromBody] UpdateUser user)
@@ -119,7 +130,12 @@ namespace CE_API_V2.Controllers
             var userId = userInfo.UserId;
             UserModel? mappedUser = _mapper.Map<UserModel>(user);
 
-            var updatedUser = await _userUow.UpdateUser(userId, mappedUser, userInfo);
+            if (_userUOW.CheckIfIsActiveStateIsModifiable(userInfo))
+                mappedUser.IsActive = true;
+            else
+                return BadRequest($"{_loc["Validation.ActiveStateCantGetModified"]}");
+
+            var updatedUser = await _userUOW.UpdateUser(userId, mappedUser, userInfo);
 
             var userDto = _mapper.Map<User>(updatedUser);
 
@@ -145,7 +161,7 @@ namespace CE_API_V2.Controllers
                 return BadRequest();
             }
 
-            EmailSendStatus requestStatus = await _userUow.ProcessAccessRequest(access);
+            EmailSendStatus requestStatus = await _userUOW.ProcessAccessRequest(access);
 
             return requestStatus.Equals(EmailSendStatus.Succeeded) ? Ok() : BadRequest();
         }
@@ -158,6 +174,7 @@ namespace CE_API_V2.Controllers
         /// If the Userprofile is inactive, Status 403 is returned.
         /// </remarks>
         [HttpGet("preferences", Name = "GetPreferences")]
+        [UserActive]
         [Produces("application/json", Type = typeof(BiomarkerOrder))]
         [ProducesResponseType(StatusCodes.Status400BadRequest), SwaggerResponse(400, "Returns bad request result if preferences do not exist.")]
         public async Task<IActionResult> GetPreferences()
@@ -165,7 +182,7 @@ namespace CE_API_V2.Controllers
             try
             {
                 var idInformation = _userInformationExtractor.GetUserIdInformation(User);
-                var user = _userUow.GetUser(idInformation.UserId, idInformation);
+                var user = _userUOW.GetUser(idInformation.UserId, idInformation);
                 var biomarkerOrders = ManualMapper.ToBiomarkerOrder(_userUOW.GetBiomarkerOrders(user.UserId));
 
                 return Ok(biomarkerOrders);
@@ -182,6 +199,7 @@ namespace CE_API_V2.Controllers
         /// If the Userprofile is inactive, Status 403 is returned.
         /// </remarks>
         [HttpPost("preferences", Name = "CreatePreferences")]
+        [UserActive]
         [Produces("application/json", Type = typeof(BiomarkerOrder))]
         [ProducesResponseType(StatusCodes.Status400BadRequest), SwaggerResponse(400, "Returns bad request result if preferences could not be stored.")]
         public async Task<IActionResult> SetPreferences([FromBody, SwaggerParameter("Contains the preferred Unit and order per biomarker")] BiomarkerOrder order)
@@ -189,7 +207,7 @@ namespace CE_API_V2.Controllers
             try
             {
                 var idInformation = _userInformationExtractor.GetUserIdInformation(User);
-                var user = _userUow.GetUser(idInformation.UserId, idInformation);
+                var user = _userUOW.GetUser(idInformation.UserId, idInformation);
 
                 var orderModelList = ManualMapper.ToBiomarkerOrderModels(order);
                 foreach (var orderEntry in orderModelList)
@@ -214,6 +232,7 @@ namespace CE_API_V2.Controllers
         /// </remarks>
         /// <param name="order"></param>
         [HttpPatch("preferences", Name = "ModifyPreferences")]
+        [UserActive]
         [Produces("application/json", Type = typeof(BiomarkerOrder))]
         [ProducesResponseType(StatusCodes.Status400BadRequest), SwaggerResponse(400, "Returns bad request result if preferences could not be stored.")]
         public async Task<IActionResult> ModifyPreferences([FromBody, SwaggerParameter("Contains the preferred Unit and order per biomarker")] BiomarkerOrder order)
@@ -221,7 +240,7 @@ namespace CE_API_V2.Controllers
             try
             {
                 var idInformation = _userInformationExtractor.GetUserIdInformation(User);
-                var user = _userUow.GetUser(idInformation.UserId, idInformation);
+                var user = _userUOW.GetUser(idInformation.UserId, idInformation);
 
                 var orderModelList = ManualMapper.ToBiomarkerOrderModels(order);
                 foreach (var orderEntry in orderModelList)

@@ -4,6 +4,11 @@ using CE_API_V2.Models;
 using CE_API_V2.Models.DTO;
 using CE_API_V2.Models.Enum;
 using CE_API_V2.Models.Records;
+using CE_API_V2.Services;
+using CE_API_V2.Services.Interfaces;
+using CE_API_V2.UnitOfWorks;
+using CE_API_V2.UnitOfWorks.Interfaces;
+
 namespace CE_API_V2.Utility;
 
 public class UserHelper
@@ -34,11 +39,9 @@ public class UserHelper
         return userId;
     }
 
-    public UserModel SetActiveStatus(UserModel user)
+    public bool HasUserDefaultTenantID(UserModel user)
     {
-        var defaultTenantId = _configuration.GetValue<string>("Azure:AD:TenantId");
-        user.IsActive = user.TenantID == defaultTenantId;
-
-        return user;
+        var defaultTenantId = _configuration.GetValue<string>("Azure:AD:TenantId") ?? "";
+        return user.TenantID == defaultTenantId;
     }
 }

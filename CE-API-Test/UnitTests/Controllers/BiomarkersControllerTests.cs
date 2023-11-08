@@ -25,6 +25,7 @@ public class BiomarkersControllerTests
     private IScoringTemplateService _scoringTemplateService;
     private IUserUOW _userUow;
     private IConfigurationRoot _configuration;
+    private UserHelper _userHelper;
 
     [OneTimeSetUp]
     public void Setup()
@@ -33,8 +34,16 @@ public class BiomarkersControllerTests
         extractorMock.Setup(x => x.GetUserIdInformation(It.IsAny<ClaimsPrincipal>())).Returns(new CE_API_V2.Models.Records.UserIdsRecord(){UserId = "TestUser", TenantId = "TestTenant"});
         var mapperConfig = new MapperConfiguration(mc => { mc.AddProfile(new MappingProfile()); });
         var mapper = mapperConfig.CreateMapper();
-        
-        
+
+        var inMemSettings = new Dictionary<string, string>
+            {
+                { "AiSubpath", Resources.TestResources.AiSubpath }
+            };
+
+        var configuration = new ConfigurationBuilder().AddInMemoryCollection(inMemSettings!).Build();
+
+        _userHelper = new UserHelper(mapper, configuration);
+
         var testConfig = new Dictionary<string, string?>()
         {
             { "EditPeriodInDays", "1" },
@@ -52,7 +61,7 @@ public class BiomarkersControllerTests
         userUowMock.Setup(u => u.OrderTemplate(It.IsAny<CadRequestSchema>(), It.IsAny<string>())).Returns(_biomarkersTemplateService.GetTemplate().GetAwaiter().GetResult());
         _userUow = userUowMock.Object;
         _scoringTemplateService = new ScoringTemplateService(mapper, _biomarkersTemplateService, scoreSummaryUtility, _userUow);
-        _biomarkersController = new SchemasController(_biomarkersTemplateService, _scoringTemplateService, _userUow, extractorMock.Object);
+        _biomarkersController = new SchemasController(_biomarkersTemplateService, _scoringTemplateService, _userUow, extractorMock.Object, _userHelper);
     }
 
     [Test]

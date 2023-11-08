@@ -16,18 +16,24 @@ namespace CE_API_V2.UnitOfWorks
     public class UserUOW : IUserUOW
     {
         private readonly CEContext _context;
-        private readonly IGenericRepository<UserModel> _userRepository;
+        private IGenericRepository<UserModel> _userRepository;
         private IGenericRepository<BiomarkerOrderModel>? biomarkerOrderRepository;
         private readonly ICommunicationService _communicationService;
+        private readonly IOrganisationUOW _organisationUOW;
 
-        public UserUOW(CEContext context, ICommunicationService communicationService)
+        public UserUOW(CEContext context, ICommunicationService communicationService, IOrganisationUOW organisationUOW)
         {
             _context = context;
             _userRepository = new GenericRepository<UserModel>(_context);
             _communicationService = communicationService;
+            _organisationUOW = organisationUOW;
         }
 
-        public IGenericRepository<UserModel> UserRepository => _userRepository;
+        public IGenericRepository<UserModel> UserRepository
+        {
+            get => _userRepository;
+            internal set => _userRepository = value;
+        }
 
         public IGenericRepository<BiomarkerOrderModel> BiomarkerOrderRepository
         {
@@ -143,6 +149,18 @@ namespace CE_API_V2.UnitOfWorks
                 System.Console.WriteLine(e);
                 throw new NotImplementedException();
             }
+        }
+
+        public bool CheckIfIsActiveStateIsModifiable(UserIdsRecord userInfo)
+        {
+            var orga = _organisationUOW.GetOrganisationWithTenantID(userInfo.TenantId);
+            var countOfActiveUserInOrga = _userRepository.Get(x => x.TenantID == userInfo.TenantId && x.IsActive == true)
+                                                                .Count();
+
+            if (orga != null && orga.Userquota > countOfActiveUserInOrga)
+                return true;
+            else 
+                return false;
         }
 
         public async Task<UserModel> StoreUser(UserModel userModel)

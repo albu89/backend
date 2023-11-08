@@ -30,6 +30,7 @@ namespace CE_API_Test.UnitTests.Controllers
         private IInputValidationService _inputValidationService;
         private Mock<IUserInformationExtractor> _userInfoExtractorMock;
         private IConfiguration _configuration;
+        private UserHelper _userHelper;
         private IMapper _mapper;
         private IUserUOW _userUow;
         private IScoreSummaryUtility _scoreSummaryUtility;
@@ -57,6 +58,8 @@ namespace CE_API_Test.UnitTests.Controllers
             _configuration = new ConfigurationBuilder()
                 .AddInMemoryCollection(testConfig)
                 .Build();
+
+            _userHelper = new UserHelper(_mapper, _configuration);
 
             _scoreSummaryUtility = new ScoreSummaryUtility(_mapper, _configuration);
             var requestServiceMock = new Mock<IAiRequestService>();
@@ -100,7 +103,15 @@ namespace CE_API_Test.UnitTests.Controllers
         public async Task PostScoringRequest_GivenValidData_ReturnOkResult()
         {
             //Arrange
-            var sut = new ScoresController(_scoringUow, _patientHashingUow, _inputValidationService, _configuration, _userUow, _scoreSummaryUtility, _userInformationExtractor, _logger);
+            var sut = new ScoresController(_scoringUow,
+                                           _patientHashingUow,
+                                           _inputValidationService,
+                                           _configuration,
+                                           _userUow,
+                                           _scoreSummaryUtility,
+                                           _userInformationExtractor,
+                                           _logger,
+                                           _userHelper);
             var mockedBiomarkers = MockDataProvider.CreateValidScoringRequestDto();
 
             //Act
@@ -120,7 +131,15 @@ namespace CE_API_Test.UnitTests.Controllers
         public async Task PostScoringRequest_GivenEmptyData_ReturnBadRequestResult()
         {
             //Arrange
-            var sut = new ScoresController(_scoringUow, _patientHashingUow, _inputValidationService, _configuration, _userUow, _scoreSummaryUtility, _userInformationExtractor, _logger);
+            var sut = new ScoresController(_scoringUow,
+                                           _patientHashingUow,
+                                           _inputValidationService,
+                                           _configuration,
+                                           _userUow,
+                                           _scoreSummaryUtility,
+                                           _userInformationExtractor,
+                                           _logger,
+                                           _userHelper);
 
             //Act
             var result = await sut.PostScoringRequest(null, null);
@@ -137,7 +156,15 @@ namespace CE_API_Test.UnitTests.Controllers
         public async Task PostScoringRequest_GivenInvalidValues_ReturnBadRequestResult()
         {
             //Arrange
-            var sut = new ScoresController(_scoringUow, _patientHashingUow, _inputValidationService, _configuration, _userUow, _scoreSummaryUtility, _userInformationExtractor, _logger);
+            var sut = new ScoresController(_scoringUow,
+                                           _patientHashingUow,
+                                           _inputValidationService,
+                                           _configuration,
+                                           _userUow,
+                                           _scoreSummaryUtility,
+                                           _userInformationExtractor,
+                                           _logger,
+                                           _userHelper);
             var mockedBiomarkersNV = MockDataProvider.CreateInvalidScoringRequestDto();
 
             //Act
@@ -151,7 +178,15 @@ namespace CE_API_Test.UnitTests.Controllers
         public async Task PutScoringRequest_GivenScoringRequestInTimeframe_ReturnOkResult()
         {
             //Arrange
-            var sut = new ScoresController(_scoringUow, _patientHashingUow, _inputValidationService, _configuration, _userUow, _scoreSummaryUtility, _userInformationExtractor, _logger);
+            var sut = new ScoresController(_scoringUow,
+                                           _patientHashingUow,
+                                           _inputValidationService,
+                                           _configuration,
+                                           _userUow,
+                                           _scoreSummaryUtility,
+                                           _userInformationExtractor,
+                                           _logger,
+                                           _userHelper);
             var mockedBiomarkers = MockDataProvider.CreateValidScoringRequestDto();
 
             //Act
@@ -170,7 +205,15 @@ namespace CE_API_Test.UnitTests.Controllers
         public async Task PutScoringRequest_GivenScoringRequestOutsideOfTimeframe_ReturnBadRequestResult()
         {
             //Arrange
-            var sut = new ScoresController(_scoringUow, _patientHashingUow, _inputValidationService, _configuration, _userUow, _scoreSummaryUtility, _userInformationExtractor, _logger);
+            var sut = new ScoresController(_scoringUow,
+                                           _patientHashingUow,
+                                           _inputValidationService,
+                                           _configuration,
+                                           _userUow,
+                                           _scoreSummaryUtility,
+                                           _userInformationExtractor,
+                                           _logger,
+                                           _userHelper);
             var mockedBiomarkers = MockDataProvider.CreateValidScoringRequestDto();
 
             //Act
@@ -234,7 +277,15 @@ namespace CE_API_Test.UnitTests.Controllers
 
             _scoringUow = scoringUowMock.Object;
 
-            var sut = new ScoresController(_scoringUow, _patientHashingUow, _inputValidationService, _configuration, _userUow, _scoreSummaryUtility, _userInformationExtractor, _logger);
+            var sut = new ScoresController(_scoringUow,
+                                           _patientHashingUow,
+                                           _inputValidationService,
+                                           _configuration,
+                                           _userUow,
+                                           _scoreSummaryUtility,
+                                           _userInformationExtractor,
+                                           _logger,
+                                           _userHelper);
             ////Act
             var result = sut.GetScoringRequest(name, lastname, dateOfBirth, requestId);
 
@@ -269,7 +320,15 @@ namespace CE_API_Test.UnitTests.Controllers
             scoringUowMock.Setup(x => x.RetrieveScoringRequest(It.IsAny<Guid>(), It.IsAny<string>())).Returns(scoringRequestMock);
             _scoringUow = scoringUowMock.Object;
 
-            var sut = new ScoresController(_scoringUow, _patientHashingUow, _inputValidationService, _configuration, _userUow, _scoreSummaryUtility, _userInformationExtractor, _logger);
+            var sut = new ScoresController(_scoringUow,
+                                           _patientHashingUow,
+                                           _inputValidationService,
+                                           _configuration,
+                                           _userUow,
+                                           _scoreSummaryUtility,
+                                           _userInformationExtractor,
+                                           _logger,
+                                           _userHelper);
 
             ////Act
             var result = sut.GetScoringRequest(name, lastname, dateOfBirth, testGuid);
@@ -285,7 +344,15 @@ namespace CE_API_Test.UnitTests.Controllers
         public void GetScoringRequests_WithoutParameters_ReturnOkRequestResult()
         {
             // Arrange
-            var sut = new ScoresController(_scoringUow, _patientHashingUow, _inputValidationService, _configuration, _userUow, _scoreSummaryUtility, _userInformationExtractor, _logger);
+            var sut = new ScoresController(_scoringUow,
+                                           _patientHashingUow,
+                                           _inputValidationService,
+                                           _configuration,
+                                           _userUow,
+                                           _scoreSummaryUtility,
+                                           _userInformationExtractor,
+                                           _logger,
+                                           _userHelper);
 
             // Act
             var result = sut.GetScoringRequests();
@@ -306,8 +373,15 @@ namespace CE_API_Test.UnitTests.Controllers
             string lastname = "lastname";
             DateTime dateOfBirth = new(2000, 1, 1);
 
-            var sut = new ScoresController(_scoringUow, _patientHashingUow, _inputValidationService, _configuration, _userUow, _scoreSummaryUtility, _userInformationExtractor, _logger);
-
+            var sut = new ScoresController(_scoringUow,
+                                           _patientHashingUow,
+                                           _inputValidationService,
+                                           _configuration,
+                                           _userUow,
+                                           _scoreSummaryUtility,
+                                           _userInformationExtractor,
+                                           _logger,
+                                           _userHelper);
             // Act
             var result = sut.GetScoringRequests(name, lastname, dateOfBirth);
 
@@ -323,7 +397,15 @@ namespace CE_API_Test.UnitTests.Controllers
         public async Task PostScoringDraft_WithValidInputs_ReturnsOkObjectResult()
         {
             // Arrange
-            var sut = new ScoresController(_scoringUow, _patientHashingUow, _inputValidationService, _configuration, _userUow, _scoreSummaryUtility, _userInformationExtractor, _logger);
+            var sut = new ScoresController(_scoringUow,
+                                           _patientHashingUow,
+                                           _inputValidationService,
+                                           _configuration,
+                                           _userUow,
+                                           _scoreSummaryUtility,
+                                           _userInformationExtractor,
+                                           _logger,
+                                           _userHelper);
             var mockedBiomarkers = MockDataProvider.CreateValidScoringRequestDto();
             
             // Act
@@ -339,7 +421,15 @@ namespace CE_API_Test.UnitTests.Controllers
         public async Task PostScoringDraft_WithInvalidBiomarkers_ReturnsOkObjectResult()
         {
             // Arrange
-            var sut = new ScoresController(_scoringUow, _patientHashingUow, _inputValidationService, _configuration, _userUow, _scoreSummaryUtility, _userInformationExtractor, _logger);
+            var sut = new ScoresController(_scoringUow,
+                                           _patientHashingUow,
+                                           _inputValidationService,
+                                           _configuration,
+                                           _userUow,
+                                           _scoreSummaryUtility,
+                                           _userInformationExtractor,
+                                           _logger,
+                                           _userHelper);
             var mockedBiomarkers = MockDataProvider.CreateInvalidScoringRequestDto();
             
             // Act
@@ -356,7 +446,15 @@ namespace CE_API_Test.UnitTests.Controllers
         {
             //Arrange
             
-            var sut = new ScoresController(_scoringUow, _patientHashingUow, _inputValidationService, _configuration, _userUow, _scoreSummaryUtility, _userInformationExtractor, _logger);
+var sut = new ScoresController(_scoringUow,
+                                           _patientHashingUow,
+                                           _inputValidationService,
+                                           _configuration,
+                                           _userUow,
+                                           _scoreSummaryUtility,
+                                           _userInformationExtractor,
+                                           _logger,
+                                           _userHelper);
             var mockedBiomarkers = MockDataProvider.CreateValidScoringRequestDto();
             mockedBiomarkers.FirstName = null;
             
@@ -372,8 +470,16 @@ namespace CE_API_Test.UnitTests.Controllers
         public async Task PostScoringDraft_WithInvalidPatientLastName_ReturnsBadRequestResult()
         {
             //Arrange
-            
-            var sut = new ScoresController(_scoringUow, _patientHashingUow, _inputValidationService, _configuration, _userUow, _scoreSummaryUtility, _userInformationExtractor, _logger);
+
+            var sut = new ScoresController(_scoringUow,
+                                                       _patientHashingUow,
+                                                       _inputValidationService,
+                                                       _configuration,
+                                                       _userUow,
+                                                       _scoreSummaryUtility,
+                                                       _userInformationExtractor,
+                                                       _logger,
+                                                       _userHelper);
             var mockedBiomarkers = MockDataProvider.CreateValidScoringRequestDto();
             mockedBiomarkers.LastName = string.Empty;
             
@@ -389,8 +495,16 @@ namespace CE_API_Test.UnitTests.Controllers
         public async Task PostScoringDraft_WithInvalidPatientDateOfBirth_ReturnsBadRequestResult()
         {
             //Arrange
-            
-            var sut = new ScoresController(_scoringUow, _patientHashingUow, _inputValidationService, _configuration, _userUow, _scoreSummaryUtility, _userInformationExtractor, _logger);
+
+            var sut = new ScoresController(_scoringUow,
+                                                       _patientHashingUow,
+                                                       _inputValidationService,
+                                                       _configuration,
+                                                       _userUow,
+                                                       _scoreSummaryUtility,
+                                                       _userInformationExtractor,
+                                                       _logger,
+                                                       _userHelper);
             var mockedBiomarkers = MockDataProvider.CreateValidScoringRequestDto();
             mockedBiomarkers.DateOfBirth = null;
             
