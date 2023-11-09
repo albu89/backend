@@ -2,6 +2,7 @@
 using CE_API_Test.TestUtilities;
 using CE_API_V2.Data;
 using CE_API_V2.Models.DTO;
+using CE_API_V2.Models.Enum;
 using CE_API_V2.Models.Mapping;
 using CE_API_V2.Services;
 using CE_API_V2.Services.Interfaces;
@@ -197,10 +198,11 @@ public class ScoringUnitOfWorkTests
     public async Task ProcessScoringRequest_ExpectedCorrectRetrievedRequest()
     {
         //Arrange
+        var prevalence = PatientDataEnums.ClinicalSetting.PrimaryCare;
         var request = MockDataProvider.GetMockedScoringRequestDto();
-
+        
         //Act
-        var result = await _scoringUow.ProcessScoringRequest(request, _patientId, _userId);
+        var result = await _scoringUow.ProcessScoringRequest(request, _patientId, _userId, prevalence);
 
         //Assert
         result.Should().NotBeNull();
@@ -212,12 +214,13 @@ public class ScoringUnitOfWorkTests
     public async Task ProcessScoringRequest_ExpectNewScoreWhenCorrecting()
     {
         //Arrange
+        var prevalence = PatientDataEnums.ClinicalSetting.PrimaryCare;
         var request = MockDataProvider.GetMockedScoringRequestDto();
 
         //Act
-        var result = await _scoringUow.ProcessScoringRequest(request, _userId, _patientId);
+        var result = await _scoringUow.ProcessScoringRequest(request, _userId, _patientId, prevalence);
         request.prior_CAD.Value = true;
-        var newResult = await _scoringUow.ProcessScoringRequest(request, _userId, _patientId, result.RequestId);
+        var newResult = await _scoringUow.ProcessScoringRequest(request, _userId, _patientId, prevalence, result.RequestId);
 
         //Assert
         newResult.Should().NotBeNull();
@@ -234,10 +237,11 @@ public class ScoringUnitOfWorkTests
     public async Task StoreDraftRequest_GivenValidData_StoresDraftInDatabase()
     {
         // Arrange
+        var prevalence = PatientDataEnums.ClinicalSetting.PrimaryCare;
         var request = MockDataProvider.GetMockedScoringRequestDto();
 
         // Act
-        var result = await _scoringUow.StoreDraftRequest(request, _userId, _patientId);
+        var result = await _scoringUow.StoreDraftRequest(request, _userId, _patientId, prevalence);
 
         // Assert
         result.Should().NotBeNull();

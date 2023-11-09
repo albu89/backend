@@ -1,8 +1,23 @@
 {
+  "categories": {
+    "medicalHistory": {
+      "anamnesis": "Anamnese",
+      "medication": "Medikation",
+      "clinicalfindings": "Klinische Befunde"
+    },
+    "labResults": {
+      "enzymes": "Enzymee",
+      "bloodsugar": "Blutzucker",
+      "metabolite": "Metabolit",
+      "lipids": "Lipide",
+      "protein": "Proteine",
+      "hematology": "Hämatologie"
+    }
+  },
   "medicalHistory": [
     {
       "id": "prior_CAD",
-      "category": "Anamnese",
+      
       "displayName": "Vorherige KHK",
       "infoText": "Vorherige koronare Herzkrankheit bezieht sich auf eine Vorgeschichte einer koronaren Herzkrankheit (KHK) bei einem Patienten. Eine Vorherige koronare Herzkrankheit erhöht die Wahrscheinlichkeit, dass Patienten an Herz-Kreislauf-Erkrankungen leiden.",
       "unit": {
@@ -20,7 +35,7 @@
     },
     {
       "id": "age",
-      "category": "Anamnese",
+      
       "displayName": "Alter",
       "infoText": "Alter des Patienten in Jahren.",
       "unit": {
@@ -30,7 +45,7 @@
     },
     {
       "id": "sex",
-      "category": "Anamnese",
+      
       "displayName": "Geschlecht",
       "infoText": "Biologisches Geschlecht (weiblich und männlich).",
       "unit": {
@@ -48,19 +63,19 @@
     },
     {
       "id": "height",
-      "category": "Anamnese",
+      
       "displayName": "Größe",
       "infoText": "Größe des Patienten in Centimeter"
     },
     {
       "id": "weight",
-      "category": "Anamnese",
+      
       "displayName": "Gewicht",
       "infoText": "Gewicht des Patienten in Kilogramm"
     },
     {
       "id": "chest_pain",
-      "category": "Anamnese",
+      
       "displayName": "Brustschmerzen",
       "infoText": "Kriterien zur Beurteilung von Brustschmerzen\r\n\n     Schmerzauslösung: provozierbar durch körperliche Belastung oder emotionalen Stress - bei Wegfall der auslösenden Faktoren lässt der Schmerz nach (Anhalten der Beschwerden im Ruhezustand) - Schmerzdauer beträgt 2 bis 20 min (bei Einnahme von Nitroglycerin lässt der Schmerz schnell nach)\r\n\r\n\n        Schmerzeinheit Typ: viszeral, manifestiert sich als Druck, Engegefühl, Brennen (nicht stechend)\r\n\r\n\n       Schmerzlokalisation: retrosternal (möglicherweise mit Ausstrahlung in Arme, Oberbauch, Nacken)\r\n\r\n\n        Kategorisierung Cardio Explorer\r\n\n       Typische Angina pectoris: Es gelten 3 Kriterien\r\n\r\n\n       Mögliche Angina pectoris (atypische Angina pectoris): 2 Kriterien treffen zu\r\n\r\n        Unspezifische Brustschmerzen: 0 oder 1 Kriterium treffen zu\r\n\r\n\n       Keine Schmerzen in der Brust",
       "unit": {
@@ -86,7 +101,7 @@
     },
     {
       "id": "nicotine",
-      "category": "Anamnese",
+      
       "displayName": "Nikotinkonsum",
       "infoText": "Nichtraucher: Person, die nie regelmäßig aktiv geraucht hat und Personen, die seit mehr als 6 Monaten nicht regelmäßig geraucht haben.\r\n\r\n\nEx-Raucher: Person, die seit mindestens 6 Monaten regelmäßig geraucht hat, zum Zeitpunkt der Aufzeichnung jedoch nicht mehr raucht.\r\n\r\n\nRaucher: Person, die derzeit regelmäßig raucht.",
       "unit": {
@@ -108,7 +123,7 @@
     },
     {
       "id": "diabetes",
-      "category": "Medikation",
+      
       "displayName": "Diabetes",
       "infoText": "idDM: Abkürzung für insulinabhängigen Diabetes mellitus\r\n\r\n NidDM: Abkürzung für nicht insulinabhängigen Diabetes mellitus",
       "unit": {
@@ -136,7 +151,7 @@
     },
     {
       "id": "statin",
-      "category": "Medikation",
+      
       "displayName": "Statine (Cholesterinsenker)",
       "infoText": "\t\r\nStatine sind Arzneimittel, die als cholesterinsenkende oder lipidsenkende Mittel eingesetzt werden.\r\n\r\nBeispiele: Atorvastatin, Fluvastatin, Pitavastatin, Pravastatin, Rosuvastatin, Simvastatin",
       "unit": {
@@ -154,7 +169,7 @@
     },
     {
       "id": "tc_agg_inhibitor",
-      "category": "Medikation",
+      
       "displayName": "Tc-Aggregationshemmer",
       "infotext": "Thrombozytenaggregationshemmer auch Thrombozytenfunktionshemmer oder Thrombozytenaggregationshemmer.\r\n\r\nBeispiele: ASS oder mit dem Wirkstoff Clopidogrel, Prasugrel, Ticagrelor ",
       "unit": {
@@ -172,7 +187,7 @@
     },
     {
       "id": "ace_inhibitor",
-      "category": "Medikation",
+      
       "displayName": "ACE-Hemmer",
       "infoText": "RAS-Hemmer / ACE-Hemmer\r\n\r\nBeispiele: Benazapril, Captopril, Cilazapril, Enalapril, Fosinopril, Imidapril, Lisinopril, Moexipril, \r\n\r\nÄquivalente Behandlung (Angiotensin-II-Hemmer): Azilsartan, Losartan, Valsartan , Irbesartan, Candesartan, Eprosartan, Olmesartan, Telmisartan",
       "unit": {
@@ -190,7 +205,7 @@
     },
     {
       "id": "calcium_ant",
-      "category": "Medikation",
+      
       "displayName": "Calciumantagonisten",
       "infoText": "Calciumantagonisten \r\n\r\nBeispiele: Dihydropyridine, Benzothiazepine, Phenylalkylamine",
       "unit": {
@@ -208,7 +223,7 @@
     },
     {
       "id": "betablocker",
-      "category": "Medikation",
+      
       "displayName": "Betablocker",
       "infoText": "Betablocker\r\n\r\nBeispiele: Atenolol, Bisoprolol, Celiprolol, Esmolol, Metoprolol, Nebivolol",
       "unit": {
@@ -226,7 +241,7 @@
     },
     {
       "id": "diuretic",
-      "category": "Medikation",
+      
       "displayName": "Diuretika",
       "infoText": "Diuretika \r\n\r\nBeispiele: Amilorid, Triamteren, Furosemid, Piretanid, Torasemid, Acetazolamid, Bemetizid, Bendroflumethiazid, Clopamid, Chlortalidon, Hydrochlorothiazid, Indapamid, Canrenon, Eplerenon.",
       "unit": {
@@ -244,7 +259,7 @@
     },
     {
       "id": "nitrate",
-      "category": "Medikation",
+      
       "displayName": "Organische Nitrate",
       "infoText": "Organische Nitrate\r\n\r\nBeispiele: Nitroglycerin (= Glyceryltrinitrat, GTN), Isosorbiddinitrat",
       "unit": {
@@ -262,19 +277,19 @@
     },
     {
       "id": "systolic_bp",
-      "category": "Klinischer Befund",
+      
       "displayName": "Systolischer Blutdruck",
       "infoText": ""
     },
     {
       "id": "diastolic_bp",
-      "category": "Klinischer Befund",
+      
       "displayName": "Diastolischer Blutdruck",
       "infoText": ""
     },
     {
       "id": "q_wave",
-      "category": "Klinischer Befund",
+      
       "displayName": "Q-Wellen im Ruhe-EKG",
       "infoText": "normal: Q-Wellen des Elektrokardiogramms sind normal.\r\n\r\npathologisch: Q-Wellen des Elektrokardiogramms sind pathologisch – was auf einen früheren Myokardinfarkt hinweist.\r\n\r\nkein EKG verfügbar: Da die pathologische Q-Welle in einer Population mit geringer Prävalenz stark unterrepräsentiert ist, ist das Ruhe-EKG für die Risikoberechnung nicht notwendig.",
       "unit": {
@@ -298,91 +313,91 @@
   "labResults": [
     {
       "id": "amylase_p",
-      "category": "Enzyme",
+      
       "displayName": "Pankreas-Amylase",
       "infoText": "Amylase ist ein Enzym oder spezielles Protein, das bei der Verdauung von Kohlenhydraten hilft. Tests auf Amylase im Blut werden hauptsächlich zur Diagnose von Problemen mit der Bauchspeicheldrüse, einschließlich Pankreatitis, verwendet. Sie werden auch zur Überwachung chronischer (langfristiger) Pankreatitis.\r\n\r\nEine akute Pankreatitis kann mit elektrischen Veränderungen einhergehen, die einem akuten Koronarsyndrom mit normalen Koronararterien ähneln."
     },
     {
       "id": "alkaline",
-      "category": "Enzyme",
+      
       "displayName": "Alkalische Phosphatasen",
       "infoText": "Alkalische Phosphatasen sind eine Gruppe von Isoenzymen, die sich auf der äußeren Schicht der Zellmembran befinden; sie katalysieren die Hydrolyse organischer Phosphatester im extrazellulären Raum. Hohe ALP-Werte können auf eine Lebererkrankung oder bestimmte Knochenerkrankungen hinweisen, aber ein ALP-Test allein kann einen Zustand nicht diagnostizieren.\r\n\r\nHohe Werte der alkalischen Phosphatase (ALP) im Serum sind mit Gefäßverkalkung, atherosklerotischen Erkrankungen und einem erhöhten Risiko für kardiovaskuläre Ereignisse verbunden."
     },
     {
       "id": "hs_troponin_t",
-      "category": "Enzyme",
+      
       "displayName": "hs Troponin T",
       "infoText": "Troponin T, High Sensitivity (hs-TnT) ist ein unabhängiger Prognosemarker, der bei der Diagnose eines akuten Myokardinfarkts (>14 ng/L) hilft."
     },
     {
       "id": "alat",
-      "category": "Enzyme",
+      
       "displayName": "ALAT",
       "infoText": "Alanin-Aminotransferase (ALAT) ist ein Transaminase-Enzym. Es wird auch Alanin-Transaminase (ALT) genannt. ALAT spielt eine entscheidende Rolle im Aminosäurestoffwechsel und der Gluconeogenese. Die Serum-ALAT-Aktivität ist ein zuverlässiger Marker für Lebererkrankungen und den allgemeinen Gesundheitszustand ."
     },
     {
       "id": "glucose",
-      "category": "Blutzucker",
+      
       "displayName": "Glukose",
       "infoText": "Glukose ist ein Einfachzucker mit der Summenformel C6H12O6. Im Energiestoffwechsel ist Glukose die wichtigste Energiequelle in allen Organismen. Der Blutzucker ist ein einfacher, gängiger und sicherer Bluttest, der Prädiabetes, Diabetes und Schwangerschaftsdiabetes diagnostizieren kann."
     },
     {
       "id": "bilirubin",
-      "category": "Metabolite",
+      
       "displayName": "Bilirubin (gesamt)",
       "infoText": "Bilirubin ist eine rot-orange Verbindung, die im normalen katabolen Stoffwechselweg vorkommt, der bei Wirbeltieren Häm abbaut. Dieser Katabolismus ist ein notwendiger Prozess bei der körpereigenen Beseitigung von Abfallprodukten, die durch die Zerstörung gealterter oder abnormaler roter Blutkörperchen entstehen. Das Gesamtbilirubin im Serum spielt bei der Vorhersage einer schweren koronaren Herzkrankheit bei Patienten mit chronisch stabiler Angina pectoris eine Rolle."
     },
     {
       "id": "urea",
-      "category": "Metabolite",
+      
       "displayName": "Harnstoff",
       "infoText": "Harnstoff, auch Carbamid genannt, ist eine organische Verbindung mit der chemischen Formel CO(NH₂)₂. Hohe Blut-Harnstoff-Stickstoff- und hohe Serum-Kreatinin-Werte sind Risikofaktoren für eine koronare Herzkrankheit."
     },
     {
       "id": "uric_acid",
-      "category": "Metabolite",
+      
       "displayName": "Harnsäure",
       "infoText": "Harnsäure ist eine heterozyklische Verbindung aus Kohlenstoff, Stickstoff, Sauerstoff und Wasserstoff mit der Formel C₅H₄N₄O₃. Es bildet Ionen und Salze, die als Urate und saure Urate bekannt sind, beispielsweise Ammoniumsäureurat. Harnsäure ist ein Produkt des metabolischen Abbaus von Purinnukleotiden und ein normaler Bestandteil des Urins."
     },
     {
       "id": "cholesterol",
-      "category": "Lipide",
+      
       "displayName": "Cholesterin (gesamt)",
       "infoText": "Cholesterin gehört zu einer Klasse bestimmter organischer Moleküle, die Lipide genannt werden. Es ist ein Sterol (oder modifiziertes Steroid), eine Art Lipid. Cholesterin dient auch als Vorstufe für die Biosynthese von Steroidhormonen, Gallensäure und Vitamin D. Ein erhöhter Gesamtcholesterinspiegel ist ein starker Risikofaktor für koronare Herzerkrankungen, wobei es bei Männern im Vergleich zu Frauen einen kleinen, aber deutlich stärkeren Effekt gibt."
     },
     {
       "id": "hdl",
-      "category": "Lipide",
+      
       "displayName": "HDL-Cholesterin",
       "infoText": "HDL-Cholesterin (High Density Lipoprotein), manchmal auch „gutes“ Cholesterin genannt, absorbiert Cholesterin im Blut und transportiert es zurück zur Leber. Erhöhte LDL- und verringerte HDL-Cholesterinwerte sind mit einem Anstieg der KHK verbunden."
     },
     {
       "id": "ldl",
-      "category": "Lipide",
+      
       "displayName": "LDL-Cholesterin",
       "infoText": "\t\r\nLDL-Cholesterin (Low-Density-Lipoprotein) ist eine der fünf Hauptgruppen von Lipoproteinen, die alle Fettmoleküle im extrazellulären Wasser durch den Körper transportieren. Erhöhte LDL- und verringerte HDL-Cholesterinspiegel sind mit einem Anstieg der KHK verbunden."
     },
     {
       "id": "protein",
-      "category": "Protein",
+      
       "displayName": "Protein (gesamt)",
       "infoText": "Der Gesamtproteintest misst die Gesamtmenge von zwei Proteinklassen, die im flüssigen Teil Ihres Blutes vorkommen. Dies sind Albumin und Globulin. Albumin verhindert, dass Flüssigkeit aus den Blutgefäßen austritt. Es transportiert auch Chemikalien in Ihr Blut."
     },
     {
       "id": "albumin",
-      "category": "Protein",
+      
       "displayName": "Albumin",
       "infoText": "Albumin ist ein Protein, das von der Leber hergestellt wird. Ein Serumalbumintest misst die Menge dieses Proteins im klaren flüssigen Teil des Blutes."
     },
     {
       "id": "leukocyte",
-      "category": "Hematology",
+      
       "displayName": "Leukozyten",
       "infoText": "Weiße Blutkörperchen, auch Leukozyten genannt, sind die Zellen des Immunsystems, die den Körper sowohl vor Infektionskrankheiten als auch vor fremden Eindringlingen schützen. Zahlreiche epidemiologische und klinische Studien haben gezeigt, dass Leukozytose ein unabhängiger Prädiktor für zukünftige kardiovaskuläre Ereignisse ist."
     },
     {
       "id": "mchc",
-      "category": "Hematology",
+      
       "displayName": "MCHC",
       "infoText": "MCHC steht für die mittlere korpuskuläre Hämoglobinkonzentration. Die mittlere korpuskuläre Hämoglobinkonzentration ist ein Maß für die Hämoglobinkonzentration in einem bestimmten Volumen gepackter roter Blutkörperchen. Er wird berechnet, indem man das Hämoglobin durch den Hämatokrit dividiert. Die Gesamtzahl der weißen Blutkörperchen stand mit der Schwere der koronaren Herzkrankheit in Zusammenhang, und eine höhere Anzahl weißer Blutkörperchen erhöhte das Risiko für Herz-Kreislauf-Erkrankungen."
     }

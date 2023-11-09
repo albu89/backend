@@ -33,7 +33,7 @@ namespace CE_API_V2.Services
             var generalBiomarkerSchema = await DeserializeSchema<CadRequestSchema>(filePath);
 
             var localizedSchemaFilePath = TryGetLocalizedFilePath(locale);
-            var localizedBiomarkerSchema = await DeserializeSchema<BiomarkersLocalizedNew>(localizedSchemaFilePath);
+            var localizedBiomarkerSchema = await DeserializeSchema<BiomarkersLocalized>(localizedSchemaFilePath);
 
             return CombineSchemas(generalBiomarkerSchema, localizedBiomarkerSchema);
         }
@@ -67,7 +67,7 @@ namespace CE_API_V2.Services
             return deserialized;
         }
 
-        private CadRequestSchema CombineSchemas(CadRequestSchema generalBiomarkerSchema, BiomarkersLocalizedNew localizedBiomarkerSchema)
+        private CadRequestSchema CombineSchemas(CadRequestSchema generalBiomarkerSchema, BiomarkersLocalized localizedBiomarkerSchema)
         {
             // Map translations for MedicalHistory-Entries
             foreach (var entry in generalBiomarkerSchema.MedicalHistory)
@@ -79,7 +79,6 @@ namespace CE_API_V2.Services
                 }
                 entry.DisplayName = localizedEntry.DisplayName;
                 entry.InfoText = localizedEntry.InfoText;
-                entry.Category = !IsNullOrEmpty(localizedEntry.Category) ? localizedEntry.Category : entry.Category;
                 if (localizedEntry.Unit?.Options is null || entry.Unit?.Options is null)
                 {
                     continue;
@@ -101,7 +100,6 @@ namespace CE_API_V2.Services
                 }
                 entry.DisplayName = localizedEntry.DisplayName;
                 entry.InfoText = localizedEntry.InfoText;
-                entry.Category = !IsNullOrEmpty(localizedEntry.Category) ? localizedEntry.Category : entry.Category;
             }
 
             return generalBiomarkerSchema;

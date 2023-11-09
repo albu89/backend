@@ -60,11 +60,6 @@ namespace CE_API_V2.Controllers
                 locale = LocalizationConstants.DefaultLocale;
             }
             var template = await _biomarkersTemplateService.GetTemplate(locale);
-            template.Categories = new BiomarkerCategories()
-            {
-                MedicalHistory = template.MedicalHistory.Select(x => x.Category).Distinct().ToArray(),
-                LabResults = template.LabResults.Select(x => x.Category).Distinct().ToArray()
-            };
             
             var idInformation = _userInformationExtractor.GetUserIdInformation(User);
             var user = _userUOW.GetUser(idInformation.UserId, idInformation);

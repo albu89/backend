@@ -1,6 +1,9 @@
 ﻿using CE_API_V2.Data.Repositories.Interfaces;
 using CE_API_V2.Models;
 using CE_API_V2.Models.DTO;
+using CE_API_V2.Models.Enum;
+using static CE_API_V2.Models.Enum.PatientDataEnums;
+
 namespace CE_API_V2.UnitOfWorks.Interfaces;
 
 public interface IScoringUOW
@@ -13,7 +16,7 @@ public interface IScoringUOW
 
     public Biomarkers StoreBiomarkers(Guid scoringRequestId, Biomarkers biomarkers);
 
-    public Task<ScoringRequestModel> StoreDraftRequest(ScoringRequest value, string userId, string patientId);
+    public Task<ScoringRequestModel> StoreDraftRequest(ScoringRequest value, string userId, string patientId, ClinicalSetting clinicalSetting);
 
     ScoringRequestModel StoreScoringRequest(ScoringRequestModel scoringRequestModel, string UserId);
     
@@ -27,7 +30,7 @@ public interface IScoringUOW
     
     ScoringResponseModel RetrieveScoringResponse(Guid ScoringRequestId, string UserId);
     
-    Task<ScoringResponse> ProcessScoringRequest(ScoringRequest scoringRequestModel, string userId, string patientId, Guid? existingScoringRequest = null);
+    Task<ScoringResponse> ProcessScoringRequest(ScoringRequest scoringRequestModel, string userId, string patientId, PatientDataEnums.ClinicalSetting clinicalSetting, Guid? existingScoringRequest = null);
     
-    ScoringResponse GetScoringResponse(ScoringResponseModel recentScore, Biomarkers biomarkers);
+    ScoringResponse GetScoringResponse(ScoringResponseModel recentScore, Biomarkers biomarkers, Guid requestId);
 }

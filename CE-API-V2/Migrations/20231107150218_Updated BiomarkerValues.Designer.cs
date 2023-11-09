@@ -4,6 +4,7 @@ using CE_API_V2.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CE_API_V2.Migrations
 {
     [DbContext(typeof(CEContext))]
-    partial class CEContextModelSnapshot : ModelSnapshot
+    [Migration("20231107150218_Updated BiomarkerValues")]
+    partial class UpdatedBiomarkerValues
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -155,14 +158,6 @@ namespace CE_API_V2.Migrations
 
                     b.Property<int>("ClinicalSetting")
                         .HasColumnType("int");
-
-                    b.Property<string>("ClinicalSettingDisplayValue")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ClinicalSettingUnit")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTimeOffset>("CreatedOn")
                         .ValueGeneratedOnAdd()
@@ -418,12 +413,8 @@ namespace CE_API_V2.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("TenantId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Userquota")
-                        .HasColumnType("int");
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -435,9 +426,6 @@ namespace CE_API_V2.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("ClinicalSetting")
-                        .HasColumnType("int");
 
                     b.Property<DateTimeOffset>("CreatedOn")
                         .ValueGeneratedOnAdd()

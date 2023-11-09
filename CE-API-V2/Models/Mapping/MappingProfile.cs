@@ -31,8 +31,8 @@ namespace CE_API_V2.Models.Mapping
                 .ForMember(dest => dest.Leukocyte, opt => opt.MapFrom(src => src.Leukocytes))
                 .ForMember(dest => dest.Qwave, opt => opt.MapFrom(src => src.RestingECG))
                 .ForMember(dest => dest.Nitrate, opt => opt.MapFrom(src => src.OrganicNitrate))
-                .ForMember(dest => dest.Amylasep, opt => opt.MapFrom(src => src.PancreaticAmylase))                
-                .ForMember(dest => dest.Calciumant, opt => opt.MapFrom(src => src.CaAntagonist))                
+                .ForMember(dest => dest.Amylasep, opt => opt.MapFrom(src => src.PancreaticAmylase))
+                .ForMember(dest => dest.Calciumant, opt => opt.MapFrom(src => src.CaAntagonist))
 
                 .ForMember(dest => dest.AgeUnit, opt => opt.MapFrom(src => src.Age.UnitType))
                 .ForMember(dest => dest.HdlUnit, opt => opt.MapFrom(src => src.Hdl.UnitType))
@@ -54,12 +54,51 @@ namespace CE_API_V2.Models.Mapping
                 .ForMember(dest => dest.SystolicbpUnit, opt => opt.MapFrom(src => src.SystolicBloodPressure.UnitType))
                 .ForMember(dest => dest.HstroponintUnit, opt => opt.MapFrom(src => src.HsTroponinT.UnitType))
                 .ForMember(dest => dest.ProteinUnit, opt => opt.MapFrom(src => src.Protein.UnitType))
+
+                .ForMember(dest => dest.PriorCADDisplayValue, opt => opt.MapFrom(src => src.prior_CAD.DisplayValue))
+                .ForMember(dest => dest.SexDisplayValue, opt => opt.MapFrom(src => src.Sex.DisplayValue))
+                .ForMember(dest => dest.ChestpainDisplayValue, opt => opt.MapFrom(src => src.ChestPain.DisplayValue))
+                .ForMember(dest => dest.NicotineDisplayValue, opt => opt.MapFrom(src => src.NicotineConsumption.DisplayValue))
+                .ForMember(dest => dest.DiabetesDisplayValue, opt => opt.MapFrom(src => src.Diabetes.DisplayValue))
+                .ForMember(dest => dest.StatinDisplayValue, opt => opt.MapFrom(src => src.CholesterolLowering_Statin.DisplayValue))
+                .ForMember(dest => dest.TcagginhibitorDisplayValue, opt => opt.MapFrom(src => src.TCAggregationInhibitor.DisplayValue))
+                .ForMember(dest => dest.AceinhibitorDisplayValue, opt => opt.MapFrom(src => src.ACEInhibitor.DisplayValue))
+                .ForMember(dest => dest.CalciumantDisplayValue, opt => opt.MapFrom(src => src.CaAntagonist.DisplayValue))
+                .ForMember(dest => dest.BetablockerDisplayValue, opt => opt.MapFrom(src => src.Betablocker.DisplayValue))
+                .ForMember(dest => dest.DiureticDisplayValue, opt => opt.MapFrom(src => src.Diuretic.DisplayValue))
+                .ForMember(dest => dest.NitrateDisplayValue, opt => opt.MapFrom(src => src.OrganicNitrate.DisplayValue))
+                .ForMember(dest => dest.QwaveDisplayValue, opt => opt.MapFrom(src => src.RestingECG.DisplayValue))
+
+                .ForMember(dest => dest.AgeDisplayValue, opt => opt.MapFrom(src => src.Age.DisplayValue))
+                .ForMember(dest => dest.HdlDisplayValue, opt => opt.MapFrom(src => src.Hdl.DisplayValue))
+                .ForMember(dest => dest.LdlDisplayValue, opt => opt.MapFrom(src => src.Ldl.DisplayValue))
+                .ForMember(dest => dest.AlatDisplayValue, opt => opt.MapFrom(src => src.Alat.DisplayValue))
+                .ForMember(dest => dest.AlbuminDisplayValue, opt => opt.MapFrom(src => src.Albumin.DisplayValue))
+                .ForMember(dest => dest.UreaDisplayValue, opt => opt.MapFrom(src => src.Urea.DisplayValue))
+                .ForMember(dest => dest.MchcDisplayValue, opt => opt.MapFrom(src => src.Mchc.DisplayValue))
+                .ForMember(dest => dest.AlkalineDisplayValue, opt => opt.MapFrom(src => src.AlkalinePhosphatase.DisplayValue))
+                .ForMember(dest => dest.BilirubinDisplayValue, opt => opt.MapFrom(src => src.Bilirubin.DisplayValue))
+                .ForMember(dest => dest.CholesterolDisplayValue, opt => opt.MapFrom(src => src.Cholesterol.DisplayValue))
+                .ForMember(dest => dest.AmylasepDisplayValue, opt => opt.MapFrom(src => src.PancreaticAmylase.DisplayValue))
+                .ForMember(dest => dest.HeightDisplayValue, opt => opt.MapFrom(src => src.Height.DisplayValue))
+                .ForMember(dest => dest.WeightDisplayValue, opt => opt.MapFrom(src => src.Weight.DisplayValue))
+                .ForMember(dest => dest.GlucoseDisplayValue, opt => opt.MapFrom(src => src.GlucoseFasting.DisplayValue))
+                .ForMember(dest => dest.LeukocyteDisplayValue, opt => opt.MapFrom(src => src.Leukocytes.DisplayValue))
+                .ForMember(dest => dest.UricacidDisplayValue, opt => opt.MapFrom(src => src.UricAcid.DisplayValue))
+                .ForMember(dest => dest.DiastolicbpDisplayValue, opt => opt.MapFrom(src => src.DiastolicBloodPressure.DisplayValue))
+                .ForMember(dest => dest.SystolicbpDisplayValue, opt => opt.MapFrom(src => src.SystolicBloodPressure.DisplayValue))
+                .ForMember(dest => dest.HstroponintDisplayValue, opt => opt.MapFrom(src => src.HsTroponinT.DisplayValue))
+                .ForMember(dest => dest.ProteinDisplayValue, opt => opt.MapFrom(src => src.Protein.DisplayValue))
+                .ForMember(dest => dest.ClinicalSettingDisplayValue, opt => opt.MapFrom(src => string.Empty))
+                .ForMember(dest => dest.ClinicalSettingUnit, opt => opt.MapFrom(src => string.Empty))
+                .ForMember(dest => dest.ClinicalSetting, opt => opt.MapFrom(src => string.Empty))
+               
                 ;
 
             CreateMap<CreateUser, UserModel>()
                 .ForMember(dest => dest.UserId, opt => opt.MapFrom(_ => string.Empty))
                 .ForMember(dest => dest.TenantID, opt => opt.MapFrom(_ => string.Empty));
-            
+
             CreateMap<UpdateUser, UserModel>()
                 .ForMember(dest => dest.UserId, opt => opt.MapFrom(_ => string.Empty))
                 .ForMember(dest => dest.TenantID, opt => opt.MapFrom(_ => string.Empty));
@@ -91,6 +130,7 @@ namespace CE_API_V2.Models.Mapping
                 .ConvertUsing(typeof(ValueToUnderlyingTypeConverter<PatientDataEnums.RestingEcg>));
             ;
             CreateMap<ScoringResponse, ScoringResponseModel>()
+                .ForMember(dest => dest.Biomarkers, opt => opt.Ignore())
                 .ForMember(dest => dest.Score, opt => opt.MapFrom(src => src.classifier_score))
                 .ForMember(dest => dest.Recommendation, opt => opt.MapFrom(src => src.RecommendationSummary))
                 .ForMember(dest => dest.RecommendationLong, opt => opt.MapFrom(src => src.RecommendationLongText))
@@ -100,12 +140,12 @@ namespace CE_API_V2.Models.Mapping
                 ;
 
             CreateMap<ScoringResponseModel, ScoringResponse>()
-                .ForMember(dest => dest.Biomarkers, opt => opt.MapFrom(src => src.Request.LatestBiomarkers))
+                .ForMember(dest => dest.Biomarkers, opt => opt.Ignore())
                 .ForMember(dest => dest.RiskValue, opt => opt.Ignore())
                 .ForMember(dest => dest.Warnings, opt => opt.Ignore())
                 .ForMember(dest => dest.RecommendationSummary, opt => opt.Ignore())
                 .ForMember(dest => dest.RecommendationLongText, opt => opt.Ignore());
-            
+
             CreateMap<ScoringSchema, ScoreSchema>()
                 .ForMember(dest => dest.Biomarkers, opt => opt.Ignore())
                 .ForMember(dest => dest.RecommendationCategories, opt => opt.Ignore());
@@ -117,9 +157,8 @@ namespace CE_API_V2.Models.Mapping
                 .ForMember(dest => dest.RiskClass, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.RequestId, opt => opt.Ignore())
                 .ForMember(dest => dest.Warnings, opt => opt.Ignore())
-                .ForMember(dest => dest.classifier_score, opt => opt.Ignore())
-                .ForMember(dest => dest.Biomarkers, opt => opt.Ignore());
-            
+                .ForMember(dest => dest.classifier_score, opt => opt.Ignore());
+
             CreateMap<UserModel, User>();
 
             CreateMap<UserModel, User>()

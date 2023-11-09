@@ -110,9 +110,25 @@ public class ScoreUtilityTests
         scoreSummary.RecommendationSummary = null;
         scoreSummary.Warnings = null;
         scoreSummary.classifier_score = score;
-        scoreSummary.Biomarkers.PriorCAD = priorCad;
-        scoreSummary.Biomarkers.ClinicalSetting = clinicalSetting;
-        
+        var indexPriorCad = Array.FindIndex(scoreSummary.Biomarkers.Values, values => values.Id == "prior_CAD");
+        var indexClinicalSettingd = Array.FindIndex(scoreSummary.Biomarkers.Values, values => values.Id == "clinical_setting");
+
+        scoreSummary.Biomarkers.Values[indexPriorCad] = new()
+        {
+            Id = "prior_CAD",
+            Value = priorCad,
+            DisplayValue = priorCad.ToString(),
+            Unit = "SI"
+        };
+
+        scoreSummary.Biomarkers.Values[indexClinicalSettingd] = new()
+        {
+            Id = "clinical_setting",
+            Value = clinicalSetting,
+            DisplayValue = clinicalSetting.ToString(),
+            Unit = "SI"
+        };
+
         //Act
         var result = _scoreSummaryUtility.SetAdditionalScoringParams(scoreSummary, "en-GB");
 

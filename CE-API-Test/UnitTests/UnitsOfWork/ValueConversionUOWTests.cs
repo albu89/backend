@@ -2,6 +2,7 @@
 using CE_API_Test.TestUtilities;
 using CE_API_V2.Hasher;
 using CE_API_V2.Models;
+using CE_API_V2.Models.Enum;
 using CE_API_V2.Models.Mapping;
 using CE_API_V2.Services;
 using CE_API_V2.Services.Interfaces;
@@ -43,6 +44,7 @@ namespace CE_API_Test.UnitTests.UnitsOfWork
         public void ConvertToScoringRequest_GivenCorrectParameters_ExpectedObjectWithCorrectUserIdAndPatientId()
         {
             //Arrange
+            var prevalence = PatientDataEnums.ClinicalSetting.PrimaryCare;
             var patientIdHashingUow = new PatientIdHashingUOW(_config);   
             var scoringRequestDto = MockDataProvider.CreateValidScoringRequestDto();
             var userId = "anonymous";
@@ -52,7 +54,7 @@ namespace CE_API_Test.UnitTests.UnitsOfWork
             var sut = new ValueConversionUOW(_mapper, _templateService);
 
             //Act
-            var (result, _) = sut.ConvertToScoringRequest(scoringRequestDto, userId, patientId);
+            var (result, _) = sut.ConvertToScoringRequest(scoringRequestDto, userId, patientId, prevalence);
 
             //Assert
             result.Should().NotBeNull();
@@ -65,6 +67,7 @@ namespace CE_API_Test.UnitTests.UnitsOfWork
         public async Task ConvertToSIValue()
         {
             //Arrange
+            var prevalence = PatientDataEnums.ClinicalSetting.PrimaryCare;
             var patientIdHashingUow = new PatientIdHashingUOW(_config);
             var scoringRequestDto = MockDataProvider.CreateValidScoringRequestDto();
             
@@ -93,7 +96,7 @@ namespace CE_API_Test.UnitTests.UnitsOfWork
          
             //Act
             await sut.ConvertToSiValues(scoringRequestDto);
-            var (result, biomarkers) = sut.ConvertToScoringRequest(scoringRequestDto, userId, patientId);
+            var (result, biomarkers) = sut.ConvertToScoringRequest(scoringRequestDto, userId, patientId, prevalence);
             result.AddBiomarkers(biomarkers);
 
             //Assert

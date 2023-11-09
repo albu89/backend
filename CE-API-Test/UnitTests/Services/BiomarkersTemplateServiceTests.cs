@@ -38,7 +38,7 @@ public class BiomarkersTemplateServiceTests
         result.Subject.AllMarkers.Any(x => string.IsNullOrEmpty(x.Id)).Should().BeFalse();
         result.Subject.LabResults.Any(x => x.Units is null).Should().BeFalse();
         result.Subject.LabResults.Any(x => x.Units.Length == 0).Should().BeFalse();
-        result.Subject.AllMarkers.All(x => string.IsNullOrEmpty(x.Category)).Should().BeFalse("we expect at least one Item to have a category");
+        result.Subject.AllMarkers.All(x => string.IsNullOrEmpty(x.CategoryId)).Should().BeFalse("we expect at least one Item to have a category");
         result.Subject.AllMarkers.All(x => string.IsNullOrEmpty(x.InfoText)).Should().BeFalse("we expect at least one Item to have an InfoText");
 
         result.Subject.AllMarkers.Any(x => string.IsNullOrEmpty(x.DisplayName)).Should().BeFalse();
@@ -47,7 +47,7 @@ public class BiomarkersTemplateServiceTests
         result.Subject.AllMarkers.All(x => string.IsNullOrEmpty(x.InfoText)).Should().BeFalse();
         elementToTest.InfoText.Should().Be(localizedInfoText);
         elementToTest.Unit.Should().NotBeNull();
-        elementToTest.Category.Should().NotBeNullOrEmpty();
+        elementToTest.CategoryId.Should().NotBeNullOrEmpty();
         elementToTest.Id.Should().NotBeNullOrEmpty();
     }    
     
@@ -72,7 +72,7 @@ public class BiomarkersTemplateServiceTests
         result.Subject.AllMarkers.Any(x => string.IsNullOrEmpty(x.Id)).Should().BeFalse();
         result.Subject.LabResults.Any(x => x.Units is null).Should().BeFalse();
         result.Subject.LabResults.Any(x => x.Units.Length == 0).Should().BeFalse();
-        result.Subject.AllMarkers.All(x => string.IsNullOrEmpty(x.Category)).Should().BeFalse("we expect at least one Item to have a category");
+        result.Subject.AllMarkers.All(x => string.IsNullOrEmpty(x.CategoryId)).Should().BeFalse("we expect at least one Item to have a category");
         result.Subject.AllMarkers.All(x => string.IsNullOrEmpty(x.InfoText)).Should().BeFalse("we expect at least one Item to have an InfoText");
 
         result.Subject.AllMarkers.Any(x => string.IsNullOrEmpty(x.DisplayName)).Should().BeFalse();

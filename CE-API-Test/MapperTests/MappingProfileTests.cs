@@ -212,12 +212,11 @@ public class MappingProfileTests
 
         //Act
         var scoringResponse = _mapper.Map<ScoringResponse>(scoringResponseModel);
-
+            
         //Assert
         scoringResponse.classifier_score.Should().Be(scoringResponseModel.classifier_score);
         scoringResponse.RequestId.Should().Be(scoringResponseModel.RequestId);
         scoringResponse.RiskClass.Should().Be(scoringResponseModel.RiskClass);
-        scoringResponse.Biomarkers.Should().BeEquivalentTo(scoringResponseModel.Request.LatestBiomarkers);
         scoringResponse.Prevalence.Should().Be(ScoreSummaryUtility.PrevalenceClass.Primary);
         scoringResponse.CanEdit.Should().Be(false); //default 
         scoringResponse.IsDraft.Should().Be(false); //default 

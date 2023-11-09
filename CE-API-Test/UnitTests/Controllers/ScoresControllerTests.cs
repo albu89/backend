@@ -5,6 +5,7 @@ using CE_API_V2.Controllers;
 using CE_API_V2.Hasher;
 using CE_API_V2.Models;
 using CE_API_V2.Models.DTO;
+using CE_API_V2.Models.Enum;
 using CE_API_V2.Models.Mapping;
 using CE_API_V2.Models.Records;
 using CE_API_V2.Services;
@@ -81,7 +82,7 @@ namespace CE_API_Test.UnitTests.Controllers
             requestServiceMock.Setup(x => x.RequestScore(It.IsAny<ScoringRequestModel>())).Returns(mockedAiResponseTask);
             valueConversionUow
                 .Setup(x => x.ConvertToScoringRequest(It.IsAny<ScoringRequest>(), It.IsAny<string>(),
-                    It.IsAny<string>())).Returns((mockedScoringRequest, mockedScoringRequest.LatestBiomarkers));
+                    It.IsAny<string>(), It.IsAny<PatientDataEnums.ClinicalSetting>())).Returns((mockedScoringRequest, mockedScoringRequest.LatestBiomarkers));
             scoringTemplateService.Setup(x => x.GetTemplate(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(new ScoreSchema()));
 
             var hashingUowMock = new Mock<IPatientIdHashingUOW>();
@@ -248,7 +249,7 @@ namespace CE_API_Test.UnitTests.Controllers
 
             var scoringSummary = new ScoringResponse()
             {
-                Biomarkers = new Biomarkers(),
+                Biomarkers = new StoredBiomarkers(),
                 RecommendationLongText = "MockedLongText",
                 RecommendationSummary = "MockedRecommendationSummary",
                 RequestId = requestId,
@@ -273,7 +274,7 @@ namespace CE_API_Test.UnitTests.Controllers
                 .Returns(scoringHistoryMock);
             scoringUowMock.Setup(x => x.RetrieveScoringResponse(It.IsAny<Guid>(), It.IsAny<string>())).Returns(scoringResponse);
             scoringUowMock.Setup(x => x.RetrieveScoringRequest(It.IsAny<Guid>(), It.IsAny<string>())).Returns(scoringResponse.Request);
-            scoringUowMock.Setup(x => x.GetScoringResponse(It.IsAny<ScoringResponseModel>(), It.IsAny<Biomarkers>())).Returns(scoringSummary);
+            scoringUowMock.Setup(x => x.GetScoringResponse(It.IsAny<ScoringResponseModel>(), It.IsAny<Biomarkers>(), It.IsAny<Guid>())).Returns(scoringSummary);
 
             _scoringUow = scoringUowMock.Object;
 
@@ -524,14 +525,14 @@ var sut = new ScoresController(_scoringUow,
             scoringUowMock.Setup(x => x.RetrieveScoringHistoryForPatient(It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(scoringHistoryMock);
             scoringUowMock
-                .Setup(x => x.ProcessScoringRequest(It.IsAny<ScoringRequest>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Guid?>()))
+                .Setup(x => x.ProcessScoringRequest(It.IsAny<ScoringRequest>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<PatientDataEnums.ClinicalSetting>(), It.IsAny<Guid?>()))
                 .Returns(mockedResponseTask);
             
             scoringUowMock
-                .Setup(x => x.StoreDraftRequest(It.IsAny<ScoringRequest>(), It.IsAny<string>(), It.IsAny<string>()))
+                .Setup(x => x.StoreDraftRequest(It.IsAny<ScoringRequest>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<PatientDataEnums.ClinicalSetting>()))
                 .Returns(mockedRequestTask);
 
-            scoringUowMock.Setup(x => x.GetScoringResponse(It.IsAny<ScoringResponseModel>(), It.IsAny<Biomarkers>())).Returns(new ScoringResponse());
+            scoringUowMock.Setup(x => x.GetScoringResponse(It.IsAny<ScoringResponseModel>(), It.IsAny<Biomarkers>(), It.IsAny<Guid>())).Returns(new ScoringResponse());
 
             var oldMock = MockDataProvider.GetMockedScoringRequest(CreatedOn: DateTimeOffset.Now.Subtract(TimeSpan.FromDays(3)));
             var newMock = MockDataProvider.GetMockedScoringRequest(CreatedOn: DateTimeOffset.Now.Subtract(TimeSpan.FromDays(1)));

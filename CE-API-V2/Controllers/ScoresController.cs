@@ -135,11 +135,11 @@ public class ScoresController : ControllerBase
         var scoringResponse = latestBiomarkers.Response;
         if (scoringResponse is null)
         {
-            var summary = _scoringUow.GetScoringResponse(null, latestBiomarkers);
+            var summary = _scoringUow.GetScoringResponse(null, latestBiomarkers, request.Id);
             return Ok(summary);
         }
 
-        var scoreSummary = _scoringUow.GetScoringResponse(scoringResponse, scoringResponse.Biomarkers);
+        var scoreSummary = _scoringUow.GetScoringResponse(scoringResponse, scoringResponse.Biomarkers, request.Id);
 
         scoreSummary.CanEdit = _scoreSummaryUtility.CalculateIfUpdatePossible(scoringResponse.Request);
 
@@ -193,7 +193,7 @@ public class ScoresController : ControllerBase
             throw new BiomarkersValidationException("ScoringRequest was not valid.", validationResult.Errors, userCulture);
         }
 
-        var requestedScore = await _scoringUow.ProcessScoringRequest(scoringRequestValues, userInfo.UserId, patientId);
+        var requestedScore = await _scoringUow.ProcessScoringRequest(scoringRequestValues, userInfo.UserId, patientId, currentUser.ClinicalSetting);
         
         return requestedScore is null ? BadRequest() : Ok(requestedScore);
     }
@@ -227,7 +227,9 @@ public class ScoresController : ControllerBase
         value.DateOfBirth = null;
         var userId = UserHelper.GetUserId(User);
 
-        var scoringRequestModel = await _scoringUow.StoreDraftRequest(value, userId, patientId);
+        var userInfo = _userInformationExtractor.GetUserIdInformation(User);
+        var currentUser = _userUow.GetUser(userInfo.UserId, userInfo);
+        var scoringRequestModel = await _scoringUow.StoreDraftRequest(value, userId, patientId, currentUser.ClinicalSetting);
 
         return scoringRequestModel is null ? BadRequest() : Ok(scoringRequestModel.Id);
     }
@@ -284,7 +286,9 @@ public class ScoresController : ControllerBase
             _logger.LogWarning($"The user tried to edit a score outside of its edit period. Id: {scoreId}");
             return BadRequest("The edit period of the ScoringRequest has expired.");
         }
-        var requestedScore = await _scoringUow.ProcessScoringRequest(value, userId, patientId, scoringRequestModel.Id);
+
+        var usedClinicalSetting = scoringRequestModel.ClinicalSetting;
+        var requestedScore = await _scoringUow.ProcessScoringRequest(value, userId, patientId, usedClinicalSetting, scoringRequestModel.Id);
         return requestedScore is null ? BadRequest() : Ok(requestedScore);
     }
     

@@ -96,59 +96,94 @@ namespace CE_API_Test.TestUtilities
                 new Biomarkers
                 {
                     Age = 25,
+                    AgeDisplayValue = "25",
                     AgeUnit = "SI",
                     Alat = 213,
+                    AlatDisplayValue = "213",
                     AlatUnit = "SI",
                     Albumin = 123,
+                    AlbuminDisplayValue = "123",
                     AlbuminUnit = "SI",
                     Bilirubin = 123,
+                    BilirubinDisplayValue = "123",
                     BilirubinUnit = "SI",
                     Cholesterol = 123,
+                    CholesterolDisplayValue = "123",
                     CholesterolUnit = "SI",
                     Diabetes = DiabetesStatus.Iddm,
+                    DiabetesDisplayValue = "DiabetesStatus.Iddm",
                     Qwave = RestingEcg.Screening,
+                    QwaveDisplayValue = "RestingEcg.Screening",
                     Diuretic = false,
+                    DiureticDisplayValue = "false",
                     Hdl = 123,
+                    HdlDisplayValue = "123",
                     HdlUnit = "SI",
                     Height = 176,
+                    HeightDisplayValue = "176",
                     HeightUnit = "SI",
                     Ldl = 123,
+                    LdlDisplayValue = "123",
                     LdlUnit = "SI",
                     Leukocyte = 123,
+                    LeukocyteDisplayValue = "123",
                     LeukocyteUnit = "SI",
                     Mchc = 123,
+                    MchcDisplayValue = "123",
                     MchcUnit = "SI",
                     Sex = Sex.Male,
+                    SexDisplayValue = "Sex.Male",
                     Weight = 90,
+                    WeightDisplayValue = "90",
                     WeightUnit = "SI",
                     Protein = 123,
+                    ProteinDisplayValue = "123",
                     ProteinUnit = "SI",
                     Urea = 123,
+                    UreaDisplayValue = "123",
                     UreaUnit = "SI",
                     Calciumant = false,
+                    CalciumantDisplayValue = "false",
                     Chestpain = ChestPain.Possible,
+                    ChestpainDisplayValue = "ChestPain.Possible",
                     Glucose = 123,
+                    GlucoseDisplayValue = "123",
                     GlucoseUnit = "SI",
                     Amylasep = 123,
+                    AmylasepDisplayValue = "123",
                     AmylasepUnit = "SI",
                     Uricacid = 123,
+                    UricacidDisplayValue = "123",
                     UricacidUnit = "SI",
                     Diastolicbp = 123,
+                    DiastolicbpDisplayValue = "123",
                     DiastolicbpUnit = "SI",
                     Hstroponint = 123,
+                    HstroponintDisplayValue = "123",
                     HstroponintUnit = "SI",
                     Systolicbp = 123,
+                    SystolicbpDisplayValue = "123",
                     SystolicbpUnit = "SI",
                     Nicotine = NicotineConsumption.StANc,
+                    NicotineDisplayValue = "NicotineConsumption.StANc",
                     Statin = false,
+                    StatinDisplayValue = "false",
                     Aceinhibitor = false,
+                    AceinhibitorDisplayValue = "false",
                     Alkaline = 123,
+                    AlkalineDisplayValue = "123",
                     AlkalineUnit = "SI",
                     Betablocker = false,
+                    BetablockerDisplayValue = "false",
                     ClinicalSetting = ClinicalSetting.PrimaryCare,
                     Nitrate = false,
+                    NitrateDisplayValue = "false",
                     Tcagginhibitor = false,
-                    PriorCAD = false
+                    TcagginhibitorDisplayValue = "false",
+                    PriorCAD = false,
+                    PriorCADDisplayValue = "false",
+                    ClinicalSettingUnit = "SI",
+                    ClinicalSettingDisplayValue = "PrimaryCare",
                 }
             };
             return biomarkerList;
@@ -489,10 +524,24 @@ namespace CE_API_Test.TestUtilities
                 Warnings = Array.Empty<string>(),
                 RecommendationSummary = "RecommendationSummary",
                 RecommendationLongText = "RecommendationLongText",
-                Biomarkers = GetFakeBiomarkers().FirstOrDefault()
+                Biomarkers = GetMockedStoredBiomarkers()
             };
         }
 
+        private static StoredBiomarkers GetMockedStoredBiomarkers()
+        {
+            var biomarkers = GetFakeBiomarkers();
+            var mappedBiomarkers = ManualMapper.MapFromBiomarkersToValues(biomarkers.ElementAt(0));
+            var staredBiomarkers = new StoredBiomarkers();
+
+            return new()
+            {
+                Values = mappedBiomarkers,
+                CreatedOn = DateTime.Now,
+                Id = Guid.NewGuid(),
+                RequestId = Guid.NewGuid(),
+            };
+        }
 
         public static BiomarkerOrder GetMockedOrder()
         {
