@@ -90,7 +90,10 @@ try
 
     app.MapControllers();
 
-    app.UseRateLimiter();
+    if (builder.Environment.EnvironmentName != "Testing")
+    {
+        app.UseRateLimiter();
+    }
 
     app.Run();
 }

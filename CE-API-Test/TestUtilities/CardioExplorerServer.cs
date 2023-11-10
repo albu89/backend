@@ -1,8 +1,12 @@
 ﻿using System.Data.Common;
 using CE_API_Test.TestUtilities.Test;
 using CE_API_V2.Data;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,6 +15,8 @@ namespace CE_API_Test.TestUtilities;
 internal class CardioExplorerServer : WebApplicationFactory<Program>
 {
     private readonly string? _country;
+    public string DefaultUserId { get; set; } = "1";
+    public string Environment { get; set; } = "Development";
 
     public CardioExplorerServer()
     {
@@ -39,14 +45,15 @@ internal class CardioExplorerServer : WebApplicationFactory<Program>
                 options.UseInMemoryDatabase("IntegrationTestDB");
             });
 
+            services.Configure<TestAuthHandlerOptions>(options => options.DefaultUserId = DefaultUserId);
+            services.AddAuthentication(TestAuthHandler.AuthenticationScheme)
+                    .AddScheme<TestAuthHandlerOptions, TestAuthHandler>(TestAuthHandler.AuthenticationScheme, options => { });
+
             services.Configure<TestAuthHandlerOptions>(options =>
             {
                 options.Country = _country ?? "CH";
-        });
-
-            services.AddAuthentication(TestAuthHandler.AuthenticationScheme)
-                .AddScheme<TestAuthHandlerOptions, TestAuthHandler>(TestAuthHandler.AuthenticationScheme, options => { });
+            });
         }); 
-        builder.UseEnvironment("Development");
+        builder.UseEnvironment(Environment);
     }
 }
