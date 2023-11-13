@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Castle.Core.Logging;
 using CE_API_V2.Controllers;
 using CE_API_V2.Models;
 using CE_API_V2.Models.DTO;
@@ -11,7 +10,6 @@ using CE_API_V2.UnitOfWorks.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using System.Security.Claims;
-using CE_API_V2.Models.Records;
 using CE_API_V2.Utility;
 using Microsoft.Extensions.Configuration;
 

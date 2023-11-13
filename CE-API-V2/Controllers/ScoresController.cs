@@ -15,7 +15,6 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Swashbuckle.AspNetCore.Annotations;
 using Microsoft.AspNetCore.RateLimiting;
 using CE_API_V2.Utility.CustomAnnotations;
-using CE_API_V2.UnitOfWorks;
 
 namespace CE_API_V2.Controllers;
 

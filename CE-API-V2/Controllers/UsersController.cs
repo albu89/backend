@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Authorization;
 using CE_API_V2.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Swashbuckle.AspNetCore.Annotations;
-using CE_API_V2.UnitOfWorks;
 using CE_API_V2.Utility.CustomAnnotations;
 
 namespace CE_API_V2.Controllers

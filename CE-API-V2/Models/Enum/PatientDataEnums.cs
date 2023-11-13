@@ -17,16 +17,16 @@
 
         public enum ChestPain
         {
-            No,
-            Unspecific,
-            Possible,
-            Typical
+            No = 0,
+            Unspecific = 1,
+            Possible = 2,
+            Typical = 4
         }
 
         public enum Sex
         {
-            Male,
             Female,
+            Male,
         }
 
         public enum DiabetesStatus

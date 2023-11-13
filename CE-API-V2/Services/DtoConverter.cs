@@ -32,6 +32,7 @@ namespace CE_API_V2.Services
 
             patientToAiDto.Pankreas_Amylase = biomarkers.Amylasep;
             patientToAiDto.Alk_Phase = biomarkers.Alkaline;
+            // The SI Unit is ng/L and entered in the system as such. The AI was trained on ng/mL however. 
             patientToAiDto.Troponin = biomarkers.Hstroponint;
             patientToAiDto.ALAT = biomarkers.Alat;
 
