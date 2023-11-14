@@ -16,7 +16,11 @@
       "launchUrl": "swagger",
       "applicationUrl": "https://localhost:7102;http://localhost:5038",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "Azure:AD:TokenValidationParameters:ValidIssuers:0": "https://sts.windows.net/338159a0-dd8f-45af-9672-faaa54bc6b24/",
+        "Azure:AD:TokenValidationParameters:ValidIssuers:1": "https://sts.windows.net/f4b158f5-55bf-4535-9ec1-56ef90367688/",
+        "Azure:AD:TokenValidationParameters:ValidIssuers:2": "https://sts.windows.net/d8a83447-d1d0-41e3-a7cc-6be16c052845/",
+        "Azure:AD:TokenValidationParameters:ValidIssuers:3": "https://sts.windows.net/22645953-f1eb-498c-942f-fc460d824dc6/"
       }
     },
     "IIS Express": {

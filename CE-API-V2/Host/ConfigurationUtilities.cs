@@ -132,10 +132,10 @@ public static class ConfigurationUtilities
 
         services.AddSwaggerGen(c =>
         {
-            c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+            c.AddSecurityDefinition("User Login", new OpenApiSecurityScheme
             {
                 Description = "OAuth2.0 Auth Code with PKCE",
-                Name = "oauth2",
+                Name = "User Login",
                 Type = SecuritySchemeType.OAuth2,
                 Flows = new OpenApiOAuthFlows
                 {
@@ -150,12 +150,39 @@ public static class ConfigurationUtilities
                     }
                 }
             });
+            
+            c.AddSecurityDefinition("Admin Login", new OpenApiSecurityScheme
+            {
+                Description = "OAuth2.0 for Admins",
+                Name = "Admin Login",
+                Type = SecuritySchemeType.OAuth2,
+                Flows = new OpenApiOAuthFlows
+                {
+                    AuthorizationCode = new OpenApiOAuthFlow
+                    {
+                        AuthorizationUrl = new Uri(configurationRoot["AuthorizationUrl_Admin"]),
+                        TokenUrl = new Uri(configurationRoot["TokenUrl_Admin"]),
+                        Scopes = new Dictionary<string, string>
+                        {
+                            { configurationRoot["ApiScope"], "read the api" }
+                        }
+                    }
+                }
+            });
+            
             c.AddSecurityRequirement(new OpenApiSecurityRequirement
             {
                 {
                     new OpenApiSecurityScheme
                     {
-                        Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "oauth2" }
+                        Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "User Login" }
+                    },
+                    new[] { configurationRoot["ApiScope"] }
+                },
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Admin Login" }
                     },
                     new[] { configurationRoot["ApiScope"] }
                 }
