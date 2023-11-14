@@ -87,6 +87,10 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
             result.Should().NotBeNull();
             result.Should().BeSameAs(mockedOrganization);
             _context.Organizations.Should().Contain(mockedOrganization);
+            _context.Organizations.FirstOrDefault(x => x.Id == mockedOrganization.Id).Userquota.Should().Be(mockedOrganization.Userquota);
+            _context.Organizations.FirstOrDefault(x => x.Id == mockedOrganization.Id).ContactEmail.Should().Be(mockedOrganization.ContactEmail);
+            _context.Organizations.FirstOrDefault(x => x.Id == mockedOrganization.Id).Name.Should().Be(mockedOrganization.Name);
+            _context.Organizations.FirstOrDefault(x => x.Id == mockedOrganization.Id).TenantId.Should().Be(mockedOrganization.TenantId);
         }
 
         [Test]
@@ -151,7 +155,7 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
         }
 
         [Test]
-        public async Task GetOrganizationByName_GivenNotPresentOrganizationName_ReturnOkResultWithFoundOrganization()
+        public async Task GetOrganizationByName_GivenNotPresentOrganizationName_ReturnNothing()
         {
             //Arrange
             var organization = MockDataProvider.GetMockedOrganizationModel();
@@ -206,7 +210,8 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
                 Id = organization.Id,
                 TenantId = organization.TenantId,
                 Name = "UpdatedModel",
-                ContactEmail = "UpdatedContactEmail"
+                ContactEmail = "UpdatedContactEmail",
+                Userquota = 558
             };
 
             using var context = new CEContext(_dbContextOptions);
@@ -225,6 +230,7 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
             result!.TenantId.Should().Be(organization.TenantId);
             result!.Name.Should().Be(updatedOrganization.Name);
             result!.ContactEmail.Should().Be(updatedOrganization.ContactEmail);
+            result!.Userquota.Should().Be(updatedOrganization.Userquota);
         }
 
         [Test]
@@ -324,7 +330,8 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
                 ContactEmail = "ContactEmail",
                 Name = "organization2",
                 Id = Guid.NewGuid(),
-                TenantId = "tenantId"
+                TenantId = "tenantId",
+                Userquota = 123
             };
 
             _context.Organizations.Add(organization);
@@ -339,6 +346,7 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
             result.Should().BeOfType(typeof(List<OrganizationModel>));
             var organizationList = (List<OrganizationModel>)result;
             organizationList.Count.Should().Be(2);
+            organizationList.FirstOrDefault(x => x.TenantId == organization2.TenantId).Userquota.Should().Be(123);
         }
 
         [Test]

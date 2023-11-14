@@ -606,6 +606,7 @@ namespace CE_API_Test.TestUtilities
         public static CreateOrganization GetMockedCreateOrganization() => new()
         {
             Name = "Organization",
+            Userquota = 99,
             ContactEmail = "ContactEmail",
             TenantId = Guid.NewGuid().ToString()
         };
@@ -613,6 +614,7 @@ namespace CE_API_Test.TestUtilities
         public static OrganizationModel GetMockedOrganizationModel() => new()
         {
             Name = "Organization",
+            Userquota = 100,
             ContactEmail = "ContactEmail",
             Id = Guid.NewGuid(),
             TenantId = Guid.NewGuid().ToString()

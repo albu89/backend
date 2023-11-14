@@ -74,7 +74,6 @@ namespace CE_API_V2.Controllers
         /// If the user does not have the required rights, Status 403 is returned.
         /// </remarks>
         [HttpGet("organizations", Name = "GetOrganizations")]
-        [AllowAnonymous]
         [Produces("application/json", Type = typeof(IEnumerable<Organization>))]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
