@@ -128,17 +128,17 @@
         "conversionFactor": 1,
         "options": [
           {
-            "value": "non-smoker",
+            "value": "No",
             "sideEffectId": "",
             "sideEffectValue": ""
           },
           {
-            "value": "ex-smoker",
+            "value": "StANc",
             "sideEffectId": "",
             "sideEffectValue": ""
           },
           {
-            "value": "smoker",
+            "value": "Yes",
             "sideEffectId": "",
             "sideEffectValue": ""
           }
@@ -156,17 +156,17 @@
         "conversionFactor": 1,
         "options": [
           {
-            "value": "no",
+            "value": "No",
             "sideEffectId": "",
             "sideEffectValue": ""
           },
           {
-            "value": "NIDDM",
+            "value": "Niddm",
             "sideEffectId": "",
             "sideEffectValue": ""
           },
           {
-            "value": "IDDM",
+            "value": "Iddm",
             "sideEffectId": "",
             "sideEffectValue": ""
           }
@@ -373,17 +373,17 @@
         "conversionFactor": 1,
         "options": [
           {
-            "value": "normal",
+            "value": "yes",
             "sideEffectId": "",
             "sideEffectValue": ""
           },
           {
-            "value": "pathological",
+            "value": "screening",
             "sideEffectId": "",
             "sideEffectValue": ""
           },
           {
-            "value": "noECGavailable",
+            "value": "no",
             "sideEffectId": "prior_CAD",
             "sideEffectValue": "true"
           }
