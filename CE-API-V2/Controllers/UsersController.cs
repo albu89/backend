@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
-using CE_API_V2.Services.Interfaces;
-using Microsoft.AspNetCore.Mvc;
+using CE_API_V2.Models;
 using CE_API_V2.Models.DTO;
+using CE_API_V2.Services.Interfaces;
 using CE_API_V2.UnitOfWorks.Interfaces;
 using CE_API_V2.Utility;
 using Microsoft.AspNetCore.Authorization;
-using CE_API_V2.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using CE_API_V2.Utility.CustomAnnotations;
 
@@ -27,13 +27,11 @@ namespace CE_API_V2.Controllers
         
         public UsersController(IUserUOW userUow,
                               IUserInformationExtractor userInformationExtractor,
-                              IMapper mapper,
-                              UserHelper userHelper)
+                              IMapper mapper)
         {
             _userUow = userUow;
             _userInformationExtractor = userInformationExtractor;
             _mapper = mapper;
-            _userHelper = userHelper;
         }
 
         /// <summary>

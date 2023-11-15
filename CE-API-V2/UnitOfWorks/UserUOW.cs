@@ -241,11 +241,12 @@ namespace CE_API_V2.UnitOfWorks
             }
             catch (Exception)
             {
-                throw new NotImplementedException();
+                throw new Exception();
             }
 
             return UserRepository.GetById(storedUser.UserId);
         }
+
         /// <summary>
         /// Returns all users belonging to the same administrative group as the provided user
         /// </summary>

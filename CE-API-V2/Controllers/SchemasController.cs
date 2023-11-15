@@ -56,7 +56,7 @@ namespace CE_API_V2.Controllers
                 locale = LocalizationConstants.DefaultLocale;
             }
             var template = await _biomarkersTemplateService.GetTemplate(locale);
-            
+
             var idInformation = _userInformationExtractor.GetUserIdInformation(User);
             var user = _userUOW.GetUser(idInformation.UserId, idInformation);
             var userId = defaultOrder ? string.Empty : user.UserId;

@@ -1,5 +1,6 @@
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.IdentityModel.Tokens;
 
 namespace CE_API_V2.Hasher
 {
@@ -21,6 +22,12 @@ namespace CE_API_V2.Hasher
                 firstName = null;
                 lastName = null;
                 dateOfBirth = new DateTime();
+        
+                if (_config["Salt"].IsNullOrEmpty())
+                {
+                    throw new NotImplementedException();
+                }
+
                 using HMACSHA512 hmac = new HMACSHA512(Encoding.UTF8.GetBytes(_config["Salt"]));
                 byte[] hashValue = hmac.ComputeHash(bytes);
                 string hash = Convert.ToBase64String(hashValue);

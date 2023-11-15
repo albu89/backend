@@ -1,11 +1,16 @@
-using System.Collections.ObjectModel;
+using Azure.Communication.Email;
+using CE_API_Test.TestUtilities;
 using CE_API_V2.Data;
 using CE_API_V2.Models;
-using CE_API_V2.UnitOfWorks;
-using Microsoft.EntityFrameworkCore;
+using CE_API_V2.Models.DTO;
+using CE_API_V2.Models.Enum;
+using CE_API_V2.Models.Records;
 using CE_API_V2.Services.Interfaces;
+using CE_API_V2.UnitOfWorks;
 using CE_API_V2.UnitOfWorks.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Moq;
+using System.Collections.ObjectModel;
 using System.Security.Claims;
 using CE_API_V2.Models.DTO;
 using CE_API_Test.TestUtilities;
@@ -235,7 +240,7 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
 
 
         [Test]
-        public async Task UpdateUser_GivenUserAndId_ExpectedReturnedUpdatedUser()
+        public async Task UpdateUser_GivenCorrectUserParameter_ExpectedReturnedUpdatedUser()
         {
             //Arrange
             var originalUser = MockDataProvider.GetMockedUserModel();
@@ -451,6 +456,7 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
             // Act
             var result = sut.GetUsersForAdmin(userInfo);
 
+            //Assert
             result.Should().NotBeNull();
             result.Count().Should().Be(3, $"SystemAdmins should see all 3 registered users");
         }

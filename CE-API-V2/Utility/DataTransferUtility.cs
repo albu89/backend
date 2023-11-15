@@ -66,6 +66,7 @@ namespace CE_API_V2.Utility
             return deserializedResponse;
         }
 
+        //Todo - can be removed?
         public static ScoringResponseModel? FormatResponse(string jsonResponse)
         {
             var scoringResponse = ToScoringResponse(jsonResponse);

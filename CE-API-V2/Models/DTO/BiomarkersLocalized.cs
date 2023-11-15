@@ -1,13 +1,12 @@
 ﻿namespace CE_API_V2.Models.DTO
 {
-
     public class BiomarkersLocalized
     {
         public BiomarkerCategories Categories { get; set; }
         public MedicalHistoryLocalized[] MedicalHistory { get; set; }
         public LabResultLocalized[] LabResults { get; set; }
     }
-    
+
     public class BiomarkersBaseLocalized
     {
         public string Id { get; set; }

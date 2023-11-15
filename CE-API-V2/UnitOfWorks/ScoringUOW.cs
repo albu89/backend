@@ -82,7 +82,6 @@ namespace CE_API_V2.UnitOfWorks
             }
             catch (Exception e)
             {
-                System.Console.WriteLine(e);
                 throw new NotImplementedException(e.Message);
             }
             return biomarkers;
@@ -196,7 +195,9 @@ namespace CE_API_V2.UnitOfWorks
             {
                 return null;
             }
-            existingScoringRequest ??= scoringRequest.Id;
+
+            existingScoringRequest ??= scoringRequest.Id; //Todo - cannot be null
+
             if (StoreBiomarkers(existingScoringRequest.Value, biomarkers) is null)
             {
                 return null;

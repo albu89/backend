@@ -131,16 +131,17 @@ namespace CE_API_V2.Controllers
             }
 
             var convertedOrganization = _mapper.Map<OrganizationModel>(organization);
+
             try
             {
-                var addedOrganizationModel = _administrativeEntitiesUow.AddOrganizations(convertedOrganization);
+                var addedOrganizationModel = _administrativeEntitiesUow.AddOrganization(convertedOrganization);
                 var addedOrganization = _mapper.Map<Organization>(addedOrganizationModel);
 
                 return addedOrganization is not null ? Ok(addedOrganization) : BadRequest();
             }
             catch (Exception e)
             {
-                return BadRequest("Organization already exists.");
+                return BadRequest("Organization already exists."); 
             }
         }
 
@@ -159,6 +160,7 @@ namespace CE_API_V2.Controllers
         {
             var updatedModel = _mapper.Map<CountryModel>(updatedCreateCountry);
             updatedModel.Id = id;
+
             var result = _administrativeEntitiesUow.UpdateCountry(updatedModel);
             var country = _mapper.Map<CreateCountry>(result);
 

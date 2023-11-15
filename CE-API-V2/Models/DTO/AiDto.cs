@@ -5,7 +5,7 @@
         #region Anamnesis
         //Anamnesis
         [System.Text.Json.Serialization.JsonIgnore]
-        public Guid Id { get; set; } //Todo 
+        public Guid Id { get; set; }
         public DateTime Datum { get; set; }
         public float Age { get; set; } 
         public float Sex_0_female_1male { get; set; } 

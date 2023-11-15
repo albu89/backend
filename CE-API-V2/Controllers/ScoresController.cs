@@ -76,6 +76,7 @@ public class ScoresController : ControllerBase
         [FromHeader, SwaggerSchema(Format = "yyyy-MM-dd"), SwaggerParameter("Patients Date of Birth", Required = false)] DateTime? dateOfBirth = null)
     {
         IEnumerable<SimpleScore> requests;
+
         if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(lastname) || dateOfBirth is null)
         {
             var userId = UserHelper.GetUserId(User);
@@ -127,11 +128,13 @@ public class ScoresController : ControllerBase
         var userId = UserHelper.GetUserId(User);
         var request = _scoringUow.RetrieveScoringRequest(scoringRequestId, userId);
         var latestBiomarkers = request.LatestBiomarkers;
+
         if (request is null || request.PatientId != patientId || latestBiomarkers == null)
         {
             return BadRequest();
         }
         var scoringResponse = latestBiomarkers.Response;
+
         if (scoringResponse is null)
         {
             var summary = _scoringUow.GetScoringResponse(null, latestBiomarkers, request.Id);
@@ -160,9 +163,7 @@ public class ScoresController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(IEnumerable<ValidationFailure>)), SwaggerResponse(400, "The request was malformed or contained invalid values.", type: typeof(IEnumerable<ValidationFailure>))]
     [ProducesResponseType(StatusCodes.Status429TooManyRequests, Type = typeof(IEnumerable<ValidationFailure>)), SwaggerResponse(429, "Too many requests.", type: typeof(IEnumerable<ValidationFailure>))]
     [TypeFilter(typeof(ValidationExceptionFilter))]
-    public async Task<IActionResult> PostScoringRequest(
-        [FromBody] ScoringRequest scoringRequestValues, 
-        [FromQuery] string? locale = "en-GB")
+    public async Task<IActionResult> PostScoringRequest([FromBody] ScoringRequest scoringRequestValues, [FromQuery] string? locale = "en-GB")
     {
         if (scoringRequestValues == null 
                                  || string.IsNullOrEmpty(scoringRequestValues.FirstName) 
@@ -180,12 +181,18 @@ public class ScoresController : ControllerBase
 
         //POST
         var userCulture = SetUserCulture(locale);
-
         CultureInfo.CurrentUICulture = userCulture;
 
         var userInfo = _userInformationExtractor.GetUserIdInformation(User);
         var currentUser = _userUow.GetUser(userInfo.UserId, userInfo);
+
+        if (currentUser is null)
+        {
+            throw new Exception(); //Todo
+        }
+
         var validationResult = _inputValidationService.ScoringRequestIsValid(scoringRequestValues, currentUser);
+
         if (!validationResult.IsValid)
         {
             _logger.LogWarning("Requested invalid scoring request.");
@@ -247,10 +254,7 @@ public class ScoresController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(IEnumerable<ValidationFailure>))]
     [ProducesResponseType(StatusCodes.Status400BadRequest), SwaggerResponse(400, "Request is rejected if the Edit period has expired.")]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(IEnumerable<ValidationFailure>)), SwaggerResponse(400, "The request was malformed or contained invalid values.", type: typeof(IEnumerable<ValidationFailure>))]
-    public async Task<IActionResult> PutScoringRequest(
-        [FromBody] ScoringRequest value, 
-        [FromRoute] Guid scoreId, 
-        [FromQuery] string? locale = "en-GB")
+    public async Task<IActionResult> PutScoringRequest([FromBody] ScoringRequest value, [FromRoute] Guid scoreId, [FromQuery] string? locale = "en-GB")
     {
         if (value == null 
                   || string.IsNullOrEmpty(value.FirstName) 

@@ -194,7 +194,7 @@ namespace CE_API_Test.TestUtilities
             var mockedResponse = GetMockedScoringResponse();
             return JsonSerializer.Serialize(mockedResponse);
         }
-
+        
         internal static string GetExpectedQueryString() =>
             "Datum=02/02/2000 00:00:00&Age=2&Sex_0_female_1male=2&Gr_sse=2&Gewicht=2&Thoraxschmerzen__0_keine_1_extr=2&Nicotin_0_nein_1_St__N__2_ja=2&Diabetes_0_no_1_NIDDM_2_IDDM=2&Statin_od_Chol_senker=2&Tc_Aggregation=2&ACE_od_ATII=2&CA_Antagonist=2&Betablocker=2&Diureticum=2&Nitrat_od_Dancor=2&BD_syst=2&BD_diast=2&q_Zacken_0_nein_1_ja=0&Pankreas_Amylase=2&Alk_Phase=2&Troponin=2&ALAT=2&Glucose=2&Bilirubin=2&Harnstoff=2&Harnsaure=2&Cholesterin_gesamt=2&HDL=2&LDL=2&Total_Proteine=2&Albumin=2&Leuko=2&MCHC__g_l_oder___=2&ASAT=2&Art__Hypertonie=2&CK=2&Chlorid=2&Dyspnoe=2&Gamma_GT=2&Hypercholesterin_mie=2&INR=2&Interne_Nummer=2&Kalium=2&Kreatinin=2&MCV__fl_=2&Natrium=2&OAK=2&Phosphat=2&Repolarisationsst_runge=2";
 
@@ -619,5 +619,22 @@ namespace CE_API_Test.TestUtilities
             Id = Guid.NewGuid(),
             TenantId = Guid.NewGuid().ToString()
         };
+
+        public static List<UserModel> GetMockedUsersList()
+        {
+            var usersList = new List<UserModel>()
+            {
+                GetMockedUserModel(),
+                GetMockedUserModel(),
+                GetMockedUserModel(),
+            };
+
+            foreach (var user in usersList)
+            {
+                user.UserId = Guid.NewGuid().ToString();
+            }
+
+            return usersList;
+        }
     }
 }

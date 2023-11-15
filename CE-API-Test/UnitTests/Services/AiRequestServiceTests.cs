@@ -1,5 +1,5 @@
-﻿using CE_API_V2.Models;
-using CE_API_Test.TestUtilities;
+﻿using CE_API_Test.TestUtilities;
+using CE_API_V2.Models;
 using CE_API_V2.Services.Interfaces;
 
 namespace CE_API_Test.UnitTests.Services
@@ -32,27 +32,42 @@ namespace CE_API_Test.UnitTests.Services
         }
 
         [Test]
-        public async Task? PostPatientData_GivenIncorrectHttpConfiguration_ThrowsException()
+        public async Task RequestScore_GivenNull_ReturnsScoringResponse()
         {
             //Arrange
-            Func<Task> requestFunc = async () => await _sut.RequestScore(_scoringRequestModel);
+            _scoringRequestModel = MockDataProvider.GetMockedScoringRequest();
+            ScoringRequestModel? scoringRequestModel = null;
 
             //Act
+            var result = await _sut!.RequestScore(scoringRequestModel);
 
             //Assert
-            requestFunc.Should().ThrowAsync<Exception>();
+            result.Should().BeNull();
         }
 
         [Test]
-        public async Task PostPatientData_GivenNull_ReturnNull()
+        public async Task? RequestScore_GivenScoringRequestModel_ReturnsNull()
         {
             //Arrange
-
+            var sut = MockServiceProvider.GenerateAiRequestServiceWithInvalidResponseContent();
+   
             //Act
-            var result = await _sut.RequestScore(null);
+             var result = await sut.RequestScore(_scoringRequestModel);
 
             //Assert
-            //Todo -> was liefert die Ai wenn das gesendete Objekt fehlerhaft ist ?
+            result.Should().BeNull();
+        }
+
+        [Test]
+        public async Task RequestScore_GivenIncorrectHttpConfiguration_ReturnsNull()
+        {
+            //Arrange
+            var sut = MockServiceProvider.GenerateAiRequestServiceWithInvalidConfigurationAndReturnValues();
+
+            //Act
+            ScoringResponseModel? result = await sut.RequestScore(_scoringRequestModel);
+
+            //Assert
             result.Should().BeNull();
         }
     }

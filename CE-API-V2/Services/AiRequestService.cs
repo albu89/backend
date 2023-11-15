@@ -33,7 +33,6 @@ public class AiRequestService : IAiRequestService
     private async Task<ScoringResponseModel> GetScoreAsync(AiDto patientDataDto)
     {
         var requestString = $"{_config.GetValue<string>("AiSubpath")}{DataTransferUtility.CreateQueryString(patientDataDto)}";
-        var fullstring = _httpClient.BaseAddress + requestString;
         ScoringResponseModel scoringResponseModel = null;
         HttpResponseMessage response = null;
 
@@ -57,7 +56,10 @@ public class AiRequestService : IAiRequestService
                 scoringResponseModel = responseMocker.MockScoringResponse();
             }
         }
-        scoringResponseModel.Id = Guid.NewGuid();
+
+        if (scoringResponseModel is not null)
+            scoringResponseModel.Id = Guid.NewGuid();
+
         return scoringResponseModel;
     }
 }
