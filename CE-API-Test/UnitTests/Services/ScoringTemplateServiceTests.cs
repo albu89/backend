@@ -108,10 +108,10 @@ public class ScoringTemplateServiceTests
         result.Subject.Abbreviations.Should().BeEquivalentTo(expectedAbbreviations);
         result.Subject.CadDefinitionHeader.Should().BeEquivalentTo("CAD Definition");
         result.Subject.CadDefinition.Should().BeEquivalentTo(
-            "In accordance to current medical guidelines, obstructive coronary artery disease (CAD) is defined as a stenosis or blockage of 50% or more in the diameter of a major coronary artery or a branch with a diameter of 2 mm or more.");
+            "In accordance to current medical guidelines, obstructive CAD is defined as a stenosis or blockage of 50% or more in the diameter of a major coronary artery or a branch with a diameter of 2 mm or more.");
         result.Subject.FootnoteHeader.Should().BeEquivalentTo("Footnote");
         result.Subject.Footnote.Should().BeEquivalentTo(
-            "It's important to note that the management of patients with suspected CAD should be individualized based on the patient's specific risk factors and overall health status. Patients should work closely with their healthcare provider to develop a personalized management plan that meets their needs and goals.");
+            "It's important to note that the management of patients with suspected CAD should be individualized based on the patient's specific risk factors and overall health status.");
         result.Subject.IntendedUseHeader.Should().BeEquivalentTo("Intended use");
         result.Subject.IntendedUse.Should().BeEquivalentTo(
             "The Cardio Explorer is intended for all patients who are suspected of having coronary artery disease (CAD) in the medical consultation.");
