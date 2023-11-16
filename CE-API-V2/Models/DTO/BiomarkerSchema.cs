@@ -25,11 +25,26 @@ namespace CE_API_V2.Models.DTO
         /// <summary>
         /// Categories of markers for Medical History
         /// </summary>
-        public string[] MedicalHistory { get; set; }
+        public MedicalHistoryCategories MedicalHistory { get; set; }
         /// <summary>
         /// Categories of markers for LabResults
         /// </summary>
-        public string[] LabResults { get; set; }
+        public LabResultsCategories LabResults { get; set; }
+    }
+    public class LabResultsCategories
+    {
+        public string Enzymes { get; set; }
+        public string Bloodsugar { get; set; }
+        public string Metabolite { get; set; }
+        public string Lipids { get; set; }
+        public string Protein { get; set; }
+        public string Hematology { get; set; }
+    }
+    public class MedicalHistoryCategories
+    {
+        public string Anamnesis { get; set; }
+        public string Medication { get; set; }
+        public string Clinicalfindings { get; set; }
     }
 
     public class BiomarkerBase
@@ -48,7 +63,7 @@ namespace CE_API_V2.Models.DTO
         /// 
         /// </summary>
         /// <example>Enzymes</example>
-        public string Category { get; set; }
+        public string CategoryId { get; set; }
         /// <summary>
         /// 
         /// </summary>

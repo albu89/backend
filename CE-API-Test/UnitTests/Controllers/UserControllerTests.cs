@@ -1,38 +1,37 @@
 using AutoMapper;
+using Azure.Communication.Email;
+using CE_API_Test.TestUtilities;
 using CE_API_V2.Controllers;
 using CE_API_V2.Models;
 using CE_API_V2.Models.DTO;
 using CE_API_V2.Models.Mapping;
-using CE_API_V2.UnitOfWorks.Interfaces;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
-using CE_API_Test.TestUtilities;
-using CE_API_V2.Services.Interfaces;
-using System.Security.Claims;
 using CE_API_V2.Models.Records;
-using Azure.Communication.Email;
+using CE_API_V2.Services.Interfaces;
+using CE_API_V2.UnitOfWorks.Interfaces;
 using CE_API_V2.Utility;
-using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Moq;
+using System.Security.Claims;
 
 namespace CE_API_Test.UnitTests.Controllers
 {
     [TestFixture]
     internal class UserControllerTests
     {
+        private static readonly int _userId = 123;
+        private static readonly BiomarkerOrder biomarkerOrder = new();
+
         private IMapper _mapper;
         private IUserUOW _userUOW;
         private Mock<IUserUOW> _mockUserUow;
         private UserController _userController;
-
-        private static readonly int _userId = 123;
-        private static readonly BiomarkerOrder biomarkerOrder = new();
-
-        #region Setup
         private IInputValidationService _inputValidationService;
         private IUserInformationExtractor _userInformationExtractor;
         private IAdministrativeEntitiesUOW _administrativeEntitiesUow;
         private UserHelper _userHelper;
+
+        #region Setup
 
         [SetUp]
         public void SetUp()
@@ -51,7 +50,7 @@ namespace CE_API_Test.UnitTests.Controllers
 
             var inMemSettings = new Dictionary<string, string>
             {
-                { "AiSubpath", "/api/AiMock?" }
+                { "AiSubpath", Resources.TestResources.AiSubpath }
             };
 
             var configuration = new ConfigurationBuilder().AddInMemoryCollection(inMemSettings!).Build();
@@ -67,7 +66,8 @@ namespace CE_API_Test.UnitTests.Controllers
                 UserId = "MockedUserId",
             };
 
-            var resultUser = MockDataProvider.GetMockedUser();
+            var resultUser = MockDataProvider.GetMockedUserModel();
+            resultUser.UserId = _userId.ToString();
             inputValidationServiceMock.Setup(x => x.ValidateUser(It.IsAny<CreateUser>())).Returns(true);
             inputValidationServiceMock.Setup(x => x.ValidateAccessRequest(It.IsAny<AccessRequest>())).Returns(true);
             userUOWMock.Setup(x => x.StoreUser(It.IsAny<UserModel>()))
@@ -76,6 +76,10 @@ namespace CE_API_Test.UnitTests.Controllers
             userUOWMock.Setup(x => x.GetUser(userIdRecord.UserId, It.IsAny<UserIdsRecord>())).Returns(resultUser);
             userUOWMock.Setup(x => x.UpdateUser(It.IsAny<string>(), It.IsAny<UserModel>(), It.IsAny<UserIdsRecord>()))
                 .Returns(Task.FromResult(new UserModel()));
+            userUOWMock.Setup(u => u.EditBiomarkerOrderEntry(It.Is<BiomarkerOrderModel>(x => x.BiomarkerId == "Age")));
+            userUOWMock.Setup(u => u.EditBiomarkerOrderEntry(It.Is<BiomarkerOrderModel>(x => x.BiomarkerId == ""))).Throws(new Exception("Oh no"));
+            userUOWMock.Setup(u => u.CheckIfIsActiveStateIsModifiable(It.IsAny<UserIdsRecord>())).Returns(true);
+
             userInfoExtractorMock.Setup(x => x.GetUserIdInformation(It.IsAny<ClaimsPrincipal>())).Returns(userIdRecord);
             
             _administrativeEntitiesUow = administrativeEntitiesUOWMock.Object;
@@ -85,22 +89,23 @@ namespace CE_API_Test.UnitTests.Controllers
             _userController = new UserController(_mapper, _userUOW, _inputValidationService, _userInformationExtractor, _administrativeEntitiesUow, _userHelper);
         }
 
-
         #endregion
-
 
         #region PostBiomarkerOrder
 
         [Test]
         public async Task PostBiomarkerOrder_ReturnsOk()
         {
+            //Arrange
+
+            //Act
             var result = await _userController.SetPreferences(biomarkerOrder);
 
+            //Assert
             result.Should().BeOfType<OkObjectResult>();
         }
 
         #endregion
-
 
         #region EditBiomarkerOrder
 
@@ -115,10 +120,10 @@ namespace CE_API_Test.UnitTests.Controllers
         #endregion
 
         [Test]
-        public async Task CreatedUser_GivenMockedUserDto_ReturnOkResult()
+        public async Task CreateUser_GivenMockedUserDto_ReturnOkResult()
         {
             //Arrange
-            CreateUser user = MockDataProvider.GetMockedCreateUserDto();
+            CreateUser user = MockDataProvider.GetMockedCreateUser();
             var sut = new UserController(_mapper, _userUOW, _inputValidationService, _userInformationExtractor, _administrativeEntitiesUow, _userHelper);
 
             //Act
@@ -133,95 +138,208 @@ namespace CE_API_Test.UnitTests.Controllers
         }
 
         [Test]
-        public async Task RequestAccess_GivenMockedAccessRequestDto_ReturnOkResult()
+        public async Task CreateUser_InputValidationServiceReturnsInvalidUserResult_ReturnBadRequestResult()
+        {
+            //Arrange
+            var inputValidationService = new Mock<IInputValidationService>();
+            inputValidationService.Setup(X => X.ValidateUser(It.IsAny<CreateUser>())).Returns(false);
+            CreateUser user = MockDataProvider.GetMockedCreateUser();
+
+            var sut = new UserController(_mapper, _userUOW, inputValidationService.Object, _userInformationExtractor, _administrativeEntitiesUow, _userHelper);
+
+            //Act
+            var result = await sut.CreateUser(user);
+
+            //Assert
+            result.Should().NotBeNull();
+            result.Should().BeOfType(typeof(BadRequestObjectResult));
+        }
+
+        [Test]
+        public async Task CreateUser_UserInformationExtractorReturnsInvalidUserInformation_ReturnBadRequestResult()
+        {
+            //Arrange
+            var inputValidationService = GetInputValidationServiceMockWithFalseResult();
+            CreateUser user = MockDataProvider.GetMockedCreateUser();
+
+            var sut = new UserController(_mapper, _userUOW, inputValidationService, _userInformationExtractor, _administrativeEntitiesUow, _userHelper);
+
+            //Act
+            var result = await sut.CreateUser(user);
+
+            //Assert
+            result.Should().NotBeNull();
+            result.Should().BeOfType(typeof(BadRequestObjectResult));
+        }
+
+        [Test]
+        public async Task RequestAccess_InputValidationServiceReturnsFalse_ReturnBadRequestResult()
         {
             //Arrange
             AccessRequest accessRequest = MockDataProvider.GetMockedAccessRequestDto();
-            var sut = new UserController(_mapper, _userUOW, _inputValidationService, _userInformationExtractor, _administrativeEntitiesUow, _userHelper); 
+            var inputValidationService = GetInputValidationServiceMockWithFalseResult();
+
+            var sut = new UserController(_mapper, _userUOW, inputValidationService, _userInformationExtractor, _administrativeEntitiesUow, _userHelper);
 
             //Act
             var result = await sut.RequestAccess(accessRequest);
 
             //Assert
             result.Should().NotBeNull();
-            result.Should().BeOfType(typeof(OkResult));
-            var okResult = result as OkResult;
-            okResult?.StatusCode.Should().Be(200);
+            result.Should().BeOfType(typeof(BadRequestObjectResult));
         }
 
         [Test]
-        public async Task RequestUserCreation_GivenInvalidAccessRequestDto_ReturnOkResult()
+        public async Task RequestAccess_UserUowReturnsReturnsEmailSendStatusFailed_ReturnBadRequestResult()
+        {
+            //Arrange
+            AccessRequest accessRequest = MockDataProvider.GetMockedAccessRequestDto();
+            var userUowMock = GetUserUowWithFalseResults();
+
+            var sut = new UserController(_mapper, userUowMock, _inputValidationService, _userInformationExtractor, _administrativeEntitiesUow, _userHelper);
+
+            //Act
+            var result = await sut.RequestAccess(accessRequest);
+            
+            //Assert
+            result.Should().NotBeNull();
+            result.Should().BeOfType(typeof(BadRequestObjectResult));
+        }
+
+        [Test]
+        public async Task RequestUserCreation_InputValidationServiceReturnsFalse_ReturnOkResult()
+        {
+            //Arrange
+            var inputValidationService = GetInputValidationServiceMockWithFalseResult();
+
+            AccessRequest accessRequest = new AccessRequest();
+            var sut = new UserController(_mapper, _userUOW, inputValidationService, _userInformationExtractor, _administrativeEntitiesUow, _userHelper);
+
+            //Act
+            var result = await sut.RequestAccess(accessRequest);
+
+            //Assert
+            result.Should().NotBeNull();
+            result.Should().BeOfType(typeof(BadRequestObjectResult));
+        }
+
+        [Test]
+        public async Task RequestUserCreation_UserUowReturnsReturnsEmailSendStatusFailed_ReturnBadRequestResult()
         {
             //Arrange
             AccessRequest accessRequest = new AccessRequest();
-            var sut = new UserController(_mapper, _userUOW, _inputValidationService, _userInformationExtractor, _administrativeEntitiesUow, _userHelper);
+            var userUowMock = GetUserUowWithFalseResults();
+
+            var sut = new UserController(_mapper, userUowMock, _inputValidationService, _userInformationExtractor,
+                _administrativeEntitiesUow, _userHelper);
 
             //Act
-            _ = await sut.RequestAccess(accessRequest);
+            var result = await sut.RequestAccess(accessRequest);
 
-            //Todo: Validation not yet implemented
             //Assert
-            //result.Should().NotBeNull();
-            //result.Should().BeOfType(typeof(BadRequestResult));
-
-            //var badRequestResult = result as BadRequestResult;
-            //badRequestResult?.StatusCode.Should().Be(400);
+            result.Should().NotBeNull();
+            result.Should().BeOfType(typeof(BadRequestObjectResult));
         }
 
         [Test]
-        public async Task GetCurrentUser_RequestAccessDto_ReturnOkResult()
+        public async Task GetCurrentUser_GivenRequestAccessDto_ReturnOkResult()
         {
             //Arrange
             var sut = new UserController(_mapper, _userUOW, _inputValidationService, _userInformationExtractor, _administrativeEntitiesUow, _userHelper);
-            var expectedReturnedDto = MockDataProvider.GetMockedUserDto();
+            var expectedReturnedDto = MockDataProvider.GetMockedCreateUser();
+       
             //Act
-            var currentUser = sut.GetCurrentUser();
+            var result = sut.GetCurrentUser();
 
             //Assert
-            currentUser.Should().NotBeNull();
-            currentUser.Should().BeOfType(typeof(OkObjectResult));
-            ((OkObjectResult)currentUser).Value.Should().NotBeNull();
-            ((OkObjectResult)currentUser).Value.Should().BeOfType(typeof(User));
-            ((OkObjectResult)currentUser).Value!.Equals(expectedReturnedDto);
+            result.Should().NotBeNull();
+            result.Should().BeOfType(typeof(OkObjectResult));
+
+            var okObjectResult = result as OkObjectResult;
+            okObjectResult!.Value.Should().NotBeNull();
+            okObjectResult!.Value.Should().BeOfType(typeof(User));
+            okObjectResult!.Value!.Equals(expectedReturnedDto);
         }
-        
+
+        [Test]
+        public async Task GetCurrentUser_UserUowReturnsNull_ReturnOkResult()
+        {
+            //Arrange
+            var userUow = GetUserUowWithFalseResults();
+
+            var sut = new UserController(_mapper, userUow, _inputValidationService, _userInformationExtractor, _administrativeEntitiesUow, _userHelper);
+
+            
+            //Act
+            var result = sut.GetCurrentUser();
+
+            //Assert
+            result.Should().NotBeNull();
+            result.Should().BeOfType(typeof(NoContentResult));
+        }
+
         [Test]
         public async Task UpdateUserById_GivenPatchDocumentAndId_ReturnOkResult()
         {
             //Arrange
-            var sut = new UsersController(_inputValidationService, _userUOW, _userInformationExtractor, _mapper, _userHelper);
-            var expectedRetrunedDto = MockDataProvider.GetMockedUserDto();
+            var sut = new UsersController(_userUOW, _userInformationExtractor, _mapper);
+            var expectedReturnedDto = MockDataProvider.GetMockedCreateUser();
             var mockedUser = MockDataProvider.GetMockedUser();
             var userId = mockedUser.UserId;
 
             var patchDocument = MockDataProvider.GetMockedUpdateUserDto();
 
             //Act
-            var currentUser = await sut.UpdateUserById(patchDocument, userId);
+            var result = await sut.UpdateUserById(patchDocument, userId);
 
             //Assert
-            currentUser.Should().NotBeNull();
-            currentUser.Should().BeOfType(typeof(OkObjectResult));
-            ((OkObjectResult)currentUser).Value.Should().NotBeNull();
-            ((OkObjectResult)currentUser).Value.Should().BeOfType(typeof(User));
-            ((OkObjectResult)currentUser).Value!.Equals(expectedRetrunedDto);
+            result.Should().NotBeNull();
+            result.Should().BeOfType(typeof(OkObjectResult));
+
+            var okObjectResult = result as OkObjectResult;
+            okObjectResult!.Value.Should().NotBeNull();
+            okObjectResult!.Value.Should().BeOfType(typeof(User));
+            okObjectResult!.Value!.Equals(expectedReturnedDto);
         }
 
         [Test]
-        public async Task UpdateUser_GivenPatchDocumentAndId_ReturnOkResult()
+        public async Task UpdateUser_GivenUserDto_ReturnOkResult()
         {
             //Arrange
             var sut = new UserController(_mapper, _userUOW, _inputValidationService, _userInformationExtractor, _administrativeEntitiesUow, _userHelper);
             var mockedUserDto = MockDataProvider.GetMockedUpdateUserDto();
 
             //Act
-            var currentUser = await sut.UpdateCurrentUser(mockedUserDto);
+            var result = await sut.UpdateCurrentUser(mockedUserDto);
 
             //Assert
-            currentUser.Should().NotBeNull();
-            currentUser.Should().BeOfType(typeof(OkObjectResult));
-            ((OkObjectResult)currentUser).Value.Should().NotBeNull();
-            ((OkObjectResult)currentUser).Value.Should().BeOfType(typeof(User));
+            result.Should().NotBeNull();
+            result.Should().BeOfType(typeof(OkObjectResult));
+
+            var okObjectResult = result as OkObjectResult;
+            okObjectResult!.Value.Should().NotBeNull();
+            okObjectResult!.Value.Should().BeOfType(typeof(User));
+        }
+
+        private IInputValidationService GetInputValidationServiceMockWithFalseResult()
+        {
+            var inputValidationService = new Mock<IInputValidationService>();
+            inputValidationService.Setup(X => X.ValidateUser(It.IsAny<CreateUser>())).Returns(false);
+            inputValidationService.Setup(X => X.ValidateAccessRequest(It.IsAny<AccessRequest>())).Returns(false);
+            inputValidationService.Setup(X => X.ValidateOrganization(It.IsAny<CreateOrganization>())).Returns(false);
+
+            return inputValidationService.Object;
+        }
+
+        private IUserUOW GetUserUowWithFalseResults()
+        {
+            UserModel? userModel = null;
+            var userUowMock = new Mock<IUserUOW>();
+            userUowMock.Setup(u => u.GetUser(It.IsAny<string>(), It.IsAny<UserIdsRecord>())).Returns(new UserModel() { UserId = $"{_userId}" });
+            userUowMock.Setup(u => u.ProcessAccessRequest(It.IsAny<AccessRequest>())).Returns(Task.FromResult(EmailSendStatus.Failed));
+            userUowMock.Setup(u => u.GetUser(It.IsAny<string>(),It.IsAny<UserIdsRecord>())).Returns(userModel);
+
+            return userUowMock.Object;
         }
     }
 }

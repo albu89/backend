@@ -51,8 +51,16 @@ namespace CE_API_V2.Migrations
                     b.Property<bool>("Aceinhibitor")
                         .HasColumnType("bit");
 
+                    b.Property<string>("AceinhibitorDisplayValue")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("Age")
                         .HasColumnType("int");
+
+                    b.Property<string>("AgeDisplayValue")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("AgeUnit")
                         .IsRequired()
@@ -61,12 +69,20 @@ namespace CE_API_V2.Migrations
                     b.Property<float>("Alat")
                         .HasColumnType("real");
 
+                    b.Property<string>("AlatDisplayValue")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("AlatUnit")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<float>("Albumin")
                         .HasColumnType("real");
+
+                    b.Property<string>("AlbuminDisplayValue")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("AlbuminUnit")
                         .IsRequired()
@@ -75,12 +91,20 @@ namespace CE_API_V2.Migrations
                     b.Property<float>("Alkaline")
                         .HasColumnType("real");
 
+                    b.Property<string>("AlkalineDisplayValue")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("AlkalineUnit")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<float>("Amylasep")
                         .HasColumnType("real");
+
+                    b.Property<string>("AmylasepDisplayValue")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("AmylasepUnit")
                         .IsRequired()
@@ -89,8 +113,16 @@ namespace CE_API_V2.Migrations
                     b.Property<bool>("Betablocker")
                         .HasColumnType("bit");
 
+                    b.Property<string>("BetablockerDisplayValue")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<float>("Bilirubin")
                         .HasColumnType("real");
+
+                    b.Property<string>("BilirubinDisplayValue")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("BilirubinUnit")
                         .IsRequired()
@@ -99,11 +131,23 @@ namespace CE_API_V2.Migrations
                     b.Property<bool>("Calciumant")
                         .HasColumnType("bit");
 
+                    b.Property<string>("CalciumantDisplayValue")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("Chestpain")
                         .HasColumnType("int");
 
+                    b.Property<string>("ChestpainDisplayValue")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<float>("Cholesterol")
                         .HasColumnType("real");
+
+                    b.Property<string>("CholesterolDisplayValue")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CholesterolUnit")
                         .IsRequired()
@@ -111,6 +155,14 @@ namespace CE_API_V2.Migrations
 
                     b.Property<int>("ClinicalSetting")
                         .HasColumnType("int");
+
+                    b.Property<string>("ClinicalSettingDisplayValue")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClinicalSettingUnit")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTimeOffset>("CreatedOn")
                         .ValueGeneratedOnAdd()
@@ -120,8 +172,16 @@ namespace CE_API_V2.Migrations
                     b.Property<int>("Diabetes")
                         .HasColumnType("int");
 
+                    b.Property<string>("DiabetesDisplayValue")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("Diastolicbp")
                         .HasColumnType("int");
+
+                    b.Property<string>("DiastolicbpDisplayValue")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("DiastolicbpUnit")
                         .IsRequired()
@@ -130,8 +190,16 @@ namespace CE_API_V2.Migrations
                     b.Property<bool>("Diuretic")
                         .HasColumnType("bit");
 
+                    b.Property<string>("DiureticDisplayValue")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<float>("Glucose")
                         .HasColumnType("real");
+
+                    b.Property<string>("GlucoseDisplayValue")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("GlucoseUnit")
                         .IsRequired()
@@ -140,12 +208,20 @@ namespace CE_API_V2.Migrations
                     b.Property<float>("Hdl")
                         .HasColumnType("real");
 
+                    b.Property<string>("HdlDisplayValue")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("HdlUnit")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Height")
                         .HasColumnType("int");
+
+                    b.Property<string>("HeightDisplayValue")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("HeightUnit")
                         .IsRequired()
@@ -154,12 +230,20 @@ namespace CE_API_V2.Migrations
                     b.Property<float>("Hstroponint")
                         .HasColumnType("real");
 
+                    b.Property<string>("HstroponintDisplayValue")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("HstroponintUnit")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<float>("Ldl")
                         .HasColumnType("real");
+
+                    b.Property<string>("LdlDisplayValue")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LdlUnit")
                         .IsRequired()
@@ -168,12 +252,20 @@ namespace CE_API_V2.Migrations
                     b.Property<float>("Leukocyte")
                         .HasColumnType("real");
 
+                    b.Property<string>("LeukocyteDisplayValue")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("LeukocyteUnit")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<float>("Mchc")
                         .HasColumnType("real");
+
+                    b.Property<string>("MchcDisplayValue")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MchcUnit")
                         .IsRequired()
@@ -182,14 +274,30 @@ namespace CE_API_V2.Migrations
                     b.Property<int>("Nicotine")
                         .HasColumnType("int");
 
+                    b.Property<string>("NicotineDisplayValue")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("Nitrate")
                         .HasColumnType("bit");
+
+                    b.Property<string>("NitrateDisplayValue")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("PriorCAD")
                         .HasColumnType("bit");
 
+                    b.Property<string>("PriorCADDisplayValue")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<float>("Protein")
                         .HasColumnType("real");
+
+                    b.Property<string>("ProteinDisplayValue")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ProteinUnit")
                         .IsRequired()
@@ -198,17 +306,33 @@ namespace CE_API_V2.Migrations
                     b.Property<int>("Qwave")
                         .HasColumnType("int");
 
+                    b.Property<string>("QwaveDisplayValue")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<Guid>("RequestId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Sex")
                         .HasColumnType("int");
 
+                    b.Property<string>("SexDisplayValue")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("Statin")
                         .HasColumnType("bit");
 
+                    b.Property<string>("StatinDisplayValue")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("Systolicbp")
                         .HasColumnType("int");
+
+                    b.Property<string>("SystolicbpDisplayValue")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SystolicbpUnit")
                         .IsRequired()
@@ -217,8 +341,16 @@ namespace CE_API_V2.Migrations
                     b.Property<bool>("Tcagginhibitor")
                         .HasColumnType("bit");
 
+                    b.Property<string>("TcagginhibitorDisplayValue")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<float>("Urea")
                         .HasColumnType("real");
+
+                    b.Property<string>("UreaDisplayValue")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UreaUnit")
                         .IsRequired()
@@ -227,12 +359,20 @@ namespace CE_API_V2.Migrations
                     b.Property<float>("Uricacid")
                         .HasColumnType("real");
 
+                    b.Property<string>("UricacidDisplayValue")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("UricacidUnit")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Weight")
                         .HasColumnType("int");
+
+                    b.Property<string>("WeightDisplayValue")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("WeightUnit")
                         .IsRequired()
@@ -278,8 +418,12 @@ namespace CE_API_V2.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("TenantId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("TenantId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Userquota")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -291,6 +435,9 @@ namespace CE_API_V2.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("ClinicalSetting")
+                        .HasColumnType("int");
 
                     b.Property<DateTimeOffset>("CreatedOn")
                         .ValueGeneratedOnAdd()
@@ -406,7 +553,9 @@ namespace CE_API_V2.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("Language")
                         .IsRequired()

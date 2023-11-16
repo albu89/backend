@@ -57,7 +57,14 @@ public class MockedInputPatientDataService
                     valueProperty = property.PropertyType.GetProperty("UnitType");
                     if (valueProperty is not null)
                     {
-                        valueProperty.SetValue(wrapperInstance, "SI"); 
+                        valueProperty.SetValue(wrapperInstance, "SI");
+                        property.SetValue(_scoringRequest, wrapperInstance);
+                    }
+
+                    valueProperty = property.PropertyType.GetProperty("DisplayValue");
+                    if (valueProperty is not null)
+                    {
+                        valueProperty.SetValue(wrapperInstance, "DisplayValue");
                         property.SetValue(_scoringRequest, wrapperInstance);
                     }
                 }
@@ -78,6 +85,6 @@ public class MockedInputPatientDataService
 
         private bool GetRandomBoolValue() => _random.Next(2) > 1;
 
-        private float GetNextFloatValue() => (float) _random.NextDouble();
+        private float GetNextFloatValue() => (float)_random.NextDouble();
     }
 }

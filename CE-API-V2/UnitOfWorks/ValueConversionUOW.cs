@@ -5,6 +5,7 @@ using CE_API_V2.Models.DTO;
 using CE_API_V2.Services.Interfaces;
 using CE_API_V2.Utility;
 using System.Reflection;
+using CE_API_V2.Models.Enum;
 
 namespace CE_API_V2.UnitOfWorks
 {
@@ -19,12 +20,14 @@ namespace CE_API_V2.UnitOfWorks
             _templateService = templateService;
         }
 
-        public (ScoringRequestModel, Biomarkers) ConvertToScoringRequest(ScoringRequest scoringRequest, string userId, string patientId)
+        public (ScoringRequestModel, Biomarkers) ConvertToScoringRequest(ScoringRequest scoringRequest, string userId, string patientId, PatientDataEnums.ClinicalSetting clinicalSetting)
         {
             var requestModel = _mapper.Map<ScoringRequestModel>(scoringRequest);
             var biomarkers = _mapper.Map<Biomarkers>(scoringRequest);
+
             requestModel.UserId = userId;
             requestModel.PatientId = patientId;
+            requestModel.ClinicalSetting = clinicalSetting;
 
             return (requestModel, biomarkers);
         }
@@ -38,7 +41,6 @@ namespace CE_API_V2.UnitOfWorks
         {
             var props = scoringRequest.GetType().GetProperties();
             var template = await _templateService.GetTemplate();
-            
 
             foreach (var prop in props)
             {
@@ -47,13 +49,13 @@ namespace CE_API_V2.UnitOfWorks
                     if (prop.GetValue(scoringRequest) is not BiomarkerValue<int> propWithUnit || propWithUnit.UnitType == "SI")
                         continue;
                     var conversionFactor = FindConversionFactor(propWithUnit, prop, template);
-                    
+
                     propWithUnit.Value = (int)(propWithUnit.Value * conversionFactor);
                     propWithUnit.UnitType = "SI";
                 }
                 else if (prop.PropertyType == typeof(BiomarkerValue<float>))
                 {
-                    
+
                     if (prop.GetValue(scoringRequest) is not BiomarkerValue<float> propWithUnit || propWithUnit.UnitType == "SI")
                         continue;
                     var conversionFactor = FindConversionFactor(propWithUnit, prop, template);
@@ -62,6 +64,7 @@ namespace CE_API_V2.UnitOfWorks
                     propWithUnit.UnitType = "SI";
                 }
             }
+
             return scoringRequest;
         }
         private static float FindConversionFactor<T>(BiomarkerValue<T> propWithUnit, PropertyInfo prop, CadRequestSchema template)
@@ -72,11 +75,11 @@ namespace CE_API_V2.UnitOfWorks
                 return 1;
             }
             var unitsForProperty = ValidationHelpers.GetAllUnitsForProperty(prop.Name, template).FirstOrDefault(x => x.UnitType == parsed);
-         
+
             if (propWithUnit.UnitType == "SI")
                 return default;
 
-            return unitsForProperty?.ConversionFactor ?? 1;   
+            return unitsForProperty?.ConversionFactor ?? 1;
         }
     }
 }

@@ -1,4 +1,19 @@
 {
+  "categories": {
+    "medicalHistory": {
+      "anamnesis": "Anamnesis",
+      "medication": "Medication",
+      "clinicalfindings": "Clinical findings"
+    },
+    "labResults": {
+      "enzymes": "Enzymes",
+      "bloodsugar": "Blood Sugar",
+      "metabolite": "Metabolite",
+      "lipids": "Lipids",
+      "protein": "Protein",
+      "hematology": "Hematology"
+    }
+  },
   "medicalHistory": [
     {
       "unit": {
@@ -20,7 +35,7 @@
       },
       "id": "prior_CAD",
       "orderIndex": 0,
-      "category": "Anamnesis",
+      "categoryId": "anamnesis",
       "type": "boolean"
     },
     {
@@ -34,7 +49,7 @@
       },
       "id": "age",
       "orderIndex": 1,
-      "category": "Anamnesis",
+      "categoryId": "anamnesis",
       "type": "integer"
     },
     {
@@ -48,7 +63,7 @@
       },
       "id": "height",
       "orderIndex": 2,
-      "category": "Anamnesis",
+      "categoryId": "anamnesis",
       "type": "integer"
     },
     {
@@ -62,7 +77,7 @@
       },
       "id": "weight",
       "orderIndex": 3,
-      "category": "Anamnesis",
+      "categoryId": "anamnesis",
       "type": "integer"
     },
     {
@@ -85,7 +100,7 @@
       },
       "id": "sex",
       "orderIndex": 4,
-      "category": "Anamnesis",
+      "categoryId": "anamnesis",
       "type": "options"
     },
     {
@@ -118,7 +133,7 @@
       },
       "id": "chest_pain",
       "orderIndex": 5,
-      "category": "Anamnesis",
+      "categoryId": "anamnesis",
       "type": "options"
     },
     {
@@ -146,7 +161,7 @@
       },
       "id": "nicotine",
       "orderIndex": 6,
-      "category": "Anamnesis",
+      "categoryId": "anamnesis",
       "type": "options"
     },
     {
@@ -174,7 +189,7 @@
       },
       "id": "diabetes",
       "orderIndex": 7,
-      "category": "Medication",
+      "categoryId": "medication",
       "type": "options"
     },
     {
@@ -197,7 +212,7 @@
       },
       "id": "statin",
       "orderIndex": 8,
-      "category": "Medication",
+      "categoryId": "medication",
       "type": "boolean"
     },
     {
@@ -220,7 +235,7 @@
       },
       "id": "tc_agg_inhibitor",
       "orderIndex": 9,
-      "category": "Medication",
+      "categoryId": "medication",
       "type": "boolean"
     },
     {
@@ -243,7 +258,7 @@
       },
       "id": "ace_inhibitor",
       "orderIndex": 10,
-      "category": "Medication",
+      "categoryId": "medication",
       "type": "boolean"
     },
     {
@@ -266,7 +281,7 @@
       },
       "id": "calcium_ant",
       "orderIndex": 11,
-      "category": "Medication",
+      "categoryId": "medication",
       "type": "boolean"
     },
     {
@@ -289,7 +304,7 @@
       },
       "id": "betablocker",
       "orderIndex": 12,
-      "category": "Medication",
+      "categoryId": "medication",
       "type": "boolean"
     },
     {
@@ -312,7 +327,7 @@
       },
       "id": "diuretic",
       "orderIndex": 13,
-      "category": "Medication",
+      "categoryId": "medication",
       "type": "boolean"
     },
     {
@@ -335,7 +350,7 @@
       },
       "id": "nitrate",
       "orderIndex": 14,
-      "category": "Medication",
+      "categoryId": "medication",
       "type": "boolean"
     },
     {
@@ -349,7 +364,7 @@
       },
       "id": "systolic_bp",
       "orderIndex": 15,
-      "category": "Clinical findings",
+      "categoryId": "clinicalfindings",
       "type": "integer"
     },
     {
@@ -363,7 +378,7 @@
       },
       "id": "diastolic_bp",
       "orderIndex": 16,
-      "category": "Clinical findings",
+      "categoryId": "clinicalfindings",
       "type": "integer"
     },
     {
@@ -391,7 +406,7 @@
       },
       "id": "q_wave",
       "orderIndex": 17,
-      "category": "Clinical findings",
+      "categoryId": "clinicalfindings",
       "type": "options"
     }
   ],
@@ -418,7 +433,7 @@
       "preferredUnit": "SI",
       "id": "amylase_p",
       "orderIndex": 18,
-      "category": "Enzymes",
+      "categoryId": "enzymes",
       "type": "float"
     },
     {
@@ -443,7 +458,7 @@
       "preferredUnit": "SI",
       "id": "alkaline",
       "orderIndex": 19,
-      "category": "Enzymes",
+      "categoryId": "enzymes",
       "type": "float"
     },
     {
@@ -468,7 +483,7 @@
       "preferredUnit": "SI",
       "id": "hs_troponin_t",
       "orderIndex": 20,
-      "category": "Enzymes",
+      "categoryId": "enzymes",
       "type": "float"
     },
     {
@@ -493,7 +508,7 @@
       "preferredUnit": "SI",
       "id": "alat",
       "orderIndex": 21,
-      "category": "Enzymes",
+      "categoryId": "enzymes",
       "type": "float"
     },
     {
@@ -518,7 +533,7 @@
       "preferredUnit": "SI",
       "id": "glucose",
       "orderIndex": 22,
-      "category": "Blood Sugar",
+      "categoryId": "bloodsugar",
       "type": "float"
     },
     {
@@ -543,7 +558,7 @@
       "preferredUnit": "SI",
       "id": "bilirubin",
       "orderIndex": 23,
-      "category": "Metabolite",
+      "categoryId": "metabolite",
       "type": "float"
     },
     {
@@ -568,7 +583,7 @@
       "preferredUnit": "SI",
       "id": "urea",
       "orderIndex": 24,
-      "category": "Metabolite",
+      "categoryId": "metabolite",
       "type": "float"
     },
     {
@@ -593,7 +608,7 @@
       "preferredUnit": "SI",
       "id": "uric_acid",
       "orderIndex": 25,
-      "category": "Metabolite",
+      "categoryId": "metabolite",
       "type": "float"
     },
     {
@@ -618,7 +633,7 @@
       "preferredUnit": "SI",
       "id": "cholesterol",
       "orderIndex": 26,
-      "category": "Lipids",
+      "categoryId": "lipids",
       "type": "float"
     },
     {
@@ -643,7 +658,7 @@
       "preferredUnit": "SI",
       "id": "hdl",
       "orderIndex": 27,
-      "category": "Lipids",
+      "categoryId": "lipids",
       "type": "float"
     },
     {
@@ -668,7 +683,7 @@
       "preferredUnit": "SI",
       "id": "ldl",
       "orderIndex": 28,
-      "category": "Lipids",
+      "categoryId": "lipids",
       "type": "float"
     },
     {
@@ -693,7 +708,7 @@
       "preferredUnit": "SI",
       "id": "protein",
       "orderIndex": 29,
-      "category": "Protein",
+      "categoryId": "protein",
       "type": "float"
     },
     {
@@ -718,7 +733,7 @@
       "preferredUnit": "SI",
       "id": "albumin",
       "orderIndex": 30,
-      "category": "Protein",
+      "categoryId": "protein",
       "type": "float"
     },
     {
@@ -743,7 +758,7 @@
       "preferredUnit": "SI",
       "id": "leukocyte",
       "orderIndex": 31,
-      "category": "Hematology",
+      "categoryId": "hematology",
       "type": "float"
     },
     {
@@ -768,7 +783,7 @@
       "preferredUnit": "SI",
       "id": "mchc",
       "orderIndex": 32,
-      "category": "Hematology",
+      "categoryId": "hematology",
       "type": "float"
     }
   ]

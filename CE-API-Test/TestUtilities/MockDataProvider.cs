@@ -26,7 +26,7 @@ namespace CE_API_Test.TestUtilities
             return JsonSerializer.Serialize(scoringRequestDtoMock);
         }
 
-        internal static ScoringRequest CreateScoringRequestDto()
+        internal static ScoringRequest CreateScoringRequest()
         {
             return new ScoringRequest()
             {
@@ -88,6 +88,7 @@ namespace CE_API_Test.TestUtilities
                 CreatedOn = CreatedOn ?? DateTimeOffset.Now
             };
         }
+
         private static IEnumerable<Biomarkers> GetFakeBiomarkers()
         {
             var biomarkerList = new List<Biomarkers>
@@ -95,59 +96,94 @@ namespace CE_API_Test.TestUtilities
                 new Biomarkers
                 {
                     Age = 25,
+                    AgeDisplayValue = "25",
                     AgeUnit = "SI",
                     Alat = 213,
+                    AlatDisplayValue = "213",
                     AlatUnit = "SI",
                     Albumin = 123,
+                    AlbuminDisplayValue = "123",
                     AlbuminUnit = "SI",
                     Bilirubin = 123,
+                    BilirubinDisplayValue = "123",
                     BilirubinUnit = "SI",
                     Cholesterol = 123,
+                    CholesterolDisplayValue = "123",
                     CholesterolUnit = "SI",
                     Diabetes = DiabetesStatus.Iddm,
+                    DiabetesDisplayValue = "DiabetesStatus.Iddm",
                     Qwave = RestingEcg.Screening,
+                    QwaveDisplayValue = "RestingEcg.Screening",
                     Diuretic = false,
+                    DiureticDisplayValue = "false",
                     Hdl = 123,
+                    HdlDisplayValue = "123",
                     HdlUnit = "SI",
                     Height = 176,
+                    HeightDisplayValue = "176",
                     HeightUnit = "SI",
                     Ldl = 123,
+                    LdlDisplayValue = "123",
                     LdlUnit = "SI",
                     Leukocyte = 123,
+                    LeukocyteDisplayValue = "123",
                     LeukocyteUnit = "SI",
                     Mchc = 123,
+                    MchcDisplayValue = "123",
                     MchcUnit = "SI",
                     Sex = Sex.Male,
+                    SexDisplayValue = "Sex.Male",
                     Weight = 90,
+                    WeightDisplayValue = "90",
                     WeightUnit = "SI",
                     Protein = 123,
+                    ProteinDisplayValue = "123",
                     ProteinUnit = "SI",
                     Urea = 123,
+                    UreaDisplayValue = "123",
                     UreaUnit = "SI",
                     Calciumant = false,
+                    CalciumantDisplayValue = "false",
                     Chestpain = ChestPain.Possible,
+                    ChestpainDisplayValue = "ChestPain.Possible",
                     Glucose = 123,
+                    GlucoseDisplayValue = "123",
                     GlucoseUnit = "SI",
                     Amylasep = 123,
+                    AmylasepDisplayValue = "123",
                     AmylasepUnit = "SI",
                     Uricacid = 123,
+                    UricacidDisplayValue = "123",
                     UricacidUnit = "SI",
                     Diastolicbp = 123,
+                    DiastolicbpDisplayValue = "123",
                     DiastolicbpUnit = "SI",
                     Hstroponint = 123,
+                    HstroponintDisplayValue = "123",
                     HstroponintUnit = "SI",
                     Systolicbp = 123,
+                    SystolicbpDisplayValue = "123",
                     SystolicbpUnit = "SI",
                     Nicotine = NicotineConsumption.StANc,
+                    NicotineDisplayValue = "NicotineConsumption.StANc",
                     Statin = false,
+                    StatinDisplayValue = "false",
                     Aceinhibitor = false,
+                    AceinhibitorDisplayValue = "false",
                     Alkaline = 123,
+                    AlkalineDisplayValue = "123",
                     AlkalineUnit = "SI",
                     Betablocker = false,
+                    BetablockerDisplayValue = "false",
                     ClinicalSetting = ClinicalSetting.PrimaryCare,
                     Nitrate = false,
+                    NitrateDisplayValue = "false",
                     Tcagginhibitor = false,
-                    PriorCAD = false
+                    TcagginhibitorDisplayValue = "false",
+                    PriorCAD = false,
+                    PriorCADDisplayValue = "false",
+                    ClinicalSettingUnit = "SI",
+                    ClinicalSettingDisplayValue = "PrimaryCare",
                 }
             };
             return biomarkerList;
@@ -158,7 +194,7 @@ namespace CE_API_Test.TestUtilities
             var mockedResponse = GetMockedScoringResponse();
             return JsonSerializer.Serialize(mockedResponse);
         }
-
+        
         internal static string GetExpectedQueryString() =>
             "Datum=02/02/2000 00:00:00&Age=2&Sex_0_female_1male=2&Gr_sse=2&Gewicht=2&Thoraxschmerzen__0_keine_1_extr=2&Nicotin_0_nein_1_St__N__2_ja=2&Diabetes_0_no_1_NIDDM_2_IDDM=2&Statin_od_Chol_senker=2&Tc_Aggregation=2&ACE_od_ATII=2&CA_Antagonist=2&Betablocker=2&Diureticum=2&Nitrat_od_Dancor=2&BD_syst=2&BD_diast=2&q_Zacken_0_nein_1_ja=0&Pankreas_Amylase=2&Alk_Phase=2&Troponin=2&ALAT=2&Glucose=2&Bilirubin=2&Harnstoff=2&Harnsaure=2&Cholesterin_gesamt=2&HDL=2&LDL=2&Total_Proteine=2&Albumin=2&Leuko=2&MCHC__g_l_oder___=2&ASAT=2&Art__Hypertonie=2&CK=2&Chlorid=2&Dyspnoe=2&Gamma_GT=2&Hypercholesterin_mie=2&INR=2&Interne_Nummer=2&Kalium=2&Kreatinin=2&MCV__fl_=2&Natrium=2&OAK=2&Phosphat=2&Repolarisationsst_runge=2";
 
@@ -328,7 +364,7 @@ namespace CE_API_Test.TestUtilities
             };
         }
 
-        public static User GetMockedUserDto()
+        public static User GetMockedUser()
         {
             return new User()
             {
@@ -346,12 +382,12 @@ namespace CE_API_Test.TestUtilities
                 Salutation = "Mock",
                 Surname = "Mock",
                 TelephoneNumber = "Mock",
-                UnitLabValues = "Mock",
+                UnitLabValues = "Mock", 
                 Role = UserRole.User
             };
         }
         
-        public static UserModel GetMockedUser()
+        public static UserModel GetMockedUserModel()
         {
             return new UserModel()
             {
@@ -380,7 +416,9 @@ namespace CE_API_Test.TestUtilities
                     new() { OrderNumber = 1, BiomarkerId = "first", PreferredUnit = "unit", User = null, UserId = "id" },
                     new() { OrderNumber = 2, BiomarkerId = "second", PreferredUnit = "unit", User = null, UserId = "id" }
                 }
-        };
+                ,
+                IsActive = true,
+            };
         }
 
         public static UpdateUser GetMockedUpdateUserDto()
@@ -403,7 +441,7 @@ namespace CE_API_Test.TestUtilities
             };
         }
         
-        public static CreateUser GetMockedCreateUserDto()
+        public static CreateUser GetMockedCreateUser()
         {
             return new CreateUser()
             {
@@ -422,6 +460,7 @@ namespace CE_API_Test.TestUtilities
                 Surname = "Mock",
                 TelephoneNumber = "Mock",
                 UnitLabValues = "Mock",
+                IsActive = true,
             };
         }
 
@@ -485,10 +524,24 @@ namespace CE_API_Test.TestUtilities
                 Warnings = Array.Empty<string>(),
                 RecommendationSummary = "RecommendationSummary",
                 RecommendationLongText = "RecommendationLongText",
-                Biomarkers = GetFakeBiomarkers().FirstOrDefault()
+                Biomarkers = GetMockedStoredBiomarkers()
             };
         }
 
+        private static StoredBiomarkers GetMockedStoredBiomarkers()
+        {
+            var biomarkers = GetFakeBiomarkers();
+            var mappedBiomarkers = ManualMapper.MapFromBiomarkersToValues(biomarkers.ElementAt(0));
+            var staredBiomarkers = new StoredBiomarkers();
+
+            return new()
+            {
+                Values = mappedBiomarkers,
+                CreatedOn = DateTime.Now,
+                Id = Guid.NewGuid(),
+                RequestId = Guid.NewGuid(),
+            };
+        }
 
         public static BiomarkerOrder GetMockedOrder()
         {
@@ -553,16 +606,35 @@ namespace CE_API_Test.TestUtilities
         public static CreateOrganization GetMockedCreateOrganization() => new()
         {
             Name = "Organization",
+            Userquota = 99,
             ContactEmail = "ContactEmail",
-            TenantId = Guid.NewGuid()
+            TenantId = Guid.NewGuid().ToString()
         };
         
         public static OrganizationModel GetMockedOrganizationModel() => new()
         {
             Name = "Organization",
+            Userquota = 100,
             ContactEmail = "ContactEmail",
             Id = Guid.NewGuid(),
-            TenantId = Guid.NewGuid()
+            TenantId = Guid.NewGuid().ToString()
         };
+
+        public static List<UserModel> GetMockedUsersList()
+        {
+            var usersList = new List<UserModel>()
+            {
+                GetMockedUserModel(),
+                GetMockedUserModel(),
+                GetMockedUserModel(),
+            };
+
+            foreach (var user in usersList)
+            {
+                user.UserId = Guid.NewGuid().ToString();
+            }
+
+            return usersList;
+        }
     }
 }

@@ -22,8 +22,6 @@
         [NotMapped]
         public string[]? Warnings { get; set; }
 
-
-
         [JsonIgnore]
         public virtual Biomarkers Biomarkers { get; set; }
         public Guid? BiomarkersId { get; set; }

@@ -44,14 +44,18 @@ namespace CE_API_V2.Utility
         private ScoringResponse SetRecommendation(ScoringResponse scoreResponse, string locale)
         {
             var score = (double)scoreResponse.classifier_score;
-            var priorCad = scoreResponse.Biomarkers.PriorCAD;
-            var clinicalSetting = scoreResponse.Biomarkers.ClinicalSetting;
+            var priorCadObj = scoreResponse.Biomarkers.Values.FirstOrDefault(b=> b.Id.Equals("prior_CAD"))?.Value;
+            var clinicalSettingObj = scoreResponse.Biomarkers.Values.FirstOrDefault(b => b.Id.Equals("clinical_setting"))?.Value;
 
-            var scoreRecommendation = GetScoreRecommendation(score, priorCad, clinicalSetting, locale);
-            _mapper.Map(scoreRecommendation, scoreResponse);
-            scoreResponse.Prevalence = scoreRecommendation.Prevalence;
+            if (priorCadObj is bool priorCad && clinicalSettingObj is ClinicalSetting clinicalSetting)
+            {
+                var scoreRecommendation = GetScoreRecommendation(score, priorCad, clinicalSetting, locale);
+                _mapper.Map(scoreRecommendation, scoreResponse);
+                scoreResponse.Prevalence = scoreRecommendation.Prevalence;
+            }
+          
             return scoreResponse;
-        }
+        }   
 
         private string GetFilePath(string filePartName, string valueClass)
         {

@@ -5,11 +5,6 @@ namespace CE_API_Test.UnitTests.Services
     [TestFixture]
     public class EmailTemplateProviderTests
     {
-        [SetUp]
-        public void SetUp()
-        {
-
-        }
         
         [Test]
         public void GetRequestBodyTemplate_ReturnOkResult()

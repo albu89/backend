@@ -12,7 +12,6 @@ public class MockServiceProvider
 {
     public static AiRequestService GenerateAiRequestService()
     {
-
         var inMemSettings = new Dictionary<string, string>
         {
             { "AiSubpath", "/api/AiMock?" }
@@ -39,6 +38,71 @@ public class MockServiceProvider
         var mockEnv = new Mock<IWebHostEnvironment>();
         mockEnv.Setup(m => m.EnvironmentName)
             .Returns("Hosting:Staging");
+
+        return new AiRequestService(httpClient, config, mockEnv.Object);
+    }
+
+    public static AiRequestService GenerateAiRequestServiceWithInvalidConfigurationAndReturnValues()
+    {
+        var inMemSettings = new Dictionary<string, string>
+        {
+            { "AiSubpath", "/api/AiMock?" }
+        };
+
+        var config = new ConfigurationBuilder().AddInMemoryCollection(inMemSettings!).Build();
+
+        var httpMessageHandlerMock = new Mock<HttpMessageHandler>();
+        var content = MockDataProvider.GetMockedSerializedResponse();
+        var response = new HttpResponseMessage
+        {
+            StatusCode = HttpStatusCode.BadRequest,
+            Content = new StringContent(content),
+        };
+
+        httpMessageHandlerMock
+            .Protected()
+            .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(response);
+
+        var httpClient = new HttpClient(httpMessageHandlerMock.Object);
+        httpClient.BaseAddress = new Uri("https://testproject");
+
+        var mockEnv = new Mock<IWebHostEnvironment>();
+        mockEnv.Setup(m => m.EnvironmentName)
+            .Returns("Hosting:Staging");
+
+        return new AiRequestService(httpClient, config, mockEnv.Object);
+    }
+
+    public static AiRequestService GenerateAiRequestServiceWithInvalidResponseContent()
+    {
+        var inMemSettings = new Dictionary<string, string>
+        {
+            { "AiSubpath", "/api/AiMock?" }
+        };
+
+        var config = new ConfigurationBuilder().AddInMemoryCollection(inMemSettings!).Build();
+
+        var httpMessageHandlerMock = new Mock<HttpMessageHandler>();
+        var content = string.Empty;
+        var response = new HttpResponseMessage
+        {
+            StatusCode = HttpStatusCode.OK,
+            Content = new StringContent(content),
+        };
+
+        httpMessageHandlerMock
+            .Protected()
+            .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(response);
+
+        var httpClient = new HttpClient(httpMessageHandlerMock.Object);
+        httpClient.BaseAddress = new Uri("https://testproject");
+
+        var mockEnv = new Mock<IWebHostEnvironment>();
+        mockEnv.Setup(m => m.EnvironmentName)
+            .Returns("Hosting:Staging");
+
         return new AiRequestService(httpClient, config, mockEnv.Object);
     }
 
@@ -67,6 +131,32 @@ public class MockServiceProvider
 
         var emailValidator= new Mock<IEmailValidator>();
         emailValidator.Setup(x=>x.EmailAddressIsValid(It.IsAny<string>())).Returns(true);
+
+        return new ResponsibilityDeterminer(administrativeEntitiesUow.Object, configuration, emailValidator.Object);
+    }
+
+    public static ResponsibilityDeterminer GenerateResponsibilityDeterminerWithInvalidConfiguration()
+    {
+        var testConfig = new Dictionary<string, string?>();
+
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(testConfig)
+            .Build();
+
+        var organizationModel = MockDataProvider.GetMockedOrganizationModel();
+        var countryModel = MockDataProvider.GetMockedCountryModel();
+
+        organizationModel.ContactEmail = "OrganizationModelEMail";
+        countryModel.ContactEmail = "CountryModelEMail";
+
+        var administrativeEntitiesUow = new Mock<IAdministrativeEntitiesUOW>();
+        administrativeEntitiesUow.Setup(x => x.GetOrganizationByName(It.IsAny<string>()))
+            .Returns(organizationModel);
+        administrativeEntitiesUow.Setup(x => x.GetCountryByName(It.IsAny<string>()))
+            .Returns(countryModel);
+
+        var emailValidator = new Mock<IEmailValidator>();
+        emailValidator.Setup(x => x.EmailAddressIsValid(It.IsAny<string>())).Returns(true);
 
         return new ResponsibilityDeterminer(administrativeEntitiesUow.Object, configuration, emailValidator.Object);
     }

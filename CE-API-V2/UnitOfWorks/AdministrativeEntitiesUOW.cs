@@ -44,22 +44,36 @@ public class AdministrativeEntitiesUOW : IAdministrativeEntitiesUOW
             throw new Exception("Country is already present");
         }
 
-        _countryRepository.Insert(country);
-        _context.SaveChanges();
-
+        try
+        {
+            _countryRepository.Insert(country);
+            _context.SaveChanges();
+        }
+        catch (Exception e)
+        {
+            throw new Exception();
+        }
+       
         return _countryRepository.Get().FirstOrDefault(o => o.Name == country.Name);
     }
 
     ///<inheritdoc/>
-    public OrganizationModel? AddOrganizations(OrganizationModel organization)
+    public OrganizationModel? AddOrganization(OrganizationModel organization)
     {
         if (_organizationRepository.Get().Any(o => o.Name == organization.Name))
         {
             throw new Exception("Organization already present");
         }
 
-        _organizationRepository.Insert(organization);
-        _context.SaveChanges();
+        try
+        {
+            _organizationRepository.Insert(organization);
+            _context.SaveChanges();
+        }
+        catch (Exception e)
+        {
+            throw new Exception();
+        }
 
         return _organizationRepository.Get().FirstOrDefault(o => o.Name == organization.Name);
     }
@@ -76,7 +90,7 @@ public class AdministrativeEntitiesUOW : IAdministrativeEntitiesUOW
         }
         catch (Exception)
         {
-            throw new NotImplementedException();
+            throw new Exception();
         }
 
         return updatedEntity;
@@ -136,7 +150,7 @@ public class AdministrativeEntitiesUOW : IAdministrativeEntitiesUOW
         }
         catch (DbUpdateConcurrencyException)
         {
-            throw new NotImplementedException("Error deleting an Organization");
+            throw new Exception("Error deleting an Organization");
         }
     }
 
