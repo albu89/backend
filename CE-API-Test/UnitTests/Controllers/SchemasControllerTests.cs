@@ -165,8 +165,7 @@ public class SchemasControllerTests
     {
         //Arrange
         var expectedScoreHeader =
-            "In accordance to current medical guidelines, obstructive coronary artery disease (CAD) is defined as a stenosis or blockage of 50% or more in the diameter of a major coronary artery or a branch with a diameter of 2 mm or more.";
-
+            "In accordance to current medical guidelines, obstructive CAD is defined as a stenosis or blockage of 50% or more in the diameter of a major coronary artery or a branch with a diameter of 2 mm or more.";
         //Act
         var result = await _schemasController.GetScoringSchema();
 
@@ -186,8 +185,7 @@ public class SchemasControllerTests
     {
         //Arrange
         var expectedScoreHeader =
-            "In accordance to current medical guidelines, obstructive coronary artery disease (CAD) is defined as a stenosis or blockage of 50% or more in the diameter of a major coronary artery or a branch with a diameter of 2 mm or more.";
-
+            "In accordance to current medical guidelines, obstructive CAD is defined as a stenosis or blockage of 50% or more in the diameter of a major coronary artery or a branch with a diameter of 2 mm or more.";
         var invalidLocale = "invalid";
 
         //Act
