@@ -123,7 +123,8 @@ public class ScoresController : ControllerBase
         lastname = null;
         dateOfBirth = new DateTime();
 
-        SetUserCulture(locale);
+        var userCulture = SetUserCulture(locale);
+        CultureInfo.CurrentUICulture = userCulture;
 
         var userId = UserHelper.GetUserId(User);
         var request = _scoringUow.RetrieveScoringRequest(scoringRequestId, userId);
@@ -273,6 +274,7 @@ public class ScoresController : ControllerBase
 
         var userCulture = SetUserCulture(locale);
         CultureInfo.CurrentUICulture = userCulture;
+
         ScoringRequestModel? scoringRequestModel;
         try
         {
