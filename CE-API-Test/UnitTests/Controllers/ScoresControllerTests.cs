@@ -4,6 +4,7 @@ using AutoMapper;
 using CE_API_Test.TestUtilities;
 using CE_API_Test.TestUtilities.Test;
 using CE_API_V2.Controllers;
+using CE_API_V2.Data;
 using CE_API_V2.Hasher;
 using CE_API_V2.Models;
 using CE_API_V2.Models.DTO;
@@ -703,7 +704,7 @@ namespace CE_API_Test.UnitTests.Controllers
         {
             var app = new CardioExplorerServer
             {
-                Environment = "Testing"
+                Environment = Constants.TestEnvironment
             };
             var client = app.CreateClient();
 

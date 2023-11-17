@@ -16,7 +16,7 @@ internal class CardioExplorerServer : WebApplicationFactory<Program>
 {
     private readonly string? _country;
     public string DefaultUserId { get; set; } = "1";
-    public string Environment { get; set; } = "Development";
+    public string Environment { get; set; } = Constants.DevelopmentEnvironment;
 
     public CardioExplorerServer()
     {
@@ -45,7 +45,10 @@ internal class CardioExplorerServer : WebApplicationFactory<Program>
                 options.UseInMemoryDatabase("IntegrationTestDB");
             });
 
-            services.Configure<TestAuthHandlerOptions>(options => options.DefaultUserId = DefaultUserId);
+            if (Environment == "Testing")
+            {
+                services.Configure<TestAuthHandlerOptions>(options => options.DefaultUserId = DefaultUserId);
+            }
             services.AddAuthentication(TestAuthHandler.AuthenticationScheme)
                     .AddScheme<TestAuthHandlerOptions, TestAuthHandler>(TestAuthHandler.AuthenticationScheme, options => { });
 
