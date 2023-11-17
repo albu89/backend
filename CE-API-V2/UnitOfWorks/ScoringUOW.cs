@@ -106,10 +106,14 @@ namespace CE_API_V2.UnitOfWorks
         public ScoringRequestModel RetrieveScoringRequest(Guid scoringRequestId, string userId)
         {
             var scoringRequest = ScoringRequestRepository.Get(x => x.Id == scoringRequestId, null, "Biomarkers.Response").SingleOrDefault();
-
-            if (scoringRequest is null || !scoringRequest.UserId.Equals(userId))
+    
+            if (scoringRequest is null)
             {
-                throw new Exception();
+                throw new Exception("Scoring Request cannot be null.");
+            }
+            else if (!scoringRequest.UserId.Equals(userId))
+            {
+                throw new Exception("The user id of the scoring request does not match the one passed.");
             }
             return scoringRequest;
         }
@@ -121,9 +125,9 @@ namespace CE_API_V2.UnitOfWorks
                 ScoringResponseRepository.Insert(scoringResponseModel);
                 _context.SaveChanges();
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                throw new NotImplementedException();
+                throw new NotImplementedException("Something went wrong while saving the scoring response.");
             }
 
             return scoringResponseModel;
@@ -142,9 +146,9 @@ namespace CE_API_V2.UnitOfWorks
                     scoringHistory.FirstOrDefault(x => x.RequestId == req.Id).CanEdit = _scoreSummaryUtility.CalculateIfUpdatePossible(req);
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                throw new NotImplementedException();
+                throw new NotImplementedException("Something went wrong while retrieving the scoring history, for the user.");
             }
 
 
@@ -165,9 +169,9 @@ namespace CE_API_V2.UnitOfWorks
                     scoringHistory.FirstOrDefault(x => x.RequestId == req.Id).CanEdit = _scoreSummaryUtility.CalculateIfUpdatePossible(req);
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                throw new NotImplementedException();
+                throw new NotImplementedException("Something went wrong while retrieving the scoring history, for the patient.");
             }
             return scoringHistory;
         }
@@ -180,9 +184,9 @@ namespace CE_API_V2.UnitOfWorks
                 scoringResponse = ScoringResponseRepository.Get(x => x.Request.UserId.Equals(userId) &&
                     x.RequestId.Equals(scoringRequestId), null, "Request,Request.Biomarkers").MaxBy(x => x.CreatedOn) ?? null;
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                throw new NotImplementedException();
+                throw new NotImplementedException("Something went wrong while retrieving the scoring response.");
             }
 
             return scoringResponse;
@@ -296,7 +300,7 @@ namespace CE_API_V2.UnitOfWorks
 
             if (!scoreIsSucessfullyRetrieved)
             {
-                throw new Exception();
+                throw new Exception("Something went wrong while requesting the score.");
             }
 
             return requestedScore;

@@ -189,7 +189,7 @@ namespace CE_API_Test.UnitTests.Controllers
 
             //Assert
             result.Should().NotBeNull();
-            result.Should().BeOfType(typeof(NotFoundResult));
+            result.Should().BeOfType(typeof(NoContentResult));
         }
 
         [Test]
@@ -228,7 +228,7 @@ namespace CE_API_Test.UnitTests.Controllers
 
             //Assert
             result.Should().NotBeNull();
-            result.Should().BeOfType(typeof(NotFoundResult));
+            result.Should().BeOfType(typeof(NoContentResult));
         }
 
         [Test]
@@ -268,7 +268,7 @@ namespace CE_API_Test.UnitTests.Controllers
 
             //Assert
             result.Should().NotBeNull();
-            result.Should().BeOfType(typeof(BadRequestResult));
+            result.Should().BeOfType(typeof(NoContentResult));
         }
 
         [Test]
@@ -306,7 +306,7 @@ namespace CE_API_Test.UnitTests.Controllers
 
             //Assert
             result.Should().NotBeNull();
-            result.Should().BeOfType(typeof(BadRequestResult));
+            result.Should().BeOfType(typeof(NoContentResult));
         }
 
         [Test]
@@ -341,7 +341,7 @@ namespace CE_API_Test.UnitTests.Controllers
 
             //Assert
             result.Should().NotBeNull();
-            result.Should().BeOfType(typeof(BadRequestResult));
+            result.Should().BeOfType(typeof(NoContentResult));
         }
 
         [Test]
@@ -377,7 +377,7 @@ namespace CE_API_Test.UnitTests.Controllers
             var result = sut.UpdateOrganization(Guid.NewGuid(), new CreateOrganization());
 
             //Assert
-           result.Should().BeOfType<BadRequestResult>();
+           result.Should().BeOfType<BadRequestObjectResult>();
         }
 
         [Test]
@@ -391,7 +391,7 @@ namespace CE_API_Test.UnitTests.Controllers
 
             //Assert
             result.Should().NotBeNull();
-            result.Should().BeOfType(typeof(BadRequestResult));
+            result.Should().BeOfType(typeof(NoContentResult));
         }
 
         [Test]
@@ -424,7 +424,7 @@ namespace CE_API_Test.UnitTests.Controllers
 
             //Assert
             result.Should().NotBeNull();
-            result.Should().BeOfType(typeof(BadRequestResult));
+            result.Should().BeOfType(typeof(NoContentResult));
         }
 
         [Test]
@@ -457,7 +457,7 @@ namespace CE_API_Test.UnitTests.Controllers
 
             //Assert
             result.Should().NotBeNull();
-            result.Should().BeOfType(typeof(BadRequestResult));
+            result.Should().BeOfType(typeof(NoContentResult));
         }
     }
 }

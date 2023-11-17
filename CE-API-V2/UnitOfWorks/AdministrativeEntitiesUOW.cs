@@ -88,7 +88,7 @@ public class AdministrativeEntitiesUOW : IAdministrativeEntitiesUOW
             updatedEntity = _countryRepository.Update(updatedCountry);
             _context.SaveChanges();
         }
-        catch (Exception e)
+        catch (Exception)
         {
             throw new Exception();
         }
@@ -106,7 +106,7 @@ public class AdministrativeEntitiesUOW : IAdministrativeEntitiesUOW
             updatedEntity = _organizationRepository.Update(organization);
             _context.SaveChanges();
         }
-        catch (Exception e)
+        catch (Exception)
         {
             throw new NotImplementedException();
         }
@@ -131,7 +131,7 @@ public class AdministrativeEntitiesUOW : IAdministrativeEntitiesUOW
 
             return deletedOrganization;
         }
-        catch (DbUpdateConcurrencyException e)
+        catch (DbUpdateConcurrencyException)
         {
             throw new NotImplementedException("Error deleting an Organization");
         }
@@ -140,13 +140,7 @@ public class AdministrativeEntitiesUOW : IAdministrativeEntitiesUOW
     ///<inheritdoc/>
     public OrganizationModel? DeleteOrganization(Guid id)
     {
-        var organization = _organizationRepository.Get().FirstOrDefault(o => o.Id == id);
-
-        if (organization == null)
-        {
-            throw new NotImplementedException();
-        }
-
+        var organization = _organizationRepository.Get().FirstOrDefault(o => o.Id == id) ?? throw new NotImplementedException();
         try
         {
             var deletedOrganization = _organizationRepository.Delete(organization);
@@ -154,7 +148,7 @@ public class AdministrativeEntitiesUOW : IAdministrativeEntitiesUOW
 
             return deletedOrganization;
         }
-        catch (DbUpdateConcurrencyException e)
+        catch (DbUpdateConcurrencyException)
         {
             throw new Exception("Error deleting an Organization");
         }

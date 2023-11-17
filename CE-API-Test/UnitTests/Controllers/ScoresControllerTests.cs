@@ -131,9 +131,9 @@ namespace CE_API_Test.UnitTests.Controllers
 
             //Assert
             result.Should().NotBeNull();
-            result.Should().BeOfType(typeof(BadRequestResult));
+            result.Should().BeOfType(typeof(BadRequestObjectResult));
 
-            var badRequest = result as BadRequestResult;
+            var badRequest = result as BadRequestObjectResult;
             badRequest?.StatusCode.Should().Be(400);
         }
 
@@ -535,9 +535,9 @@ namespace CE_API_Test.UnitTests.Controllers
 
             //Assert
             result.Should().NotBeNull();
-            result.Should().BeOfType(typeof(BadRequestResult));
+            result.Should().BeOfType(typeof(BadRequestObjectResult));
 
-            var badRequestResult = result as BadRequestResult;
+            var badRequestResult = result as BadRequestObjectResult;
             badRequestResult?.StatusCode.Should().Be(400);
         }
 
@@ -660,7 +660,7 @@ namespace CE_API_Test.UnitTests.Controllers
             
             // Assert
             result.Should().NotBeNull();
-            result.Should().BeOfType(typeof(BadRequestResult));
+            result.Should().BeOfType(typeof(BadRequestObjectResult));
         }
         
         [Test]
@@ -676,7 +676,7 @@ namespace CE_API_Test.UnitTests.Controllers
             
             // Assert
             result.Should().NotBeNull();
-            result.Should().BeOfType(typeof(BadRequestResult));
+            result.Should().BeOfType(typeof(BadRequestObjectResult));
         }
         
         [Test]
@@ -693,7 +693,7 @@ namespace CE_API_Test.UnitTests.Controllers
             
             // Assert
             result.Should().NotBeNull();
-            result.Should().BeOfType(typeof(BadRequestResult));
+            result.Should().BeOfType(typeof(BadRequestObjectResult));
         }
 
         private void SetupMockedScoringUOW(Task<ScoringResponse> mockedResponseTask, Task<ScoringRequestModel> mockedRequestTask)

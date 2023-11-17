@@ -152,7 +152,7 @@ namespace CE_API_Test.UnitTests.Controllers
 
             //Assert
             result.Should().NotBeNull();
-            result.Should().BeOfType(typeof(BadRequestResult));
+            result.Should().BeOfType(typeof(BadRequestObjectResult));
         }
 
         [Test]
@@ -169,7 +169,7 @@ namespace CE_API_Test.UnitTests.Controllers
 
             //Assert
             result.Should().NotBeNull();
-            result.Should().BeOfType(typeof(BadRequestResult));
+            result.Should().BeOfType(typeof(BadRequestObjectResult));
         }
 
         [Test]
@@ -186,7 +186,7 @@ namespace CE_API_Test.UnitTests.Controllers
 
             //Assert
             result.Should().NotBeNull();
-            result.Should().BeOfType(typeof(BadRequestResult));
+            result.Should().BeOfType(typeof(BadRequestObjectResult));
         }
 
         [Test]
@@ -203,7 +203,7 @@ namespace CE_API_Test.UnitTests.Controllers
             
             //Assert
             result.Should().NotBeNull();
-            result.Should().BeOfType(typeof(BadRequestResult));
+            result.Should().BeOfType(typeof(BadRequestObjectResult));
         }
 
         [Test]
@@ -220,7 +220,7 @@ namespace CE_API_Test.UnitTests.Controllers
 
             //Assert
             result.Should().NotBeNull();
-            result.Should().BeOfType(typeof(BadRequestResult));
+            result.Should().BeOfType(typeof(BadRequestObjectResult));
         }
 
         [Test]
@@ -238,7 +238,7 @@ namespace CE_API_Test.UnitTests.Controllers
 
             //Assert
             result.Should().NotBeNull();
-            result.Should().BeOfType(typeof(BadRequestResult));
+            result.Should().BeOfType(typeof(BadRequestObjectResult));
         }
 
         [Test]
@@ -275,7 +275,7 @@ namespace CE_API_Test.UnitTests.Controllers
 
             //Assert
             result.Should().NotBeNull();
-            result.Should().BeOfType(typeof(NotFoundResult));
+            result.Should().BeOfType(typeof(NoContentResult));
         }
 
         [Test]

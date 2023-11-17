@@ -58,7 +58,7 @@ namespace CE_API_V2.Controllers
         [UserActive]
         [Produces("application/json", Type = typeof(User))]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public IActionResult GetCurrentUser()
         {
             var idInformation = _userInformationExtractor.GetUserIdInformation(User);
@@ -68,7 +68,7 @@ namespace CE_API_V2.Controllers
 
             var userDto = _mapper.Map<User>(currentUser);
 
-            return currentUser is not null ? Ok(userDto) : NotFound();
+            return currentUser is not null ? Ok(userDto) : NoContent();
         }
 
         /// <summary>Create new User</summary>
@@ -84,7 +84,7 @@ namespace CE_API_V2.Controllers
         {
             if (!_inputValidationService.ValidateUser(user))
             {
-                return BadRequest();
+                return BadRequest("The user could not be validated.");
             }
 
             var idInformation = _userInformationExtractor.GetUserIdInformation(User);
@@ -109,7 +109,7 @@ namespace CE_API_V2.Controllers
                 await _userUOW.ProcessInactiveUserCreation(userModel);
             }
 
-            return storedUser is not null ? Ok(_mapper.Map<User>(storedUser)) : StatusCode(500, "");
+            return storedUser is not null ? Ok(_mapper.Map<User>(storedUser)) : BadRequest("The user could not be created.");
         }
 
         /// <summary>Update current Users profile</summary>
@@ -156,12 +156,12 @@ namespace CE_API_V2.Controllers
         {
             if (!_inputValidationService.ValidateAccessRequest(access))
             {
-                return BadRequest();
+                return BadRequest("Invalid Access data.");
             }
 
             EmailSendStatus requestStatus = await _userUOW.ProcessAccessRequest(access);
 
-            return requestStatus.Equals(EmailSendStatus.Succeeded) ? Ok() : BadRequest();
+            return requestStatus.Equals(EmailSendStatus.Succeeded) ? Ok() : BadRequest("Could not process the Access.");
         }
 
         /// <summary>Get the current users preferences</summary>
@@ -217,7 +217,7 @@ namespace CE_API_V2.Controllers
                 var orderDto = ManualMapper.ToBiomarkerOrder(_userUOW.GetBiomarkerOrders(user.UserId));
                 return Ok(orderDto);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return BadRequest();
             }
