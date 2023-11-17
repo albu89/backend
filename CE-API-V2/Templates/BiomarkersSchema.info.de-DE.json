@@ -296,15 +296,15 @@
         "options": [
           {
             "value": "yes",
-            "displayName": "normal"
-          },
-          {
-            "value": "screening",
             "displayName": "pathologisch"
           },
           {
-            "value": "no",
+            "value": "screening",
             "displayName": "kein EKG verfügbar"
+          },
+          {
+            "value": "no",
+            "displayName": "normal"
           }
         ]
       }

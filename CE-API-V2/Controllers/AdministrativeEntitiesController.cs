@@ -5,7 +5,6 @@ using CE_API_V2.Services.Interfaces;
 using CE_API_V2.Models;
 using CE_API_V2.Models.DTO;
 using CE_API_V2.UnitOfWorks.Interfaces;
-using CE_API_V2.UnitOfWorks;
 using CE_API_V2.Utility;
 using CE_API_V2.Utility.CustomAnnotations;
 
@@ -75,7 +74,6 @@ namespace CE_API_V2.Controllers
         /// If the user does not have the required rights, Status 403 is returned.
         /// </remarks>
         [HttpGet("organizations", Name = "GetOrganizations")]
-        [AllowAnonymous]
         [Produces("application/json", Type = typeof(IEnumerable<Organization>))]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -133,16 +131,17 @@ namespace CE_API_V2.Controllers
             }
 
             var convertedOrganization = _mapper.Map<OrganizationModel>(organization);
+
             try
             {
-                var addedOrganizationModel = _administrativeEntitiesUow.AddOrganizations(convertedOrganization);
+                var addedOrganizationModel = _administrativeEntitiesUow.AddOrganization(convertedOrganization);
                 var addedOrganization = _mapper.Map<Organization>(addedOrganizationModel);
 
                 return addedOrganization is not null ? Ok(addedOrganization) : BadRequest();
             }
             catch (Exception e)
             {
-                return BadRequest("Organization already exists.");
+                return BadRequest("Organization already exists."); 
             }
         }
 
@@ -161,6 +160,7 @@ namespace CE_API_V2.Controllers
         {
             var updatedModel = _mapper.Map<CountryModel>(updatedCreateCountry);
             updatedModel.Id = id;
+
             var result = _administrativeEntitiesUow.UpdateCountry(updatedModel);
             var country = _mapper.Map<CreateCountry>(result);
 

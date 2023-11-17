@@ -42,7 +42,6 @@ namespace CE_API_V2.UnitOfWorks
             var props = scoringRequest.GetType().GetProperties();
             var template = await _templateService.GetTemplate();
 
-
             foreach (var prop in props)
             {
                 if (prop.PropertyType == typeof(BiomarkerValue<int>))
@@ -65,6 +64,7 @@ namespace CE_API_V2.UnitOfWorks
                     propWithUnit.UnitType = "SI";
                 }
             }
+
             return scoringRequest;
         }
         private static float FindConversionFactor<T>(BiomarkerValue<T> propWithUnit, PropertyInfo prop, CadRequestSchema template)

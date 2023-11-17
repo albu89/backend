@@ -1,16 +1,12 @@
 ﻿using CE_API_V2.Constants;
 using CE_API_V2.Models.DTO;
-using CE_API_V2.Services;
 using CE_API_V2.Services.Interfaces;
-using CE_API_V2.UnitOfWorks;
 using CE_API_V2.UnitOfWorks.Interfaces;
 using CE_API_V2.Utility;
 using CE_API_V2.Utility.CustomAnnotations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
-using Serilog;
-using Serilog.Context;
 
 namespace CE_API_V2.Controllers
 {
@@ -60,7 +56,7 @@ namespace CE_API_V2.Controllers
                 locale = LocalizationConstants.DefaultLocale;
             }
             var template = await _biomarkersTemplateService.GetTemplate(locale);
-            
+
             var idInformation = _userInformationExtractor.GetUserIdInformation(User);
             var user = _userUOW.GetUser(idInformation.UserId, idInformation);
             var userId = defaultOrder ? string.Empty : user.UserId;

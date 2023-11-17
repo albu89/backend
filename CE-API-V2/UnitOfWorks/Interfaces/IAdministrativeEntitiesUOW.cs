@@ -31,7 +31,7 @@ public interface IAdministrativeEntitiesUOW
     /// </summary>
     /// <param name="organization">The country to be added.</param>
     /// <returns>The added organization model if the operation was successful.</returns>
-    public OrganizationModel? AddOrganizations(OrganizationModel organization);
+    public OrganizationModel? AddOrganization(OrganizationModel organization);
 
     /// <summary>
     /// Updates a country if it is present in the database.

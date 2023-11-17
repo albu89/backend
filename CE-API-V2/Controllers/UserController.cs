@@ -28,7 +28,6 @@ namespace CE_API_V2.Controllers
         private readonly IInputValidationService _inputValidationService;
         private readonly IUserUOW _userUOW;
         private readonly IUserInformationExtractor _userInformationExtractor;
-        private readonly IAdministrativeEntitiesUOW _administrativeEntitiesUow;
         private readonly UserHelper _userHelper;
         private readonly JsonStringLocalizerFactory _factory;
         private readonly IStringLocalizer _loc;
@@ -44,7 +43,6 @@ namespace CE_API_V2.Controllers
             _userUOW = userUOW;
             _inputValidationService = inputValidationService;
             _userInformationExtractor = userInformationExtractor;
-            _administrativeEntitiesUow = administrativeEntitiesUow;
             _userHelper = userHelper;
             _factory = new JsonStringLocalizerFactory();
             _loc = _factory.Create(this.GetType());
@@ -94,7 +92,7 @@ namespace CE_API_V2.Controllers
             if (idInformation.UserId.Equals("") ||
                 idInformation.UserId.Equals("anonymous"))
             {
-                return BadRequest();
+                return StatusCode(500);
             }
 
             var userModel = _userHelper.MapToUserModel(user, idInformation);

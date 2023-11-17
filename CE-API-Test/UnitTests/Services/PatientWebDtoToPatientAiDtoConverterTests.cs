@@ -1,9 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
-using CE_API_Test.TestUtilities;
+﻿using CE_API_Test.TestUtilities;
 using CE_API_V2.Models;
 using CE_API_V2.Models.DTO;
 using CE_API_V2.Services;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace CE_API_Test.UnitTests.Services
 {
@@ -19,7 +19,7 @@ namespace CE_API_Test.UnitTests.Services
         }
 
         [Test]
-        public async Task ConvertToAiDto_GivenMockedDto_ReturnConvertedObject()
+        public void ConvertToAiDto_GivenMockedDto_ReturnConvertedObject()
         {
             //Arrange
 
@@ -30,6 +30,20 @@ namespace CE_API_Test.UnitTests.Services
             convertedObject.Should().NotBeNull();
             convertedObject.Should().BeOfType(typeof(AiDto));
             AssertPropertiesNotNull(convertedObject);
+        }
+
+        [Test]
+        public void ConvertToAiDto_GivenNull_ReturnConvertedObject()
+        {
+            //Arrange
+            Biomarkers? invalidBiomarkers = null;
+
+            //Act
+            var convertToAiDtoTask= () => DtoConverter.ConvertToAiDto(invalidBiomarkers);
+
+            //Assert
+            convertToAiDtoTask.Should().NotBeNull();
+            convertToAiDtoTask.Should().Throw<Exception>();
         }
 
         private void AssertPropertiesNotNull(AiDto aiDto)

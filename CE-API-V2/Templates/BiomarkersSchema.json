@@ -87,12 +87,12 @@
         "conversionFactor": 1,
         "options": [
           {
-            "value": "Male",
+            "value": "male",
             "sideEffectId": "",
             "sideEffectValue": ""
           },
           {
-            "value": "Female",
+            "value": "female",
             "sideEffectId": "",
             "sideEffectValue": ""
           }
@@ -120,7 +120,7 @@
             "sideEffectValue": ""
           },
           {
-            "value": "possible",
+            "value": "atypical",
             "sideEffectId": "",
             "sideEffectValue": ""
           },
