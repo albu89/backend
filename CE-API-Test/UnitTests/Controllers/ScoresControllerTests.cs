@@ -1,7 +1,10 @@
-﻿using System.Security.Claims;
+﻿using System.Net;
+using System.Security.Claims;
 using AutoMapper;
 using CE_API_Test.TestUtilities;
+using CE_API_Test.TestUtilities.Test;
 using CE_API_V2.Controllers;
+using CE_API_V2.Data;
 using CE_API_V2.Hasher;
 using CE_API_V2.Models;
 using CE_API_V2.Models.DTO;
@@ -694,6 +697,30 @@ namespace CE_API_Test.UnitTests.Controllers
             // Assert
             result.Should().NotBeNull();
             result.Should().BeOfType(typeof(BadRequestObjectResult));
+        }
+
+        [Test]
+        public async Task ScoringControllerConcurrencyTest()
+        {
+            var app = new CardioExplorerServer
+            {
+                Environment = Constants.TestEnvironment
+            };
+            var client = app.CreateClient();
+
+            var response = new List<HttpResponseMessage>();
+
+            for (int i = 0; i < 15; i++)
+            {
+                client.DefaultRequestHeaders.Add(TestAuthHandler.UserId, $"{i}");
+                response.Add((await client.PostAsync("/api/scores/request", null)));
+            }
+
+            for (int i = 0; i < 15; i++)
+            {
+                var expectedCode = i < 15 ? HttpStatusCode.BadRequest : HttpStatusCode.TooManyRequests;
+                response[i].StatusCode.Should().Be(expectedCode);
+            }
         }
 
         private void SetupMockedScoringUOW(Task<ScoringResponse> mockedResponseTask, Task<ScoringRequestModel> mockedRequestTask)
