@@ -23,6 +23,7 @@ namespace CE_API_V2.Utility
             storedUser.EMailAddress = UpdatePropertyIfChanged(updatedUser.EMailAddress, storedUser.EMailAddress);
             storedUser.Language = UpdatePropertyIfChanged(updatedUser.Language, storedUser.Language);
             storedUser.UnitLabValues = UpdatePropertyIfChanged(updatedUser.UnitLabValues, storedUser.UnitLabValues);
+            storedUser.Billing = UpdatePropertyIfChanged(updatedUser.Billing, storedUser.Billing);
 
             return storedUser;
         }

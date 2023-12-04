@@ -70,7 +70,8 @@ public static class ConfigurationUtilities
         services.AddScoped<IScoreSummaryUtility, ScoreSummaryUtility>();
         services.AddScoped<IResponsibilityDeterminer, ResponsibilityDeterminer>();
         services.AddScoped<IAdministrativeEntitiesUOW, AdministrativeEntitiesUOW>();
-        services.AddScoped<IEmailValidator, EmailValidator>(); 
+        services.AddScoped<IEmailValidator, EmailValidator>();
+        services.AddScoped<IUserInputTemplateService, UserInputTemplateService>();
 
         #endregion
 

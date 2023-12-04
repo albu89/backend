@@ -21,9 +21,9 @@ namespace CE_API_V2.Utility.CustomAnnotations
         /// <param name="context"></param>
         public void OnActionExecuting(ActionExecutingContext context)
         {
-            if (!AnyUserAllowed(context.ActionDescriptor) && UserAccountIsInActive(context))
+            if (!AnyUserAllowed(context.ActionDescriptor))
             {
-                context.Result = new ForbidResult();
+                context.Result = DetermineResult(context);
             }
         }
 
@@ -35,8 +35,8 @@ namespace CE_API_V2.Utility.CustomAnnotations
         public void OnActionExecuted(ActionExecutedContext context)
         {
         }
-        
-        private bool UserAccountIsInActive(ActionExecutingContext context)
+
+        private IActionResult? DetermineResult(ActionExecutingContext context)
         {
             _serviceProvider = context.HttpContext.RequestServices;
 
@@ -45,17 +45,24 @@ namespace CE_API_V2.Utility.CustomAnnotations
 
             if (userInformation is null)
             {
-                return true;
+                return new ObjectResult("Could not retrieve user information")
+                {
+                    StatusCode = 404
+                };
             }
 
             var user = userUow.GetUser(userInformation.UserId, userInformation);
 
             if (user is null)
             {
-                return true;
+                return new ObjectResult("User was not found")
+                {
+                    StatusCode = 404
+                };
+
             }
 
-            return !user.IsActive;
+            return user.IsActive ? null : new ForbidResult();
         }
 
         private UserIdsRecord GetUserId(ActionExecutingContext context)
@@ -67,7 +74,7 @@ namespace CE_API_V2.Utility.CustomAnnotations
 
         private T GetService<T>() where T : notnull => _serviceProvider.GetRequiredService<T>();
 
-        private static bool AnyUserAllowed(ActionDescriptor actionDescriptor) 
+        private static bool AnyUserAllowed(ActionDescriptor actionDescriptor)
             => actionDescriptor.EndpointMetadata.Any(e => e is AllowInActiveUserAttribute);
     }
 

@@ -15,18 +15,21 @@ namespace CE_API_V2.UnitOfWorks
 {
     public class UserUOW : IUserUOW
     {
+        private readonly ICommunicationService _communicationService;
+        private readonly IOrganisationUOW _organisationUOW;
         private readonly CEContext _context;
         private IGenericRepository<UserModel> _userRepository;
         private IGenericRepository<BiomarkerOrderModel>? biomarkerOrderRepository;
-        private readonly ICommunicationService _communicationService;
-        private readonly IOrganisationUOW _organisationUOW;
+        private IGenericRepository<BillingModel>? _billingRepository;
 
         public UserUOW(CEContext context, ICommunicationService communicationService, IOrganisationUOW organisationUOW)
         {
             _context = context;
             _userRepository = new GenericRepository<UserModel>(_context);
+            _billingRepository = new GenericRepository<BillingModel>(_context);
             _communicationService = communicationService;
             _organisationUOW = organisationUOW;
+
         }
 
         public IGenericRepository<UserModel> UserRepository
@@ -44,7 +47,13 @@ namespace CE_API_V2.UnitOfWorks
                 return biomarkerOrderRepository;
             }
         }
-        
+
+        public IGenericRepository<BillingModel> BillingRepository
+        {
+            get => _billingRepository;
+            internal set => _billingRepository = value;
+        }
+
         /// <summary>
         /// Order the schema of CAD Scoring Requests
         /// </summary>
@@ -60,7 +69,7 @@ namespace CE_API_V2.UnitOfWorks
             if (!string.IsNullOrEmpty(userId))
             {
                 List<BiomarkerOrderModel> orders = BiomarkerOrderRepository.Get(e => e.UserId == userId).OrderBy(x => x.OrderNumber).ToList();
-            
+
                 // Set indices of MedicalHistory
                 foreach (var entry in biomarkersSchemas.MedicalHistory)
                 {
@@ -71,7 +80,7 @@ namespace CE_API_V2.UnitOfWorks
                     }
                     entry.OrderIndex = orderEntry.OrderNumber;
                 }
-            
+
                 // Set indices of LabResults
                 foreach (var entry in biomarkersSchemas.LabResults)
                 {
@@ -82,12 +91,12 @@ namespace CE_API_V2.UnitOfWorks
                     }
                     entry.OrderIndex = orderEntry.OrderNumber;
                     entry.PreferredUnit = orderEntry.PreferredUnit;
-                }    
+                }
             }
 
             biomarkersSchemas.MedicalHistory = biomarkersSchemas.MedicalHistory.OrderBy(x => x.OrderIndex).ToArray();
             biomarkersSchemas.LabResults = biomarkersSchemas.LabResults.OrderBy(x => x.OrderIndex).ToArray();
-            
+
             return biomarkersSchemas;
         }
 
@@ -156,10 +165,9 @@ namespace CE_API_V2.UnitOfWorks
             var orga = _organisationUOW.GetOrganisationWithTenantID(userInfo.TenantId);
             var countOfActiveUserInOrga = _userRepository.Get(x => x.TenantID == userInfo.TenantId && x.IsActive == true)
                                                                 .Count();
-
             if (orga != null && orga.Userquota > countOfActiveUserInOrga)
                 return true;
-            else 
+            else
                 return false;
         }
 
@@ -186,9 +194,29 @@ namespace CE_API_V2.UnitOfWorks
             return storedUser;
         }
 
+        public async Task<BillingModel> StoreBilling(BillingModel billingModel)
+        {
+            try
+            {
+                BillingRepository!.Insert(billingModel);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                throw new Exception("Error storing billing");
+            }
+
+            var storedBilling = BillingRepository.GetByGuid(billingModel.Id);
+
+            return storedBilling;
+        }
+
         public UserModel? GetUser(string userId, UserIdsRecord userInfo)
         {
             var user = UserRepository.GetById(userId);
+
+            if (user is null) 
+                return null;
 
             var isSystemAdmin = userInfo.Role is UserRole.SystemAdmin;
             var isTenantAdmin = userInfo.Role is UserRole.Admin && userInfo.TenantId == user.TenantID;
@@ -227,13 +255,13 @@ namespace CE_API_V2.UnitOfWorks
             {
                 throw new Exception("You are not allowed to modify this user.");
             }
-            
+
             var updatedUserModel = UserModelUpdater.UpdateUserModel(updatedUser, storedUser, out _);
+            
             if (userInfo.Role is (UserRole.Admin or UserRole.SystemAdmin))
             {
                 updatedUserModel = UserModelUpdater.UpdatePrivilegedData(updatedUser, storedUser, out _);
             }
-
             try
             {
                 UserRepository.Update(updatedUserModel);
@@ -263,8 +291,23 @@ namespace CE_API_V2.UnitOfWorks
             {
                 return _userRepository.Get();
             }
-            
+
             return _userRepository.Get(u => u.TenantID == userInfo.TenantId);
+        }
+
+        /// <summary>
+        /// Returns the seperate billing information which belongs to a specific user
+        /// </summary>
+        /// <param name="BillingModel">Model class of the billing object</param>
+        /// <returns></returns>
+        public BillingModel? GetBilling(string userId)
+        {
+            var user = UserRepository!.GetById(userId);
+
+            if (user is null) 
+                return null;
+
+            return _billingRepository!.GetByGuid(user.BillingId);
         }
     }
 }

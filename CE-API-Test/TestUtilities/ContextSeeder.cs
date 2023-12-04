@@ -26,5 +26,18 @@ namespace CE_API_Test.TestUtilities
             ceContext.Users.Update(userModel);
             ceContext.SaveChanges();
         }
+
+        public static void RemoveUsers(CEContext ceContext, UserModel userModel)
+        {
+            if (!ceContext.Users.Any())
+            {
+                return;
+            }
+
+            var users = ceContext.Users;
+            ceContext.Users.RemoveRange(users);
+
+            ceContext.SaveChanges();
+        }
     }
 }
