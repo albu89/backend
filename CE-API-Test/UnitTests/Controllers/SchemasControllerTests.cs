@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using CE_API_Test.TestUtilities;
 using CE_API_V2.Controllers;
-using CE_API_V2.Models;
 using CE_API_V2.Models.DTO;
 using CE_API_V2.Models.Mapping;
 using CE_API_V2.Models.Records;
@@ -12,7 +11,6 @@ using CE_API_V2.Utility;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Moq;
-using NSubstitute;
 
 namespace CE_API_Test.UnitTests.Controllers;
 
@@ -26,7 +24,6 @@ public class SchemasControllerTests
     private IScoreSummaryUtility _scoreSummaryUtility;
     private IUserUOW _userUow;
     private IConfigurationRoot _configuration;
-    private IUserInputTemplateService _userInputTemplateService;
 
     [OneTimeSetUp]
     public async Task Setup()
@@ -50,23 +47,22 @@ public class SchemasControllerTests
             };
 
         var configuration1 = new ConfigurationBuilder().AddInMemoryCollection(inMemSettings!).Build();
-        var template = await _biomarkersTemplateService.GetTemplate();
 
+        _userHelper = new UserHelper(mapper, configuration1);
+
+        _scoreSummaryUtility = new ScoreSummaryUtility(mapper, _configuration);
+
+        var template = await _biomarkersTemplateService.GetTemplate();
         var userUow = new Mock<IUserUOW>();
         userUow.Setup(x => x.GetBiomarkerOrders(It.IsAny<string>())).Returns(MockDataProvider.GetMockedOrderModels());
         userUow.Setup(x => x.GetUser(It.IsAny<string>(), It.IsAny<UserIdsRecord>())).Returns(MockDataProvider.GetMockedUserModel);
-        userUow.Setup(x => x.OrderTemplate(It.IsAny<CadRequestSchema>(), It.IsAny<string>())).Returns(template);
-
-        var userInputTemplateService = new Mock<IUserInputTemplateService>();
-        userInputTemplateService.Setup(x => x.GetTemplate(It.IsAny<UserIdsRecord>(), It.IsAny<string>()))
-            .Returns(Task.FromResult(new UserInputFormSchema { City = "mockedcity"}));
-
-        _userInputTemplateService = userInputTemplateService.Object;
-        _userHelper = new UserHelper(mapper, configuration1);
-        _scoreSummaryUtility = new ScoreSummaryUtility(mapper, _configuration);
-        _userUow = userUow.Object;
         _scoringTemplateService = new ScoringTemplateService(mapper, _biomarkersTemplateService, _scoreSummaryUtility, userUow.Object);
-        _schemasController = new SchemasController(_biomarkersTemplateService, _scoringTemplateService, _userUow, new UserInformationExtractor(), _userInputTemplateService, _userHelper);
+        userUow.Setup(x => x.OrderTemplate(It.IsAny<CadRequestSchema>(), It.IsAny<string>())).Returns(template);
+        _userUow = userUow.Object;
+        
+        _scoringTemplateService = new ScoringTemplateService(mapper, _biomarkersTemplateService, _scoreSummaryUtility, userUow.Object);
+        _userUow = userUow.Object;
+        _schemasController = new SchemasController(_biomarkersTemplateService, _scoringTemplateService, _userUow, new UserInformationExtractor(), _userHelper);
     }
 
     [Test]
@@ -90,7 +86,7 @@ public class SchemasControllerTests
     }
 
     [Test]
-    public async Task GetInputFormTemplate_GivenInvalidLocale_ReturnsOkObjectResultContainingCadRequestSchema()
+    public async Task GetInputFormTemplate_GivenInvalidLocale_ReturnsAllBiomarkersWithDefaultLocale()
     {
         //Arrange
         var locale = "invalid";
@@ -206,62 +202,5 @@ public class SchemasControllerTests
 
         var scoreSchema = okObjectResult.Value as ScoreSchema;
         scoreSchema.CadDefinition.Should().Be(expectedScoreHeader);
-    }
-
-    [Test]
-    public async Task GetUserInputFormTemplate_GivenCorrectLocale_ExpectedOkObjectResult()
-    {
-        //Arrange
-        var locale = "en-GB";
-        var getTemplateTask = () => _schemasController.GetUserInputFormTemplate(locale);
-
-        //Act 
-        var result = await getTemplateTask.Should().NotThrowAsync();
-
-        //Assert
-        result.Subject.Should().BeOfType<OkObjectResult>();
-
-        var template = ((OkObjectResult)result.Subject).Value;
-        template.Should().NotBeNull();
-        template.Should().BeOfType<UserInputFormSchema>();
-        ((UserInputFormSchema)template!).City.Should().Be("mockedcity");
-    }
-
-    [Test]
-    public async Task GetUserInputFormTemplate_GivenInvalidLocale_ReturnsOkObjectResult()
-    {
-        //Arrange
-        var locale = "invalid";
-        var getTemplateTask = () => _schemasController.GetUserInputFormTemplate(locale);
-
-        //Act 
-        var result = await getTemplateTask.Should().NotThrowAsync();
-
-        //Assert 
-        result.Subject.Should().BeOfType<OkObjectResult>();
-
-        var template = ((OkObjectResult)result.Subject).Value;
-        template.Should().NotBeNull();
-        template.Should().BeOfType<UserInputFormSchema>();
-        ((UserInputFormSchema)template!).City.Should().Be("mockedcity");
-    }
-
-    [Test]
-    public async Task GetUserInputFormTemplate_GivenNoParameter_ReturnsOkObjectResultWithDefaultLocale()
-    {
-        //Arrange
-        var getTemplateTask = () => _schemasController.GetUserInputFormTemplate();
-
-        //Act 
-        var result = await getTemplateTask.Should().NotThrowAsync();
-
-        //Assert 
-        result.Subject.Should().BeOfType<OkObjectResult>();
-
-        var template = ((OkObjectResult)result.Subject).Value;
-        template.Should().NotBeNull();
-        template.Should().BeOfType<UserInputFormSchema>();
-        ((UserInputFormSchema)template!).City.Should().Be("mockedcity");
-
     }
 }

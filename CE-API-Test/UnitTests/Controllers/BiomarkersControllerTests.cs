@@ -23,7 +23,6 @@ public class BiomarkersControllerTests
     private IScoringTemplateService _scoringTemplateService;
     private IUserUOW _userUow;
     private IConfigurationRoot _configuration;
-    private IUserInputTemplateService _userInputTemplateService;
     private UserHelper _userHelper;
 
     [OneTimeSetUp]
@@ -58,13 +57,9 @@ public class BiomarkersControllerTests
         var userUowMock = new Mock<IUserUOW>();
         userUowMock.Setup(u => u.GetUser(It.IsAny<string>(), It.IsAny<UserIdsRecord>())).Returns(new UserModel(){ UserId = "123"});
         userUowMock.Setup(u => u.OrderTemplate(It.IsAny<CadRequestSchema>(), It.IsAny<string>())).Returns(_biomarkersTemplateService.GetTemplate().GetAwaiter().GetResult());
-
-        var userInputTemplateService = new Mock<IUserInputTemplateService>();
-        _userInputTemplateService = userInputTemplateService.Object;
-
         _userUow = userUowMock.Object;
         _scoringTemplateService = new ScoringTemplateService(mapper, _biomarkersTemplateService, scoreSummaryUtility, _userUow);
-        _biomarkersController = new SchemasController(_biomarkersTemplateService, _scoringTemplateService, _userUow, extractorMock.Object, _userInputTemplateService, _userHelper);
+        _biomarkersController = new SchemasController(_biomarkersTemplateService, _scoringTemplateService, _userUow, extractorMock.Object, _userHelper);
     }
 
     [Test]

@@ -6,7 +6,7 @@ namespace CE_API_Test.MapperTests;
 
 [TestFixture]
 public class ManualMapperTests
-{
+{ 
     [Test]
     public void ToBiomarkerOrderModels_GivenBiomarkerOrder_ReturnsMappedBiomarkerOrderModelList()
     {
@@ -35,7 +35,7 @@ public class ManualMapperTests
 
         var biomarkerOrderModelList = new List<BiomarkerOrderModel>()
         {
-            alatOrderModel,
+            alatOrderModel, 
             weightOrderModel
         };
 
@@ -57,50 +57,10 @@ public class ManualMapperTests
 
             if (property.Name.ToLower() == weightOrderModel.BiomarkerId)
             {
-                ((BiomarkerOrderEntry)value!).OrderNumber.Should().Be(weightOrderModel.OrderNumber);
-            }
+                ((BiomarkerOrderEntry)value!).OrderNumber.Should().Be(weightOrderModel.OrderNumber); }
         }
     }
 
-    [Test]
-    public void MapFromBillingModelToBillingTemplate_GivenCorrectSource_ExpectedCorrectlyMappedDestination()
-    {
-        //Arrange
-        var billingModel = new BillingModel()
-        {
-            Id = Guid.NewGuid(),
-            BillingName = "BillingNameMock",
-            BillingAddress = "BillingAddressMock",
-            BillingZip = "BillingZipMock",
-            BillingCity = "BillingCityMock",
-            BillingCountry = "BillingCountryMock",
-            BillingCountryCode = "BillingCountryCodeMock",
-            BillingPhone = "BillingPhoneMock",
-            UserModel = new UserModel()
-        };
-
-        var resultBillingTemplate = new BillingTemplate();
-
-        //Act
-        var result = ManualMapper.MapFromBillingModelToBillingTemplate(billingModel, resultBillingTemplate);
-
-        //Assert
-        result.Should().NotBeNull();
-        result.BillingName.Should().Be("BillingNameMock");
-        result.BillingAddress.Should().Be("BillingAddressMock");
-        result.BillingZip.Should().Be("BillingZipMock");
-        result.BillingCity.Should().Be("BillingCityMock");
-        result.BillingCountry.Should().Be("BillingCountryMock");
-        result.BillingCountryCode.Should().Be("BillingCountryCodeMock");
-        result.BillingPhone.Should().Be("BillingPhoneMock");
-        var propproperties = result.GetType().GetProperties();
-        var headerProperties = propproperties.Where(x => x.Name.Contains("Header")).ToList();
-        foreach (var property in headerProperties)
-        {
-            property.GetValue(result).Should().BeNull();
-        }
-    }
-    
     private BiomarkerOrderModel CreateBiomarkerOrderModel(string biomarkerId, int orderNumber)
     {
         return new()

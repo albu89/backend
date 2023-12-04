@@ -290,18 +290,5 @@ namespace CE_API_V2.Models.Mapping
 
             return result.ToArray();
         }
-
-        public static BillingTemplate MapFromBillingModelToBillingTemplate(BillingModel billingModel, BillingTemplate billingTemplate)
-        {
-            billingTemplate.BillingCity = billingModel.BillingCity;
-            billingTemplate.BillingName = billingModel.BillingName;
-            billingTemplate.BillingCountryCode = billingModel.BillingCountryCode;
-            billingTemplate.BillingCountry = billingModel.BillingCountry;
-            billingTemplate.BillingAddress = billingModel.BillingAddress;
-            billingTemplate.BillingZip = billingModel.BillingZip;
-            billingTemplate.BillingPhone = billingModel.BillingPhone;
-
-            return billingTemplate;
-        }
     }
 }
