@@ -1,5 +1,4 @@
 ﻿using CE_API_V2.Constants;
-using CE_API_V2.Models;
 using CE_API_V2.Models.DTO;
 using CE_API_V2.Services.Interfaces;
 using CE_API_V2.UnitOfWorks.Interfaces;
@@ -20,7 +19,6 @@ namespace CE_API_V2.Controllers
     {
         private readonly IBiomarkersTemplateService _biomarkersTemplateService;
         private readonly IScoringTemplateService _scoringTemplateService;
-        private readonly IUserInputTemplateService _userInputTemplateService;
         private readonly IUserUOW _userUOW;
         private readonly IUserInformationExtractor _userInformationExtractor;
         private readonly UserHelper _userHelper;
@@ -29,14 +27,12 @@ namespace CE_API_V2.Controllers
                                  IScoringTemplateService scoringTemplateService, 
                                  IUserUOW userUOW, 
                                  IUserInformationExtractor userInformationExtractor,
-                                 IUserInputTemplateService userInputTemplateService,
                                  UserHelper userHelper)
         {
             _biomarkersTemplateService = biomarkersTemplateService;
             _scoringTemplateService = scoringTemplateService;
             _userUOW = userUOW;
             _userInformationExtractor = userInformationExtractor;
-            _userInputTemplateService = userInputTemplateService;
             _userHelper = userHelper;
         }
 
@@ -65,31 +61,6 @@ namespace CE_API_V2.Controllers
             var user = _userUOW.GetUser(idInformation.UserId, idInformation);
             var userId = defaultOrder ? string.Empty : user.UserId;
             var schema = _userUOW.OrderTemplate(template, userId);
-
-            return schema != null ? Ok(schema) : NotFound();
-        }
-
-        /// <summary>
-        /// Get the schema the for update user input form
-        /// </summary>
-        /// <remarks>
-        /// Returns a list of user inputform objects containing all information needed to build a update user page.
-        /// Information is returned in the requested locale if available, otherwise in english.
-        /// If the Userprofile is inactive, Status 403 is returned.
-        /// </remarks>
-        /// <param name="locale" example="de-CH">The requested language and region of the requested resource in IETF BCP 47 format.</param>
-        [AllowInActiveUser]
-        [HttpGet("userinputform")]
-        [Produces("application/json", Type = typeof(UserInputFormSchema)), SwaggerResponse(200, "Userinputformschema containing all necessary information for creating an update user page.", type: typeof(UserInputFormSchema))]
-        public async Task<IActionResult> GetUserInputFormTemplate(string? locale = "en-GB")
-        {
-            var idInformation = _userInformationExtractor.GetUserIdInformation(User);
-
-            if (string.IsNullOrEmpty(locale))
-            {
-                locale = LocalizationConstants.DefaultLocale;
-            }
-            var schema = await _userInputTemplateService.GetTemplate(idInformation, locale);
 
             return schema != null ? Ok(schema) : NotFound();
         }

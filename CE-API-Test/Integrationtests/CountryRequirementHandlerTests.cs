@@ -13,10 +13,11 @@ namespace CE_API_Test.Integrationtests
         public async Task CountryRequirementHandler_GivenCountryCodes_ExpectedAccordingStatusCode(string countryCode, HttpStatusCode expectedStatusCode)
         {
             //Arrange
+            bool isActive = true;
             var app = new CardioExplorerServer(countryCode);
             var client = app.CreateClient();
 
-            var user = CreateUserModel();
+            var user = CreateUserModel(isActive);
             DBContextUtility.PrepareDbContext(app, user);
 
             //Act
@@ -25,12 +26,11 @@ namespace CE_API_Test.Integrationtests
             //Assert
             response.StatusCode.Should().Be(expectedStatusCode);
         }
-
-        private UserModel CreateUserModel()
+        private UserModel CreateUserModel(bool isActive)
         {
             var user = MockDataProvider.GetMockedUserModel();
             user.UserId = "UserId";
-            user.IsActive = true;
+            user.IsActive = isActive;
             user.BiomarkerOrders = null;
 
             return user;

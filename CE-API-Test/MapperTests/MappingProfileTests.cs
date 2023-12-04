@@ -212,7 +212,7 @@ public class MappingProfileTests
 
         //Act
         var scoringResponse = _mapper.Map<ScoringResponse>(scoringResponseModel);
-
+            
         //Assert
         scoringResponse.classifier_score.Should().Be(scoringResponseModel.classifier_score);
         scoringResponse.RequestId.Should().Be(scoringResponseModel.RequestId);
@@ -235,6 +235,22 @@ public class MappingProfileTests
         countryModel.Should().NotBeNull();
         countryModel.Name.Should().BeEquivalentTo(createCountry.Name);
         countryModel.ContactEmail.Should().BeEquivalentTo(createCountry.ContactEmail);
+    }
+
+    [Test]
+    public void CountryModelToCountryModel()
+    {
+        //Arrange
+        var countryModel = GetMockedCountryModel();
+
+        //Act
+        var mappedCountryModel = _mapper.Map<CountryModel>(countryModel);
+
+        //Assert
+        mappedCountryModel.Should().NotBeNull();
+        mappedCountryModel.Id.Should().NotBe(countryModel.Id); // Id is not mapped
+        mappedCountryModel.Name.Should().BeEquivalentTo(countryModel.Name);
+        mappedCountryModel.ContactEmail.Should().BeEquivalentTo(countryModel.ContactEmail);
     }
 
     [Test]
@@ -290,7 +306,7 @@ public class MappingProfileTests
     public void OrganizationModelToOrganizationModel()
     {
         //Arrange
-        var organizationModel = GetOrganizationModel();
+        var organizationModel = GetOrganizationModel(); 
 
         //Act
         var mappedOrganizationModel = _mapper.Map<OrganizationModel>(organizationModel);
@@ -339,7 +355,7 @@ public class MappingProfileTests
     {
         //Arrange
         var requestModel = GetScoringRequestModelMock();
-        requestModel.LatestBiomarkers.Response = new ScoringResponseModel() { Risk = "MockRisk", RiskClass = 1, classifier_score = 2.0 };
+        requestModel.LatestBiomarkers.Response = new ScoringResponseModel() {Risk = "MockRisk", RiskClass = 1, classifier_score = 2.0};
 
         //Act
         var simpleScore = _mapper.Map<SimpleScore>(requestModel);
@@ -421,6 +437,7 @@ public class MappingProfileTests
         recommendationCategory.Id.Should().Be(categoryLocalizedPart.Id);
     }
 
+
     [Test]
     public void RecommendationCategoryStaticPartToScoringResponse()
     {
@@ -471,310 +488,6 @@ public class MappingProfileTests
         userModel.ScoringRequestModels.Should().BeNull();
     }
 
-    [Test]
-    public void UserInputFormSchemaHeadersToUserInputFormSchema()
-    {
-        //Arrange
-        var expectedMockedStringValue = "MockSchemaHeaders";
-        var expectedBillingHeaders = MockDataProvider.GetSchemaHeaders();
-        var userInputFormSchemaHeader = MockDataProvider.GetInPutFormSchemaHeaders();
-
-        //Act
-        var userInputFormSchema = _mapper.Map<UserInputFormSchema>(userInputFormSchemaHeader);
-
-        //Assert
-        userInputFormSchema.Should().NotBeNull();
-        userInputFormSchema.ClinicalSettingHeader.Should().Be(expectedMockedStringValue);
-        userInputFormSchema.DepartmentHeader.Should().Be(expectedMockedStringValue);
-        userInputFormSchema.OrganizationHeader.Should().Be(expectedMockedStringValue);
-        userInputFormSchema.SalutationHeader.Should().Be(expectedMockedStringValue);
-        userInputFormSchema.TitleHeader.Should().Be(expectedMockedStringValue);
-        userInputFormSchema.SurnameHeader.Should().Be(expectedMockedStringValue);
-        userInputFormSchema.FirstNameHeader.Should().Be(expectedMockedStringValue);
-        userInputFormSchema.ProfessionalSpecialisationHeader.Should().Be(expectedMockedStringValue);
-        userInputFormSchema.PreferredLabHeader.Should().Be(expectedMockedStringValue);
-        userInputFormSchema.AddressHeader.Should().Be(expectedMockedStringValue);
-        userInputFormSchema.CityHeader.Should().Be(expectedMockedStringValue);
-        userInputFormSchema.ZipCodeHeader.Should().Be(expectedMockedStringValue);
-        userInputFormSchema.CountryCodeHeader.Should().Be(expectedMockedStringValue);
-        userInputFormSchema.CountryHeader.Should().Be(expectedMockedStringValue);
-        userInputFormSchema.TelephoneNumberHeader.Should().Be(expectedMockedStringValue);
-        userInputFormSchema.EMailAddressHeader.Should().Be(expectedMockedStringValue);
-        userInputFormSchema.LanguageHeader.Should().Be(expectedMockedStringValue);
-        userInputFormSchema.UnitLabValuesHeader.Should().Be(expectedMockedStringValue);
-        userInputFormSchema.IsActiveHeader.Should().Be(expectedMockedStringValue);
-        userInputFormSchema.IsSeparateBillingHeader.Should().Be(expectedMockedStringValue);
-        userInputFormSchema.Billing.Should().BeEquivalentTo(expectedBillingHeaders);
-        userInputFormSchema.ChangeClinicalSettingHeader.Should().Be(expectedMockedStringValue);
-
-        userInputFormSchema.Department.Should().BeNullOrEmpty();
-        userInputFormSchema.Organization.Should().BeNullOrEmpty();
-        userInputFormSchema.Salutation.Should().BeNullOrEmpty();
-        userInputFormSchema.Title.Should().BeNullOrEmpty();
-        userInputFormSchema.Surname.Should().BeNullOrEmpty();
-        userInputFormSchema.FirstName.Should().BeNullOrEmpty();
-        userInputFormSchema.ProfessionalSpecialisation.Should().BeNullOrEmpty();
-        userInputFormSchema.PreferredLab.Should().BeNullOrEmpty();
-        userInputFormSchema.Address.Should().BeNullOrEmpty();
-        userInputFormSchema.City.Should().BeNullOrEmpty();
-        userInputFormSchema.ZipCode.Should().BeNullOrEmpty();
-        userInputFormSchema.CountryCode.Should().BeNullOrEmpty();
-        userInputFormSchema.Country.Should().BeNullOrEmpty();
-        userInputFormSchema.TelephoneNumber.Should().BeNullOrEmpty();
-        userInputFormSchema.EMailAddress.Should().BeNullOrEmpty();
-        userInputFormSchema.Language.Should().BeNullOrEmpty();
-        userInputFormSchema.UnitLabValues.Should().BeNullOrEmpty();
-        userInputFormSchema.IsActive.Should().BeFalse();
-        userInputFormSchema.IsSeparateBilling.Should().BeFalse();
-        userInputFormSchema.ChangeClinicalSetting.Should().BeNullOrEmpty();
-    }
-
-    [Test]
-    public void CreateUserToUserInputFormSchema()
-    {
-        //Arrange
-        var createUser = MockDataProvider.GetCreateUser();
-
-        //Act
-        var userInputFormSchema = _mapper.Map<UserInputFormSchema>(createUser);
-
-        //Assert
-        userInputFormSchema.Should().NotBeNull();
-        userInputFormSchema.ClinicalSettingHeader.Should().BeNullOrEmpty();
-        userInputFormSchema.DepartmentHeader.Should().BeNullOrEmpty();
-        userInputFormSchema.OrganizationHeader.Should().BeNullOrEmpty();
-        userInputFormSchema.SalutationHeader.Should().BeNullOrEmpty();
-        userInputFormSchema.TitleHeader.Should().BeNullOrEmpty();
-        userInputFormSchema.SurnameHeader.Should().BeNullOrEmpty();
-        userInputFormSchema.FirstNameHeader.Should().BeNullOrEmpty();
-        userInputFormSchema.ProfessionalSpecialisationHeader.Should().BeNullOrEmpty();
-        userInputFormSchema.PreferredLabHeader.Should().BeNullOrEmpty();
-        userInputFormSchema.AddressHeader.Should().BeNullOrEmpty();
-        userInputFormSchema.CityHeader.Should().BeNullOrEmpty();
-        userInputFormSchema.ZipCodeHeader.Should().BeNullOrEmpty();
-        userInputFormSchema.CountryCodeHeader.Should().BeNullOrEmpty();
-        userInputFormSchema.CountryHeader.Should().BeNullOrEmpty();
-        userInputFormSchema.TelephoneNumberHeader.Should().BeNullOrEmpty();
-        userInputFormSchema.EMailAddressHeader.Should().BeNullOrEmpty();
-        userInputFormSchema.LanguageHeader.Should().BeNullOrEmpty();
-        userInputFormSchema.UnitLabValuesHeader.Should().BeNullOrEmpty();
-        userInputFormSchema.IsActiveHeader.Should().BeNullOrEmpty();
-        userInputFormSchema.IsSeparateBillingHeader.Should().BeNullOrEmpty();
-        userInputFormSchema.Billing.Should().BeNull();
-        userInputFormSchema.ChangeClinicalSettingHeader.Should().BeNullOrEmpty();
-
-        userInputFormSchema.Salutation.Should().Be("MockedCreateUser");
-        userInputFormSchema.Title.Should().Be("MockedCreateUser");
-        userInputFormSchema.Surname.Should().Be("MockedCreateUser");
-        userInputFormSchema.FirstName.Should().Be("MockedCreateUser");
-        userInputFormSchema.ProfessionalSpecialisation.Should().Be("MockedCreateUser");
-        userInputFormSchema.PreferredLab.Should().Be("MockedCreateUser");
-        userInputFormSchema.Address.Should().Be("MockedCreateUser");
-        userInputFormSchema.City.Should().Be("MockedCreateUser");
-        userInputFormSchema.ZipCode.Should().Be("MockedCreateUser");
-        userInputFormSchema.CountryCode.Should().Be("MockedCreateUser");
-        userInputFormSchema.Country.Should().Be("MockedCreateUser");
-        userInputFormSchema.TelephoneNumber.Should().Be("MockedCreateUser");
-        userInputFormSchema.EMailAddress.Should().Be("MockedCreateUser");
-        userInputFormSchema.Language.Should().Be("MockedCreateUser");
-        userInputFormSchema.UnitLabValues.Should().Be("MockedCreateUser");
-        userInputFormSchema.IsActive.Should().BeTrue();
-        userInputFormSchema.IsSeparateBilling.Should().BeTrue();
-        userInputFormSchema.Billing.Should().BeNull();
-    }
-
-    [Test]
-    public void BillingToBillingTemplate()
-    {
-        //Arrange
-        var mockedValue = "mockedValue";
-        var billing = GetBillingMock(mockedValue);
-
-        var billingHeader = new BillingTemplate()
-        {
-            BillingAddressHeader = "mockedTemplateHeader"
-        };
-
-        //Act
-        _mapper.Map(billing, billingHeader);
-
-        //Assert
-        billingHeader.Should().NotBeNull();
-        billingHeader.BillingCity.Should().Be(mockedValue);
-        billingHeader.BillingAddress.Should().Be(mockedValue);
-        billingHeader.BillingCountry.Should().Be(mockedValue);
-        billingHeader.BillingCountryCode.Should().Be(mockedValue);
-        billingHeader.BillingName.Should().Be(mockedValue);
-        billingHeader.BillingName.Should().Be(mockedValue);
-        billingHeader.BillingPhone.Should().Be(mockedValue);
-        billingHeader.BillingZip.Should().Be(mockedValue);
-    }
-
-    [Test]
-    public void BillingToBillingModel()
-    {
-        //Arrange
-        var mockedValue = "mockedValue";
-        var billing = GetBillingMock(mockedValue);
-
-        //Act
-        var billingModel = _mapper.Map<BillingModel>(billing);
-
-        //Assert
-        var mappedModelProperties = billingModel.GetType().GetProperties().ToList();
-        var billingProperties = billing.GetType().GetProperties().Where(x => !x.Name.Equals("Id") || !x.Name.Equals("UserModel")).ToList(); //Id and UserModel are not present in the source.
-
-        foreach (var mappedProperty in mappedModelProperties)
-        {
-            if (mappedProperty.Name.Equals("Id"))
-            {
-                mappedProperty.GetValue(billingModel).Should().Be(new Guid());
-                continue;
-            }
-            if (mappedProperty.Name.Equals("UserModel"))
-            {
-                mappedProperty.GetValue(billingModel).Should().BeNull();
-                continue;
-            }
-
-            var valueToTest = billingProperties.FirstOrDefault(x => x.Name.Equals(mappedProperty.Name)).GetValue(billing);
-            mappedProperty.GetValue(billingModel).Should().Be(valueToTest);
-        }
-    }
-
-    [Test]
-    public void UserModelToCreateUser()
-    {
-        //Arrange
-        var userModel = MockDataProvider.GetMockedUserModel();
-        var expectedBillingValue = "BillingMock";
-
-        //Act
-        var result = _mapper.Map<CreateUser>(userModel);
-
-        //Assert
-        result.Should().NotBeNull();
-
-        result.ClinicalSetting.Should().Be(userModel.ClinicalSetting);
-        result.ProfessionalSpecialisation.Should().Be(userModel.ProfessionalSpecialisation);
-        result.Department.Should().Be(userModel.Department);
-        result.Organization.Should().Be(userModel.Organization);
-        result.PreferredLab.Should().Be(userModel.PreferredLab);
-        result.Salutation.Should().Be(userModel.Salutation);
-        result.Title.Should().Be(userModel.Title);
-        result.Surname.Should().Be(userModel.Surname);
-        result.FirstName.Should().Be(userModel.FirstName);
-        result.Address.Should().Be(userModel.Address);
-        result.City.Should().Be(userModel.City);
-        result.ZipCode.Should().Be(userModel.ZipCode);
-        result.CountryCode.Should().Be(userModel.CountryCode);
-        result.Country.Should().Be(userModel.Country);
-        result.TelephoneNumber.Should().Be(userModel.TelephoneNumber);
-        result.EMailAddress.Should().Be(userModel.EMailAddress);
-        result.Language.Should().Be(userModel.Language);
-        result.UnitLabValues.Should().Be(userModel.UnitLabValues);
-        result.IsActive.Should().Be(userModel.IsActive);
-        result.IsSeparateBilling.Should().Be(userModel.IsSeparateBilling);
-        result.Billing.Should().NotBeNull();
-        result.Billing!.BillingName.Should().Be(expectedBillingValue);
-        result.Billing.BillingAddress.Should().Be(expectedBillingValue);
-        result.Billing.BillingZip.Should().Be(expectedBillingValue);
-        result.Billing.BillingCity.Should().Be(expectedBillingValue);
-        result.Billing.BillingCountry.Should().Be(expectedBillingValue);
-        result.Billing.BillingCountryCode.Should().Be(expectedBillingValue);
-        result.Billing.BillingPhone.Should().Be(expectedBillingValue);
-    }
-
-    [Test]
-    public void BillingTemplateToBillingModel()
-    {
-        //Arrange
-        var userModel = GetBillingTemplate();
-        var expectedValue = "Mock";
-
-        //Act
-        var result = _mapper.Map<BillingModel>(userModel);
-
-        //Assert
-        result.Should().NotBeNull();
-        result.Id.Should().Be(new Guid());
-        result.BillingName.Should().Be(expectedValue);
-        result.BillingAddress.Should().Be(expectedValue);
-        result.BillingZip.Should().Be(expectedValue);
-        result.BillingCity.Should().Be(expectedValue);
-        result.BillingCountry.Should().Be(expectedValue);
-        result.BillingCountryCode.Should().Be(expectedValue);
-        result.BillingPhone.Should().Be(expectedValue);
-        result.UserModel.Should().BeNull();
-    }
-
-    [Test]
-    public void BillingModelToBilling()
-    {
-        //Arrange
-        var billingModel = GetBillingModel();
-
-        //Act
-        var result = _mapper.Map<Billing>(billingModel);
-
-        //Assert
-        result.BillingName.Should().Be(billingModel.BillingName);
-        result.BillingAddress.Should().Be(billingModel.BillingAddress);
-        result.BillingZip.Should().Be(billingModel.BillingZip);
-        result.BillingCity.Should().Be(billingModel.BillingCity);
-        result.BillingCountry.Should().Be(billingModel.BillingCountry);
-        result.BillingCountryCode.Should().Be(billingModel.BillingCountryCode);
-        result.BillingPhone.Should().Be(billingModel.BillingPhone);
-    }
-
-    private BillingModel GetBillingModel()
-    {
-        return new()
-        {
-            Id = Guid.NewGuid(),
-            BillingName = "Mock",
-            BillingAddress = "Mock",
-            BillingZip = "Mock",
-            BillingCity = "Mock",
-            BillingCountry = "Mock",
-            BillingCountryCode = "Mock",
-            BillingPhone = "Mock",
-            UserModel = new UserModel(),
-        };
-    }
-
-    private BillingTemplate GetBillingTemplate()
-    {
-        return new()
-        {
-            BillingName = "Mock",
-            BillingAddress = "Mock",
-            BillingZip = "Mock",
-            BillingCity = "Mock",
-            BillingCountry = "Mock",
-            BillingCountryCode = "Mock",
-            BillingPhone = "Mock",
-            BillingNameHeader = "Mock",
-            BillingAddressHeader = "Mock",
-            BillingZipHeader = "Mock",
-            BillingCityHeader = "Mock",
-            BillingCountryHeader = "Mock",
-            BillingCountryCodeHeader = "Mock",
-            BillingPhoneHeader = "Mock"
-        };
-    }
-
-    private Billing GetBillingMock(string mockedValue) => new()
-    {
-        BillingCity = mockedValue,
-        BillingCountryCode = mockedValue,
-        BillingAddress = mockedValue,
-        BillingCountry = mockedValue,
-        BillingName = mockedValue,
-        BillingPhone = mockedValue,
-        BillingZip = mockedValue
-    };
-
     private ScoringRequestModel GetScoringRequestModelMock()
     {
         return new()
@@ -799,7 +512,7 @@ public class MappingProfileTests
         return new List<ScoringResponseModel>()
         {
             GetScoringResponseModelMock(),
-        };
+        }; 
     }
 
     private ScoringResponseModel GetScoringResponseModelMock()
@@ -884,7 +597,7 @@ public class MappingProfileTests
 
     private RecommendationCategory GetRecommendationCategory()
     {
-        return new()
+        return new ()
         {
             Id = 0,
             ShortText = "MockShortText",

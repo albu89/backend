@@ -12,6 +12,11 @@ using Microsoft.EntityFrameworkCore;
 using Moq;
 using System.Collections.ObjectModel;
 using System.Security.Claims;
+using CE_API_V2.Models.DTO;
+using CE_API_Test.TestUtilities;
+using CE_API_V2.Models.Records;
+using Azure.Communication.Email;
+using CE_API_V2.Models.Enum;
 using CE_API_V2.Data.Repositories.Interfaces;
 using System.Linq.Expressions;
 
@@ -191,96 +196,6 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
             result.Should().NotBeNull();
             result.TenantID.Should().Be(userIdInfoRecord.TenantId);
             result.UserId.Should().Be(userIdInfoRecord.UserId);
-        }
-
-        [Test]
-        public async Task StoreBilling_GivenValidBilling_ReturnsStoredModel()
-        {
-            //Arrange
-            var sut = new UserUOW(_context, _communicationService, _orgaUOW);
-            var billing = MockDataProvider.GetBillingMock();
-
-            //Act
-            var result = await sut.StoreBilling(billing);
-
-            //Assert
-            result.Should().NotBeNull();
-            result.Id.Should().Be(billing.Id);
-        }
-
-        [Test]
-        public async Task StoreBilling_StoreBillingWithSameId_ThrowsException()
-        {
-            //Arrange
-            var sut = new UserUOW(_context, _communicationService, _orgaUOW);
-            var billing = MockDataProvider.GetBillingMock();
-
-            //Act
-            await sut.StoreBilling(billing);
-            var resultTask = async () => await sut.StoreBilling(billing);
-
-            //Assert
-            await resultTask.Should().ThrowAsync<Exception>();
-        }
-
-        [Test]
-        public async Task GetBilling_GivenCorrectUSerId_ReturnsBilling()
-        {
-            //Arrange
-            var sut = new UserUOW(_context, _communicationService, _orgaUOW);
-            var userId = Guid.NewGuid().ToString();
-
-            var userModel = MockDataProvider.GetMockedUserModel();
-            var userModel2 = MockDataProvider.GetMockedUserModel();
-            userModel.UserId = userId;
-
-            var billing = MockDataProvider.GetBillingMock();
-            billing.UserModel = userModel;
-
-            var billing2 = MockDataProvider.GetBillingMock();
-            billing2.UserModel = userModel2;
-            billing2.Id = Guid.NewGuid();
-
-            //Act
-            await sut.StoreBilling(billing);
-            await sut.StoreBilling(billing2);
-            var result = sut.GetBilling(userId);
-
-            //Assert
-            result.Should().NotBeNull();
-            result.Should().BeOfType<BillingModel>();
-            result.Should().BeEquivalentTo(billing);
-            result.UserModel.UserId.Should().Be(userId);
-            result.UserModel.Should().BeEquivalentTo(userModel);
-        }
-
-        [Test]
-        public async Task GetBilling_GivenInCorrectUserId_ReturnsBilling()
-        {
-            //Arrange
-            var sut = new UserUOW(_context, _communicationService, _orgaUOW);
-            var userId = Guid.NewGuid().ToString();
-
-            var userModel = MockDataProvider.GetMockedUserModel();
-            userModel.UserId = userId;
-            var userModel2 = MockDataProvider.GetMockedUserModel();
-            userModel.UserId = Guid.NewGuid().ToString(); ;
-
-            var billing = MockDataProvider.GetBillingMock();
-            billing.UserModel = userModel;
-
-            var billing2 = MockDataProvider.GetBillingMock();
-            billing2.UserModel = userModel2;
-            billing2.Id = Guid.NewGuid();
-
-            var incorrectUserId = Guid.NewGuid().ToString();
-
-            //Act
-            await sut.StoreBilling(billing);
-            var result = sut.GetBilling(incorrectUserId);
-
-            //Assert
-            result.Should().BeNull();
         }
 
         [Test]
@@ -479,17 +394,13 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
             originalUser.BiomarkerOrders = null;
             _context.Users.Add(originalUser);
             await _context.SaveChangesAsync();
-
-            var originalUser2 = MockDataProvider.GetMockedUserModel();
-            originalUser2.UserId = tenantId2 + "User";
-            originalUser2.TenantID = tenantId2;
-            _context.Users.Add(originalUser2);
+            originalUser.UserId = tenantId2 + "User";
+            originalUser.TenantID = tenantId2;
+            _context.Users.Add(originalUser);
             await _context.SaveChangesAsync();
-
-            var originalUser3= MockDataProvider.GetMockedUserModel();
-            originalUser3.UserId = tenantId2 + "User2";
-            originalUser3.TenantID = tenantId2;
-            _context.Users.Add(originalUser3);
+            originalUser.UserId = tenantId2 + "User2";
+            originalUser.TenantID = tenantId2;
+            _context.Users.Add(originalUser);
             await _context.SaveChangesAsync();
             
             var sut = new UserUOW(_context, _communicationService, _orgaUOW);
@@ -515,28 +426,22 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
             // Arrange
             var tenantId1 = "Tenant1";
             var tenantId2 = "Tenant2";
-            var guid = Guid.NewGuid().ToString();
-
+            
             var originalUser = MockDataProvider.GetMockedUserModel();
             originalUser.UserId = tenantId1 + "User";
             originalUser.TenantID = tenantId1;
             originalUser.BiomarkerOrders = null;
-            originalUser.Billing = MockDataProvider.GetBillingMock();
             _context.Users.Add(originalUser);
             await _context.SaveChangesAsync();
 
-            var originalUser2 = MockDataProvider.GetMockedUserModel();
-            originalUser2.UserId = tenantId2 + "User";
-            originalUser2.TenantID = tenantId2;
-            originalUser2.Billing = MockDataProvider.GetBillingMock();
-            _context.Users.Add(originalUser2);
+            originalUser.UserId = tenantId2 + "User";
+            originalUser.TenantID = tenantId2;
+            _context.Users.Add(originalUser);
             await _context.SaveChangesAsync();
 
-            var originalUser3 = MockDataProvider.GetMockedUserModel();
-            originalUser3.UserId = tenantId2 + "User2";
-            originalUser3.TenantID = tenantId2;
-            originalUser3.Billing = MockDataProvider.GetBillingMock();
-            _context.Users.Add(originalUser3);
+            originalUser.UserId = tenantId2 + "User2";
+            originalUser.TenantID = tenantId2;
+            _context.Users.Add(originalUser);
             await _context.SaveChangesAsync();
             
             var sut = new UserUOW(_context, _communicationService, _orgaUOW);

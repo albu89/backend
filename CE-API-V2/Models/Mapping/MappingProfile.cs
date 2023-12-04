@@ -91,12 +91,13 @@ namespace CE_API_V2.Models.Mapping
                 .ForMember(dest => dest.ProteinDisplayValue, opt => opt.MapFrom(src => src.Protein.DisplayValue))
                 .ForMember(dest => dest.ClinicalSettingDisplayValue, opt => opt.MapFrom(src => string.Empty))
                 .ForMember(dest => dest.ClinicalSettingUnit, opt => opt.MapFrom(src => string.Empty))
-                .ForMember(dest => dest.ClinicalSetting, opt => opt.MapFrom(src => string.Empty));
+                .ForMember(dest => dest.ClinicalSetting, opt => opt.MapFrom(src => string.Empty))
+               
+                ;
 
             CreateMap<CreateUser, UserModel>()
                 .ForMember(dest => dest.UserId, opt => opt.MapFrom(_ => string.Empty))
-                .ForMember(dest => dest.TenantID, opt => opt.MapFrom(_ => string.Empty))
-                .ForMember(dest => dest.BiomarkerOrders, opt => opt.Ignore());
+                .ForMember(dest => dest.TenantID, opt => opt.MapFrom(_ => string.Empty));
 
             CreateMap<UpdateUser, UserModel>()
                 .ForMember(dest => dest.UserId, opt => opt.MapFrom(_ => string.Empty))
@@ -127,7 +128,7 @@ namespace CE_API_V2.Models.Mapping
                 .ConvertUsing(typeof(ValueToUnderlyingTypeConverter<PatientDataEnums.DiabetesStatus>));
             CreateMap(typeof(BiomarkerValue<PatientDataEnums.RestingEcg>), typeof(PatientDataEnums.RestingEcg))
                 .ConvertUsing(typeof(ValueToUnderlyingTypeConverter<PatientDataEnums.RestingEcg>));
-            
+            ;
             CreateMap<ScoringResponse, ScoringResponseModel>()
                 .ForMember(dest => dest.Biomarkers, opt => opt.Ignore())
                 .ForMember(dest => dest.Score, opt => opt.MapFrom(src => src.classifier_score))
@@ -158,6 +159,8 @@ namespace CE_API_V2.Models.Mapping
                 .ForMember(dest => dest.Warnings, opt => opt.Ignore())
                 .ForMember(dest => dest.classifier_score, opt => opt.Ignore());
 
+            CreateMap<UserModel, User>();
+
             CreateMap<UserModel, User>()
                 .ForMember(dest => dest.BiomarkerOrders, opt => opt.Ignore());
 
@@ -179,6 +182,10 @@ namespace CE_API_V2.Models.Mapping
 
             CreateMap<CreateCountry, CountryModel>();
 
+            //Todo - is this actually used?
+            CreateMap<CountryModel, CountryModel>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
+
             CreateMap<CountryModel, CreateCountry>();
 
             CreateMap<CountryModel, Country>();
@@ -189,82 +196,6 @@ namespace CE_API_V2.Models.Mapping
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
             CreateMap<OrganizationModel, Organization>();
             CreateMap<OrganizationModel, CreateOrganization>();
-
-            CreateMap<UserInputFormSchemaHeaders, UserInputFormSchema>()
-                .ForMember(dest => dest.AddressHeader, opt => opt.MapFrom(src => src.AddressHeader))
-                .ForMember(dest => dest.Billing, opt => opt.MapFrom(src => src.Billing))
-                .ForMember(dest => dest.CityHeader, opt => opt.MapFrom(src => src.CityHeader))
-                .ForMember(dest => dest.ClinicalSettingHeader, opt => opt.MapFrom(src => src.ClinicalSettingHeader))
-                .ForMember(dest => dest.CountryCodeHeader, opt => opt.MapFrom(src => src.CountryCodeHeader))
-                .ForMember(dest => dest.CountryHeader, opt => opt.MapFrom(src => src.CountryHeader))
-                .ForMember(dest => dest.DepartmentHeader, opt => opt.MapFrom(src => src.DepartmentHeader))
-                .ForMember(dest => dest.EMailAddressHeader, opt => opt.MapFrom(src => src.EMailAddressHeader))
-                .ForMember(dest => dest.FirstNameHeader, opt => opt.MapFrom(src => src.FirstNameHeader))
-                .ForMember(dest => dest.IsActiveHeader, opt => opt.MapFrom(src => src.IsActiveHeader))
-                .ForMember(dest => dest.IsSeparateBillingHeader, opt => opt.MapFrom(src => src.IsSeparateBillingHeader))
-                .ForMember(dest => dest.ZipCodeHeader, opt => opt.MapFrom(src => src.ZipCodeHeader))
-                .ForMember(dest => dest.UnitLabValuesHeader, opt => opt.MapFrom(src => src.UnitLabValuesHeader))
-                .ForMember(dest => dest.TelephoneNumberHeader, opt => opt.MapFrom(src => src.TelephoneNumberHeader))
-                .ForMember(dest => dest.SurnameHeader, opt => opt.MapFrom(src => src.SurnameHeader))
-                .ForMember(dest => dest.LanguageHeader, opt => opt.MapFrom(src => src.LanguageHeader))
-                .ForMember(dest => dest.OrganizationHeader, opt => opt.MapFrom(src => src.OrganizationHeader))
-                .ForMember(dest => dest.PreferredLabHeader, opt => opt.MapFrom(src => src.PreferredLabHeader))
-                .ForMember(dest => dest.ProfessionalSpecialisationHeader, opt => opt.MapFrom(src => src.ProfessionalSpecialisationHeader))
-                .ForMember(dest => dest.TitleHeader, opt => opt.MapFrom(src => src.TitleHeader))
-                .ForMember(dest => dest.IntendedUseClinicalSettingHeader, opt => opt.MapFrom(src => src.IntendedUseClinicalSettingHeader))
-                ;
-
-            CreateMap<CreateUser, UserInputFormSchema>()
-                .ForMember(dest => dest.Salutation, opt => opt.MapFrom(src => src.Salutation))
-                .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title))
-                .ForMember(dest => dest.Surname, opt => opt.MapFrom(src => src.Surname))
-                .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.FirstName))
-                .ForMember(dest => dest.ProfessionalSpecialisation, opt => opt.MapFrom(src => src.ProfessionalSpecialisation))
-                .ForMember(dest => dest.PreferredLab, opt => opt.MapFrom(src => src.PreferredLab))
-                .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address))
-                .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.City))
-                .ForMember(dest => dest.ZipCode, opt => opt.MapFrom(src => src.ZipCode))
-                .ForMember(dest => dest.CountryCode, opt => opt.MapFrom(src => src.CountryCode))
-                .ForMember(dest => dest.Country, opt => opt.MapFrom(src => src.Country))
-                .ForMember(dest => dest.TelephoneNumber, opt => opt.MapFrom(src => src.TelephoneNumber))
-                .ForMember(dest => dest.EMailAddress, opt => opt.MapFrom(src => src.EMailAddress))
-                .ForMember(dest => dest.Language, opt => opt.MapFrom(src => src.Language))
-                .ForMember(dest => dest.UnitLabValues, opt => opt.MapFrom(src => src.UnitLabValues))
-                .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IsActive))
-                .ForMember(dest => dest.IsSeparateBilling, opt => opt.MapFrom(src => src.IsSeparateBilling))
-                .ForMember(dest => dest.ChangeClinicalSetting, opt => opt.Ignore())
-                .ForMember(dest => dest.ClinicalSetting, opt => opt.Ignore())
-                .ForMember(dest => dest.Department, opt => opt.Ignore())
-                .ForMember(dest => dest.Organization, opt => opt.Ignore())
-                .ForMember(dest => dest.Billing, opt => opt.Ignore())
-                ;
-
-            CreateMap<UserModel, CreateUser>();
-
-            CreateMap<Billing, BillingTemplate>()
-                .ForMember(dest => dest.BillingAddress, opt => opt.MapFrom(src => src.BillingAddress))
-                .ForMember(dest => dest.BillingCity, opt => opt.MapFrom(src => src.BillingCity))
-                .ForMember(dest => dest.BillingCountry, opt => opt.MapFrom(src => src.BillingCountry))
-                .ForMember(dest => dest.BillingCountryCode, opt => opt.MapFrom(src => src.BillingCountryCode))
-                .ForMember(dest => dest.BillingName, opt => opt.MapFrom(src => src.BillingName))
-                .ForMember(dest => dest.BillingPhone, opt => opt.MapFrom(src => src.BillingPhone))
-                .ForMember(dest => dest.BillingZip, opt => opt.MapFrom(src => src.BillingZip));
-
-            CreateMap<Billing, BillingModel>()
-                .ForMember(dest => dest.Id, opt => opt.Ignore());
-
-            CreateMap<BillingTemplate, BillingModel>()
-                .ForMember(dest => dest.BillingAddress, opt => opt.MapFrom(src => src.BillingAddress))
-                .ForMember(dest => dest.BillingCity, opt => opt.MapFrom(src => src.BillingCity))
-                .ForMember(dest => dest.BillingCountry, opt => opt.MapFrom(src => src.BillingCountry))
-                .ForMember(dest => dest.BillingCountryCode, opt => opt.MapFrom(src => src.BillingCountryCode))
-                .ForMember(dest => dest.BillingName, opt => opt.MapFrom(src => src.BillingName))
-                .ForMember(dest => dest.BillingPhone, opt => opt.MapFrom(src => src.BillingPhone))
-                .ForMember(dest => dest.BillingZip, opt => opt.MapFrom(src => src.BillingZip))
-                .ForMember(dest => dest.Id, opt => Guid.NewGuid().ToString());
-
-            CreateMap<BillingModel, Billing>();
-
         }
     }
 
