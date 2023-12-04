@@ -33,12 +33,12 @@ namespace CE_API_Test.TestUtilities
                 FirstName = "FirstName",
                 LastName = "LastName",
                 DateOfBirth = DateTime.UtcNow,
-                Age = new BiomarkerValue<int>() { Value = 20, UnitType = "SI" },
-                ACEInhibitor = new BiomarkerValue<bool>() { Value = true, UnitType = "SI" },
-                Alat = new BiomarkerValue<float>() { Value = 2, UnitType = "SI" },
-                Albumin = new BiomarkerValue<float>() { Value = 2.0f, UnitType = "SI" },
-                AlkalinePhosphatase = new BiomarkerValue<float>() { Value = 2, UnitType = "SI" },
-                Betablocker = new BiomarkerValue<bool>() { Value = true, UnitType = "SI" },
+                Age = new BiomarkerValue<int>() { Value = 20, UnitType = "SI"},
+                ACEInhibitor = new BiomarkerValue<bool>() { Value = true , UnitType = "SI"},
+                Alat = new BiomarkerValue<float>() { Value = 2 , UnitType = "SI"},
+                Albumin = new BiomarkerValue<float>() { Value = 2.0f , UnitType = "SI"},
+                AlkalinePhosphatase = new BiomarkerValue<float>() { Value = 2 , UnitType = "SI"},
+                Betablocker = new BiomarkerValue<bool>() { Value = true , UnitType = "SI"},
                 Bilirubin = new BiomarkerValue<float>() { Value = 2.0f, UnitType = "SI" },
                 CaAntagonist = new BiomarkerValue<bool>() { Value = true, UnitType = "SI" },
                 Cholesterol = new BiomarkerValue<float>() { Value = 2.0f, UnitType = "SI" },
@@ -53,8 +53,7 @@ namespace CE_API_Test.TestUtilities
                 Ldl = new BiomarkerValue<float>() { Value = 2.0f, UnitType = "SI" },
                 Leukocytes = new BiomarkerValue<float>() { Value = 2.0f, UnitType = "SI" },
                 Mchc = new BiomarkerValue<float>() { Value = 2.0f, UnitType = "SI" },
-                NicotineConsumption = new BiomarkerValue<NicotineConsumption>()
-                    { Value = NicotineConsumption.StANc, UnitType = "SI" },
+                NicotineConsumption = new BiomarkerValue<NicotineConsumption>() { Value = NicotineConsumption.StANc, UnitType = "SI" },
                 OrganicNitrate = new BiomarkerValue<bool>() { Value = true, UnitType = "SI" },
                 PancreaticAmylase = new BiomarkerValue<float>() { Value = 2, UnitType = "SI" },
                 Protein = new BiomarkerValue<float>() { Value = 2.0f, UnitType = "SI" },
@@ -78,8 +77,7 @@ namespace CE_API_Test.TestUtilities
             return response;
         }
 
-        internal static ScoringRequestModel GetMockedScoringRequest(string userId = "", string patientId = "",
-            DateTimeOffset? CreatedOn = null)
+        internal static ScoringRequestModel GetMockedScoringRequest(string userId = "", string patientId = "", DateTimeOffset? CreatedOn = null)
         {
             return new ScoringRequestModel
             {
@@ -196,7 +194,7 @@ namespace CE_API_Test.TestUtilities
             var mockedResponse = GetMockedScoringResponse();
             return JsonSerializer.Serialize(mockedResponse);
         }
-
+        
         internal static string GetExpectedQueryString() =>
             "Datum=02/02/2000 00:00:00&Age=2&Sex_0_female_1male=2&Gr_sse=2&Gewicht=2&Thoraxschmerzen__0_keine_1_extr=2&Nicotin_0_nein_1_St__N__2_ja=2&Diabetes_0_no_1_NIDDM_2_IDDM=2&Statin_od_Chol_senker=2&Tc_Aggregation=2&ACE_od_ATII=2&CA_Antagonist=2&Betablocker=2&Diureticum=2&Nitrat_od_Dancor=2&BD_syst=2&BD_diast=2&q_Zacken_0_nein_1_ja=0&Pankreas_Amylase=2&Alk_Phase=2&Troponin=2&ALAT=2&Glucose=2&Bilirubin=2&Harnstoff=2&Harnsaure=2&Cholesterin_gesamt=2&HDL=2&LDL=2&Total_Proteine=2&Albumin=2&Leuko=2&MCHC__g_l_oder___=2&ASAT=2&Art__Hypertonie=2&CK=2&Chlorid=2&Dyspnoe=2&Gamma_GT=2&Hypercholesterin_mie=2&INR=2&Interne_Nummer=2&Kalium=2&Kreatinin=2&MCV__fl_=2&Natrium=2&OAK=2&Phosphat=2&Repolarisationsst_runge=2";
 
@@ -257,7 +255,6 @@ namespace CE_API_Test.TestUtilities
             {
                 biomarkers.Id = Guid.NewGuid();
             }
-
             return biomarkersList;
         }
 
@@ -289,7 +286,7 @@ namespace CE_API_Test.TestUtilities
                 FirstName = "Mock",
                 LastName = "Mock",
                 DateOfBirth = new DateTime(1990, 01, 01),
-                Age = new BiomarkerValue<int>() { Value = 20, UnitType = "SI" },
+                Age = new BiomarkerValue<int>() { Value = 20, UnitType="SI" },
                 ACEInhibitor = new BiomarkerValue<bool>() { Value = true, UnitType = "SI" },
                 Alat = new BiomarkerValue<float>() { Value = 5, UnitType = "SI" },
                 Albumin = new BiomarkerValue<float>() { Value = 20.0f, UnitType = "SI" },
@@ -310,8 +307,7 @@ namespace CE_API_Test.TestUtilities
                 Ldl = new BiomarkerValue<float>() { Value = 2.0f, UnitType = "SI" },
                 Leukocytes = new BiomarkerValue<float>() { Value = 2.0f, UnitType = "SI" },
                 Mchc = new BiomarkerValue<float>() { Value = 2.0f, UnitType = "SI" },
-                NicotineConsumption = new BiomarkerValue<NicotineConsumption>()
-                    { Value = NicotineConsumption.StANc, UnitType = "SI" },
+                NicotineConsumption = new BiomarkerValue<NicotineConsumption>() { Value = NicotineConsumption.StANc , UnitType = "SI" },
                 OrganicNitrate = new BiomarkerValue<bool>() { Value = true, UnitType = "SI" },
                 PancreaticAmylase = new BiomarkerValue<float>() { Value = 2, UnitType = "SI" },
                 Protein = new BiomarkerValue<float>() { Value = 5.0f, UnitType = "SI" },
@@ -325,7 +321,6 @@ namespace CE_API_Test.TestUtilities
                 prior_CAD = new BiomarkerValue<bool>() { Value = true, UnitType = "SI" },
             };
         }
-
         internal static ScoringRequest CreateInvalidScoringRequestDto()
         {
             return new ScoringRequest()
@@ -354,8 +349,7 @@ namespace CE_API_Test.TestUtilities
                 Ldl = new BiomarkerValue<float>() { Value = 2.0f, UnitType = "SI" },
                 Leukocytes = new BiomarkerValue<float>() { Value = 2.0f, UnitType = "SI" },
                 Mchc = new BiomarkerValue<float>() { Value = 2.0f, UnitType = "SI" },
-                NicotineConsumption = new BiomarkerValue<NicotineConsumption>()
-                    { Value = NicotineConsumption.StANc, UnitType = "SI" },
+                NicotineConsumption = new BiomarkerValue<NicotineConsumption>() { Value = NicotineConsumption.StANc, UnitType = "SI" },
                 OrganicNitrate = new BiomarkerValue<bool>() { Value = true, UnitType = "SI" },
                 PancreaticAmylase = new BiomarkerValue<float>() { Value = 2, UnitType = "SI" },
                 Protein = new BiomarkerValue<float>() { Value = 5.0f, UnitType = "Conventional" },
@@ -388,11 +382,11 @@ namespace CE_API_Test.TestUtilities
                 Salutation = "Mock",
                 Surname = "Mock",
                 TelephoneNumber = "Mock",
-                UnitLabValues = "Mock",
+                UnitLabValues = "Mock", 
                 Role = UserRole.User
             };
         }
-
+        
         public static UserModel GetMockedUserModel()
         {
             return new UserModel()
@@ -417,22 +411,13 @@ namespace CE_API_Test.TestUtilities
                 Role = UserRole.User,
                 UserId = "MockedUserId",
                 TenantID = "MockedTenantId",
-                IsSeparateBilling = false,
-                Billing = GetBillingMock(),
-                Organization = "MockOrganization",
                 BiomarkerOrders = new Collection<BiomarkerOrderModel>
                 {
-                    new()
-                    {
-                        OrderNumber = 1, BiomarkerId = "first", PreferredUnit = "unit", User = null, UserId = "id"
-                    },
-                    new()
-                    {
-                        OrderNumber = 2, BiomarkerId = "second", PreferredUnit = "unit", User = null, UserId = "id"
-                    }
-                },
+                    new() { OrderNumber = 1, BiomarkerId = "first", PreferredUnit = "unit", User = null, UserId = "id" },
+                    new() { OrderNumber = 2, BiomarkerId = "second", PreferredUnit = "unit", User = null, UserId = "id" }
+                }
+                ,
                 IsActive = true,
-
             };
         }
 
@@ -455,7 +440,7 @@ namespace CE_API_Test.TestUtilities
                 UnitLabValues = "Mock",
             };
         }
-
+        
         public static CreateUser GetMockedCreateUser()
         {
             return new CreateUser()
@@ -484,7 +469,7 @@ namespace CE_API_Test.TestUtilities
             TenantId = "MockedTenantId",
             UserId = "MockedUserId",
         };
-
+        
         public static AccessRequest GetMockedAccessRequestDto()
         {
             return new AccessRequest()
@@ -496,11 +481,9 @@ namespace CE_API_Test.TestUtilities
             };
         }
 
-        public static string GetRequestHtmlBodyMock() =>
-            "New user tried to register their account: email: {{{EmailAddress}}} ({{{FirstName}}} {{{LastName}}}, {{{PhoneNumber}}})<br/><br/> With kind regards<br/> Exploris Health";
-
-        public static string GetActivateUserHtmlBodyMock() =>
-            "New user has registered their account: email: {{{Id}}} ({{{FirstName}}} {{{LastName}}})<br/><br/> With kind regards<br/> Exploris Health";
+        public static string GetRequestHtmlBodyMock() => "New user tried to register their account: email: {{{EmailAddress}}} ({{{FirstName}}} {{{LastName}}}, {{{PhoneNumber}}})<br/><br/> With kind regards<br/> Exploris Health";
+       
+        public static string GetActivateUserHtmlBodyMock() => "New user has registered their account: email: {{{Id}}} ({{{FirstName}}} {{{LastName}}})<br/><br/> With kind regards<br/> Exploris Health";
 
         public static ScoreSchema GetScoreSummaryMock()
         {
@@ -517,7 +500,7 @@ namespace CE_API_Test.TestUtilities
                 WarningHeader = "",
                 Warnings = Array.Empty<string>(),
                 InfoText = "",
-                Abbreviations = ImmutableDictionary<string, string>.Empty,
+                Abbreviations = ImmutableDictionary<string,string>.Empty,
                 CadDefinitionHeader = "",
                 CadDefinition = "",
                 FootnoteHeader = "",
@@ -549,6 +532,7 @@ namespace CE_API_Test.TestUtilities
         {
             var biomarkers = GetFakeBiomarkers();
             var mappedBiomarkers = ManualMapper.MapFromBiomarkersToValues(biomarkers.ElementAt(0));
+            var staredBiomarkers = new StoredBiomarkers();
 
             return new()
             {
@@ -603,7 +587,7 @@ namespace CE_API_Test.TestUtilities
         public static List<BiomarkerOrderModel> GetMockedOrderModels()
         {
             return ManualMapper.ToBiomarkerOrderModels(GetMockedOrder());
-
+            
         }
 
         public static CreateCountry GetMockedCountry() => new()
@@ -611,7 +595,7 @@ namespace CE_API_Test.TestUtilities
             Name = "Country",
             ContactEmail = "ContactEmail",
         };
-
+        
         public static CountryModel GetMockedCountryModel() => new()
         {
             Name = "Country",
@@ -626,7 +610,7 @@ namespace CE_API_Test.TestUtilities
             ContactEmail = "ContactEmail",
             TenantId = Guid.NewGuid().ToString()
         };
-
+        
         public static OrganizationModel GetMockedOrganizationModel() => new()
         {
             Name = "Organization",
@@ -651,158 +635,6 @@ namespace CE_API_Test.TestUtilities
             }
 
             return usersList;
-        }
-
-        public static BillingModel GetBillingMock()
-        {
-            return new()
-            {
-                BillingCity = "BillingMock",
-                BillingAddress = "BillingMock",
-                BillingCountry = "BillingMock",
-                BillingCountryCode = "BillingMock",
-                BillingName = "BillingMock",
-                BillingPhone = "BillingMock",
-                BillingZip = "BillingMock"
-            };
-        }
-
-        public static Billing GetNewBilling()
-        {
-            return new Billing()
-            {
-                BillingName = "Mock",
-                BillingAddress = "Mock",
-                BillingZip = "Mock",
-                BillingCity = "Mock",
-                BillingCountry = "Mock",
-                BillingCountryCode = "Mock",
-                BillingPhone = "Mock"
-            };
-        }
-
-        public static BillingTemplate GetNewBillingHeader()
-        {
-            return new BillingTemplate()
-            {
-                BillingNameHeader = "MockBillingHeader",
-                BillingAddressHeader = "MockBillingHeader",
-                BillingZipHeader = "MockBillingHeader",
-                BillingCityHeader = "MockBillingHeader",
-                BillingCountryHeader = "MockBillingHeader",
-                BillingCountryCodeHeader = "MockBillingHeader",
-                BillingPhoneHeader = "MockBillingHeader",
-                BillingName = "Mock",
-                BillingAddress = "Mock",
-                BillingZip = "Mock",
-                BillingCity = "Mock",
-                BillingCountry = "Mock",
-                BillingCountryCode = "Mock",
-                BillingPhone = "Mock"
-            };
-        }
-
-        public static BillingTemplate GetSchemaHeaders()
-        {
-            return new BillingTemplate()
-            {
-                BillingNameHeader = null,
-                BillingAddressHeader = null,
-                BillingZipHeader = null,
-                BillingCityHeader = null,
-                BillingCountryHeader = null,
-                BillingCountryCodeHeader = null,
-                BillingPhoneHeader = null,
-                BillingName = "Mock",
-                BillingAddress = "Mock",
-                BillingZip = "Mock",
-                BillingCity = "Mock",
-                BillingCountry = "Mock",
-                BillingCountryCode = "Mock",
-                BillingPhone = "Mock"
-            };
-        }
-
-        public static CreateUser GetCreateUser()
-        {
-            return new()
-            {
-                ClinicalSetting = ClinicalSetting.SecondaryCare,
-                ProfessionalSpecialisation = "MockedCreateUser",
-                Department = "MockedCreateUser",
-                Organization = "MockedCreateUser",
-                PreferredLab = "MockedCreateUser",
-                Salutation = "MockedCreateUser",
-                Title = "MockedCreateUser",
-                Surname = "MockedCreateUser",
-                FirstName = "MockedCreateUser",
-                Address = "MockedCreateUser",
-                City = "MockedCreateUser",
-                ZipCode = "MockedCreateUser",
-                CountryCode = "MockedCreateUser",
-                Country = "MockedCreateUser",
-                TelephoneNumber = "MockedCreateUser",
-                EMailAddress = "MockedCreateUser",
-                Language = "MockedCreateUser",
-                UnitLabValues = "MockedCreateUser",
-                IsActive = true,
-                IsSeparateBilling = true,
-                Billing = GetNewBilling(),
-            };
-        }
-
-        public static UpdateUser GetUpdateUser()
-        {
-            return new()
-            {
-                Salutation = "Mock",
-                Title = "Mock",
-                Surname = "Mock",
-                FirstName = "Mock",
-                ProfessionalSpecialisation = "Mock",
-                PreferredLab = "Mock",
-                Address = "Mock",
-                City = "Mock",
-                ZipCode = "Mock",
-                CountryCode = "Mock",
-                Country = "Mock",
-                TelephoneNumber = "Mock",
-                EMailAddress = "Mock",
-                Language = "Mock",
-                UnitLabValues = "Mock",
-                IsActive = true,
-                IsSeparateBilling = true,
-                Billing = new Billing()
-            };
-        }
-
-        public static UserInputFormSchemaHeaders GetInPutFormSchemaHeaders()
-        {
-            return new()
-            {
-                SalutationHeader = "MockSchemaHeaders",
-                TitleHeader = "MockSchemaHeaders",
-                SurnameHeader = "MockSchemaHeaders",
-                FirstNameHeader = "MockSchemaHeaders",
-                ProfessionalSpecialisationHeader = "MockSchemaHeaders",
-                PreferredLabHeader = "MockSchemaHeaders",
-                AddressHeader = "MockSchemaHeaders",
-                CityHeader = "MockSchemaHeaders",
-                ZipCodeHeader = "MockSchemaHeaders",
-                CountryCodeHeader = "MockSchemaHeaders",
-                CountryHeader = "MockSchemaHeaders",
-                TelephoneNumberHeader = "MockSchemaHeaders",
-                EMailAddressHeader = "MockSchemaHeaders",
-                LanguageHeader = "MockSchemaHeaders",
-                UnitLabValuesHeader = "MockSchemaHeaders",
-                IsActiveHeader = "MockSchemaHeaders",
-                IsSeparateBillingHeader = "MockSchemaHeaders",
-                Billing = GetNewBillingHeader(),
-                ClinicalSettingHeader = "MockSchemaHeaders",
-                DepartmentHeader = "MockSchemaHeaders",
-                OrganizationHeader = "MockSchemaHeaders",
-                ChangeClinicalSettingHeader = "MockSchemaHeaders"
-            };
         }
     }
 }

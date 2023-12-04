@@ -22,38 +22,6 @@ namespace CE_API_V2.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("CE_API_V2.Models.BillingModel", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("BillingAddress")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("BillingCity")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("BillingCountry")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("BillingCountryCode")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("BillingName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("BillingPhone")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("BillingZip")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Billings");
-                });
-
             modelBuilder.Entity("CE_API_V2.Models.BiomarkerOrderModel", b =>
                 {
                     b.Property<string>("UserId")
@@ -552,9 +520,6 @@ namespace CE_API_V2.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("BillingId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("City")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -567,6 +532,7 @@ namespace CE_API_V2.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CountryCode")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTimeOffset>("CreatedOn")
@@ -575,6 +541,7 @@ namespace CE_API_V2.Migrations
                         .HasDefaultValueSql("getdate()");
 
                     b.Property<string>("Department")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("EMailAddress")
@@ -590,14 +557,8 @@ namespace CE_API_V2.Migrations
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
 
-                    b.Property<bool>("IsSeparateBilling")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Language")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Organization")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PreferredLab")
@@ -632,6 +593,7 @@ namespace CE_API_V2.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UnitLabValues")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ZipCode")
@@ -639,9 +601,6 @@ namespace CE_API_V2.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("UserId");
-
-                    b.HasIndex("BillingId")
-                        .IsUnique();
 
                     b.ToTable("Users", (string)null);
                 });
@@ -696,23 +655,6 @@ namespace CE_API_V2.Migrations
                     b.Navigation("Biomarkers");
 
                     b.Navigation("Request");
-                });
-
-            modelBuilder.Entity("CE_API_V2.Models.UserModel", b =>
-                {
-                    b.HasOne("CE_API_V2.Models.BillingModel", "Billing")
-                        .WithOne("UserModel")
-                        .HasForeignKey("CE_API_V2.Models.UserModel", "BillingId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Billing");
-                });
-
-            modelBuilder.Entity("CE_API_V2.Models.BillingModel", b =>
-                {
-                    b.Navigation("UserModel")
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("CE_API_V2.Models.Biomarkers", b =>
