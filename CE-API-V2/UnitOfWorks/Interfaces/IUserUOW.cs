@@ -22,5 +22,6 @@ namespace CE_API_V2.UnitOfWorks.Interfaces
         public Task<UserModel> UpdateUser(string userId, UserModel userModel, UserIdsRecord userInfo);
         public bool CheckIfIsActiveStateIsModifiable(UserIdsRecord userInfo);
         IEnumerable<UserModel> GetUsersForAdmin(UserIdsRecord userInfo);
+        public BillingModel GetBilling(string billingId);
     }
 }

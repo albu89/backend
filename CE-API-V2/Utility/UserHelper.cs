@@ -20,14 +20,14 @@ public class UserHelper
 
     public UserModel MapToUserModel(CreateUser user, UserIdsRecord userInformation)
     {
-        var userModel = _mapper.Map<CreateUser, UserModel>(user); 
-        userModel.Role = UserRole.User; 
+        var userModel = _mapper.Map<CreateUser, UserModel>(user);
+        userModel.Role = UserRole.User;
         userModel.UserId = userInformation.UserId;
         userModel.TenantID = userInformation.TenantId;
 
         return userModel;
     }
-    
+
     public static string GetUserId(ClaimsPrincipal user)
     {
         var userId = user?.Claims?.Any() == true ? user.FindFirstValue(ClaimTypes.NameIdentifier) : "anonymous";
