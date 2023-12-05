@@ -22,7 +22,8 @@ namespace CE_API_V2.Controllers
     [UserActive]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden), SwaggerResponse(403, "Rejects request if user has no active account.")]
-    public class UserController : ControllerBase
+    public class UserController
+        : ControllerBase
     {
         private readonly IMapper _mapper;
         private readonly IInputValidationService _inputValidationService;
@@ -80,6 +81,7 @@ namespace CE_API_V2.Controllers
         [AllowInActiveUser]
         [Produces("application/json", Type = typeof(User))]
         [ProducesResponseType(StatusCodes.Status400BadRequest), SwaggerResponse(400, "Returns BadRequest if the Userprofile could not be created.")]
+        [ProducesResponseType(StatusCodes.Status403Forbidden), SwaggerResponse(403, "Returns Forbidden if the user lacks the rights to access this endpoint")]
         public async Task<IActionResult> CreateUser([FromBody] CreateUser user)
         {
             if (!_inputValidationService.ValidateUser(user))
@@ -97,11 +99,13 @@ namespace CE_API_V2.Controllers
 
             var userModel = _userHelper.MapToUserModel(user, idInformation);
 
-            if (_userUOW.CheckIfIsActiveStateIsModifiable(idInformation) || _userHelper.HasUserDefaultTenantID(userModel)) 
-                userModel.IsActive = true;
-            else
-                return BadRequest($"{_loc["Validation.ActiveStateCantGetModified"]}");
-            
+            //Todo - Will be fixed with CE-234
+            userModel.IsActive = true;
+            //if (_userUOW.CheckIfIsActiveStateIsModifiable(idInformation) || _userHelper.HasUserDefaultTenantID(userModel))
+            //    userModel.IsActive = true;
+            //else
+            //    return BadRequest($"{_loc["Validation.ActiveStateCantGetModified"]}");
+
             var storedUser = await _userUOW.StoreUser(userModel);
 
             if (!userModel.IsActive)
@@ -120,7 +124,7 @@ namespace CE_API_V2.Controllers
         /// <param name="user"></param>
         [HttpPatch(Name = "UpdateUser")]
         [UserActive]
-        [Produces("application/json", Type = typeof(User))]
+        [Produces("application/json", Type = typeof(UpdateUser))]
         [ProducesResponseType(StatusCodes.Status400BadRequest), SwaggerResponse(400, "Returns BadRequest if the Userprofile could not be updated.")]
         public async Task<IActionResult> UpdateCurrentUser([FromBody] UpdateUser user)
         {
@@ -128,10 +132,12 @@ namespace CE_API_V2.Controllers
             var userId = userInfo.UserId;
             UserModel? mappedUser = _mapper.Map<UserModel>(user);
 
-            if (_userUOW.CheckIfIsActiveStateIsModifiable(userInfo))
-                mappedUser.IsActive = true;
-            else
-                return BadRequest($"{_loc["Validation.ActiveStateCantGetModified"]}");
+            //Todo - Will be fixed with CE-234
+            mappedUser.IsActive = true;
+            //if (_userUOW.CheckIfIsActiveStateIsModifiable(userInfo))
+            //    mappedUser.IsActive = true;
+            //else
+            //    return BadRequest($"{_loc["Validation.ActiveStateCantGetModified"]}");
 
             var updatedUser = await _userUOW.UpdateUser(userId, mappedUser, userInfo);
 
