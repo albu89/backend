@@ -99,12 +99,10 @@ namespace CE_API_V2.Controllers
 
             var userModel = _userHelper.MapToUserModel(user, idInformation);
 
-            //Todo - Will be fixed with CE-234
-            userModel.IsActive = true;
-            //if (_userUOW.CheckIfIsActiveStateIsModifiable(idInformation) || _userHelper.HasUserDefaultTenantID(userModel))
-            //    userModel.IsActive = true;
-            //else
-            //    return BadRequest($"{_loc["Validation.ActiveStateCantGetModified"]}");
+            if (_userUOW.CheckIfIsActiveStateIsModifiable(idInformation) || _userHelper.HasUserDefaultTenantID(userModel))
+                userModel.IsActive = true;
+            else
+                return BadRequest($"{_loc["Validation.ActiveStateCantGetModified"]}");
 
             var storedUser = await _userUOW.StoreUser(userModel);
 
@@ -131,13 +129,19 @@ namespace CE_API_V2.Controllers
             var userInfo = _userInformationExtractor.GetUserIdInformation(User);
             var userId = userInfo.UserId;
             UserModel? mappedUser = _mapper.Map<UserModel>(user);
-
-            //Todo - Will be fixed with CE-234
-            mappedUser.IsActive = true;
-            //if (_userUOW.CheckIfIsActiveStateIsModifiable(userInfo))
-            //    mappedUser.IsActive = true;
-            //else
-            //    return BadRequest($"{_loc["Validation.ActiveStateCantGetModified"]}");
+            var userIdsRecord = _userInformationExtractor.GetUserIdInformation(User);
+            var userFromDB = _userUOW.GetUser(userIdsRecord.UserId, userIdsRecord);
+            if (userFromDB is null)
+            {
+                return BadRequest();
+            }
+            if (!userFromDB.IsActive)
+            {
+                if (_userUOW.CheckIfIsActiveStateIsModifiable(userInfo))
+                    mappedUser.IsActive = true;
+                else
+                    return BadRequest($"{_loc["Validation.ActiveStateCantGetModified"]}");
+            }
 
             var updatedUser = await _userUOW.UpdateUser(userId, mappedUser, userInfo);
 
