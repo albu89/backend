@@ -13,6 +13,7 @@ namespace CE_API_V2.Data
         public DbSet<CountryModel> Countries { get; set; }
         public DbSet<OrganizationModel> Organizations { get; set; }
         public DbSet<BillingModel> Billings { get; set; }
+        public DbSet<BiomarkersDraft> BiomarkersDraft { get; set; }
 
         public CEContext() { }
 
@@ -32,6 +33,9 @@ namespace CE_API_V2.Data
                 .Property(r => r.CreatedOn)
                 .HasDefaultValueSql("getdate()");
 
+            modelBuilder.Entity<BiomarkersDraft>()
+                .Property(r => r.CreatedOn)
+                .HasDefaultValueSql("getdate()");
 
             modelBuilder.Entity<ScoringResponseModel>()
                 .ToTable("ScoringResponses")

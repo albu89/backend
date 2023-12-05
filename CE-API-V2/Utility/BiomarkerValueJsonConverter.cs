@@ -14,8 +14,8 @@ public class BiomarkerValueJsonConverter<T> : JsonConverter<BiomarkerValue<T>> w
         myOptions.PropertyNameCaseInsensitive = true;
         myOptions.Converters.Add(new JsonStringEnumConverter());
         var data = jsonDoc.RootElement.ToString();
-        var test = typeof(T);
-        foreach (var property in test.GetFields())
+        var type = typeof(T);
+        foreach (var property in type.GetFields())
         {
             var descriptionName = property.CustomAttributes.FirstOrDefault(x => x.AttributeType == typeof(DescriptionAttribute))?.ConstructorArguments.FirstOrDefault().ToString();
             if (!string.IsNullOrEmpty(descriptionName))
@@ -28,6 +28,36 @@ public class BiomarkerValueJsonConverter<T> : JsonConverter<BiomarkerValue<T>> w
         return result;
     }
     public override void Write(Utf8JsonWriter writer, BiomarkerValue<T> value, JsonSerializerOptions options)
+    {
+        JsonSerializer.Serialize(writer, value, options);
+    }
+}
+
+public class BiomarkerNullableEnumValueJsonConverter<Enum> : JsonConverter<BiomarkerValue<Enum>> 
+{
+    public override BiomarkerValue<Enum>? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        using var jsonDoc = JsonDocument.ParseValue(ref reader);
+        var myOptions = new JsonSerializerOptions(options);
+        myOptions.PropertyNameCaseInsensitive = true;
+        myOptions.Converters.Add(new JsonStringEnumConverter());
+        var data = jsonDoc.RootElement.ToString();
+        var test = typeof(Enum);
+
+        foreach (var property in test.GetFields())
+        {
+            var descriptionName = property.CustomAttributes.FirstOrDefault(x => x.AttributeType == typeof(DescriptionAttribute))?.ConstructorArguments.FirstOrDefault().ToString();
+            if (!string.IsNullOrEmpty(descriptionName))
+            {
+                data = data.Replace(descriptionName, $"\"{property.Name}\"");
+            }
+        }
+
+        var result = JsonSerializer.Deserialize<BiomarkerValue<Enum>>(data, myOptions);
+        return result;
+    }
+
+    public override void Write(Utf8JsonWriter writer, BiomarkerValue<Enum> value, JsonSerializerOptions options)
     {
         JsonSerializer.Serialize(writer, value, options);
     }

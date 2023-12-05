@@ -10,7 +10,6 @@ namespace CE_API_V2.Utility
     {
         public static string CreateQueryString(AiDto patientDataDto, string[]? featuresToDrop = null, string separator = ",")
         {
-            // Get all properties on the object
             var properties = patientDataDto.GetType().GetProperties()
                 .Where(x => x.GetCustomAttributes(typeof(JsonIgnoreAttribute), true).LongLength == 0)
                 .Where(x => x.CanRead)
@@ -18,26 +17,17 @@ namespace CE_API_V2.Utility
 
                 .ToDictionary(x => x.Name, x => x.GetValue(patientDataDto, null) ?? "");
 
-            //Todo - aus altem code
             // FIX q_Zacken_0_nein_1_ja (ECG path, Q-wave) when sending to MAX
             if (properties["q_Zacken_0_nein_1_ja"] != null && (float?)properties["q_Zacken_0_nein_1_ja"] == 2)
             {
                 properties["q_Zacken_0_nein_1_ja"] = 0;
             }
-            //
-            // //Todo - aus altem code
-            // if (properties["units"] != null)
-            // {
-            //     properties.Remove("units");
-            // }
 
-            // Get names for all IEnumerable properties (excl. string)
             var propertyNames = properties
                 .Where(x => !(x.Value is string) && x.Value is IEnumerable)
                 .Select(x => x.Key)
                 .ToList();
 
-            // Concat all IEnumerable properties into a comma separated string
             foreach (var key in propertyNames)
             {
                 var valueType = properties[key].GetType();
@@ -53,8 +43,10 @@ namespace CE_API_V2.Utility
 
             var returnString = string.Join("&", properties
                 .Select(x => string.Concat(
-                    /*Uri.EscapeDataString(*/x.Key/*)*/, "=",
-                    /*Uri.EscapeDataString(*/x.Value is DateTime dateTime ? dateTime.ToString(CultureInfo.InvariantCulture) : x.Value.ToString())))/*)*/;   //wenn x.Value = DateTime ToString mit InvariantCulture
+                    x.Key, "=",
+                    x.Value is DateTime dateTime
+                        ? dateTime.ToString(CultureInfo.InvariantCulture)
+                        : x.Value.ToString())));
             
             return returnString;
         }
@@ -64,14 +56,6 @@ namespace CE_API_V2.Utility
             var deserializedResponse = JsonSerializationHelper.DeserializeObject<ScoringResponseModel>(jsonResponse);
 
             return deserializedResponse;
-        }
-
-        //Todo - can be removed?
-        public static ScoringResponseModel? FormatResponse(string jsonResponse)
-        {
-            var scoringResponse = ToScoringResponse(jsonResponse);
-
-            return scoringResponse;
         }
     }
 }

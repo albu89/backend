@@ -369,6 +369,48 @@ namespace CE_API_Test.TestUtilities
                 prior_CAD = new BiomarkerValue<bool>() { Value = true, UnitType = "SI" },
             };
         }
+        internal static ScoringRequestDraft CreateInvalidScoringRequestDraft()
+        {
+            return new ScoringRequestDraft()
+            {
+                FirstName = "Mock",
+                LastName = "Mock",
+                DateOfBirth = new DateTime(1990, 01, 01),
+                Age = new BiomarkerValue<int?>() { Value = 1, UnitType = "Conventional" },
+                ACEInhibitor = new BiomarkerValue<bool?>() { Value = true, UnitType = "SI" },
+                Alat = new BiomarkerValue<float?>() { Value = 5, UnitType = "notValid" },
+                Albumin = new BiomarkerValue<float?>() { Value = 20.0f, UnitType = "SI" },
+                AlkalinePhosphatase = new BiomarkerValue<float?>() { Value = 100, UnitType = "SI" },
+                Betablocker = new BiomarkerValue<bool?>() { Value = true, UnitType = "SI" },
+                Bilirubin = new BiomarkerValue<float?>() { Value = 2.0f, UnitType = "SI" },
+                CaAntagonist = new BiomarkerValue<bool?>() { Value = true, UnitType = "SI" },
+                ChestPain = new BiomarkerValue<ChestPain?>() { Value = ChestPain.Possible, UnitType = "SI" },
+                Cholesterol = new BiomarkerValue<float?>() { Value = 2.0f, UnitType = "SI" },
+                CholesterolLowering_Statin = new BiomarkerValue<bool?>() { Value = true, UnitType = "SI" },
+                Diabetes = new BiomarkerValue<DiabetesStatus?>() { Value = DiabetesStatus.Niddm, UnitType = "SI" },
+                DiastolicBloodPressure = new BiomarkerValue<int?>() { Value = 30, UnitType = "SI" },
+                Diuretic = new BiomarkerValue<bool?>() { Value = true, UnitType = "SI" },
+                GlucoseFasting = new BiomarkerValue<float?>() { Value = 2.0f, UnitType = "SI" },
+                Hdl = new BiomarkerValue<float?>() { Value = 2.0f, UnitType = "SI" },
+                Height = new BiomarkerValue<int?>() { Value = 400, UnitType = "SI" },
+                HsTroponinT = new BiomarkerValue<float?>() { Value = 2.0f, UnitType = "SI" },
+                Ldl = new BiomarkerValue<float?>() { Value = 2.0f, UnitType = "SI" },
+                Leukocytes = new BiomarkerValue<float?>() { Value = 2.0f, UnitType = "SI" },
+                Mchc = new BiomarkerValue<float?>() { Value = 2.0f, UnitType = "SI" },
+                NicotineConsumption = new BiomarkerValue<NicotineConsumption?>() { Value = NicotineConsumption.StANc, UnitType = "SI" },
+                OrganicNitrate = new BiomarkerValue<bool?>() { Value = true, UnitType = "SI" },
+                PancreaticAmylase = new BiomarkerValue<float?>() { Value = 2, UnitType = "SI" },
+                Protein = new BiomarkerValue<float?>() { Value = 5.0f, UnitType = "Conventional" },
+                RestingECG = new BiomarkerValue<RestingEcg?>() { Value = RestingEcg.Yes, UnitType = "SI" },
+                Sex = new BiomarkerValue<Sex?>() { Value = Sex.Female, UnitType = "Conventional" },
+                SystolicBloodPressure = new BiomarkerValue<int?>() { Value = 50, UnitType = "notValid" },
+                TCAggregationInhibitor = new BiomarkerValue<bool?>() { Value = true, UnitType = "SI" },
+                Urea = new BiomarkerValue<float?>() { Value = 2.0f, UnitType = "Conventional" },
+                UricAcid = new BiomarkerValue<float?>() { Value = 10.0f, UnitType = "Conventional" },
+                Weight = new BiomarkerValue<int?>() { Value = 13, UnitType = "Conventional" },
+                prior_CAD = new BiomarkerValue<bool?>() { Value = true, UnitType = "SI" },
+            };
+        }
 
         public static User GetMockedUser()
         {
@@ -651,6 +693,107 @@ namespace CE_API_Test.TestUtilities
             }
 
             return usersList;
+        }
+
+        public static ScoringRequestDraft CreateScoringRequestDraft()
+        {
+            var mockFloatValue = 22.0f;
+            var mockIntValue = 21;
+            var mockBoolValue = true;
+
+            return new ScoringRequestDraft
+            {
+                FirstName = "Mock",
+                LastName = "Mock",
+                DateOfBirth = DateTime.Parse("2001-01-01 12:00:00"),
+                prior_CAD = GetBiomarkerValue<bool?>(mockBoolValue),
+                Age = GetBiomarkerValue<int?>(22),
+                Sex = GetBiomarkerValue<Sex?>(Sex.Female),
+                Height = GetBiomarkerValue<int?>(mockIntValue),
+                Weight = GetBiomarkerValue<int?>(mockIntValue),
+                ChestPain = GetBiomarkerValue<ChestPain?>(ChestPain.No),
+                NicotineConsumption = GetBiomarkerValue<NicotineConsumption?>(NicotineConsumption.No),
+                Diabetes = GetBiomarkerValue<DiabetesStatus?>(DiabetesStatus.Niddm),
+                CholesterolLowering_Statin = GetBiomarkerValue<bool?>(mockBoolValue),
+                TCAggregationInhibitor = GetBiomarkerValue<bool?>(mockBoolValue),
+                ACEInhibitor = GetBiomarkerValue<bool?>(mockBoolValue),
+                CaAntagonist = GetBiomarkerValue<bool?>(mockBoolValue),
+                Betablocker = GetBiomarkerValue<bool?>(mockBoolValue),
+                Diuretic = GetBiomarkerValue<bool?>(mockBoolValue),
+                OrganicNitrate = GetBiomarkerValue<bool?>(mockBoolValue),
+                SystolicBloodPressure = GetBiomarkerValue<int?>(mockIntValue),
+                DiastolicBloodPressure = GetBiomarkerValue<int?>(mockIntValue),
+                RestingECG = GetBiomarkerValue<RestingEcg?>(RestingEcg.Screening),
+                PancreaticAmylase = GetBiomarkerValue<float?>(mockFloatValue),
+                AlkalinePhosphatase = GetBiomarkerValue<float?>(mockFloatValue),
+                HsTroponinT = GetBiomarkerValue<float?>(mockFloatValue),
+                Alat = GetBiomarkerValue<float?>(mockFloatValue),
+                GlucoseFasting = GetBiomarkerValue<float?>(mockFloatValue),
+                Bilirubin = GetBiomarkerValue<float?>(mockFloatValue),
+                Urea = GetBiomarkerValue<float?>(mockFloatValue),
+                UricAcid = GetBiomarkerValue<float?>(mockFloatValue),
+                Cholesterol = GetBiomarkerValue<float?>(mockFloatValue),
+                Hdl = GetBiomarkerValue<float?>(mockFloatValue),
+                Ldl = GetBiomarkerValue<float?>(mockFloatValue),
+                Protein = GetBiomarkerValue<float?>(mockFloatValue),
+                Albumin = GetBiomarkerValue<float?>(mockFloatValue),
+                Leukocytes = GetBiomarkerValue<float?>(mockFloatValue),
+                Mchc = GetBiomarkerValue<float?>(mockFloatValue),
+            };
+        }
+
+        private static BiomarkerValue<T?> GetBiomarkerValue<T>(T value)
+        {
+            return new BiomarkerValue<T?>()
+            {
+                Value = value,
+                DisplayValue = value.ToString(),
+                UnitType = "SI"
+            };
+        }
+
+        public static BiomarkersDraft GetBiomarkersDraft()
+        {
+            var mockFloatValue = 22.0f;
+            var mockIntValue = 21;
+            var mockBoolValue = true;
+
+            return new()
+            {
+                PriorCAD = mockBoolValue,
+                Age = 22,
+                Sex = Sex.Female,
+                Height = mockIntValue,
+                Weight = mockIntValue,
+                Chestpain = ChestPain.No,
+                Nicotine = NicotineConsumption.No,
+                Diabetes = DiabetesStatus.Niddm,
+                Statin = mockBoolValue,
+                Tcagginhibitor = mockBoolValue,
+                Aceinhibitor = mockBoolValue,
+                Calciumant = mockBoolValue,
+                Betablocker = mockBoolValue,
+                Diuretic = mockBoolValue,
+                Nitrate = mockBoolValue,
+                Systolicbp = mockIntValue,
+                Diastolicbp = mockIntValue,
+                Qwave = RestingEcg.Screening,
+                Amylasep = mockFloatValue,
+                Alkaline = mockFloatValue,
+                Hstroponint = mockFloatValue,
+                Alat = mockFloatValue,
+                Glucose = mockFloatValue,
+                Bilirubin = mockFloatValue,
+                Urea = mockFloatValue,
+                Uricacid = mockFloatValue,
+                Cholesterol = mockFloatValue,
+                Hdl = mockFloatValue,
+                Ldl = mockFloatValue,
+                Protein = mockFloatValue,
+                Albumin = mockFloatValue,
+                Leukocyte = mockFloatValue,
+                Mchc = mockFloatValue
+            };
         }
 
         public static BillingModel GetBillingMock()

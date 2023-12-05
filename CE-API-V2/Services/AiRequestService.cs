@@ -46,7 +46,7 @@ public class AiRequestService : IAiRequestService
             }
 
             var jsonResponse = await response.Content.ReadAsStringAsync();
-            scoringResponseModel = DataTransferUtility.FormatResponse(jsonResponse);
+            scoringResponseModel = DataTransferUtility.ToScoringResponse(jsonResponse);
         }
         catch (HttpRequestException e) //Todo
         {

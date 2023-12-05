@@ -6,6 +6,7 @@ using CE_API_V2.Services.Interfaces;
 using CE_API_V2.Utility;
 using System.Reflection;
 using CE_API_V2.Models.Enum;
+using CE_API_V2.Models.Mapping;
 
 namespace CE_API_V2.UnitOfWorks
 {
@@ -67,6 +68,22 @@ namespace CE_API_V2.UnitOfWorks
 
             return scoringRequest;
         }
+
+        public (ScoringRequestModelDraft, BiomarkersDraft) ConvertToScoringRequestDraft(ScoringRequestDraft value, string userId,
+            string patientId, PatientDataEnums.ClinicalSetting clinicalSetting)
+        {
+            var requestModel = _mapper.Map<ScoringRequestModelDraft>(value);
+            var biomarkersDraft = ManualMapper.MapToBiomarkersDraft(value);
+            requestModel.UserId = userId;
+            requestModel.PatientId = patientId;
+            requestModel.ClinicalSetting = clinicalSetting;
+            requestModel.AddDraftBiomarkers(biomarkersDraft);
+            biomarkersDraft.Request = requestModel;
+            biomarkersDraft.RequestId = requestModel.Id;
+            
+            return (requestModel, biomarkersDraft);
+        }
+
         private static float FindConversionFactor<T>(BiomarkerValue<T> propWithUnit, PropertyInfo prop, CadRequestSchema template)
             where T : INumber<T>
         {

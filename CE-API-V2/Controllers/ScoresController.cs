@@ -87,7 +87,6 @@ public class ScoresController : ControllerBase
             return requests is null ? BadRequest("No request found for the current User.") : Ok(requests);
         }
         var patientId = _hashingUow.HashPatientId(HttpUtility.UrlDecode(name), HttpUtility.UrlDecode(lastname), dateOfBirth.Value);
-
         requests = GetScoringRequestList(patientId);
 
         return requests is null ? BadRequest("No request found for the given parameters.") : Ok(requests);
@@ -130,7 +129,7 @@ public class ScoresController : ControllerBase
 
         var userId = UserHelper.GetUserId(User);
         var request = _scoringUow.RetrieveScoringRequest(scoringRequestId, userId);
-        var latestBiomarkers = request.LatestBiomarkers;
+
         if (request is null)
         {
             return BadRequest($"No scoring request could be found with this {scoringRequestId}.");
@@ -139,24 +138,11 @@ public class ScoresController : ControllerBase
         {
             return BadRequest("The patient data does not match that of the request.");
         }
-        else if (latestBiomarkers == null)
-        {
-            return BadRequest("The ScoreRequest does not contain any biomarkers.");
-        }
-        var scoringResponse = latestBiomarkers.Response;
 
-        if (scoringResponse is null)
-        {
-            var summary = _scoringUow.GetScoringResponse(null, latestBiomarkers, request.Id);
-            return Ok(summary);
-        }
-
-        var scoreSummary = _scoringUow.GetScoringResponse(scoringResponse, scoringResponse.Biomarkers, request.Id);
-
-        scoreSummary.CanEdit = _scoreSummaryUtility.CalculateIfUpdatePossible(scoringResponse.Request);
-
-        return scoreSummary is null ? BadRequest("No scoring request was found.") : Ok(scoreSummary);
+        return _scoringUow.RequestIsDraft(request) ? 
+            GetDraftSummary(request, patientId) : GetSummary(request, patientId);
     }
+
 
     /// <summary>Generate a CAD Score for a set of Biomarkers</summary>
     /// <remarks>
@@ -226,7 +212,7 @@ public class ScoresController : ControllerBase
     [UserActive]
     [Produces("application/json", Type = typeof(Guid))]
     [ProducesResponseType(StatusCodes.Status400BadRequest), SwaggerResponse(400,"Returns bad request if patient data is invalid or scoring request can not be stored.")]
-    public async Task<IActionResult> PostScoringDraft([FromBody, SwaggerParameter("Biomarkers for a specific Patient", Required = true)] ScoringRequest value)
+    public async Task<IActionResult> PostScoringDraft([FromBody, SwaggerParameter("Biomarkers for a specific Patient", Required = true)] ScoringRequestDraft value)
     {
         if (value == null 
                   || string.IsNullOrEmpty(value.FirstName) 
@@ -245,9 +231,10 @@ public class ScoresController : ControllerBase
 
         var userInfo = _userInformationExtractor.GetUserIdInformation(User);
         var currentUser = _userUow.GetUser(userInfo.UserId, userInfo);
-        var scoringRequestModel = await _scoringUow.StoreDraftRequest(value, userId, patientId, currentUser.ClinicalSetting);
 
-        return scoringRequestModel is null ? BadRequest("Couldnt not store the scoring request.") : Ok(scoringRequestModel.Id);
+        var scoringRequestModel = _scoringUow.StoreDraftRequest(value, userId, patientId, currentUser.ClinicalSetting);
+
+        return scoringRequestModel is null ? BadRequest("Could not store the scoring request.") : Ok(scoringRequestModel.Id);
     }
 
     /// <summary>Create a new CAD Score for a previous ScoringRequest</summary>
@@ -306,8 +293,6 @@ public class ScoresController : ControllerBase
         return requestedScore is null ? BadRequest("Could not process the scoring request.") : Ok(requestedScore);
     }
     
-    
-
     private CultureInfo SetUserCulture(string? locale)
     {
         var userCulture = new CultureInfo("en-GB");
@@ -327,5 +312,65 @@ public class ScoresController : ControllerBase
     {
         var userId = UserHelper.GetUserId(User);
         return _scoringUow.RetrieveScoringHistoryForPatient(patientId, userId);
+    }
+
+    private IActionResult GetDraftSummary(ScoringRequestModel request, string patientId)
+    {
+        var latestBiomarkersDraft = request.LatestBiomarkersDraft;
+
+        if (latestBiomarkersDraft == null)
+        {
+            return BadRequest("The ScoreRequest does not contain any biomarkers.");
+        }
+
+        var scoringResponse = latestBiomarkersDraft.Response;
+
+        if (scoringResponse is null)
+        {
+            var summary = _scoringUow.GetScoringResponseFromDraft(latestBiomarkersDraft, request.Id);
+
+            if (summary is null)
+            {
+                BadRequest("A problem occured restoring the scoring resonse");
+            }
+
+            return Ok(summary);
+        }
+
+        var scoreSummary = _scoringUow.GetScoringResponse(scoringResponse, scoringResponse.Biomarkers, request.Id);
+
+        scoreSummary.CanEdit = _scoreSummaryUtility.CalculateIfUpdatePossible(scoringResponse.Request);
+
+        return scoreSummary is null ? BadRequest("No scoring request was found.") : Ok(scoreSummary);
+    }
+
+    private IActionResult GetSummary(ScoringRequestModel request, string patientId)
+    {
+        var latestBiomarkers = request.LatestBiomarkers;
+
+        if (latestBiomarkers == null)
+        {
+            return BadRequest("The ScoreRequest does not contain any biomarkers.");
+        }
+
+        var scoringResponse = latestBiomarkers.Response;
+
+        if (scoringResponse is null)
+        {
+            var summary = _scoringUow.GetScoringResponse(null, latestBiomarkers, request.Id);
+
+            if (summary is null)
+            {
+                return BadRequest("A problem occured restoring the scoring resonse");
+            }
+
+            return Ok(summary);
+        }
+
+        var scoreSummary = _scoringUow.GetScoringResponse(scoringResponse, scoringResponse.Biomarkers, request.Id);
+
+        scoreSummary.CanEdit = _scoreSummaryUtility.CalculateIfUpdatePossible(scoringResponse.Request);
+
+        return scoreSummary is null ? BadRequest("No scoring request was found.") : Ok(scoreSummary);
     }
 }

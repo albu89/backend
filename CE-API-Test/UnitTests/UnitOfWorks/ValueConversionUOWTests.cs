@@ -85,6 +85,30 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
         }
 
         [Test]
+        public void ConvertToScoringRequestDraft_GivenEmptyPatientIdInformation_ExpectedObjectWithCorrectUserIdAndPatientId()
+        {
+            //Arrange
+            var prevalence = PatientDataEnums.ClinicalSetting.SecondaryCare;
+            var scoringRequestDraft = MockDataProvider.CreateScoringRequestDraft();
+            var userId = string.Empty;
+            string? patientId = null;
+
+            string? expectedUserId = string.Empty;
+            string? expectedPatientId = null;
+
+            var sut = new ValueConversionUOW(_mapper, _templateService);
+
+            //Act
+            var (result, _) = sut.ConvertToScoringRequestDraft(scoringRequestDraft, userId, patientId, prevalence);
+
+            //Assert
+            result.Should().NotBeNull();
+            result.Should().BeOfType(typeof(ScoringRequestModelDraft));
+            result.PatientId.Should().Be(expectedPatientId);
+            result.UserId.Should().Be(expectedUserId);
+        }
+
+        [Test]
         public async Task ConvertToSIValue_GivenScoringRequest_CorrectlyConvertedValues()
         {
             //Arrange

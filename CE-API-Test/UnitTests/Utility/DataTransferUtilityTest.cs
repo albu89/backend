@@ -71,7 +71,7 @@ internal class DataTransferUtilityTest
         var responseAsJson = MockDataProvider.GetMockedSerializedResponse();
 
         //Act
-        var result = DataTransferUtility.FormatResponse(responseAsJson);
+        var result = DataTransferUtility.ToScoringResponse(responseAsJson);
 
         //Assert
         result.Should().NotBeNull();

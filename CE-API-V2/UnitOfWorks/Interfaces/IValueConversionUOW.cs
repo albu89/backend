@@ -8,4 +8,5 @@ public interface IValueConversionUOW
 {
     public (ScoringRequestModel, Biomarkers) ConvertToScoringRequest(ScoringRequest scoringRequest, string userId, string patientId, PatientDataEnums.ClinicalSetting clinicalSetting);
     public Task<ScoringRequest> ConvertToSiValues(ScoringRequest scoringRequest);
+    public (ScoringRequestModelDraft, BiomarkersDraft) ConvertToScoringRequestDraft(ScoringRequestDraft value, string userId, string patientId, PatientDataEnums.ClinicalSetting clinicalSetting);
 }

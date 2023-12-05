@@ -75,10 +75,10 @@ namespace CE_API_Test.UnitTests.Controllers
             var hashingUowMock = new Mock<IPatientIdHashingUOW>();
 
             var mockedResponseTask = Task.FromResult(MockDataProvider.GetScoringResponseSummaryMock());
-            var mockedRequestTask = Task.FromResult(MockDataProvider.GetMockedScoringRequest());
             var mockedAiResponseTask = Task.FromResult(MockDataProvider.GetMockedScoringResponse());
+            var biomarkersDraft = MockDataProvider.GetBiomarkersDraft();
 
-            SetupMockedScoringUOW(mockedResponseTask, mockedRequestTask);
+            SetupMockedScoringUOW(mockedResponseTask, biomarkersDraft);
             inputValidationServiceMock.Setup(x => x.ValidateUser(It.IsAny<CreateUser>())).Returns(true);
             inputValidationServiceMock.Setup(x => x.ScoringRequestIsValid(It.IsAny<ScoringRequest>(), It.IsAny<UserModel>())).Returns(new ValidationResult());
             requestServiceMock.Setup(x => x.RequestScore(It.IsAny<ScoringRequestModel>())).Returns(mockedAiResponseTask);
@@ -622,7 +622,7 @@ namespace CE_API_Test.UnitTests.Controllers
         {
             // Arrange
             var sut = new ScoresController(_scoringUow, _patientHashingUow, _inputValidationService, _configuration, _userUow, _scoreSummaryUtility, _userInformationExtractor, _logger, _userHelper);
-            var mockedBiomarkers = MockDataProvider.CreateValidScoringRequestDto();
+            var mockedBiomarkers = MockDataProvider.CreateScoringRequestDraft();
             
             // Act
             var result = await sut.PostScoringDraft(mockedBiomarkers);
@@ -638,7 +638,7 @@ namespace CE_API_Test.UnitTests.Controllers
         {
             // Arrange
             var sut = new ScoresController(_scoringUow, _patientHashingUow, _inputValidationService, _configuration, _userUow, _scoreSummaryUtility, _userInformationExtractor, _logger, _userHelper);
-            var mockedBiomarkers = MockDataProvider.CreateInvalidScoringRequestDto();
+            var mockedBiomarkers = MockDataProvider.CreateInvalidScoringRequestDraft();
             
             // Act
             var result = await sut.PostScoringDraft(mockedBiomarkers);
@@ -655,7 +655,7 @@ namespace CE_API_Test.UnitTests.Controllers
             //Arrange
             
             var sut = new ScoresController(_scoringUow, _patientHashingUow, _inputValidationService, _configuration, _userUow, _scoreSummaryUtility, _userInformationExtractor, _logger, _userHelper);
-            var mockedBiomarkers = MockDataProvider.CreateValidScoringRequestDto();
+            var mockedBiomarkers = MockDataProvider.CreateScoringRequestDraft();
             mockedBiomarkers.FirstName = null;
             
             // Act
@@ -671,7 +671,7 @@ namespace CE_API_Test.UnitTests.Controllers
         {
             //Arrange
             var sut = new ScoresController(_scoringUow, _patientHashingUow, _inputValidationService, _configuration, _userUow, _scoreSummaryUtility, _userInformationExtractor, _logger, _userHelper);
-            var mockedBiomarkers = MockDataProvider.CreateValidScoringRequestDto();
+            var mockedBiomarkers = MockDataProvider.CreateScoringRequestDraft();
             mockedBiomarkers.LastName = string.Empty;
             
             // Act
@@ -688,7 +688,7 @@ namespace CE_API_Test.UnitTests.Controllers
             //Arrange
             
             var sut = new ScoresController(_scoringUow, _patientHashingUow, _inputValidationService, _configuration, _userUow, _scoreSummaryUtility, _userInformationExtractor, _logger, _userHelper);
-            var mockedBiomarkers = MockDataProvider.CreateValidScoringRequestDto();
+            var mockedBiomarkers = MockDataProvider.CreateScoringRequestDraft();
             mockedBiomarkers.DateOfBirth = null;
             
             // Act
@@ -723,7 +723,7 @@ namespace CE_API_Test.UnitTests.Controllers
             }
         }
 
-        private void SetupMockedScoringUOW(Task<ScoringResponse> mockedResponseTask, Task<ScoringRequestModel> mockedRequestTask)
+        private void SetupMockedScoringUOW(Task<ScoringResponse> mockedResponseTask, BiomarkersDraft biomarkersDraft)
         {
             var scoringUowMock = new Mock<IScoringUOW>();
             var scoringHistoryMock = MockDataProvider.GetMockedScoringRequestHistory().ToList();
@@ -733,10 +733,9 @@ namespace CE_API_Test.UnitTests.Controllers
             scoringUowMock
                 .Setup(x => x.ProcessScoringRequest(It.IsAny<ScoringRequest>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<PatientDataEnums.ClinicalSetting>(), It.IsAny<Guid?>()))
                 .Returns(mockedResponseTask);
-            
             scoringUowMock
-                .Setup(x => x.StoreDraftRequest(It.IsAny<ScoringRequest>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<PatientDataEnums.ClinicalSetting>()))
-                .Returns(mockedRequestTask);
+                .Setup(x => x.StoreDraftRequest(It.IsAny<ScoringRequestDraft>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<PatientDataEnums.ClinicalSetting>()))
+                .Returns(biomarkersDraft);
 
             scoringUowMock.Setup(x => x.GetScoringResponse(It.IsAny<ScoringResponseModel>(), It.IsAny<Biomarkers>(), It.IsAny<Guid>())).Returns(new ScoringResponse());
 

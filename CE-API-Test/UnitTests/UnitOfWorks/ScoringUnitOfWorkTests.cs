@@ -1,5 +1,4 @@
-﻿using System.Runtime.ExceptionServices;
-using AutoMapper;
+﻿using AutoMapper;
 using CE_API_Test.TestUtilities;
 using CE_API_V2.Data;
 using CE_API_V2.Models;
@@ -482,26 +481,25 @@ public class ScoringUnitOfWorkTests
     {
         // Arrange
         var prevalence = PatientDataEnums.ClinicalSetting.PrimaryCare;
-        var request = MockDataProvider.GetMockedScoringRequestDto();
+        var request = MockDataProvider.CreateScoringRequestDraft();
 
         // Act
-        var result = await _scoringUow.StoreDraftRequest(request, _userId, _patientId, prevalence);
+        var result = _scoringUow.StoreDraftRequest(request, _userId, _patientId, prevalence);
 
         // Assert
         result.Should().NotBeNull();
-        result.Biomarkers.Should().NotBeNull();
         result.Id.Should().NotBeEmpty();
 
-        var dbResult = await _ceContext.ScoringRequests.FindAsync(result.Id);
+        var dbResult = await _ceContext.ScoringRequests.FindAsync(result.RequestId);
         dbResult.Should().NotBeNull();
-        var dbBiomarkers = _ceContext.Biomarkers.FirstOrDefault(bio => bio.RequestId == result.Id);
-        dbBiomarkers.Should().NotBeNull();
-        dbBiomarkers.Cholesterol.Should().Be(request.Cholesterol.Value);
-        dbBiomarkers.Aceinhibitor.Should().Be(request.ACEInhibitor.Value);
-        dbBiomarkers.Bilirubin.Should().Be(request.Bilirubin.Value);
-        dbBiomarkers.Calciumant.Should().Be(request.CaAntagonist.Value);
-        dbBiomarkers.Diastolicbp.Should().Be(request.DiastolicBloodPressure.Value);
-        _ceContext.ScoringResponses.Any(rsp => rsp.BiomarkersId == dbBiomarkers.Id).Should().BeFalse("no score should have been requested from the AI model.");
+        dbResult.LatestBiomarkersDraft.Should().NotBeNull();
+        var biomarkersDraft = dbResult.LatestBiomarkersDraft;
+        biomarkersDraft.Cholesterol.Should().Be(request.Cholesterol.Value);
+        biomarkersDraft.Aceinhibitor.Should().Be(request.ACEInhibitor.Value);
+        biomarkersDraft.Bilirubin.Should().Be(request.Bilirubin.Value);
+        biomarkersDraft.Calciumant.Should().Be(request.CaAntagonist.Value);
+        biomarkersDraft.Diastolicbp.Should().Be(request.DiastolicBloodPressure.Value);
+        _ceContext.ScoringResponses.Any(rsp => rsp.BiomarkersId == biomarkersDraft.Id).Should().BeFalse("no score should have been requested from the AI model.");
     }
 
     [Test]
@@ -511,14 +509,14 @@ public class ScoringUnitOfWorkTests
         var prevalence = PatientDataEnums.ClinicalSetting.PrimaryCare;
         var scoringUow = new ScoringUOW(_invalidContext, _requestService, _mapper, _valueConversionUow,
             _scoreSummaryUtility);
-        var request = MockDataProvider.GetMockedScoringRequestDto();
+        var request = MockDataProvider.CreateScoringRequestDraft();
 
         // Act
-        var result = async () => await scoringUow.StoreDraftRequest(request, _userId, _patientId, prevalence);
+        var result =  () => scoringUow.StoreDraftRequest(request, _userId, _patientId, prevalence);
 
         // Assert
         result.Should().NotBeNull();
-        await result.Should().ThrowAsync<NotImplementedException>();
+        result.Should().Throw<Exception>();
     }
 
     [TearDown]
