@@ -114,7 +114,7 @@ namespace CE_API_V2.Models.Mapping
                 new ()
                 {
                     Id = "tc_agg_inhibitor",
-                    Value = biomarkers.TcagginhibitorDisplayValue,
+                    Value = biomarkers.Tcagginhibitor,
                     DisplayValue = biomarkers.TcagginhibitorDisplayValue,
                     Unit = "SI"
                 },
