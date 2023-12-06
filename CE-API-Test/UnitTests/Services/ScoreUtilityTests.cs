@@ -108,25 +108,24 @@ public class ScoreUtilityTests
     [TestCase(0.711994, "20%", ClinicalSetting.PrimaryCare, false)]
     [TestCase(0.8714438, "50%", ClinicalSetting.PrimaryCare, false)]
     [TestCase(0.9154612, ">75%", ClinicalSetting.PrimaryCare, false)]
-    [TestCase(0.1203603, "<5%", ClinicalSetting.PrimaryCare, true)] //ExpectedSecondary
+    [TestCase(0.1199, "<5%", ClinicalSetting.PrimaryCare, true)] //ExpectedSecondary
     [TestCase(0.1203604, "20%", ClinicalSetting.PrimaryCare, true)] //ExpectedSecondary
-    [TestCase(0.711993, "20%", ClinicalSetting.PrimaryCare, true)] //ExpectedSecondary
-    [TestCase(0.711994, "50%", ClinicalSetting.PrimaryCare, true)] //ExpectedSecondary
-    [TestCase(0.8714437, "50%", ClinicalSetting.PrimaryCare, true)] //ExpectedSecondary
-    [TestCase(0.8714438, ">90%", ClinicalSetting.PrimaryCare, true)] //ExpectedSecondary
-    [TestCase(0.1203603, "<5%", ClinicalSetting.SecondaryCare, false)] //ExpectedSecondary
-    [TestCase(0.12, "<5%", ClinicalSetting.SecondaryCare, false)] //ExpectedSecondary
-    [TestCase(0.1203607, "20%", ClinicalSetting.SecondaryCare, false)] //ExpectedSecondary
-    [TestCase(0.3453607, "20%", ClinicalSetting.SecondaryCare, false)] //ExpectedSecondary
-    [TestCase(0.711994, "50%", ClinicalSetting.SecondaryCare, false)] //ExpectedSecondary
-    [TestCase(0.8714437, "50%", ClinicalSetting.SecondaryCare, false)] //ExpectedSecondary
-    [TestCase(0.8714438, ">90%", ClinicalSetting.SecondaryCare, false)] //ExpectedSecondary
-    [TestCase(0.12, "<5%", ClinicalSetting.SecondaryCare, true)] //ExpectedSecondary
+    [TestCase(0.31999, "20%", ClinicalSetting.PrimaryCare, true)] //ExpectedSecondary
+    [TestCase(0.32, "50%", ClinicalSetting.PrimaryCare, true)] //ExpectedSecondary
+    [TestCase(0.72999, "50%", ClinicalSetting.PrimaryCare, true)] //ExpectedSecondary
+    [TestCase(0.73, ">90%", ClinicalSetting.PrimaryCare, true)] //ExpectedSecondary
+    [TestCase(0.1199, "<5%", ClinicalSetting.SecondaryCare, false)] //ExpectedSecondary
+    [TestCase(0.1203604, "20%", ClinicalSetting.SecondaryCare, false)] //ExpectedSecondary
+    [TestCase(0.3199, "20%", ClinicalSetting.SecondaryCare, false)] //ExpectedSecondary
+    [TestCase(0.32, "50%", ClinicalSetting.SecondaryCare, false)] //ExpectedSecondary
+    [TestCase(0.72988, "50%", ClinicalSetting.SecondaryCare, false)] //ExpectedSecondary
+    [TestCase(0.73, ">90%", ClinicalSetting.SecondaryCare, false)] //ExpectedSecondary
+    [TestCase(0.1199, "<5%", ClinicalSetting.SecondaryCare, true)] //ExpectedSecondary
     [TestCase(0.1203604, "20%", ClinicalSetting.SecondaryCare, true)] //ExpectedSecondary
     [TestCase(0.31, "20%", ClinicalSetting.SecondaryCare, true)] //ExpectedSecondary
-    [TestCase(0.711993, "20%", ClinicalSetting.SecondaryCare, true)] //ExpectedSecondary
-    [TestCase(0.711998, "50%", ClinicalSetting.SecondaryCare, true)] //ExpectedSecondary
-    [TestCase(0.871444, ">90%", ClinicalSetting.SecondaryCare, true)] //ExpectedSecondary
+    [TestCase(0.3112, "20%", ClinicalSetting.SecondaryCare, true)] //ExpectedSecondary
+    [TestCase(0.72999, "50%", ClinicalSetting.SecondaryCare, true)] //ExpectedSecondary
+    [TestCase(0.73000, ">90%", ClinicalSetting.SecondaryCare, true)] //ExpectedSecondary
     public void SetAdditionalScoringParams_GivenVariousScoresAndClinicalSettings_ExpectedAddedMissingParameters(double score, string expectedRiskValue, ClinicalSetting clinicalSetting, bool priorCad)
     {
         //Arrange
