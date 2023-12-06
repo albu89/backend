@@ -2,18 +2,18 @@
   {
     "Id": 1,
     "LowerLimit": "0",
-    "UpperLimit": "0.1203604",
+    "UpperLimit": "0.12",
     "RiskValue": "<5%"
   },
   {
     "Id": 2,
-    "LowerLimit": "0.1203604",
+    "LowerLimit": "0.12",
     "UpperLimit": "0.32",
     "RiskValue": "20%"
   },
   {
     "Id": 3,
-    "LowerLimit": "0.32",   
+    "LowerLimit": "0.32",  
     "UpperLimit": "0.73",  
     "RiskValue": "50%"
   },
