@@ -452,7 +452,7 @@ namespace CE_API_V2.Models.Mapping
                 new()
                 {
                     Id = "tc_agg_inhibitor",
-                    Value = biomarkers.TcagginhibitorDisplayValue,
+                    Value = biomarkers.Tcagginhibitor,
                     DisplayValue = biomarkers.TcagginhibitorDisplayValue,
                     Unit = "SI"
                 },
@@ -640,6 +640,97 @@ namespace CE_API_V2.Models.Mapping
             billingTemplate.BillingPhone = billingModel.BillingPhone;
 
             return billingTemplate;
+        }
+
+        public static void UpdateLatestBiomarkers(ScoringRequestDraft value, BiomarkersDraft latestBiomarkersDraft)
+        {
+            latestBiomarkersDraft.PriorCAD = value.prior_CAD.Value;
+            latestBiomarkersDraft.PriorCADDisplayValue = value.prior_CAD.DisplayValue;
+            latestBiomarkersDraft.Age = value.Age.Value;
+            latestBiomarkersDraft.AgeUnit = value.Age.UnitType;
+            latestBiomarkersDraft.AgeDisplayValue = value.Age.DisplayValue;
+            latestBiomarkersDraft.Sex = value.Sex.Value;
+            latestBiomarkersDraft.SexDisplayValue = value.Sex.DisplayValue;
+            latestBiomarkersDraft.Height = value.Height.Value;
+            latestBiomarkersDraft.HeightUnit = value.Height.UnitType;
+            latestBiomarkersDraft.HeightDisplayValue = value.Height.DisplayValue;
+            latestBiomarkersDraft.Weight = value.Weight.Value;
+            latestBiomarkersDraft.WeightUnit = value.Weight.UnitType;
+            latestBiomarkersDraft.WeightDisplayValue = value.Weight.DisplayValue;
+            latestBiomarkersDraft.Chestpain = value.ChestPain.Value;
+            latestBiomarkersDraft.ChestpainDisplayValue = value.ChestPain.DisplayValue;
+            latestBiomarkersDraft.Nicotine = value.NicotineConsumption.Value;
+            latestBiomarkersDraft.NicotineDisplayValue = value.NicotineConsumption.DisplayValue;
+            latestBiomarkersDraft.Diabetes = value.Diabetes.Value;
+            latestBiomarkersDraft.DiabetesDisplayValue = value.Diabetes.DisplayValue;
+            latestBiomarkersDraft.Statin = value.CholesterolLowering_Statin.Value;
+            latestBiomarkersDraft.StatinDisplayValue = value.CholesterolLowering_Statin.DisplayValue;
+            latestBiomarkersDraft.Tcagginhibitor = value.TCAggregationInhibitor.Value;
+            latestBiomarkersDraft.TcagginhibitorDisplayValue = value.TCAggregationInhibitor.DisplayValue;
+            latestBiomarkersDraft.Aceinhibitor = value.ACEInhibitor.Value;
+            latestBiomarkersDraft.AceinhibitorDisplayValue = value.ACEInhibitor.DisplayValue;
+            latestBiomarkersDraft.Calciumant = value.CaAntagonist.Value;
+            latestBiomarkersDraft.CalciumantDisplayValue = value.CaAntagonist.DisplayValue;
+            latestBiomarkersDraft.Betablocker = value.Betablocker.Value;
+            latestBiomarkersDraft.BetablockerDisplayValue = value.Betablocker.DisplayValue;
+            latestBiomarkersDraft.Diuretic = value.Diuretic.Value;
+            latestBiomarkersDraft.DiureticDisplayValue = value.Diuretic.DisplayValue;
+            latestBiomarkersDraft.Nitrate = value.OrganicNitrate.Value;
+            latestBiomarkersDraft.NitrateDisplayValue = value.OrganicNitrate.DisplayValue;
+            latestBiomarkersDraft.Systolicbp = value.SystolicBloodPressure.Value;
+            latestBiomarkersDraft.SystolicbpUnit = value.SystolicBloodPressure.UnitType;
+            latestBiomarkersDraft.SystolicbpDisplayValue = value.SystolicBloodPressure.DisplayValue;
+            latestBiomarkersDraft.Diastolicbp = value.DiastolicBloodPressure.Value;
+            latestBiomarkersDraft.DiastolicbpUnit = value.DiastolicBloodPressure.UnitType;
+            latestBiomarkersDraft.DiastolicbpDisplayValue = value.DiastolicBloodPressure.DisplayValue;
+            latestBiomarkersDraft.Qwave = value.RestingECG.Value;
+            latestBiomarkersDraft.QwaveDisplayValue = value.RestingECG.DisplayValue;
+            latestBiomarkersDraft.Amylasep = value.PancreaticAmylase.Value;
+            latestBiomarkersDraft.AmylasepUnit = value.PancreaticAmylase.UnitType;
+            latestBiomarkersDraft.AmylasepDisplayValue = value.PancreaticAmylase.DisplayValue;
+            latestBiomarkersDraft.Alkaline = value.AlkalinePhosphatase.Value;
+            latestBiomarkersDraft.AlkalineUnit = value.AlkalinePhosphatase.UnitType;
+            latestBiomarkersDraft.AlkalineDisplayValue = value.AlkalinePhosphatase.DisplayValue;
+            latestBiomarkersDraft.Hstroponint = value.HsTroponinT.Value;
+            latestBiomarkersDraft.HstroponintUnit = value.HsTroponinT.UnitType;
+            latestBiomarkersDraft.HstroponintDisplayValue = value.HsTroponinT.DisplayValue;
+            latestBiomarkersDraft.Alat = value.Alat.Value;
+            latestBiomarkersDraft.AlatUnit = value.Alat.UnitType;
+            latestBiomarkersDraft.AlatDisplayValue = value.Alat.DisplayValue;
+            latestBiomarkersDraft.Glucose = value.GlucoseFasting.Value;
+            latestBiomarkersDraft.GlucoseUnit = value.GlucoseFasting.UnitType;
+            latestBiomarkersDraft.GlucoseDisplayValue = value.GlucoseFasting.DisplayValue;
+            latestBiomarkersDraft.Bilirubin = value.Bilirubin.Value;
+            latestBiomarkersDraft.BilirubinUnit = value.Bilirubin.UnitType;
+            latestBiomarkersDraft.BilirubinDisplayValue = value.Bilirubin.DisplayValue;
+            latestBiomarkersDraft.Urea = value.Urea.Value;
+            latestBiomarkersDraft.UreaUnit = value.Urea.UnitType;
+            latestBiomarkersDraft.UreaDisplayValue = value.Urea.DisplayValue;
+            latestBiomarkersDraft.Uricacid = value.UricAcid.Value;
+            latestBiomarkersDraft.UricacidUnit = value.UricAcid.UnitType;
+            latestBiomarkersDraft.UricacidDisplayValue = value.UricAcid.DisplayValue;
+            latestBiomarkersDraft.Cholesterol = value.Cholesterol.Value;
+            latestBiomarkersDraft.CholesterolUnit = value.Cholesterol.UnitType;
+            latestBiomarkersDraft.CholesterolDisplayValue = value.Cholesterol.DisplayValue;
+            latestBiomarkersDraft.Hdl = value.Hdl.Value;
+            latestBiomarkersDraft.HdlUnit = value.Hdl.UnitType;
+            latestBiomarkersDraft.HdlDisplayValue = value.Hdl.DisplayValue;
+            latestBiomarkersDraft.Ldl = value.Ldl.Value;
+            latestBiomarkersDraft.LdlUnit = value.Ldl.UnitType;
+            latestBiomarkersDraft.LdlDisplayValue = value.Ldl.DisplayValue;
+            latestBiomarkersDraft.Protein = value.Protein.Value;
+            latestBiomarkersDraft.ProteinUnit = value.Protein.UnitType;
+            latestBiomarkersDraft.ProteinDisplayValue = value.Protein.DisplayValue;
+            latestBiomarkersDraft.Albumin = value.Albumin.Value;
+            latestBiomarkersDraft.AlbuminUnit = value.Albumin.UnitType;
+            latestBiomarkersDraft.AlbuminDisplayValue = value.Albumin.DisplayValue;
+            latestBiomarkersDraft.Leukocyte = value.Leukocytes.Value;
+            latestBiomarkersDraft.LeukocyteUnit = value.Leukocytes.UnitType;
+            latestBiomarkersDraft.LeukocyteDisplayValue = value.Leukocytes.DisplayValue;
+            latestBiomarkersDraft.Mchc = value.Mchc.Value;
+            latestBiomarkersDraft.MchcUnit = value.Mchc.UnitType;
+            latestBiomarkersDraft.MchcDisplayValue = value.Mchc.DisplayValue;
+            latestBiomarkersDraft.UpdatedOn = DateTimeOffset.Now;
         }
     }
 }

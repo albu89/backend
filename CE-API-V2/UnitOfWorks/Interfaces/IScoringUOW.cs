@@ -17,7 +17,10 @@ public interface IScoringUOW
     public Biomarkers StoreBiomarkers(Guid scoringRequestId, Biomarkers biomarkers);
 
     public BiomarkersDraft StoreDraftRequest(ScoringRequestDraft value, string userId, string patientId, ClinicalSetting clinicalSetting);
-    ScoringRequestModel StoreScoringRequest(ScoringRequestModel scoringRequestModel, string UserId);
+
+    public BiomarkersDraft UpdateDraftRequest(ScoringRequestDraft value, Guid requestId);
+    
+    ScoringRequestModel StoreScoringRequest(ScoringRequestModel scoringRequestModel, string userId);
     
     ScoringRequestModel RetrieveScoringRequest(Guid ScoringRequestId, string userId);
     
@@ -35,4 +38,5 @@ public interface IScoringUOW
     bool IsDraft(string patientId, string userId, out BiomarkersDraft biomarkersDraft);
     ScoringResponse GetScoringResponseFromDraft(BiomarkersDraft biomarkersDraft, Guid requestId);
     bool RequestIsDraft(ScoringRequestModel request);
+    BiomarkersDraft? RemoveDraftBiomarkers(Guid requestId);
 }

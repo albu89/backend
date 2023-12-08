@@ -3,7 +3,6 @@ using CE_API_V2.Hasher;
 using CE_API_V2.Models.DTO;
 using CE_API_V2.Services.Interfaces;
 using CE_API_V2.UnitOfWorks.Interfaces;
-using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using System.Globalization;
 using System.Web;
@@ -15,6 +14,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Swashbuckle.AspNetCore.Annotations;
 using Microsoft.AspNetCore.RateLimiting;
 using CE_API_V2.Utility.CustomAnnotations;
+using FluentValidation.Results;
 
 namespace CE_API_V2.Controllers;
 
@@ -69,12 +69,12 @@ public class ScoresController : ControllerBase
     /// <param name="name" example="Thoma">The patients last name</param>
     [HttpGet(Name = "GetScoreList")]
     [UserActive]
-    [Produces("application/json", Type = typeof(IEnumerable<SimpleScore>)), 
-                                         SwaggerResponse(200, "List of Scores containing id, timestamp of creation, score and risk class.", 
+    [Produces("application/json", Type = typeof(IEnumerable<SimpleScore>)),
+                                         SwaggerResponse(200, "List of Scores containing id, timestamp of creation, score and risk class.",
                                          type: typeof(IEnumerable<SimpleScore>))]
     public IActionResult GetScoringRequests(
-        [FromHeader, SwaggerParameter("Patients Firstname", Required = false)] string? name = null, 
-        [FromHeader, SwaggerParameter("Patients Lastname", Required = false)] string? lastname = null, 
+        [FromHeader, SwaggerParameter("Patients Firstname", Required = false)] string? name = null,
+        [FromHeader, SwaggerParameter("Patients Lastname", Required = false)] string? lastname = null,
         [FromHeader, SwaggerSchema(Format = "yyyy-MM-dd"), SwaggerParameter("Patients Date of Birth", Required = false)] DateTime? dateOfBirth = null)
     {
         IEnumerable<SimpleScore> requests;
@@ -108,10 +108,10 @@ public class ScoresController : ControllerBase
     [Produces("application/json", Type = typeof(ScoringResponse)), SwaggerResponse(200, "ScoringResponse object contains all CAD Score values and information for interpreting its values.")]
     [ProducesErrorResponseType(typeof(BadRequest)), SwaggerResponse(400, "Returned when either ScoringRequest does not exist, was created by a different user or patient information does not match.")]
     public IActionResult GetScoringRequest(
-        [FromHeader] string name, 
-        [FromHeader] string lastname, 
-        [FromHeader] DateTime dateOfBirth, 
-        [FromRoute] Guid scoringRequestId, 
+        [FromHeader] string name,
+        [FromHeader] string lastname,
+        [FromHeader] DateTime dateOfBirth,
+        [FromRoute] Guid scoringRequestId,
         [FromQuery] string locale = "en-GB")
     {
         if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(lastname))
@@ -139,7 +139,7 @@ public class ScoresController : ControllerBase
             return BadRequest("The patient data does not match that of the request.");
         }
 
-        return _scoringUow.RequestIsDraft(request) ? 
+        return _scoringUow.RequestIsDraft(request) ?
             GetDraftSummary(request, patientId) : GetSummary(request, patientId);
     }
 
@@ -161,10 +161,7 @@ public class ScoresController : ControllerBase
     [TypeFilter(typeof(ValidationExceptionFilter))]
     public async Task<IActionResult> PostScoringRequest([FromBody] ScoringRequest scoringRequestValues, [FromQuery] string? locale = "en-GB")
     {
-        if (scoringRequestValues == null 
-                                 || string.IsNullOrEmpty(scoringRequestValues.FirstName) 
-                                 || string.IsNullOrEmpty(scoringRequestValues.LastName) 
-                                 || scoringRequestValues.DateOfBirth is null)
+        if (PersonRelatedValuesAreNull(scoringRequestValues))
         {
             _logger.LogWarning("Tried to request score for invalid patient data.");
             return BadRequest("Invalid patient data.");
@@ -196,7 +193,7 @@ public class ScoresController : ControllerBase
         }
 
         var requestedScore = await _scoringUow.ProcessScoringRequest(scoringRequestValues, userInfo.UserId, patientId, currentUser.ClinicalSetting);
-        
+
         return requestedScore is null ? BadRequest("Could not process the scoring request.") : Ok(requestedScore);
     }
 
@@ -211,13 +208,10 @@ public class ScoresController : ControllerBase
     [HttpPost(Name = "SaveDraft")]
     [UserActive]
     [Produces("application/json", Type = typeof(Guid))]
-    [ProducesResponseType(StatusCodes.Status400BadRequest), SwaggerResponse(400,"Returns bad request if patient data is invalid or scoring request can not be stored.")]
+    [ProducesResponseType(StatusCodes.Status400BadRequest), SwaggerResponse(400, "Returns bad request if patient data is invalid or scoring request can not be stored.")]
     public async Task<IActionResult> PostScoringDraft([FromBody, SwaggerParameter("Biomarkers for a specific Patient", Required = true)] ScoringRequestDraft value)
     {
-        if (value == null 
-                  || string.IsNullOrEmpty(value.FirstName) 
-                  || string.IsNullOrEmpty(value.LastName) 
-                  || value.DateOfBirth is null)
+        if (PersonRelatedValuesAreNull(value))
         {
             _logger.LogWarning("Tried to save draft score for invalid patient data.");
             return BadRequest("Invalid patient data.");
@@ -234,7 +228,7 @@ public class ScoresController : ControllerBase
 
         var scoringRequestModel = _scoringUow.StoreDraftRequest(value, userId, patientId, currentUser.ClinicalSetting);
 
-        return scoringRequestModel is null ? BadRequest("Could not store the scoring request.") : Ok(scoringRequestModel.Id);
+        return scoringRequestModel is null ? BadRequest("Could not store the scoring request.") : Ok(scoringRequestModel.RequestId);
     }
 
     /// <summary>Create a new CAD Score for a previous ScoringRequest</summary>
@@ -253,10 +247,7 @@ public class ScoresController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(IEnumerable<ValidationFailure>)), SwaggerResponse(400, "The request was malformed or contained invalid values.", type: typeof(IEnumerable<ValidationFailure>))]
     public async Task<IActionResult> PutScoringRequest([FromBody] ScoringRequest value, [FromRoute] Guid scoreId, [FromQuery] string? locale = "en-GB")
     {
-        if (value == null 
-                  || string.IsNullOrEmpty(value.FirstName) 
-                  || string.IsNullOrEmpty(value.LastName) 
-                  || value.DateOfBirth is null)
+        if (PersonRelatedValuesAreNull(value))
         {
             _logger.LogWarning("Tried to save update score for invalid patient data.");
             return BadRequest("Invalid patient data.");
@@ -282,7 +273,9 @@ public class ScoresController : ControllerBase
             scoringRequestModel = null;
         }
 
-        if (scoringRequestModel == null || !_scoreSummaryUtility.CalculateIfUpdatePossible(scoringRequestModel))
+        var isDraft = _scoringUow.RequestIsDraft(scoringRequestModel);
+
+        if (!isDraft && (scoringRequestModel == null || !_scoreSummaryUtility.CalculateIfUpdatePossible(scoringRequestModel)))
         {
             _logger.LogWarning($"The user tried to edit a score outside of its edit period. Id: {scoreId}");
             return BadRequest("The edit period of the ScoringRequest has expired.");
@@ -290,9 +283,70 @@ public class ScoresController : ControllerBase
 
         var usedClinicalSetting = scoringRequestModel.ClinicalSetting;
         var requestedScore = await _scoringUow.ProcessScoringRequest(value, userId, patientId, usedClinicalSetting, scoringRequestModel.Id);
-        return requestedScore is null ? BadRequest("Could not process the scoring request.") : Ok(requestedScore);
+
+        if (requestedScore == null)
+        {
+            BadRequest("Could not process the scoring request.");
+        }
+
+        if (isDraft)
+        {
+            _scoringUow.RemoveDraftBiomarkers(scoreId);
+        }
+
+        return Ok(requestedScore);
     }
-    
+
+    /// <summary>
+    ///  Store biomarker values as a draft
+    /// </summary>
+    /// <remarks>
+    /// Stores the provided Biomarkers as a draft to allow for modification in the future. Does not validate the entered biomarkers.
+    /// Is only successful if Patient Information is provided.
+    /// </remarks>
+    /// <param name="value" required="true">Object containing the biomarker values to request a CAD Score.</param>
+    [HttpPut("updatedraft/{draftScoreId:guid}", Name = "UpdateDraft")]
+    [UserActive]
+    [Produces("application/json", Type = typeof(Guid))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest), SwaggerResponse(400, "Returns bad request if patient data is invalid or scoring request can not be stored.")]
+    public async Task<IActionResult> UpdateScoringDraft([FromBody, SwaggerParameter("Biomarkers for a specific Patient", Required = true)] ScoringRequestDraft value, [FromRoute] Guid draftScoreId)
+    {
+        if (PersonRelatedValuesAreNull(value))
+        {
+            _logger.LogWarning("Tried to update draft score for invalid patient data.");
+            return BadRequest("Invalid patient data.");
+        }
+
+        var patientId = _hashingUow.HashPatientId(value.FirstName, value.LastName, value.DateOfBirth.Value);
+        value.FirstName = null;
+        value.LastName = null;
+        value.DateOfBirth = null;
+
+        var userId = UserHelper.GetUserId(User);
+        var updatedDraftRequest = _scoringUow.UpdateDraftRequest(value, draftScoreId);
+        if (updatedDraftRequest is null)
+        {
+            return BadRequest("Could not update the draft scoring request.");
+        }
+
+        var request = _scoringUow.RetrieveScoringRequest(draftScoreId, userId); //Todo - request can be null
+        if (request is null)
+        {
+            return BadRequest("An error occurred storing the updated draft request.");
+        }
+
+        var draftRequest = GetDraftSummary(request, patientId);
+        if (draftRequest is null)
+        {
+            return BadRequest("An error occurred retrieving the draft summary.");
+        }
+
+        return draftRequest is null ? BadRequest("Could not update the scoring request.") : draftRequest;
+    }
+
+    private bool PersonRelatedValuesAreNull(IScoringRequest value) =>
+        string.IsNullOrWhiteSpace(value.FirstName) || string.IsNullOrWhiteSpace(value.LastName) || value.DateOfBirth is null;
+
     private CultureInfo SetUserCulture(string? locale)
     {
         var userCulture = new CultureInfo("en-GB");
@@ -331,7 +385,7 @@ public class ScoresController : ControllerBase
 
             if (summary is null)
             {
-                BadRequest("A problem occured restoring the scoring resonse");
+                BadRequest("A problem occurred restoring the scoring response.");
             }
 
             return Ok(summary);
@@ -350,7 +404,7 @@ public class ScoresController : ControllerBase
 
         if (latestBiomarkers == null)
         {
-            return BadRequest("The ScoreRequest does not contain any biomarkers.");
+            return BadRequest("The score request does not contain any biomarkers.");
         }
 
         var scoringResponse = latestBiomarkers.Response;
@@ -361,7 +415,7 @@ public class ScoresController : ControllerBase
 
             if (summary is null)
             {
-                return BadRequest("A problem occured restoring the scoring resonse");
+                return BadRequest("A problem occurred restoring the scoring response.");
             }
 
             return Ok(summary);

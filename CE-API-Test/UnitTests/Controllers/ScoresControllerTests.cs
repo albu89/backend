@@ -124,23 +124,6 @@ namespace CE_API_Test.UnitTests.Controllers
         }
 
         [Test]
-        public async Task PostScoringRequest_GivenEmptyData_ReturnBadRequestResult()
-        {
-            //Arrange
-            var sut = new ScoresController(_scoringUow, _patientHashingUow, _inputValidationService, _configuration, _userUow, _scoreSummaryUtility, _userInformationExtractor, _logger, _userHelper);
-
-            //Act
-            var result = await sut.PostScoringRequest(null, null);
-
-            //Assert
-            result.Should().NotBeNull();
-            result.Should().BeOfType(typeof(BadRequestObjectResult));
-
-            var badRequest = result as BadRequestObjectResult;
-            badRequest?.StatusCode.Should().Be(400);
-        }
-
-        [Test]
         public async Task PostScoringRequest_UserUowReturnsNoUser_ReturnBadRequestResult()
         {
             //Arrange

@@ -8,14 +8,11 @@ using CE_API_V2.Services.Interfaces;
 using CE_API_V2.UnitOfWorks.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using CE_API_V2.Services.Interfaces;
 using System.Security.Claims;
-using CE_API_V2.Models.Records;
 using CE_API_Test.TestUtilities;
 using CE_API_V2.Data;
 using Microsoft.EntityFrameworkCore;
 using CE_API_V2.Utility;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Configuration;
 
 namespace CE_API_Test.UnitTests.Controllers

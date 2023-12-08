@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using AutoMapper;
+using AutoMapper.Execution;
 using CE_API_V2.Data;
 using CE_API_V2.Data.Repositories;
 using CE_API_V2.Data.Repositories.Interfaces;
@@ -98,6 +99,27 @@ namespace CE_API_V2.UnitOfWorks
             return biomarkers;
         }
 
+        public BiomarkersDraft? UpdateDraftRequest(ScoringRequestDraft value, Guid requestId)
+        {
+            var scoringRequest = ScoringRequestRepository
+                 .Get(x => x.Id == requestId, null, "BiomarkersDraft").FirstOrDefault();
+
+            ManualMapper.UpdateLatestBiomarkers(value, scoringRequest.LatestBiomarkersDraft);
+            BiomarkersDraft? updatedBiomarkers;
+
+            try
+            {
+                updatedBiomarkers = DraftBiomarkersRepository.Update(scoringRequest.LatestBiomarkersDraft);
+                _context.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                throw new NotImplementedException();
+            }
+
+            return updatedBiomarkers;
+        }
+
         public ScoringRequestModel StoreScoringRequest(ScoringRequestModel scoringRequestModel, string UserId)
         {
             try
@@ -119,7 +141,11 @@ namespace CE_API_V2.UnitOfWorks
             var scoringRequest = ScoringRequestRepository
                 .Get(x => x.Id == scoringRequestId, null, "Biomarkers.Response").SingleOrDefault();
             var draftBiomarkers = DraftBiomarkersRepository.Get(x => x.RequestId == scoringRequestId);
-            scoringRequest.BiomarkersDraft = draftBiomarkers;
+
+            if (draftBiomarkers.Any())
+            {
+                scoringRequest.BiomarkersDraft = draftBiomarkers;
+            }
 
             if (scoringRequest is null)
             {
@@ -154,12 +180,13 @@ namespace CE_API_V2.UnitOfWorks
 
             try
             {
-                var scoringRequests = ScoringRequestRepository.Get(x => x.UserId == UserId, null, "Responses,Biomarkers").ToList();
+                var scoringRequests = ScoringRequestRepository.Get(x => x.UserId == UserId, null, "Responses,Biomarkers,BiomarkersDraft").ToList();
                 scoringHistory = _mapper.Map<List<SimpleScore>>(scoringRequests);
+
                 foreach (var req in scoringRequests)
                 {
                     scoringHistory.FirstOrDefault(x => x.RequestId == req.Id).CanEdit = _scoreSummaryUtility.CalculateIfUpdatePossible(req);
-                    scoringHistory.FirstOrDefault(x => x.RequestId == req.Id).RequestTimeStamp = req.CreatedOn;
+                    scoringHistory.FirstOrDefault(x => x.RequestId == req.Id).RequestTimeStamp = GetDisplayTime(req);
                 }
             }
             catch (Exception)
@@ -181,10 +208,13 @@ namespace CE_API_V2.UnitOfWorks
                 scoringHistory = _mapper.Map<List<SimpleScore>>(scoringRequests);
                 foreach (var req in scoringRequests)
                 {
+                    var createscoringHistory = scoringRequests.FirstOrDefault(x => x.Id == req.Id);
+                    var createdOn = createscoringHistory.CreatedOn;
+                    var updatedOn = req.BiomarkersDraft.FirstOrDefault(x=> x.RequestId == req.Id)?.UpdatedOn;
+
                     scoringHistory.FirstOrDefault(x => x.RequestId == req.Id).CanEdit = _scoreSummaryUtility.CalculateIfUpdatePossible(req);
-                    scoringHistory.FirstOrDefault(x => x.RequestId == req.Id).RequestTimeStamp =
-                        scoringRequests.FirstOrDefault(x => x.Id == req.Id).CreatedOn; 
-                    var  isDraft = req.BiomarkersDraft.Any() && !req.Biomarkers.Any();
+                    scoringHistory.FirstOrDefault(x => x.RequestId == req.Id).RequestTimeStamp = updatedOn is null || createdOn > (DateTimeOffset)updatedOn ? createdOn : (DateTimeOffset)updatedOn;
+                    var isDraft = req.BiomarkersDraft.Any() && !req.Biomarkers.Any();
                     scoringHistory.FirstOrDefault(x => x.RequestId == req.Id).IsDraft = isDraft;
                 }
             }
@@ -263,7 +293,7 @@ namespace CE_API_V2.UnitOfWorks
             IsDraft(patientId, userId, out BiomarkersDraft biomarkersDraft); //Todo - refactor
 
             StoreScoringRequest(scoringRequestDraft, userId);
-          
+
             return scoringRequestDraft.LatestBiomarkersDraft;
         }
 
@@ -303,9 +333,36 @@ namespace CE_API_V2.UnitOfWorks
 
         public bool RequestIsDraft(ScoringRequestModel request) => request.LatestBiomarkersDraft is not null;
 
+        public BiomarkersDraft? RemoveDraftBiomarkers(Guid requestId)
+        {
+            
+            var scoringRequest = ScoringRequestRepository
+                .Get(x => x.Id == requestId, null, "BiomarkersDraft").FirstOrDefault();
+
+            if (scoringRequest is null || scoringRequest.LatestBiomarkersDraft is null)
+            {
+                return null;
+            }
+
+            BiomarkersDraft deletedBiomarkers;
+            try
+            {
+                _context.ChangeTracker.Clear();
+                deletedBiomarkers = DraftBiomarkersRepository.Delete(scoringRequest.LatestBiomarkersDraft);
+                _context.SaveChanges();
+                
+            }
+            catch (Exception e)
+            {
+                throw new Exception("An error occurred removing the draft biomarkers");
+            }
+
+            return deletedBiomarkers;
+        }
+
         public bool IsDraft(string patientId, string userId, out BiomarkersDraft draftBiomarkers)
         {
-           draftBiomarkers = null;
+            draftBiomarkers = null;
             var request = ScoringRequestRepository.Get(x => x.PatientId == patientId && x.UserId == userId).MaxBy(t => t.CreatedOn) ?? null;
 
             if (request is null)
@@ -375,6 +432,18 @@ namespace CE_API_V2.UnitOfWorks
                 RequestId = scoringRequestIs,
                 Values = ManualMapper.MapFromDraftBiomarkersToValues(biomarkers)
             };
+        }
+
+        private DateTimeOffset GetDisplayTime(ScoringRequestModel requestModel)
+        {
+            if (requestModel.LatestBiomarkers is not null)
+            {
+                return requestModel.LatestBiomarkers.CreatedOn;
+            }
+
+            return requestModel.LatestBiomarkersDraft.UpdatedOn > requestModel.LatestBiomarkersDraft.CreatedOn
+                ? requestModel.LatestBiomarkersDraft.UpdatedOn
+                : requestModel.LatestBiomarkersDraft.CreatedOn;
         }
     }
 }

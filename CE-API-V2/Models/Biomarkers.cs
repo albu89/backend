@@ -204,5 +204,5 @@ public class BiomarkersDraft
     public string? MchcUnit { get; set; }
     public string? MchcDisplayValue { get; set; }
     public DateTimeOffset CreatedOn { get; }
-    public DateTimeOffset UpdatedOn { get; }
+    public DateTimeOffset UpdatedOn { get; set; }
 }

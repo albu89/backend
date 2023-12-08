@@ -12,7 +12,6 @@ using CE_API_V2.Utility;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Moq;
-using NSubstitute;
 
 namespace CE_API_Test.UnitTests.Controllers;
 

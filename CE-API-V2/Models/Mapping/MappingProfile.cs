@@ -315,7 +315,7 @@ namespace CE_API_V2.Models.Mapping
                 .ForMember(dest => dest.IsSeparateBilling, opt => opt.MapFrom(src => src.IsSeparateBilling))
                 .ForMember(dest => dest.ChangeClinicalSetting, opt => opt.Ignore())
                 .ForMember(dest => dest.ClinicalSetting, opt => opt.Ignore())
-                .ForMember(dest => dest.Department, opt => opt.Ignore())
+                .ForMember(dest => dest.Department, opt => opt.MapFrom(src => src.ClinicalSetting))
                 .ForMember(dest => dest.Organization, opt => opt.Ignore())
                 .ForMember(dest => dest.Billing, opt => opt.Ignore())
                 ;

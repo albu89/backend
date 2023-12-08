@@ -120,7 +120,7 @@
             "sideEffectValue": ""
           },
           {
-            "value": "atypical",
+            "value": "possible",
             "sideEffectId": "",
             "sideEffectValue": ""
           },
@@ -394,13 +394,13 @@
           },
           {
             "value": "screening",
-            "sideEffectId": "",
-            "sideEffectValue": ""
+            "sideEffectId": "prior_CAD",
+            "sideEffectValue": "true"
           },
           {
             "value": "no",
-            "sideEffectId": "prior_CAD",
-            "sideEffectValue": "true"
+            "sideEffectId": "",
+            "sideEffectValue": ""
           }
         ]
       },
