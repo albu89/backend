@@ -235,7 +235,8 @@ namespace CE_API_V2.Models.Mapping
                 .ForMember(dest => dest.classifier_score, opt => opt.Ignore());
 
             CreateMap<UserModel, User>()
-                .ForMember(dest => dest.BiomarkerOrders, opt => opt.Ignore());
+                .ForMember(dest => dest.BiomarkerOrders, opt => opt.Ignore())
+                .ForMember(dest => dest.IsSeparateBilling, opt => opt.MapFrom(src => src.IsSeparateBilling));
 
             CreateMap<User, UserModel>()
                 .ForMember(dest => dest.BiomarkerOrders, opt => opt.Ignore())
@@ -313,9 +314,9 @@ namespace CE_API_V2.Models.Mapping
                 .ForMember(dest => dest.UnitLabValues, opt => opt.MapFrom(src => src.UnitLabValues))
                 .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IsActive))
                 .ForMember(dest => dest.IsSeparateBilling, opt => opt.MapFrom(src => src.IsSeparateBilling))
+                .ForMember(dest => dest.ClinicalSetting, opt => opt.MapFrom(src => src.ClinicalSetting))
+                .ForMember(dest => dest.Department, opt => opt.MapFrom(src => src.Department))
                 .ForMember(dest => dest.ChangeClinicalSetting, opt => opt.Ignore())
-                .ForMember(dest => dest.ClinicalSetting, opt => opt.Ignore())
-                .ForMember(dest => dest.Department, opt => opt.MapFrom(src => src.ClinicalSetting))
                 .ForMember(dest => dest.Organization, opt => opt.Ignore())
                 .ForMember(dest => dest.Billing, opt => opt.Ignore())
                 ;

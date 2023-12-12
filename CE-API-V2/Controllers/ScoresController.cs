@@ -181,7 +181,7 @@ public class ScoresController : ControllerBase
 
         if (currentUser is null)
         {
-            throw new Exception(); //Todo
+            throw new Exception();
         }
 
         var validationResult = _inputValidationService.ScoringRequestIsValid(scoringRequestValues, currentUser);
@@ -329,7 +329,7 @@ public class ScoresController : ControllerBase
             return BadRequest("Could not update the draft scoring request.");
         }
 
-        var request = _scoringUow.RetrieveScoringRequest(draftScoreId, userId); //Todo - request can be null
+        var request = _scoringUow.RetrieveScoringRequest(draftScoreId, userId); 
         if (request is null)
         {
             return BadRequest("An error occurred storing the updated draft request.");

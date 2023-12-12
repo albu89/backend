@@ -1,7 +1,5 @@
-﻿using System.Globalization;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 using CE_API_V2.Models.Enum;
-using CE_API_V2.Utility;
 
 namespace CE_API_V2.Models.DTO;
 public class UpdateUser
@@ -13,6 +11,8 @@ public class UpdateUser
     public string FirstName { get; set; }
     public string ProfessionalSpecialisation { get; set; }
     public string PreferredLab { get; set; } // for Cardio Explorer test analysis
+    public string? Department { get; set; }
+    public string? Organization { get; set; }
 
     //Contact details
     public string Address { get; set; }
@@ -41,8 +41,6 @@ public class CreateUser : UpdateUser
 
     //Clinical intended use
     public string ProfessionalSpecialisation { get; set; }
-    public string? Department { get; set; }
-    public string? Organization { get; set; }
     public string PreferredLab { get; set; } // for Cardio Explorer test analysis
 }
 

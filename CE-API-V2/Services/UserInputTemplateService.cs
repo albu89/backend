@@ -46,8 +46,8 @@ public class UserInputTemplateService : IUserInputTemplateService
         var billing = _userUow.GetBilling(userId);
         
         var billingTemplate = billing is null 
-            ? ManualMapper.MapFromBillingModelToBillingTemplate(billing, deserializedSchema.Billing)
-            : ManualMapper.MapFromBillingModelToBillingTemplate(new BillingModel(), deserializedSchema.Billing);
+            ? ManualMapper.MapFromBillingModelToBillingTemplate(new BillingModel(), deserializedSchema.Billing)
+            : ManualMapper.MapFromBillingModelToBillingTemplate(billing, deserializedSchema.Billing);
 
         var userInputFormSchema = _mapper.Map<UserInputFormSchema>(deserializedSchema);
 

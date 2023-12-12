@@ -4,7 +4,6 @@
     {
         public static float MapEnumValueToFloat(object? enumValue)
         {
-            //TODO Wip - adjust return values / add validation
             if (enumValue == null)
             {
                 return 0;

@@ -49,7 +49,7 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
             userInfoExtractorMock.Setup(x => x.GetUserIdInformation(It.IsAny<ClaimsPrincipal>())).Returns(new UserIdsRecord());
             userInfoExtractorMock.Setup(x
                 => x.GetUserIdInformation(It.IsAny<ClaimsPrincipal>())).Returns(new UserIdsRecord());
-                
+
 
             var communicationService = new Mock<ICommunicationService>();
             communicationService.Setup(x
@@ -346,35 +346,39 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
                 new() { OrderNumber = 1, BiomarkerId = "second", PreferredUnit = "unit", User = null, UserId = "id" }
             };
 
+            var expectedBillingAddress = "ChangedBillingAddress";
+
             originalUser.ClinicalSetting = newClinicalSetting;
             originalUser.Role = newUserRole;
             originalUser.BiomarkerOrders = expectedBiomarkerOrder;
-            
-            _context.Users.Add(originalUser);
-            _context.SaveChanges();
+
+            AddUserModelToDbWithoutTracking(originalUser);
 
             var updatedUser = MockDataProvider.GetMockedUserModel();
             updatedUser.FirstName = newFirstName;
             updatedUser.Surname = newSurname;
             updatedUser.BiomarkerOrders = newBiomarkerOrder;
+            updatedUser.Billing.BillingAddress = expectedBillingAddress;
             var sut = new UserUOW(_context, _communicationService, _orgaUOW);
 
             var userInfo = new UserIdsRecord() { UserId = updatedUser.UserId, Role = UserRole.User };
 
             //Act
-            var returnedUser = await sut.UpdateUser(originalUser.UserId, updatedUser, userInfo);
+            await sut.UpdateUser(originalUser.UserId, updatedUser, userInfo);
+            var returnedUser = sut.UserRepository.Get(x => x.UserId == originalUser.UserId, null, "BiomarkerOrders").FirstOrDefault();
 
             //Assert
             returnedUser.Should().NotBeNull();
-            returnedUser.FirstName.Should().Be(newFirstName);
+            returnedUser!.FirstName.Should().Be(newFirstName);
             returnedUser.Surname.Should().Be(newSurname);
             returnedUser.BiomarkerOrders.Should().NotBeNullOrEmpty();
             returnedUser.BiomarkerOrders.FirstOrDefault(x => x.BiomarkerId == "first").Should().NotBeNull();
             returnedUser.BiomarkerOrders.FirstOrDefault(x => x.BiomarkerId == "first")!.OrderNumber.Should().Be(1);
             returnedUser.ClinicalSetting.Should().NotBe(expectedClinicalSetting);
+            returnedUser.Billing.BillingAddress.Should().Be(expectedBillingAddress);
             returnedUser.Role.Should().NotBe(expectedUserRole);
         }
-        
+
         [Test]
         public async Task UpdateUser_GivenTenantAdmin_UpdatesIsActiveAndClinicalSetting()
         {
@@ -383,30 +387,29 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
 
             originalUser.ClinicalSetting = PatientDataEnums.ClinicalSetting.PrimaryCare;
             originalUser.IsActive = false;
-            
-            _context.Users.Add(originalUser);
-            _context.SaveChanges();
+
+            AddUserModelToDbWithoutTracking(originalUser);
 
             var updatedUser = MockDataProvider.GetMockedUserModel();
             updatedUser.ClinicalSetting = PatientDataEnums.ClinicalSetting.SecondaryCare;
             updatedUser.IsActive = true;
             var sut = new UserUOW(_context, _communicationService, _orgaUOW);
-            
-            var userInfo = new UserIdsRecord() { UserId = updatedUser.UserId + 1, Role = UserRole.Admin, TenantId = updatedUser.TenantID};
 
+            var userInfo = new UserIdsRecord() { UserId = updatedUser.UserId + 1, Role = UserRole.Admin, TenantId = updatedUser.TenantID };
 
             //Act
-            var returnedUser = await sut.UpdateUser(originalUser.UserId, updatedUser, userInfo);
-
+            await sut.UpdateUser(originalUser.UserId, updatedUser, userInfo);
+            var returnedUser = sut.UserRepository.Get(x => x.UserId == originalUser.UserId, null, "BiomarkerOrders").FirstOrDefault();
+            
             //Assert
             returnedUser.Should().NotBeNull();
-            returnedUser.FirstName.Should().Be(updatedUser.FirstName);
+            returnedUser!.FirstName.Should().Be(updatedUser.FirstName);
             returnedUser.Surname.Should().Be(updatedUser.Surname);
             returnedUser.BiomarkerOrders.Should().NotBeNullOrEmpty();
             returnedUser.ClinicalSetting.Should().Be(PatientDataEnums.ClinicalSetting.SecondaryCare);
         }
-        
-        
+
+
         [Test]
         public async Task UpdateUser_GivenWrongTenantAdmin_NotUpdateIsActiveAndClinicalSetting()
         {
@@ -415,7 +418,7 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
 
             originalUser.ClinicalSetting = PatientDataEnums.ClinicalSetting.PrimaryCare;
             originalUser.IsActive = false;
-            
+
             _context.Users.Add(originalUser);
             _context.SaveChanges();
 
@@ -423,17 +426,17 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
             updatedUser.ClinicalSetting = PatientDataEnums.ClinicalSetting.SecondaryCare;
             updatedUser.IsActive = true;
             var sut = new UserUOW(_context, _communicationService, _orgaUOW);
-            
-            var userInfo = new UserIdsRecord() { UserId = updatedUser.UserId + 1, Role = UserRole.Admin, TenantId = updatedUser.TenantID + "A"};
+
+            var userInfo = new UserIdsRecord() { UserId = updatedUser.UserId + 1, Role = UserRole.Admin, TenantId = updatedUser.TenantID + "A" };
 
 
             //Act
-            var returnedUserTask = async() => await sut.UpdateUser(originalUser.UserId, updatedUser, userInfo);
+            var returnedUserTask = async () => await sut.UpdateUser(originalUser.UserId, updatedUser, userInfo);
 
             //Assert
             returnedUserTask.Should().ThrowAsync<Exception>();
         }
-        
+
         [Test]
         public async Task UpdateUser_GivenSystemAdmin_UpdatesIsActiveAndClinicalSetting()
         {
@@ -442,25 +445,24 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
 
             originalUser.ClinicalSetting = PatientDataEnums.ClinicalSetting.PrimaryCare;
             originalUser.IsActive = false;
-            
-            _context.Users.Add(originalUser);
-            _context.SaveChanges();
+
+            AddUserModelToDbWithoutTracking(originalUser);
 
             var updatedUser = MockDataProvider.GetMockedUserModel();
             updatedUser.ClinicalSetting = PatientDataEnums.ClinicalSetting.SecondaryCare;
             updatedUser.IsActive = true;
             var sut = new UserUOW(_context, _communicationService, _orgaUOW);
-            
-            // User with wrong TenantId but SystemAdmin
-            var userInfo = new UserIdsRecord() { UserId = updatedUser.UserId + 1, Role = UserRole.SystemAdmin, TenantId = updatedUser.TenantID + "A"};
 
+            // User with wrong TenantId but SystemAdmin
+            var userInfo = new UserIdsRecord() { UserId = updatedUser.UserId + 1, Role = UserRole.SystemAdmin, TenantId = updatedUser.TenantID + "A" };
 
             //Act
-            var returnedUser = await sut.UpdateUser(originalUser.UserId, updatedUser, userInfo);
+            await sut.UpdateUser(originalUser.UserId, updatedUser, userInfo);
+            var returnedUser = sut.UserRepository.Get(x => x.UserId == originalUser.UserId, null, "BiomarkerOrders").FirstOrDefault();
 
             //Assert
             returnedUser.Should().NotBeNull();
-            returnedUser.FirstName.Should().Be(updatedUser.FirstName);
+            returnedUser!.FirstName.Should().Be(updatedUser.FirstName);
             returnedUser.Surname.Should().Be(updatedUser.Surname);
             returnedUser.BiomarkerOrders.Should().NotBeNullOrEmpty();
             returnedUser.ClinicalSetting.Should().Be(PatientDataEnums.ClinicalSetting.SecondaryCare);
@@ -472,7 +474,7 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
             // Arrange
             var tenantId1 = "Tenant1";
             var tenantId2 = "Tenant2";
-            
+
             var originalUser = MockDataProvider.GetMockedUserModel();
             originalUser.UserId = tenantId1 + "User";
             originalUser.TenantID = tenantId1;
@@ -486,12 +488,12 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
             _context.Users.Add(originalUser2);
             await _context.SaveChangesAsync();
 
-            var originalUser3= MockDataProvider.GetMockedUserModel();
+            var originalUser3 = MockDataProvider.GetMockedUserModel();
             originalUser3.UserId = tenantId2 + "User2";
             originalUser3.TenantID = tenantId2;
             _context.Users.Add(originalUser3);
             await _context.SaveChangesAsync();
-            
+
             var sut = new UserUOW(_context, _communicationService, _orgaUOW);
 
             var userInfo = new UserIdsRecord()
@@ -500,7 +502,7 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
                 UserId = tenantId2 + "Admin",
                 Role = UserRole.Admin
             };
-            
+
             // Act
             var result = sut.GetUsersForAdmin(userInfo);
 
@@ -508,7 +510,7 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
             result.Count().Should().Be(2, $"Tenant: {tenantId2} should have 2 users registered");
             result.Any(x => x.TenantID != tenantId2).Should().BeFalse("the method should not return any users from a different tenant");
         }
-        
+
         [Test]
         public async Task GetUsers_ReturnsAllUsersForSystemAdmin()
         {
@@ -538,7 +540,7 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
             originalUser3.Billing = MockDataProvider.GetBillingMock();
             _context.Users.Add(originalUser3);
             await _context.SaveChangesAsync();
-            
+
             var sut = new UserUOW(_context, _communicationService, _orgaUOW);
 
             var userInfo = new UserIdsRecord()
@@ -547,13 +549,23 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
                 UserId = tenantId2 + "Admin",
                 Role = UserRole.SystemAdmin
             };
-            
+
             // Act
             var result = sut.GetUsersForAdmin(userInfo);
 
             //Assert
             result.Should().NotBeNull();
             result.Count().Should().Be(3, $"SystemAdmins should see all 3 registered users");
+        }
+
+        private void AddUserModelToDbWithoutTracking(UserModel originalUser)
+        {
+            _context.Users.Add(originalUser);
+
+            _context.SaveChanges();
+            _context.Dispose();
+
+            _context = new CEContext(_dbContextOptions);
         }
     }
 }

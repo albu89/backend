@@ -86,7 +86,7 @@
         // [NotMapped]
         // public string PopulationRiskLevel { get; set; } // same field as "classifier_type", but only for API v3 REST API requests
         #endregion
-        
+
         #region Fillerproperties
         public float ASAT { get; set; } 
         public float Art__Hypertonie { get; set; }

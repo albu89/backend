@@ -25,7 +25,7 @@ namespace CE_API_V2.Models.DTO
         
         
         [JsonPropertyName("chest_pain")]
-        public BiomarkerOrderEntry ChestPain { get; set; } = new BiomarkerOrderEntry{ OrderNumber = 5}; // Todo = chest pain?
+        public BiomarkerOrderEntry ChestPain { get; set; } = new BiomarkerOrderEntry{ OrderNumber = 5}; 
 
         
         [JsonPropertyName("nicotine")]

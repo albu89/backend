@@ -78,7 +78,7 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
             var addCountryTask = () => sut.AddCountry(mockedCountry);
 
             //Assert
-             addCountryTask.Should().Throw<Exception>();
+            addCountryTask.Should().Throw<Exception>();
         }
 
         [Test]
@@ -233,7 +233,7 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
 
             //Act
             var result = sut.UpdateCountry(updatedCountry);
-            
+
             //Assert
             result.Should().NotBeNull();
             result!.Name.Should().Be(updatedCountry.Name);
@@ -285,7 +285,7 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
             context.SaveChanges();
 
             using var newContext = new CEContext(_dbContextOptions);
-            
+
             var sut = new AdministrativeEntitiesUOW(newContext);
 
             //Act
@@ -534,7 +534,7 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
         public void GetUser_GivenId_ExpectedReturnedUser()
         {
             //Arrange
-            var mockedUser = MockDataProvider.GetMockedUserModel(); 
+            var mockedUser = MockDataProvider.GetMockedUserModel();
             var mockIds = MockDataProvider.GetUserIdInformationRecord();
             var userId = mockIds.UserId + 5674;
             mockedUser.UserId = userId;
@@ -560,7 +560,7 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
         {
             //Arrange
             var userIdToBeFound = Guid.NewGuid().ToString();
-            var mockedUser = MockDataProvider.GetMockedUserModel(); 
+            var mockedUser = MockDataProvider.GetMockedUserModel();
             var mockIds = MockDataProvider.GetUserIdInformationRecord();
             var userId = mockIds.UserId + 5674;
             mockedUser.UserId = userId;
@@ -586,11 +586,11 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
         public void GetUser_GivenOtherUsersIdRoleIsSystemAdmin_ReturnedUserId(UserRole userRole)
         {
             //Arrange
-            var mockedUser = MockDataProvider.GetMockedUserModel(); 
+            var mockedUser = MockDataProvider.GetMockedUserModel();
             var mockIds = MockDataProvider.GetUserIdInformationRecord();
             var userId = mockIds.UserId + 5674;
             var userRedcordUserId = userId + 1; //User is not self
-            mockedUser.UserId = userId; 
+            mockedUser.UserId = userId;
             mockedUser.TenantID = mockIds.TenantId;
 
             _context.Users.Add(mockedUser);
@@ -612,14 +612,14 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
         public void GetUser_GivenOtherUsersIdRoleIsAdminOfOtherTenant_ReturnedUserId()
         {
             //Arrange
-            var mockedUser = MockDataProvider.GetMockedUserModel(); 
+            var mockedUser = MockDataProvider.GetMockedUserModel();
             var mockIds = MockDataProvider.GetUserIdInformationRecord();
             var userId = mockIds.UserId + 5674;
             var userRedcordUserId = userId + 1; //User is not self
             var adminTenantId = mockedUser.TenantID + 1;//User has other TenantId
             mockedUser.UserId = userId;
-            mockedUser.TenantID = mockIds.TenantId; 
-            
+            mockedUser.TenantID = mockIds.TenantId;
+
             _context.Users.Add(mockedUser);
             _context.SaveChanges();
 
@@ -638,7 +638,7 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
         public async Task UpdateUser_GivenUserAndId_ExpectedReturnedUpdatedUser()
         {
             //Arrange
-            var originalUser = MockDataProvider.GetMockedUserModel(); 
+            var originalUser = MockDataProvider.GetMockedUserModel();
 
             var newFirstName = "ChangedFirstName";
             var newSurname = "ChangedSurName";
@@ -648,8 +648,6 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
 
             var newUserRole = UserRole.SystemAdmin;
             var expectedUserRole = UserRole.User;
-
-            var expectedBiomarkerOrder = originalUser.BiomarkerOrders;
             var newBiomarkerOrder = new Collection<BiomarkerOrderModel>
             {
                 new() { OrderNumber = 2, BiomarkerId = "first", PreferredUnit = "unit", User = null, UserId = "id" },
@@ -658,22 +656,22 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
 
             originalUser.ClinicalSetting = newClinicalSetting;
             originalUser.Role = newUserRole;
-            originalUser.BiomarkerOrders = expectedBiomarkerOrder;
             originalUser.TenantID = "tenant1";
 
-            _context.Users.Add(originalUser);
-            _context.SaveChanges();
+            AddUserModelToDbWithoutTracking(originalUser);
 
-            var updatedUser = MockDataProvider.GetMockedUserModel(); 
+            var updatedUser = MockDataProvider.GetMockedUserModel();
             updatedUser.FirstName = newFirstName;
             updatedUser.Surname = newSurname;
             updatedUser.BiomarkerOrders = newBiomarkerOrder;
+
             var sut = new UserUOW(_context, _communicationService, _organisationUow);
 
             var adminInfo = new UserIdsRecord() { UserId = "Admin1", TenantId = originalUser.TenantID, Role = UserRole.Admin };
 
             //Act
-            var returnedUser = await sut.UpdateUser(originalUser.UserId, updatedUser, adminInfo);
+            await sut.UpdateUser(originalUser.UserId, updatedUser, adminInfo);
+            var returnedUser = sut.UserRepository.Get(x => x.UserId == originalUser.UserId, null, "BiomarkerOrders").FirstOrDefault();
 
             //Assert
             returnedUser.Should().NotBeNull();
@@ -691,7 +689,7 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
         {
             //Arrange
             var invalidUserId = Guid.NewGuid().ToString();
-            var originalUser = MockDataProvider.GetMockedUserModel(); 
+            var originalUser = MockDataProvider.GetMockedUserModel();
 
             var newFirstName = "ChangedFirstName";
             var newSurname = "ChangedSurName";
@@ -720,7 +718,7 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
             var updatedUser = MockDataProvider.GetMockedUserModel();
             updatedUser.FirstName = newFirstName;
             updatedUser.Surname = newSurname;
-            
+
             updatedUser.BiomarkerOrders = newBiomarkerOrder;
             var sut = new UserUOW(_context, _communicationService, null);
 
@@ -739,8 +737,8 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
         public async Task UpdateUser_GivenVariousAdminRoles_ExpectedReturnedUpdatedUser(UserRole userRole)
         {
             //Arrange
-            var originalUser = MockDataProvider.GetMockedUserModel();  
-
+            var originalUser = MockDataProvider.GetMockedUserModel();
+            originalUser.UserId = "newUserId";
             var newFirstName = "ChangedFirstName";
             var newSurname = "ChangedSurName";
 
@@ -753,9 +751,11 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
             var expectedBiomarkerOrder = originalUser.BiomarkerOrders;
             var newBiomarkerOrder = new Collection<BiomarkerOrderModel>
             {
-                new() { OrderNumber = 2, BiomarkerId = "first", PreferredUnit = "unit", User = null, UserId = "id" },
-                new() { OrderNumber = 1, BiomarkerId = "second", PreferredUnit = "unit", User = null, UserId = "id" }
+                new() { OrderNumber = 2, BiomarkerId = "first", PreferredUnit = "unit", User = null, UserId = originalUser.UserId },
+                new() { OrderNumber = 1, BiomarkerId = "second", PreferredUnit = "unit", User = null, UserId = originalUser.UserId }
             };
+
+            var expectedBillingAddress = "ChangedBillingAddress";
 
             var adminId = "Admin1"; //Admin has other UseriD
 
@@ -763,29 +763,36 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
             originalUser.Role = newUserRole;
             originalUser.BiomarkerOrders = expectedBiomarkerOrder;
             originalUser.TenantID = "tenant1";
+            originalUser.Billing = new BillingModel();
 
-            _context.Users.Add(originalUser);
-            _context.SaveChanges();
+            AddUserModelToDbWithoutTracking(originalUser);
 
-            var updatedUser = MockDataProvider.GetMockedUserModel(); 
+            var updatedUser = MockDataProvider.GetMockedUserModel();
+            updatedUser.UserId = originalUser.UserId;
             updatedUser.FirstName = newFirstName;
             updatedUser.Surname = newSurname;
             updatedUser.BiomarkerOrders = newBiomarkerOrder;
-            var sut = new UserUOW(_context, _communicationService, _organisationUow);
+            updatedUser.Billing = new BillingModel()
+            {
+                BillingAddress = expectedBillingAddress
+            };
 
-            var adminInfo = new UserIdsRecord() { UserId = adminId, TenantId = originalUser.TenantID, Role = userRole};
+            var sut = new UserUOW(_context, _communicationService, _organisationUow);
+            var adminInfo = new UserIdsRecord() { UserId = adminId, TenantId = originalUser.TenantID, Role = userRole };
 
             //Act
-            var returnedUser = await sut.UpdateUser(originalUser.UserId, updatedUser, adminInfo);
+            await sut.UpdateUser(originalUser.UserId, updatedUser, adminInfo);
+            var returnedUser = sut.UserRepository.Get(x => x.UserId == originalUser.UserId, null, "BiomarkerOrders").FirstOrDefault();
 
             //Assert
             returnedUser.Should().NotBeNull();
-            returnedUser.FirstName.Should().Be(newFirstName);
+            returnedUser!.FirstName.Should().Be(newFirstName);
             returnedUser.Surname.Should().Be(newSurname);
             returnedUser.BiomarkerOrders.Should().NotBeNullOrEmpty();
             returnedUser.BiomarkerOrders.FirstOrDefault(x => x.BiomarkerId == "first").Should().NotBeNull();
             returnedUser.BiomarkerOrders.FirstOrDefault(x => x.BiomarkerId == "first")!.OrderNumber.Should().Be(1);
             returnedUser.ClinicalSetting.Should().NotBe(expectedClinicalSetting);
+            returnedUser.Billing.BillingAddress.Should().Be(expectedBillingAddress);
             returnedUser.Role.Should().NotBe(expectedUserRole);
         }
 
@@ -793,7 +800,7 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
         public async Task UpdateUser_GivenAdminUserOfOtherTenant_ExpectedException() //Role is Admin: WrongTenantID
         {
             //Arrange
-            var originalUser = MockDataProvider.GetMockedUserModel(); 
+            var originalUser = MockDataProvider.GetMockedUserModel();
 
             var newFirstName = "ChangedFirstName";
             var newSurname = "ChangedSurName";
@@ -804,7 +811,7 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
 
             var expectedBiomarkerOrder = originalUser.BiomarkerOrders;
 
-            var newBiomarkerOrder = new Collection<BiomarkerOrderModel> 
+            var newBiomarkerOrder = new Collection<BiomarkerOrderModel>
             {
                 new() { OrderNumber = 1, BiomarkerId = "first", PreferredUnit = "unit", User = null, UserId = "id" },
                 new() { OrderNumber = 2, BiomarkerId = "second", PreferredUnit = "unit", User = null, UserId = "id" }
@@ -858,40 +865,58 @@ namespace CE_API_Test.UnitTests.UnitOfWorks
                 new() { OrderNumber = 1, BiomarkerId = "second", PreferredUnit = "unit", User = null, UserId = "id" }
             };
 
+            var expectedBillingAddress = "ChangedBillingAddress";
+
             originalUser.ClinicalSetting = originalClinicalSetting;
             originalUser.Role = originalUserRole;
             originalUser.BiomarkerOrders = expectedBiomarkerOrder;
             originalUser.TenantID = "tenant1";
+            originalUser.Billing = new BillingModel();
 
             var adminId = originalUser.UserId; //Admin has same UseriD
             var adminTenant = originalUser.TenantID; //Admin has same TenantId as User
 
-            _context.Users.Add(originalUser);
-            _context.SaveChanges();
+            AddUserModelToDbWithoutTracking(originalUser);
 
-            var updatedUser = MockDataProvider.GetMockedUserModel(); 
+            var updatedUser = MockDataProvider.GetMockedUserModel();
             updatedUser.FirstName = newFirstName;
             updatedUser.Surname = newSurname;
             updatedUser.BiomarkerOrders = newBiomarkerOrder;
             updatedUser.Role = newUserRole;
             updatedUser.ClinicalSetting = newClinicalSetting;
+            updatedUser.Billing = new BillingModel()
+            {
+                BillingAddress = expectedBillingAddress
+            };
 
             var sut = new UserUOW(_context, _communicationService, _organisationUow);
 
             var adminInfo = new UserIdsRecord() { UserId = adminId, TenantId = adminTenant, Role = UserRole.User };
 
             //Act
-            var returnedUser = await sut.UpdateUser(originalUser.UserId, updatedUser, adminInfo);
+            await sut.UpdateUser(originalUser.UserId, updatedUser, adminInfo);
+            var returnedUser = sut.UserRepository.Get(x => x.UserId == originalUser.UserId, null, "BiomarkerOrders").FirstOrDefault();
 
             //Assert
             returnedUser.Should().NotBeNull();
-            returnedUser.FirstName.Should().Be(newFirstName);
+            returnedUser!.FirstName.Should().Be(newFirstName);
             returnedUser.Surname.Should().Be(newSurname);
             returnedUser.BiomarkerOrders.Should().NotBeNullOrEmpty();
             returnedUser.BiomarkerOrders.FirstOrDefault(x => x.BiomarkerId == "first").Should().NotBeNull();
             returnedUser.BiomarkerOrders.FirstOrDefault(x => x.BiomarkerId == "first")!.OrderNumber.Should().Be(1);
             returnedUser.ClinicalSetting.Should().Be(originalClinicalSetting);
+            returnedUser.Billing.BillingAddress.Should().Be(expectedBillingAddress);
             returnedUser.Role.Should().Be(originalUserRole);
+        }
+
+        private void AddUserModelToDbWithoutTracking(UserModel originalUser)
+        {
+            _context.Users.Add(originalUser);
+
+            _context.SaveChanges();
+            _context.Dispose();
+
+            _context = new CEContext(_dbContextOptions);
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System.Globalization;
 using AutoMapper;
-using AutoMapper.Execution;
 using CE_API_V2.Data;
 using CE_API_V2.Data.Repositories;
 using CE_API_V2.Data.Repositories.Interfaces;
@@ -250,7 +249,7 @@ namespace CE_API_V2.UnitOfWorks
                 return null;
             }
 
-            existingScoringRequest ??= scoringRequest.Id; //Todo - cannot be null
+            existingScoringRequest ??= scoringRequest.Id; 
 
             if (StoreBiomarkers(existingScoringRequest.Value, biomarkers) is null)
             {

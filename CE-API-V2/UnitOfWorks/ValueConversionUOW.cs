@@ -29,7 +29,7 @@ namespace CE_API_V2.UnitOfWorks
             requestModel.UserId = userId;
             requestModel.PatientId = patientId;
             requestModel.ClinicalSetting = clinicalSetting;
-
+            biomarkers.ClinicalSetting = clinicalSetting;
             return (requestModel, biomarkers);
         }
 

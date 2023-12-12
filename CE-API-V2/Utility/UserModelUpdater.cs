@@ -24,6 +24,8 @@ namespace CE_API_V2.Utility
             storedUser.Language = UpdatePropertyIfChanged(updatedUser.Language, storedUser.Language);
             storedUser.UnitLabValues = UpdatePropertyIfChanged(updatedUser.UnitLabValues, storedUser.UnitLabValues);
             storedUser.Billing = UpdatePropertyIfChanged(updatedUser.Billing, storedUser.Billing);
+            storedUser.IsSeparateBilling = UpdatePropertyIfChanged(updatedUser.IsSeparateBilling, storedUser.IsSeparateBilling);
+            storedUser.Department = UpdatePropertyIfChanged(updatedUser.Department, storedUser.Department);
 
             return storedUser;
         }

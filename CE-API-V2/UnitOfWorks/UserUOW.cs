@@ -215,7 +215,7 @@ namespace CE_API_V2.UnitOfWorks
         {
             var user = UserRepository.GetById(userId);
 
-            if (user is null) 
+            if (user is null)
                 return null;
 
             var isSystemAdmin = userInfo.Role is UserRole.SystemAdmin;
@@ -257,7 +257,11 @@ namespace CE_API_V2.UnitOfWorks
             }
 
             var updatedUserModel = UserModelUpdater.UpdateUserModel(updatedUser, storedUser, out _);
-            
+            if (updatedUserModel?.Billing is not null)
+            {
+                updatedUserModel.Billing.Id = storedUser.BillingId;
+            }
+
             if (userInfo.Role is (UserRole.Admin or UserRole.SystemAdmin))
             {
                 updatedUserModel = UserModelUpdater.UpdatePrivilegedData(updatedUser, storedUser, out _);
@@ -304,7 +308,7 @@ namespace CE_API_V2.UnitOfWorks
         {
             var user = UserRepository!.GetById(userId);
 
-            if (user is null) 
+            if (user is null)
                 return null;
 
             return _billingRepository!.GetByGuid(user.BillingId);

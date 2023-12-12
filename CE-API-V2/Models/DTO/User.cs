@@ -32,4 +32,8 @@ public class User
     [JsonIgnore]
     public IEnumerable<BiomarkerOrder> BiomarkerOrders {get; set; }
     public bool IsActive { get; set; }
+
+    //Billing
+    public bool IsSeparateBilling { get; set; }
+    public Billing? Billing { get; set; }
 }
